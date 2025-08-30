@@ -17,6 +17,8 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     public float timer;
 
     public bool hitRealWall;
+
+    public Maze_Generator mg;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -27,6 +29,8 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         gameActive = false;
         timer = 0f;
         hitRealWall = false;
+
+        mg = maze.GetComponent<Maze_Generator>();
     }
 
     // Update is called once per frame
@@ -36,6 +40,15 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     }
 
     public void startGame() {
-        
+        foreach (GameObject g in mg.removedWalls) {
+            g.SetActive(true);
+        }
+        startCanvas.SetActive(false);
+        gameCanvas.SetActive(true);
+        loadingAudio.SetActive(false);
+        gameAudio.SetActive(true);
+        gameActive = true;
+        timer = 0f;
+        hitRealWall = false;
     }
 }

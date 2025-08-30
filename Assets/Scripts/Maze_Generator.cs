@@ -14,7 +14,8 @@ public class Maze_Generator : MonoBehaviour
     [SerializeField] public GameObject cam1;
     [SerializeField] public GameObject cam2;
 
-    private List<GameObject> walls;
+    public List<GameObject> walls;
+    public List<GameObject> removedWalls;
 
     private class Edge : IComparable<Edge>
     {
@@ -108,64 +109,6 @@ public class Maze_Generator : MonoBehaviour
 
     }
 
-    // public void GenerateMaze() {
-    //     mstEdges = new List<(int, int)>();
-    //     // Run Prim's algorithm to get a minimum spanning tree.
-    //     HashSet<int> visited = new HashSet<int>();
-    //     List<(int from, int to, float weight)> edges = new List<(int, int, float)>();
-
-    //     int startVertex = (size * size - 1) / 2;
-    //     visited.Add(startVertex);
-
-    //     foreach (var edge in graph[startVertex])
-    //     {
-    //         edges.Add((startVertex, edge.neighbor, edge.weight));
-    //     }
-
-    //     // Loop until we visit all vertices
-    //     while (mstEdges.Count < size * size - 1)
-    //     {
-    //         // Sort edges by weight
-    //         edges.Sort((x, y) => x.weight.CompareTo(y.weight));
-
-    //         // Find the smallest edge leading to an unvisited vertex
-    //         (int from, int to, float weight) minEdge = (0, 0, float.MaxValue);
-    //         foreach (var edge in edges)
-    //         {
-    //             if (!visited.Contains(edge.to))
-    //             {
-    //                 minEdge = edge;
-    //                 break;
-    //             }
-    //         }
-
-    //         if (minEdge.weight == float.MaxValue)
-    //         {
-    //             Debug.LogError("MST construction failed!");
-    //             break;
-    //         }
-
-    //         // Add the edge to the MST
-    //         mstEdges.Add((minEdge.from, minEdge.to));
-    //         visited.Add(minEdge.to);
-
-    //         // Remove the edge from the list
-    //         edges.Remove(minEdge);
-
-    //         // Add new edges from the newly visited vertex
-    //         foreach (var edge in graph[minEdge.to])
-    //         {
-    //             if (!visited.Contains(edge.neighbor))
-    //             {
-    //                 // For each edge added to the MST, add it to a list.
-    //                 edges.Add((minEdge.to, edge.neighbor, edge.weight));
-    //             }
-    //         }
-    //     }
-
-    //     Debug.Log($"Maze Generated! Expected edges: {size * size - 1}, Found edges: {mstEdges.Count}");
-    // }
-
     public void GenerateMaze() {
         mstEdges = new List<(int, int)>();
         HashSet<int> visited = new HashSet<int>();
@@ -212,6 +155,8 @@ public class Maze_Generator : MonoBehaviour
             }
         }
 
+        // removedWalls = mstEdges.ToList();
+
         Debug.Log($"Maze Generated! Expected edges: {size * size - 1}, Found edges: {mstEdges.Count}");
     }
 
@@ -241,6 +186,7 @@ public class Maze_Generator : MonoBehaviour
             {
                 walls.Remove(wallToDelete);
                 wallToDelete.SetActive(false);
+                removedWalls.Add(wallToDelete);
             }
             yield return new WaitForSeconds(0.1f); // 10 walls per second
         }
@@ -259,6 +205,7 @@ public class Maze_Generator : MonoBehaviour
             {
                 walls.Remove(wallToDelete);
                 wallToDelete.SetActive(false);
+                removedWalls.Add(wallToDelete);
             }
         }
         Cursor.visible = false;
