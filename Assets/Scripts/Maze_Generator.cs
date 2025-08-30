@@ -6,6 +6,7 @@ using UnityEngine;
 public class Maze_Generator : MonoBehaviour
 {
     [SerializeField] public int size = 5;
+    [SerializeField] public int startingSquare = 0;
 
     private Dictionary<int, List<(int neighbor, float weight)>> graph;
     public List<(int from, int to)> mstEdges;
@@ -171,7 +172,7 @@ public class Maze_Generator : MonoBehaviour
         SortedSet<Edge> pq = new SortedSet<Edge>(); // Priority queue
 
         // Start from the middle of the graph
-        int startVertex = (size * size - 1) / 2;
+        int startVertex = startingSquare;
         visited.Add(startVertex);
 
         // Add all edges from the start vertex to the priority queue
