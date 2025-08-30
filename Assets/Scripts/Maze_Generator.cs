@@ -261,6 +261,8 @@ public class Maze_Generator : MonoBehaviour
                 wallToDelete.SetActive(false);
             }
         }
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private string GetWallName(int from, int to)
