@@ -16,6 +16,7 @@ public class BlockManager : MonoBehaviour
     [Header("Stacking Settings")]
     [SerializeField] private float layerHeight = 3f;   // height of each layer
     [SerializeField] private float baseOffset = 1f;    // how high the first layer is off the ground
+    [SerializeField] private int numLayers = 12;
 
     [Header("Hardcoded Sequence (index of prefab, side)")]
     [SerializeField] private List<BlockPairData> hardcodedBlocks;
@@ -34,26 +35,28 @@ public class BlockManager : MonoBehaviour
 
     public void SpawnNextBlock()
     {
-        if (blockIndex < hardcodedBlocks.Count)
-        {
-            BlockPairData pair = hardcodedBlocks[blockIndex];
-            SpawnBlock(pair.leftBlock, BlockSide.Left);
-            SpawnBlock(pair.rightBlock, BlockSide.Right);
-            blockIndex++;
-            currentLayer++;
-            gm.MoveCameraUp(currentLayer);
-        }
-        else
-        {
-            BlockPairData pair = blockPairs[Random.Range(0, blockPairs.Count)];
+        if (currentLayer < numLayers) {
+            if (blockIndex < hardcodedBlocks.Count)
+            {
+                BlockPairData pair = hardcodedBlocks[blockIndex];
+                SpawnBlock(pair.leftBlock, BlockSide.Left);
+                SpawnBlock(pair.rightBlock, BlockSide.Right);
+                blockIndex++;
+                currentLayer++;
+                gm.MoveCameraUp(currentLayer);
+            }
+            else
+            {
+                BlockPairData pair = blockPairs[Random.Range(0, blockPairs.Count)];
 
-            // Each side independently
-            SpawnBlock(pair.leftBlock, BlockSide.Left);
-            SpawnBlock(pair.rightBlock, BlockSide.Right);
+                // Each side independently
+                SpawnBlock(pair.leftBlock, BlockSide.Left);
+                SpawnBlock(pair.rightBlock, BlockSide.Right);
 
-            currentLayer++;
-            blockIndex++;
-            gm.MoveCameraUp(currentLayer);
+                currentLayer++;
+                blockIndex++;
+                gm.MoveCameraUp(currentLayer);
+            }
         }
     }
 

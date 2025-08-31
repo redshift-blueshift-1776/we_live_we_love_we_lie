@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class IsThisAPlaceThatICallHome : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     void Start()
     {
         bm = blockManger.GetComponent<BlockManager>();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
@@ -31,6 +34,16 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         timerText.text = $"Time Remaining: {120 - Mathf.Floor(timer)}";
         timer += Time.deltaTime;
         layerText.text = $"Layer: {bm.currentLayer}";
+        if ((timer > 120f) && bm.currentLayer >= 12) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene(3); // Change to 2 once To Find What I've Become is made.
+        }
+        if ((timer > 120f) && bm.currentLayer < 12) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene(3); // Change to loss scene once made.
+        }
     }
 
     public void MoveCameraUp(int newLayer)
