@@ -22,7 +22,7 @@ public class Wall : MonoBehaviour
     }
 
     public IEnumerator moveDown() {
-        float duration = 1f;
+        float duration = 2f;
         float elapsed = 0f;
         Vector3 oldPosition = transform.position + new Vector3(0,0,0);
         Vector3 targetPosition = transform.position + new Vector3(0,-100,0);

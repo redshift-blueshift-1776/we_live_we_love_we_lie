@@ -25,12 +25,19 @@ public class BlockManager : MonoBehaviour
     private IsThisAPlaceThatICallHome gm;
 
     private int blockIndex = 0;
-    public int currentLayer = 0;  
+    public int currentLayer = 0; 
+
+    void Awake()
+    {
+        BlockController.ResetLayerCounter();
+    } 
 
     void Start()
     {
         gm = gameManager.GetComponent<IsThisAPlaceThatICallHome>();
-        SpawnNextBlock();
+        currentLayer = 0;
+        blockIndex = 0;
+        // SpawnNextBlock();
     }
 
     public void SpawnNextBlock()
@@ -57,6 +64,8 @@ public class BlockManager : MonoBehaviour
                 blockIndex++;
                 gm.MoveCameraUp(currentLayer);
             }
+        } else {
+            Debug.Log("asdf");
         }
     }
 

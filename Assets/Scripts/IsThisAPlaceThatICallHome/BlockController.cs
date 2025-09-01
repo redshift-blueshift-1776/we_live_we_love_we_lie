@@ -16,6 +16,7 @@ public class BlockController : MonoBehaviour
 
     public void Init(BlockSide side, BlockManager manager)
     {
+        placed = false;
         this.side = side;
         this.manager = manager;
         activeUnplacedInLayer++;
@@ -23,7 +24,7 @@ public class BlockController : MonoBehaviour
 
     void Start()
     {
-        rend = GetComponent<Renderer>();
+        rend = GetComponent<MeshRenderer>();
         rb = GetComponent<Rigidbody>();
 
         // Ghost mode
@@ -83,4 +84,10 @@ public class BlockController : MonoBehaviour
             rend.material.color = c;
         }
     }
+
+    public static void ResetLayerCounter()
+    {
+        activeUnplacedInLayer = 0;
+    }
+
 }
