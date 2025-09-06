@@ -1,6 +1,8 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
+using System;
 using TMPro;
 
 public class Player
@@ -63,6 +65,10 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     private Card defenseCard; // card currently being contested
     private int cardIndex = 0; // which slot to fill next
+
+    private bool roundActive = false;
+    private bool turnActive = false;
+    private Action queuedTurn = null;
 
     public static FirstWeLiveWeLoveWeLie Instance { get; private set; }
 
@@ -140,11 +146,17 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     void StartRound()
     {
+        if (roundActive) return;  // Prevent overlapping rounds
+        roundActive = true;
+
+        Debug.Log($"Offense: {currentOffenseIndex + 1}, Defense: {currentDefenseIndex + 1}");
         yourCard.SetActive(false);
+
         defenseCard = deckManager.DrawCard();
         if (defenseCard == null)
         {
             Debug.Log("No more cards. Game Over.");
+            roundActive = false;
             return;
         }
 
@@ -160,22 +172,18 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             Debug.Log("Your turn as DEFENSE. Choose dialogue to influence offense.");
             yourCard.SetActive(true);
             RawImage cardImage = yourCard.GetComponent<RawImage>();
-            if (defenseCard.Color == CardColor.Red) {
-                cardImage.color = Color.red; 
-            } else {
-                cardImage.color = Color.black; 
-            }
-            string[] options = { "Trust me, pass!", "You'll regret passing!", "Your move, but risky..." };
+            cardImage.color = (defenseCard.Color == CardColor.Red) ? Color.red : Color.black;
 
+            string[] options = { "Trust me, pass!", "You'll regret passing!", "Your move, but risky..." };
             dm.ShowDialogueOptions(options, choice =>
             {
-                // AI “listens” to your persuasion attempt
+                if (turnActive) return; // Ignore if a turn is already being processed
+
                 float stealChance = 0.5f;
                 if (choice == 0) stealChance -= 0.2f;
                 if (choice == 1) stealChance += 0.2f;
-                // choice 2 neutral
 
-                bool aiSteals = Random.value < stealChance;
+                bool aiSteals = UnityEngine.Random.value < stealChance;
                 ResolveTurn(aiSteals, isHuman: false);
             });
         }
@@ -193,44 +201,52 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     public void OnStealButton()
     {
-        ResolveTurn(steal: true, isHuman: true);
+        if (!turnActive) ResolveTurn(true, true);
     }
 
     public void OnNoStealButton()
     {
-        ResolveTurn(steal: false, isHuman: true);
+        if (!turnActive) ResolveTurn(false, true);
     }
 
     void AutoResolveAI()
     {
-        bool aiSteals = Random.value > 0.5f; // placeholder strategy
+        bool aiSteals = UnityEngine.Random.value > 0.5f; // placeholder strategy
         ResolveTurn(aiSteals, isHuman: false);
     }
 
     void ResolveTurn(bool steal, bool isHuman)
     {
-        CutsceneType type;
-        if (isHuman)
-            type = steal ? CutsceneType.HumanSteal : CutsceneType.HumanPass;
-        else
-            type = steal ? CutsceneType.AISteal : CutsceneType.AIPass;
+        if (turnActive)
+        {
+            // Put things into a queue so it doesn't blow up
+            queuedTurn = () => ResolveTurn(steal, isHuman);
+            Debug.Log("Turn queued while a cutscene is active.");
+            return;
+        }
+
+        turnActive = true;
+
+        CutsceneType type = isHuman
+            ? (steal ? CutsceneType.HumanSteal : CutsceneType.HumanPass)
+            : (steal ? CutsceneType.AISteal : CutsceneType.AIPass);
 
         cm.PlayCutscene(type, () =>
         {
-            // After cutscene finishes, then assign card and move on
+            // Assign card and update indexes
             if (steal)
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} steals!");
                 AssignCard(players[currentOffenseIndex], defenseCard);
-                currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
+                currentDefenseIndex = currentOffenseIndex;
             }
             else
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} passes.");
                 AssignCard(players[currentDefenseIndex], defenseCard);
-                currentDefenseIndex = currentOffenseIndex;
-                currentOffenseIndex = (currentDefenseIndex + 1) % numPlayers;
             }
+
+            currentOffenseIndex = (currentDefenseIndex + 1) % numPlayers;
 
             if (isHuman)
             {
@@ -238,7 +254,35 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                 ChoiceCanvas.SetActive(false);
             }
 
-            CheckEndConditions();
+            // Check end conditions
+            if (redsRemaining == 0 || blacksRemaining == 0)
+            {
+                Debug.Log("One color exhausted! Assigning remaining cards...");
+                while (deckManager.CardsRemaining > 0)
+                {
+                    Card leftover = deckManager.DrawCard();
+                    int targetIndex = (currentDefenseIndex + 1) % numPlayers;
+                    players[targetIndex].AddCard(leftover);
+                    Debug.Log($"{players[targetIndex].Name} gets leftover {leftover.Color}");
+                }
+                Debug.Log("Game Over.");
+                roundActive = false;
+            }
+            else
+            {
+                roundActive = false;
+                StartRound(); // Start next round
+            }
+
+            turnActive = false;
+
+            // Execute queued turn if any
+            if (queuedTurn != null)
+            {
+                var queued = queuedTurn;
+                queuedTurn = null;
+                queued.Invoke();
+            }
         });
     }
 
@@ -275,10 +319,6 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                 Debug.Log($"{players[targetIndex].Name} gets leftover {leftover.Color}");
             }
             Debug.Log("Game Over.");
-        }
-        else
-        {
-            StartRound();
         }
     }
 
