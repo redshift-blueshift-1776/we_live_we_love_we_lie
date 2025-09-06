@@ -40,6 +40,9 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] private TMP_Text redLeft;
     [SerializeField] private TMP_Text blackLeft;
 
+    [SerializeField] private GameObject cutsceneManager;
+    private CutsceneManager cm;
+
     private DeckManager deckManager;
     private List<Player> players = new List<Player>();
 
@@ -71,6 +74,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         SeatSlider.maxValue = numPlayers - 1;
         SeatSlider.value = 0;
         UpdateSeatText();
+
+        cm = cutsceneManager.GetComponent<CutsceneManager>();
     }
 
     void Update()
@@ -172,28 +177,39 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     void ResolveTurn(bool steal, bool isHuman)
     {
-        if (steal)
-        {
-            Debug.Log($"{players[currentOffenseIndex].Name} steals!");
-            AssignCard(players[currentOffenseIndex], defenseCard);
-            currentDefenseIndex = currentOffenseIndex;
-            currentOffenseIndex = (currentDefenseIndex + 1) % numPlayers;
-        }
-        else
-        {
-            Debug.Log($"{players[currentOffenseIndex].Name} passes.");
-            AssignCard(players[currentDefenseIndex], defenseCard);
-            currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
-        }
-
+        CutsceneType type;
         if (isHuman)
-        {
-            UICanvas.SetActive(true);
-            ChoiceCanvas.SetActive(false);
-        }
+            type = steal ? CutsceneType.HumanSteal : CutsceneType.HumanPass;
+        else
+            type = steal ? CutsceneType.AISteal : CutsceneType.AIPass;
 
-        CheckEndConditions();
+        cm.PlayCutscene(type, () =>
+        {
+            // After cutscene finishes, then assign card and move on
+            if (steal)
+            {
+                Debug.Log($"{players[currentOffenseIndex].Name} steals!");
+                AssignCard(players[currentOffenseIndex], defenseCard);
+                currentDefenseIndex = currentOffenseIndex;
+                currentOffenseIndex = (currentDefenseIndex + 1) % numPlayers;
+            }
+            else
+            {
+                Debug.Log($"{players[currentOffenseIndex].Name} passes.");
+                AssignCard(players[currentDefenseIndex], defenseCard);
+                currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
+            }
+
+            if (isHuman)
+            {
+                UICanvas.SetActive(true);
+                ChoiceCanvas.SetActive(false);
+            }
+
+            CheckEndConditions();
+        });
     }
+
 
     void AssignCard(Player p, Card c)
     {
