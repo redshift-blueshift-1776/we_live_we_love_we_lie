@@ -35,13 +35,21 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] private GameObject ChoiceCanvas; // Steal/No Steal
     [SerializeField] private GameObject UICanvas;     // General UI
     [SerializeField] private GameObject SeatSelectCanvas;
+    [SerializeField] private GameObject CutsceneCanvas;
+    [SerializeField] private GameObject DialogueCanvas;
     [SerializeField] private Slider SeatSlider;
     [SerializeField] private TMP_Text SeatText;
     [SerializeField] private TMP_Text redLeft;
     [SerializeField] private TMP_Text blackLeft;
+    [SerializeField] private TMP_Text playersLeft;
 
     [SerializeField] private GameObject cutsceneManager;
     private CutsceneManager cm;
+
+    [SerializeField] private GameObject dialogueManager;
+    private DialogueManager dm;
+
+    [SerializeField] private GameObject yourCard;
 
     private DeckManager deckManager;
     private List<Player> players = new List<Player>();
@@ -69,6 +77,9 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         SeatSelectCanvas.SetActive(true);
         UICanvas.SetActive(false);
         ChoiceCanvas.SetActive(false);
+        CutsceneCanvas.SetActive(false);
+        DialogueCanvas.SetActive(false);
+        yourCard.SetActive(false);
 
         SeatSlider.minValue = 0;
         SeatSlider.maxValue = numPlayers - 1;
@@ -76,6 +87,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         UpdateSeatText();
 
         cm = cutsceneManager.GetComponent<CutsceneManager>();
+        dm = dialogueManager.GetComponent<DialogueManager>();
     }
 
     void Update()
@@ -128,6 +140,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     void StartRound()
     {
+        yourCard.SetActive(false);
         defenseCard = deckManager.DrawCard();
         if (defenseCard == null)
         {
@@ -144,8 +157,27 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         }
         else if (currentDefenseIndex == humanPlayerIndex)
         {
-            Debug.Log("Your turn as DEFENSE. Waiting to see if offense steals.");
-            AutoResolveAI();
+            Debug.Log("Your turn as DEFENSE. Choose dialogue to influence offense.");
+            yourCard.SetActive(true);
+            RawImage cardImage = yourCard.GetComponent<RawImage>();
+            if (defenseCard.Color == CardColor.Red) {
+                cardImage.color = Color.red; 
+            } else {
+                cardImage.color = Color.black; 
+            }
+            string[] options = { "Trust me, pass!", "You'll regret passing!", "Your move, but risky..." };
+
+            dm.ShowDialogueOptions(options, choice =>
+            {
+                // AI “listens” to your persuasion attempt
+                float stealChance = 0.5f;
+                if (choice == 0) stealChance -= 0.2f;
+                if (choice == 1) stealChance += 0.2f;
+                // choice 2 neutral
+
+                bool aiSteals = Random.value < stealChance;
+                ResolveTurn(aiSteals, isHuman: false);
+            });
         }
         else
         {
@@ -155,7 +187,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     void ShowPlayerChoiceUI()
     {
-        UICanvas.SetActive(false);
+        // UICanvas.SetActive(false);
         ChoiceCanvas.SetActive(true);
     }
 
@@ -190,14 +222,14 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} steals!");
                 AssignCard(players[currentOffenseIndex], defenseCard);
-                currentDefenseIndex = currentOffenseIndex;
-                currentOffenseIndex = (currentDefenseIndex + 1) % numPlayers;
+                currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
             }
             else
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} passes.");
                 AssignCard(players[currentDefenseIndex], defenseCard);
-                currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
+                currentDefenseIndex = currentOffenseIndex;
+                currentOffenseIndex = (currentDefenseIndex + 1) % numPlayers;
             }
 
             if (isHuman)

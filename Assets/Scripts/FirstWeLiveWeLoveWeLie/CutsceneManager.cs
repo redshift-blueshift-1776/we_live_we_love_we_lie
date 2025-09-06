@@ -23,7 +23,7 @@ public class CutsceneManager : MonoBehaviour
 
         // TODO: trigger animations, text, voiceover depending on `type`
         Debug.Log($"Playing cutscene: {type}");
-
+        
         // For now, auto-complete after 2 seconds
         StartCoroutine(AutoEnd(2f));
     }
