@@ -59,13 +59,13 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     void Update()
     {
         if (gameActive) {
-            if (timer >= 120f) {
+            if (timer >= 90f) {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 PlayerPrefs.SetInt("PreviousLevel", 3);
                 SceneManager.LoadScene(5); // Change when we have the actual scene
             }
-            timerGame.text = $"Time Remaining: {120f - Mathf.Floor(timer)}";
+            timerGame.text = $"Time Remaining: {90f - Mathf.Floor(timer)}";
             timer += Time.deltaTime;
         }
     }

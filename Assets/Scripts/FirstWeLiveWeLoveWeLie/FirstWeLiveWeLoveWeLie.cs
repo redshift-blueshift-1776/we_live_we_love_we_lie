@@ -255,15 +255,27 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} steals!");
                 AssignCard(players[currentOffenseIndex], defenseCard);
-                currentDefenseIndex = currentOffenseIndex;
+                if (!isHuman) {
+                    int temp = currentOffenseIndex;
+                    currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
+                    currentDefenseIndex = temp;
+                } else {
+                   currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
+                }
             }
             else
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} passes.");
                 AssignCard(players[currentDefenseIndex], defenseCard);
+                if (isHuman) {
+                    int temp = currentOffenseIndex;
+                    currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
+                    currentDefenseIndex = temp;
+                } else {
+                   currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
+                }
             }
-
-            currentOffenseIndex = (currentDefenseIndex + 1) % numPlayers;
+            
 
             if (isHuman)
             {
