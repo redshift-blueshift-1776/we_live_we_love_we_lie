@@ -88,6 +88,11 @@ public class SceneChanger : MonoBehaviour
         SceneManager.LoadScene(lvl_name);
     }
 
+    public void LoadPreviousLevel() {
+        int n = PlayerPrefs.GetInt("PreviousLevel", 1);
+        SceneManager.LoadScene(n);
+    }
+
     public void LoadSceneByNumber(int num) {
         SceneManager.LoadScene(num);
     }

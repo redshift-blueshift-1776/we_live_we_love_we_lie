@@ -1,6 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class WalkAlongThePathUnknown : MonoBehaviour
 {
@@ -9,12 +13,17 @@ public class WalkAlongThePathUnknown : MonoBehaviour
 
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
+    [SerializeField] private GameObject mazeCanvas;
+    [SerializeField] private TMP_Text timerMaze;
     [SerializeField] private GameObject gameCanvas;
+    [SerializeField] private TMP_Text timerGame;
 
     [Header("Audio")]
     [SerializeField] public GameObject loadingAudio;
     [SerializeField] public GameObject gameAudio;
     [SerializeField] public GameObject alarmAudio;
+    [SerializeField] public GameObject wallSoundBreak;
+    [SerializeField] public GameObject wallSoundFail;
 
     [Header("Cameras")]
     [SerializeField] public GameObject cam1;
@@ -31,9 +40,12 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     {
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
+        mazeCanvas.SetActive(false);
         loadingAudio.SetActive(true);
         gameAudio.SetActive(false);
         alarmAudio.SetActive(false);
+        wallSoundBreak.SetActive(false);
+        wallSoundFail.SetActive(false);
         cam1.SetActive(true);
         cam2.SetActive(false);
         gameActive = false;
@@ -46,7 +58,16 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (gameActive) {
+            if (timer >= 120f) {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                PlayerPrefs.SetInt("PreviousLevel", 3);
+                SceneManager.LoadScene(5); // Change when we have the actual scene
+            }
+            timerGame.text = $"Time Remaining: {120f - Mathf.Floor(timer)}";
+            timer += Time.deltaTime;
+        }
     }
 
     public void soundAlarm() {
@@ -58,7 +79,17 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     public IEnumerator startGame() {
         mg.VisualizeMapGeneration();
         startCanvas.SetActive(false);
-        yield return new WaitForSeconds(10f);
+        mazeCanvas.SetActive(true);
+        float duration = 10f;
+        float elapsed = 0f;
+        while (elapsed < duration) {
+            float t = elapsed / duration;
+
+            timerMaze.text = $"Time to Start: {10f - Mathf.Floor(elapsed)}";
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         cam1.SetActive(true);
@@ -68,6 +99,7 @@ public class WalkAlongThePathUnknown : MonoBehaviour
             Wall w = g.GetComponent<Wall>();
             w.breakable = true;
         }
+        mazeCanvas.SetActive(false);
         gameCanvas.SetActive(true);
         loadingAudio.SetActive(false);
         gameAudio.SetActive(true);
@@ -79,5 +111,16 @@ public class WalkAlongThePathUnknown : MonoBehaviour
 
     public void startGameButton() {
         StartCoroutine(startGame());
+    }
+
+    public void wallBreak() {
+        wallSoundBreak.SetActive(false);
+        wallSoundBreak.SetActive(true);
+    }
+
+    public void wallFail() {
+        wallSoundFail.SetActive(false);
+        wallSoundFail.SetActive(true);
+        timer += 15;
     }
 }

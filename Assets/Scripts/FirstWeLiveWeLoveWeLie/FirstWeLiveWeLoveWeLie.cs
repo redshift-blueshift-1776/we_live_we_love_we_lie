@@ -45,6 +45,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] private TMP_Text blackLeft;
     [SerializeField] private TMP_Text playersLeft;
 
+    [SerializeField] private TMP_Text opponentText;
+
     [SerializeField] private GameObject cutsceneManager;
     private CutsceneManager cm;
 
@@ -165,7 +167,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         if (currentOffenseIndex == humanPlayerIndex)
         {
             Debug.Log("Your turn as OFFENSE! Steal or No Steal?");
-            ShowPlayerChoiceUI();
+            ShowPlayerChoiceUI(defenseCard);
         }
         else if (currentDefenseIndex == humanPlayerIndex)
         {
@@ -193,10 +195,25 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         }
     }
 
-    void ShowPlayerChoiceUI()
+    void ShowPlayerChoiceUI(Card defenseCard)
     {
         // UICanvas.SetActive(false);
         ChoiceCanvas.SetActive(true);
+        if (defenseCard.Color == CardColor.Red) {
+            bool aiLies = UnityEngine.Random.value < 0.2f; // placeholder strategy
+            if (aiLies) {
+                opponentText.text = "It's safe.";
+            } else {
+                opponentText.text = "It's not safe.";
+            }
+        } else {
+            bool aiLies = UnityEngine.Random.value < 0.2f; // placeholder strategy
+            if (aiLies) {
+                opponentText.text = "It's not safe.";
+            } else {
+                opponentText.text = "It's safe.";
+            }
+        }
     }
 
     public void OnStealButton()

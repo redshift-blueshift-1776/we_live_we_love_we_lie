@@ -42,9 +42,11 @@ public class Wall : MonoBehaviour
         if (breakable) {
             Debug.Log("Breakable");
             StartCoroutine(moveDown());
+            gm.wallBreak();
         } else {
             Debug.Log("Not Breakable");
             gm.soundAlarm();
+            gm.wallFail();
         }
     }
 }
