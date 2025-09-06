@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Player
 {
     public string Name { get; private set; }
-    public List<Card> CollectedCards { get; private set; } = new List<Card>();
+    private List<Card> cards = new List<Card>();
 
     public Player(string name)
     {
@@ -17,9 +18,28 @@ public class Player
 
     public void AddCard(Card c)
     {
-        if (c != null) {
-            CollectedCards.Add(c);
+        if (c != null)
+        {
+            cards.Add(c);
         }
+    }
+
+    public IEnumerable<Card> GetCards()
+    {
+        return cards;
+    }
+
+    public CardColor GetCardColor()
+    {
+        if (cards.Count == 0)
+        {
+            Debug.LogWarning($"{Name} has no cards!");
+            return CardColor.Black; // default/fallback
+        }
+
+        // Example: check if *any* card is red
+        // (you can adjust this logic depending on win condition)
+        return cards[0].Color;
     }
 }
 
@@ -286,16 +306,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             // Check end conditions
             if (redsRemaining == 0 || blacksRemaining == 0)
             {
-                Debug.Log("One color exhausted! Assigning remaining cards...");
-                while (deckManager.CardsRemaining > 0)
-                {
-                    Card leftover = deckManager.DrawCard();
-                    int targetIndex = (currentDefenseIndex + 1) % numPlayers;
-                    players[targetIndex].AddCard(leftover);
-                    Debug.Log($"{players[targetIndex].Name} gets leftover {leftover.Color}");
-                }
-                Debug.Log("Game Over.");
-                roundActive = false;
+                CheckEndConditions();
             }
             else
             {
@@ -343,11 +354,29 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             while (deckManager.CardsRemaining > 0)
             {
                 Card leftover = deckManager.DrawCard();
+                if (leftover == null)
+                {
+                    Debug.LogError("DrawCard returned null while CardsRemaining > 0!");
+                    break;
+                }
+
                 int targetIndex = (currentDefenseIndex + 1) % numPlayers;
                 players[targetIndex].AddCard(leftover);
                 Debug.Log($"{players[targetIndex].Name} gets leftover {leftover.Color}");
             }
             Debug.Log("Game Over.");
+            CardColor finalColor = players[humanPlayerIndex].GetCardColor();
+            Debug.Log($"Human’s last card color: {finalColor}");
+
+            if (finalColor == CardColor.Red)
+            {
+                PlayerPrefs.SetInt("PreviousLevel", 4);
+                SceneManager.LoadScene(5);
+            }
+            else
+            {
+                SceneManager.LoadScene(0);
+            }
         }
     }
 
