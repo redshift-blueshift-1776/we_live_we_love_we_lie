@@ -10,7 +10,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
 {
     [SerializeField] public GameObject gameManager;
     public ToFindWhatIveBecome gm;
-    private CharacterController controller;
+    // private CharacterController controller;
 
     private Vector3 playerVelocity = new(0,0,0);
     private bool groundedPlayer;
@@ -35,9 +35,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
     private float interactDistance = 5f;
 
-
-    private float maxSpeed;
-
     private float defaultFieldOfView;
     private float fieldOfViewMultiplier = 1.18f;
     private float fastFieldOfView;
@@ -48,36 +45,68 @@ public class Player_Movement_Level_2 : MonoBehaviour
     private readonly KeyCode pushKey = KeyCode.Mouse0;
     private readonly KeyCode pullKey = KeyCode.Mouse1;
 
+    [Header("Speed Stats")]
+    [SerializeField] private float acceleration = 10f; // Acceleration rate
+    [SerializeField] private float maxSpeed = 200f; // Maximum speed
+    [SerializeField] private float turnSpeed = 100f; // Steering sensitivity
+    [SerializeField] private float brakeForce = 20f; // Braking power
+    [SerializeField] private float friction = 0.98f; // Simulated drag
+    [SerializeField] private float speedMultiplier = 2f; // Speed boost with Shift
+
+    [Header("Boost")]
+    [SerializeField] public float maxBoostFuel = 10f; // Max fuel for boosting
+    [SerializeField] private float boostConsumptionRate = 1f; // Fuel usage per second
+    [SerializeField] private float boostRefillRate = 5f; // Fuel refill rate at hospital
+    public float currentBoostFuel;
+
+    public float currentSpeed = 0f;
+    private float currentTurnSpeed = 0f;
+    // private Rigidbody rb;
+
+    private CharacterController controller;
+    private BoxCollider boxCollider;
+    public LayerMask obstacleMask; // Set this in the inspector to only include walls
+
+    private Vector3 velocity;
+    public float gravity = 32f;
+    public float groundCheckDistance = 2f;
+    public LayerMask groundMask;
+    private bool isGrounded;
+
     [SerializeField] private GameObject crosshair;
     [SerializeField] private GameObject bigCrosshair;
 
-    [SerializeField] WheelCollider frontRightWheel;
-    [SerializeField] WheelCollider frontLeftWheel;
-    [SerializeField] WheelCollider backRightWheel;
-    [SerializeField] WheelCollider backLeftWheel;
+    [Header("Rotation Settings")]
+    public float rotationSpeed = 360f;   // degrees per second
 
-    public float acceleration = 500f;
-    public float brakingForce = 300f;
-    public float maxTurnAngle = 15f;
+    [Header("Smoothing")]
+    public float normalLerpSpeed = 10f;  // how quickly ground normal smooths
 
-    private float currentAcceleration = 0f;
-    private float currentBrakingForce = 0f;
-    private float currentTurnAngle = 0f;
+    private Vector3 smoothedNormal = Vector3.up;
 
 
     private void Awake()
     {
         gm = gameManager.GetComponent<ToFindWhatIveBecome>();
         jumpVelocity = Mathf.Sqrt(-2 * gravityValue * jumpHeight);
-        controller = gameObject.GetComponent<CharacterController>();
+        // controller = gameObject.GetComponent<CharacterController>();
         // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
-        controller.skinWidth = 0.1f * controller.radius;
-        maxSpeed = Player_Movement.basePlayerSpeed * Player_Movement.speedUp;
+        // controller.skinWidth = 0.1f * controller.radius;
+        // maxSpeed = Player_Movement.basePlayerSpeed * Player_Movement.speedUp;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
         crosshair.SetActive(true);
         bigCrosshair.SetActive(false);
         defaultFieldOfView = Camera.main.fieldOfView;
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
+        //rb = GetComponent<Rigidbody>();
+        currentBoostFuel = maxBoostFuel;
+        //rb.freezeRotation = true; // Prevent the ambulance from tipping over
+        controller = GetComponent<CharacterController>();
+        boxCollider = GetComponent<BoxCollider>();
+        controller.height = 6.5f;
+        controller.center = new Vector3(0, 2f, 0);
+        controller.slopeLimit = 50f;
+
     }
 
     void Update()
@@ -87,68 +116,152 @@ public class Player_Movement_Level_2 : MonoBehaviour
             jumpHelper();
             // horizontalMovementHelper();
             // move player
-            controller.Move(playerVelocity * Time.deltaTime);
+            // controller.Move(playerVelocity * Time.deltaTime);
             interactRaycast();
             // rotationHelper();
         }
+        if (gm.gameActive) {
+            HandleMovement();
+            RefillFuel();
+            AlignWithGround();
+            // Gravity Handling
+            isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, ~0);
+            if (transform.position.y <= 1) {
+                isGrounded = true;
+            }
+
+            if (isGrounded && velocity.y < 0)
+            {
+                velocity.y = 0f; // Small offset to keep grounded
+            }
+            else
+            {
+                velocity.y -= 5 * gravity * Time.deltaTime;
+            }
+
+            // Move the ambulance
+            //Vector3 move = transform.forward * currentSpeed * Time.deltaTime;
+            Vector3 move = new Vector3(0, 0, 0);
+            move.y = velocity.y * Time.deltaTime; // Apply gravity
+
+            controller.Move(move);
+        }
     }
 
-    private void FixedUpdate()
+
+    void AlignWithGround()
     {
-        int vert = 0;
-        int horiz = 0;
-        if (Input.GetKey(KeyCode.W)) {
-            vert = 1;
+        // Raycast straight down from the center
+        RaycastHit[] hits = Physics.RaycastAll(transform.position + Vector3.up, Vector3.down, groundCheckDistance * 20f);
+        bool seeARamp = false;
+        foreach (RaycastHit hit in hits)
+        { 
+            Debug.Log(hit.collider.gameObject.name);
+            if (!hit.collider.transform.IsChildOf(transform)) // ignore self
+            {
+                Debug.Log("Hit normal: " + hit.normal);
+                // Debug.DrawRay(hit.point, hit.normal * 30f, Color.green);
+                if (hit.collider.gameObject.name.Contains("Ramp")) {
+                    seeARamp = true;
+                    Vector3 groundNormal = hit.normal;
+
+                    // Use cross-product to build a stable forward
+                    // This ensures we get tilt along ramps, not just flat up
+                    Vector3 forward = Vector3.Cross(transform.right, groundNormal).normalized;
+
+                    // Build the target rotation
+                    Quaternion targetRotation = Quaternion.LookRotation(forward, groundNormal);
+
+                    // Smooth rotation into place
+                    transform.rotation = Quaternion.RotateTowards(
+                        transform.rotation,
+                        targetRotation,
+                        rotationSpeed * Time.deltaTime
+                    );
+                }
+            }
         }
-        if (Input.GetKey(KeyCode.S)) {
-            vert = -1;
+        if (!seeARamp) {
+            // Reset rotation when not on a ramp
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, transform.eulerAngles.y, 0), Time.deltaTime);
         }
-        if (Input.GetKey(KeyCode.D)) {
-            horiz = 1;
-        }
-        if (Input.GetKey(KeyCode.A)) {
-            horiz = -1;
-        }
-        //currentAcceleration = -acceleration * Input.GetAxis("Vertical");
-        currentAcceleration = -acceleration * vert;
-        if (Input.GetKey(KeyCode.Space))
+    }
+
+    void HandleMovement()
+    {
+        float moveInput = 0f;
+        float turnInput = 0f;
+
+        // Forward and backward movement
+        if (Input.GetKey(KeyCode.W))
+            moveInput = 1f;
+        if (Input.GetKey(KeyCode.S))
+            moveInput = -1f;
+
+        // Steering logic
+        if (Input.GetKey(KeyCode.A))
+            turnInput = -1f * moveInput;
+        if (Input.GetKey(KeyCode.D))
+            turnInput = 1f * moveInput;
+
+        // Boost logic
+        bool isBoosting = Input.GetKey(KeyCode.LeftShift) && currentBoostFuel > 0;
+        float speedFactor = isBoosting ? speedMultiplier : 1f;
+
+        if (isBoosting)
         {
-            currentBrakingForce = brakingForce;
+            currentBoostFuel -= boostConsumptionRate * Time.deltaTime;
+            currentBoostFuel = Mathf.Max(currentBoostFuel, 0);
         }
+        // Accelerate and decelerate
+        currentSpeed += moveInput * acceleration * Time.deltaTime;
+        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
+        currentSpeed *= speedFactor;
 
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            currentAcceleration *= 2f;
-        }
-        else currentBrakingForce = 0;
+            // Apply friction
+        currentSpeed *= friction;
 
-        frontRightWheel.motorTorque = currentAcceleration;
-        frontLeftWheel.motorTorque = currentAcceleration;
+        // Braking
+        if (Input.GetKey(KeyCode.S) && currentSpeed > 0)
+            currentSpeed -= brakeForce * Time.deltaTime;
 
-        frontRightWheel.brakeTorque = currentBrakingForce;
-        frontLeftWheel.brakeTorque = currentBrakingForce;
-        backLeftWheel.brakeTorque = currentBrakingForce;
-        backRightWheel.brakeTorque = currentBrakingForce;
+        if (Mathf.Abs(currentSpeed) < 0.05f) currentSpeed = 0f;
 
+        // Steering based on speed (harder to turn at high speeds)
+        if (currentSpeed != 0)
+            currentTurnSpeed = turnInput * turnSpeed * (Mathf.Clamp01(10f / Mathf.Sqrt(Mathf.Abs(currentSpeed))));
 
-        //currentTurnAngle = maxTurnAngle * Input.GetAxis("Horizontal");
-        currentTurnAngle = maxTurnAngle * horiz;
-        frontLeftWheel.steerAngle = currentTurnAngle;
-        frontRightWheel.steerAngle = currentTurnAngle;
+        // Check if moving forward would collide with a wall
+        Vector3 moveDirection = transform.forward * currentSpeed;
+        Vector3 movement = moveDirection * Time.deltaTime;
+
+        controller.Move(movement);
+
+        // Apply rotation
+        transform.Rotate(0, currentTurnSpeed * Mathf.Sqrt(speedFactor) * Time.deltaTime, 0);
+    }
+
+    private void RefillFuel()
+    {
+        // if (Vector3.Distance(transform.position, destination.transform.position) <= dropoffRadius)
+        // {
+        //     currentBoostFuel += boostRefillRate * Time.deltaTime;
+        //     currentBoostFuel = Mathf.Min(currentBoostFuel, maxBoostFuel);
+        // }
     }
 
 
     void jumpHelper() {
-        groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0) {
-            playerVelocity.y = 0f;
-        }
+        // // groundedPlayer = controller.isGrounded;
+        // if (groundedPlayer && playerVelocity.y < 0) {
+        //     playerVelocity.y = 0f;
+        // }
 
-        // Changes the height position of the player..
-        if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer) {
-            playerVelocity.y += jumpVelocity;
-        }
-        playerVelocity.y += gravityValue * Time.deltaTime;
+        // // Changes the height position of the player..
+        // if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer) {
+        //     playerVelocity.y += jumpVelocity;
+        // }
+        // playerVelocity.y += gravityValue * Time.deltaTime;
     }
 
 
@@ -237,10 +350,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
             crosshair.SetActive(true);
             bigCrosshair.SetActive(false);
         }
-    }
-
-    void OnControllerColliderHit(ControllerColliderHit hit) {
-        
     }
 
     public void SetMouseSensitivity(float sensitivity) {
