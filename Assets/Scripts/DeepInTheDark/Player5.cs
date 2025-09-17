@@ -11,6 +11,9 @@ public class Player5 : MonoBehaviour
     private float velocityY;
     private float jumpHeight;
 
+    //for the ground, does not count walls
+    private ContactPoint lastContactPoint;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -77,6 +80,12 @@ public class Player5 : MonoBehaviour
         }
 
         player.transform.position += velocity * Time.deltaTime;
+
+        if (!canJump)
+        {
+            player.transform.position += new Vector3(0, velocityY, 0) * Time.deltaTime;
+            velocityY -= g * Time.deltaTime;
+        }
     }
 
     private void handleJump()
@@ -86,21 +95,33 @@ public class Player5 : MonoBehaviour
             velocityY = Mathf.Sqrt(2 * g * jumpHeight);
             canJump = false;
         }
+    }
 
-        if (!canJump)
+    private void OnCollisionEnter(Collision collision)
+    {
+        //Debug.Log(collision.contacts);
+        foreach (ContactPoint contact in collision.contacts)
         {
-            player.transform.position += new Vector3(0, velocityY, 0) * Time.deltaTime;
-            velocityY -= g * Time.deltaTime;
+            //Debug.Log(contact.normal);
+            if (contact.normal.y == 1f)
+            {
+                canJump = true;
+                velocityY = 0;
+            }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
-        Debug.Log("Touched ground");
-        if (other.gameObject.tag.Equals("Floor"))
+        Debug.Log("EXIT COLLISION");
+        Debug.Log(collision.contacts);
+        foreach (ContactPoint contact in collision.contacts)
         {
-            canJump = true;
-            velocityY = 0;
+            Debug.Log(contact);
+            if (contact.normal.y == 1f)
+            {
+                canJump = false;
+            }
         }
     }
 }
