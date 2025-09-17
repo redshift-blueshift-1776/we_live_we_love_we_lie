@@ -1,34 +1,34 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player5 : MonoBehaviour
 {
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject camera;
     private float sensitivity;
-
-    private bool canJump;
 
     private float g;
     private float velocityY;
     private float jumpHeight;
 
     //for the ground, does not count walls
-    private ContactPoint lastContactPoint;
+    private HashSet<Collider> groundContactPoints;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Debug.Log("START GAME");
-        player = gameObject;
         Cursor.lockState = CursorLockMode.Locked;
         // Hide the hardware cursor
         Cursor.visible = false;
 
         sensitivity = 1f;
-        canJump = false;
 
         g = 9.8f;
         velocityY = 0;
         jumpHeight = 2f;
+
+        groundContactPoints = new HashSet<Collider>();
     }
 
     // Update is called once per frame
@@ -37,11 +37,13 @@ public class Player5 : MonoBehaviour
         movePlayer();
         rotatePlayer();
         handleJump();
+
     }
 
     private void rotatePlayer()
     {
         player.transform.Rotate(new Vector3(0, 2.5f * Input.GetAxis("Mouse X") * sensitivity, 0));
+        camera.transform.Rotate(new Vector3(-2.5f * Input.GetAxis("Mouse Y") * sensitivity, 0, 0));
     }
 
 
@@ -81,19 +83,22 @@ public class Player5 : MonoBehaviour
 
         player.transform.position += velocity * Time.deltaTime;
 
-        if (!canJump)
+        if (groundContactPoints.Count == 0)
         {
             player.transform.position += new Vector3(0, velocityY, 0) * Time.deltaTime;
             velocityY -= g * Time.deltaTime;
+        } else
+        {
+            velocityY = 0;
         }
     }
 
     private void handleJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && canJump)
+        if (Input.GetKeyDown(KeyCode.Space) && groundContactPoints.Count > 0)
         {
+            groundContactPoints.Clear();
             velocityY = Mathf.Sqrt(2 * g * jumpHeight);
-            canJump = false;
         }
     }
 
@@ -105,23 +110,14 @@ public class Player5 : MonoBehaviour
             //Debug.Log(contact.normal);
             if (contact.normal.y == 1f)
             {
-                canJump = true;
-                velocityY = 0;
+                groundContactPoints.Add(collision.collider);
             }
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        Debug.Log("EXIT COLLISION");
-        Debug.Log(collision.contacts);
-        foreach (ContactPoint contact in collision.contacts)
-        {
-            Debug.Log(contact);
-            if (contact.normal.y == 1f)
-            {
-                canJump = false;
-            }
-        }
+        //Debug.Log(collision.contacts);
+        groundContactPoints.Remove(collision.collider);
     }
 }
