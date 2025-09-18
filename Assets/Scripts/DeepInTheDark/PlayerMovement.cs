@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -23,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
     private const float groundedFrictionCoefficient = 0.99f;
     private const float airborneFrictionCoefficient = 0.9999f;
 
+    private const float minSpeed = 0.01f;
+
     /*
      * there is already a terminal velocity without maxSpeed just from
      * acceleration and friction, but reaching terminal velocity takes
@@ -38,6 +42,9 @@ public class PlayerMovement : MonoBehaviour
     private const float maxSlopeAngle = 60f;
 
     private const float rotationSpeed = 5f;
+
+    //min distance between body's upward vector and average normal vector before rotation occurs
+    private const float minRotationThreshold = 0.01f;
 
     //stores current ground contact colliders and their normals
     private Dictionary<Collider, List<Vector3>> groundContactPoints;
@@ -67,11 +74,16 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         movePlayer();
-        rotatePlayer();
+        rotateCamera();
         handleJump();
     }
 
-    private void rotatePlayer()
+    private void FixedUpdate()
+    {
+        rotatePlayer();
+    }
+
+    private void rotateCamera()
     {
         float mouseX = Input.GetAxis("Mouse X") * sensitivityX;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivityY;
@@ -82,17 +94,30 @@ public class PlayerMovement : MonoBehaviour
 
         player.transform.rotation = Quaternion.Euler(0, yaw, 0);
         playerCamera.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
+    }
 
-
+    private void rotatePlayer()
+    {
         Vector3 averageNormal = AverageVector(groundContactPoints.Values.ToList().SelectMany(l => l).ToList());
+        Debug.Log(averageNormal);
         if (groundContactPoints.Count > 0)
         {
+            //if (Vector3.Distance(body.transform.up, averageNormal) < minRotationThreshold)
+            //{
+            //    body.transform.up = averageNormal;
+            //    return;
+            //}
             body.transform.up = Vector3.Slerp(body.transform.up, averageNormal, rotationSpeed * Time.deltaTime);
-        }
-        else
-        {
-            body.transform.up = Vector3.Slerp(body.transform.up, Vector3.up, rotationSpeed * Time.deltaTime);
-        }
+        } 
+        //else
+        //{
+        //    //if (Vector3.Distance(body.transform.up, Vector3.up) < minRotationThreshold)
+        //    //{
+        //    //    body.transform.up = Vector3.up;
+        //    //    return;
+        //    //}
+        //    body.transform.up = Vector3.Slerp(body.transform.up, Vector3.up, rotationSpeed * Time.deltaTime);
+        //}
 
     }
 
@@ -167,9 +192,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Debug.Log("acceleration: " + inputAcceleration);
-        //Debug.Log("velocity: " + velocity);
-
-        player.transform.position += velocity * Time.deltaTime;
+        //Debug.Log("velocity: " + Vector3.ProjectOnPlane(velocity, body.transform.up));
+       
+        player.transform.position += (groundContactPoints.Count > 0 ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity) * Time.deltaTime;
 
 
         //apply friction now
@@ -187,6 +212,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
         velocity.Scale(frictionVector);
+        if (Mathf.Abs(velocity.x) < minSpeed)
+        {
+            velocity.x = 0;
+        }
+
+        if (Mathf.Abs(velocity.z) < minSpeed)
+        {
+            velocity.z = 0;
+        }
     }
 
     private void handleJump()
