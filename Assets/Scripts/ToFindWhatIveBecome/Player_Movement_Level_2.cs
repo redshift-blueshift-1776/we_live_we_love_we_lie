@@ -118,7 +118,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
             // move player
             // controller.Move(playerVelocity * Time.deltaTime);
             interactRaycast();
-            // rotationHelper();
+            rotationHelper();
         }
         if (gm.gameActive) {
             HandleMovement();
@@ -199,10 +199,10 @@ public class Player_Movement_Level_2 : MonoBehaviour
             moveInput = -1f;
 
         // Steering logic
-        if (Input.GetKey(KeyCode.A))
-            turnInput = -1f * moveInput;
-        if (Input.GetKey(KeyCode.D))
-            turnInput = 1f * moveInput;
+        // if (Input.GetKey(KeyCode.A))
+        //     turnInput = -1f * moveInput;
+        // if (Input.GetKey(KeyCode.D))
+        //     turnInput = 1f * moveInput;
 
         // Boost logic
         bool isBoosting = Input.GetKey(KeyCode.LeftShift) && currentBoostFuel > 0;
@@ -238,7 +238,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
         controller.Move(movement);
 
         // Apply rotation
-        transform.Rotate(0, currentTurnSpeed * Mathf.Sqrt(speedFactor) * Time.deltaTime, 0);
+        // transform.Rotate(0, currentTurnSpeed * Mathf.Sqrt(speedFactor) * Time.deltaTime, 0);
     }
 
     private void RefillFuel()
