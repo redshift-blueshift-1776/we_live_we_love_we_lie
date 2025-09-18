@@ -126,6 +126,9 @@ public class Player_Movement_Level_2 : MonoBehaviour
             AlignWithGround();
             // Gravity Handling
             isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, ~0);
+            if (controller.isGrounded) {
+                isGrounded = true;
+            }
             if (transform.position.y <= 1) {
                 isGrounded = true;
             }
@@ -210,7 +213,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
         if (isBoosting)
         {
-            currentBoostFuel -= boostConsumptionRate * Time.deltaTime;
+            // currentBoostFuel -= boostConsumptionRate * Time.deltaTime;
             currentBoostFuel = Mathf.Max(currentBoostFuel, 0);
         }
         // Accelerate and decelerate
