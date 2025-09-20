@@ -15,6 +15,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject gameCanvas;
+    [SerializeField] private GameObject winCanvas;
     [SerializeField] private TMP_Text timerGame;
     [SerializeField] private RawImage[] images;
     [SerializeField] private Texture[] fills;
@@ -38,6 +39,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
     {
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
+        winCanvas.SetActive(false);
         loadingAudio.SetActive(true);
         gameAudio.SetActive(false);
         cam2.SetActive(true);
@@ -70,6 +72,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
                 SceneManager.LoadScene(5); // Change when we have the actual scene
             }
             UpdateUI();
+            CheckEndConditions();
             timer += Time.deltaTime;
         }
     }
@@ -88,6 +91,25 @@ public class ToFindWhatIveBecome : MonoBehaviour
         foreach (RawImage ri in images) {
             ri.texture = blank;
         }
+    }
+
+    public void CheckEndConditions() {
+        bool win = true;
+        foreach (bool b in collected) {
+            win = win && b;
+        }
+        if (win) {
+            StartCoroutine(GameWin());
+        }
+    }
+
+    public IEnumerator GameWin() {
+        winCanvas.SetActive(true);
+        gameActive = false;
+        yield return new WaitForSeconds(3f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene(3);
     }
 
     public void UpdateUI() {
