@@ -48,7 +48,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
     [Header("Speed Stats")]
     [SerializeField] private float acceleration = 10f; // Acceleration rate
     [SerializeField] private float maxSpeed = 200f; // Maximum speed
-    [SerializeField] private float turnSpeed = 100f; // Steering sensitivity
     [SerializeField] private float brakeForce = 20f; // Braking power
     [SerializeField] private float friction = 0.98f; // Simulated drag
     [SerializeField] private float speedMultiplier = 2f; // Speed boost with Shift
@@ -60,7 +59,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
     public float currentBoostFuel;
 
     public float currentSpeed = 0f;
-    private float currentTurnSpeed = 0f;
     // private Rigidbody rb;
 
     private CharacterController controller;
@@ -71,6 +69,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
     public float gravity = 32f;
     public float groundCheckDistance = 1f;
     public LayerMask groundMask;
+    public Vector3 lastPosition;
     [SerializeField] private bool isGrounded;
 
     [SerializeField] private GameObject crosshair;
@@ -83,6 +82,9 @@ public class Player_Movement_Level_2 : MonoBehaviour
     public float normalLerpSpeed = 10f;  // how quickly ground normal smooths
 
     private Vector3 smoothedNormal = Vector3.up;
+
+    private Vector3 checkStartPosition;
+    private float checkStartTime;
 
 
     private void Awake()
@@ -106,6 +108,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
         controller.height = 6.5f;
         controller.center = new Vector3(0, 2f, 0);
         controller.slopeLimit = 50f;
+        lastPosition = new Vector3(transform.position.x, 0, transform.position.z);
 
     }
 
@@ -195,19 +198,12 @@ public class Player_Movement_Level_2 : MonoBehaviour
     void HandleMovement()
     {
         float moveInput = 0f;
-        float turnInput = 0f;
 
         // Forward and backward movement
         if (Input.GetKey(KeyCode.W))
             moveInput = 1f;
         if (Input.GetKey(KeyCode.S))
             moveInput = -1f;
-
-        // Steering logic
-        // if (Input.GetKey(KeyCode.A))
-        //     turnInput = -1f * moveInput;
-        // if (Input.GetKey(KeyCode.D))
-        //     turnInput = 1f * moveInput;
 
         // Boost logic
         bool isBoosting = Input.GetKey(KeyCode.LeftShift) && currentBoostFuel > 0;
@@ -222,12 +218,11 @@ public class Player_Movement_Level_2 : MonoBehaviour
         currentSpeed *= speedFactor;
         currentSpeed += moveInput * acceleration * Time.deltaTime;
         if (isGrounded) {
-            // Accelerate and decelerate
-            currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
             // Apply friction
             currentSpeed *= friction;
         }
-        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed * speedFactor, maxSpeed * speedFactor);
+        // Accelerate and decelerate
+        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
 
         // Braking
         if (Input.GetKey(KeyCode.S) && currentSpeed > 0)
@@ -235,18 +230,47 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
         if (Mathf.Abs(currentSpeed) < 0.05f) currentSpeed = 0f;
 
-        // Steering based on speed (harder to turn at high speeds)
-        if (currentSpeed != 0)
-            currentTurnSpeed = turnInput * turnSpeed * (Mathf.Clamp01(10f / Mathf.Sqrt(Mathf.Abs(currentSpeed))));
+        // Wall detection with Raycast
+        Vector3 moveDirection = transform.forward.normalized;
+        float rayLength = 1.0f + Mathf.Abs(currentSpeed * Time.deltaTime); // look ahead
+        RaycastHit hit;
 
-        // Check if moving forward would collide with a wall
-        Vector3 moveDirection = transform.forward * currentSpeed;
-        Vector3 movement = moveDirection * Time.deltaTime;
+        if (Physics.Raycast(transform.position, moveDirection, out hit, rayLength))
+        {
+            if (!hit.collider.isTrigger && !hit.collider.gameObject.name.Contains("Ramp")) // ignore triggers
+            {
+                Debug.Log("Wall detected: " + hit.collider.name);
+
+                // Stop or slow down when close
+                currentSpeed = Mathf.Lerp(currentSpeed, 0f, 0.5f);
+            }
+        }
+
+        // Apply movement
+        Vector3 movement = transform.forward * currentSpeed * Time.deltaTime;
 
         controller.Move(movement);
 
-        // Apply rotation
-        // transform.Rotate(0, currentTurnSpeed * Mathf.Sqrt(speedFactor) * Time.deltaTime, 0);
+        // Velocity check
+        float elapsed = Time.time - checkStartTime;
+        if (elapsed >= 0.05f) // check every 0.1 seconds
+        {
+            float actualDistance = Vector3.Distance(checkStartPosition, transform.position);
+            float expectedDistance = Mathf.Abs(currentSpeed) * elapsed;
+
+            // If scooter barely moved compared to expected distance, wall hit
+            if (actualDistance < expectedDistance * 0.25f) // tolerance factor
+            {
+                Debug.Log("Likely hit a wall");
+                currentSpeed = 0f;
+            }
+
+            // Reset for next interval
+            checkStartPosition = transform.position;
+            checkStartTime = Time.time;
+        }
+
+        lastPosition = new Vector3(transform.position.x, 0, transform.position.z);
     }
 
     private void RefillFuel()

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 
-public enum CutsceneType { HumanSteal, HumanPass, AISteal, AIPass, HumanDefend }
+public enum CutsceneType { HumanSteal, HumanPass, AISteal, AIPass, HumanDefendSteal, HumanDefendPass }
 
 
 public class CutsceneManager : MonoBehaviour
