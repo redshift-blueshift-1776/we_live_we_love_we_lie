@@ -18,22 +18,13 @@ public class PlayerMovement : MonoBehaviour
 
     private const float jumpHeight = 1.5f;
 
-    
-    private const float walkingAcceleration = 20f;
-    private const float runningAcceleration = 30f;
 
-    private const float groundedFrictionCoefficient = 0.99f;
-    private const float airborneFrictionCoefficient = 0.9999f;
+    private const float frictionCoefficient = 0.99f;
 
     private const float minSpeed = 0.01f;
 
-    /*
-     * there is already a terminal velocity without maxSpeed just from
-     * acceleration and friction, but reaching terminal velocity takes
-     * too long, so capping it at a lower speed makes it feel more fluid
-     * */
-    private const float maxSpeed = 30f;
-
+    private float walkingVelocity = 5f;
+    private float runningVelocity = 8f;
 
     private float yaw;
     private float pitch;
@@ -62,7 +53,6 @@ public class PlayerMovement : MonoBehaviour
 
         acceleration = new Vector3(0, -g, 0);
         velocity = new Vector3();
-
 
         yaw = 0f;
         pitch = 0f;
@@ -99,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
     private void rotatePlayer()
     {
         Vector3 averageNormal = AverageVector(groundContactPoints.Values.ToList().SelectMany(l => l).ToList());
-        Debug.Log(averageNormal);
+        //Debug.Log(averageNormal);
         if (groundContactPoints.Count > 0)
         {
             //if (Vector3.Distance(body.transform.up, averageNormal) < minRotationThreshold)
@@ -109,58 +99,54 @@ public class PlayerMovement : MonoBehaviour
             //}
             body.transform.up = Vector3.Slerp(body.transform.up, averageNormal, rotationSpeed * Time.deltaTime);
         } 
-        //else
-        //{
-        //    //if (Vector3.Distance(body.transform.up, Vector3.up) < minRotationThreshold)
-        //    //{
-        //    //    body.transform.up = Vector3.up;
-        //    //    return;
-        //    //}
-        //    body.transform.up = Vector3.Slerp(body.transform.up, Vector3.up, rotationSpeed * Time.deltaTime);
-        //}
-
     }
 
 
     private void movePlayer()
     {
         Vector3 forward = player.transform.forward;
-        
-        Vector3 inputAcceleration = Vector3.zero;
-
-        //only check for WASD input if grounded
-        if (groundContactPoints.Count > 0)
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A)
+            || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
+            Vector3 inputVelocity = Vector3.zero;
+
+            //only check for WASD input if grounded
             if (Input.GetKey(KeyCode.W))
             {
-                inputAcceleration += forward;
+                inputVelocity += forward;
             }
 
             if (Input.GetKey(KeyCode.A))
             {
-                inputAcceleration += Quaternion.Euler(0, -90, 0) * forward;
+                inputVelocity += Quaternion.Euler(0, -90, 0) * forward;
             }
 
             if (Input.GetKey(KeyCode.S))
             {
-                inputAcceleration -= forward;
+                inputVelocity -= forward;
             }
 
             if (Input.GetKey(KeyCode.D))
             {
-                inputAcceleration += Quaternion.Euler(0, 90, 0) * forward;
+                inputVelocity += Quaternion.Euler(0, 90, 0) * forward;
             }
-        }
 
-        inputAcceleration.Normalize();
+            inputVelocity.Normalize();
 
-        //if the player is running
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            inputAcceleration *= runningAcceleration;
-        } else
-        {
-            inputAcceleration *= walkingAcceleration;
+            //if the player is running
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                Debug.Log("running!");
+                inputVelocity *= runningVelocity;
+            }
+            else
+            {
+                Debug.Log("not running!");
+                inputVelocity *= walkingVelocity;
+            }
+
+            velocity.x = inputVelocity.x;
+            velocity.z = inputVelocity.z;
         }
 
         //update velocities
@@ -168,31 +154,14 @@ public class PlayerMovement : MonoBehaviour
         {
             //airborne, apply friction after
             velocity.y += acceleration.y * Time.deltaTime;
-
-            inputAcceleration.x = 0;
-            inputAcceleration.z = 0;
         }
         else
         {
             //grounded, apply friction after
-            velocity.x += inputAcceleration.x * Time.deltaTime;
             velocity.y = 0;
-            velocity.z += inputAcceleration.z * Time.deltaTime;
-
         }
-
-        // Clamp horizontal velocity
-        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
-
-        if (horizontalVelocity.magnitude > maxSpeed)
-        {
-            horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
-            velocity.x = horizontalVelocity.x;
-            velocity.z = horizontalVelocity.z;
-        }
-
-        //Debug.Log("acceleration: " + inputAcceleration);
-        //Debug.Log("velocity: " + Vector3.ProjectOnPlane(velocity, body.transform.up));
+        //Debug.Log(inputAcceleration * Time.deltaTime);
+        
        
         player.transform.position += (groundContactPoints.Count > 0 ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity) * Time.deltaTime;
 
@@ -201,15 +170,8 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 frictionVector = new Vector3(0, 1f, 0);
 
-        if (groundContactPoints.Count == 0)
-        {
-            frictionVector.x = airborneFrictionCoefficient;
-            frictionVector.z = airborneFrictionCoefficient;
-        } else
-        {
-            frictionVector.x = groundedFrictionCoefficient;
-            frictionVector.z = groundedFrictionCoefficient;
-        }
+        frictionVector.x = frictionCoefficient;
+        frictionVector.z = frictionCoefficient;
 
         velocity.Scale(frictionVector);
         if (Mathf.Abs(velocity.x) < minSpeed)
@@ -225,16 +187,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void handleJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && groundContactPoints.Count > 0)
+        if (Input.GetKey(KeyCode.Space) && groundContactPoints.Count > 0)
         {
             groundContactPoints.Clear();
             velocity.y = Mathf.Sqrt(2 * g * jumpHeight);
         }
     }
 
+    public void haltMovement()
+    {
+        velocity = Vector3.zero;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("entered " + collision.gameObject.name);
+        //Debug.Log("entered " + collision.gameObject.name);
         //Debug.Log(collision.contacts);
         foreach (ContactPoint contact in collision.contacts)
         {
@@ -252,7 +219,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        Debug.Log("left " + collision.gameObject.name);
+        //Debug.Log("left " + collision.gameObject.name);
         //Debug.Log(collision.contacts);
         groundContactPoints.Remove(collision.collider);
     }
