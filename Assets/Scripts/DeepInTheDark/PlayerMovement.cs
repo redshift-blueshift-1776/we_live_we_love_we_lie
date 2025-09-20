@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private const float runningAcceleration = 30f;
 
     private const float groundedFrictionCoefficient = 0.99f;
-    private const float airborneFrictionCoefficient = 0.9999f;
+    private const float airborneFrictionCoefficient = 0.991f;
 
     private const float minSpeed = 0.01f;
 
@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
     private void rotatePlayer()
     {
         Vector3 averageNormal = AverageVector(groundContactPoints.Values.ToList().SelectMany(l => l).ToList());
-        Debug.Log(averageNormal);
+        //Debug.Log(averageNormal);
         if (groundContactPoints.Count > 0)
         {
             //if (Vector3.Distance(body.transform.up, averageNormal) < minRotationThreshold)
@@ -109,16 +109,6 @@ public class PlayerMovement : MonoBehaviour
             //}
             body.transform.up = Vector3.Slerp(body.transform.up, averageNormal, rotationSpeed * Time.deltaTime);
         } 
-        //else
-        //{
-        //    //if (Vector3.Distance(body.transform.up, Vector3.up) < minRotationThreshold)
-        //    //{
-        //    //    body.transform.up = Vector3.up;
-        //    //    return;
-        //    //}
-        //    body.transform.up = Vector3.Slerp(body.transform.up, Vector3.up, rotationSpeed * Time.deltaTime);
-        //}
-
     }
 
 
@@ -129,27 +119,24 @@ public class PlayerMovement : MonoBehaviour
         Vector3 inputAcceleration = Vector3.zero;
 
         //only check for WASD input if grounded
-        if (groundContactPoints.Count > 0)
+        if (Input.GetKey(KeyCode.W))
         {
-            if (Input.GetKey(KeyCode.W))
-            {
-                inputAcceleration += forward;
-            }
+            inputAcceleration += forward;
+        }
 
-            if (Input.GetKey(KeyCode.A))
-            {
-                inputAcceleration += Quaternion.Euler(0, -90, 0) * forward;
-            }
+        if (Input.GetKey(KeyCode.A))
+        {
+            inputAcceleration += Quaternion.Euler(0, -90, 0) * forward;
+        }
 
-            if (Input.GetKey(KeyCode.S))
-            {
-                inputAcceleration -= forward;
-            }
+        if (Input.GetKey(KeyCode.S))
+        {
+            inputAcceleration -= forward;
+        }
 
-            if (Input.GetKey(KeyCode.D))
-            {
-                inputAcceleration += Quaternion.Euler(0, 90, 0) * forward;
-            }
+        if (Input.GetKey(KeyCode.D))
+        {
+            inputAcceleration += Quaternion.Euler(0, 90, 0) * forward;
         }
 
         inputAcceleration.Normalize();
@@ -168,18 +155,13 @@ public class PlayerMovement : MonoBehaviour
         {
             //airborne, apply friction after
             velocity.y += acceleration.y * Time.deltaTime;
-
-            inputAcceleration.x = 0;
-            inputAcceleration.z = 0;
         }
         else
         {
             //grounded, apply friction after
-            velocity.x += inputAcceleration.x * Time.deltaTime;
             velocity.y = 0;
-            velocity.z += inputAcceleration.z * Time.deltaTime;
-
         }
+        velocity += inputAcceleration * Time.deltaTime;
 
         // Clamp horizontal velocity
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
@@ -190,9 +172,6 @@ public class PlayerMovement : MonoBehaviour
             velocity.x = horizontalVelocity.x;
             velocity.z = horizontalVelocity.z;
         }
-
-        //Debug.Log("acceleration: " + inputAcceleration);
-        //Debug.Log("velocity: " + Vector3.ProjectOnPlane(velocity, body.transform.up));
        
         player.transform.position += (groundContactPoints.Count > 0 ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity) * Time.deltaTime;
 
@@ -225,7 +204,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void handleJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && groundContactPoints.Count > 0)
+        if (Input.GetKey(KeyCode.Space) && groundContactPoints.Count > 0)
         {
             groundContactPoints.Clear();
             velocity.y = Mathf.Sqrt(2 * g * jumpHeight);
@@ -234,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("entered " + collision.gameObject.name);
+        //Debug.Log("entered " + collision.gameObject.name);
         //Debug.Log(collision.contacts);
         foreach (ContactPoint contact in collision.contacts)
         {
@@ -252,7 +231,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        Debug.Log("left " + collision.gameObject.name);
+        //Debug.Log("left " + collision.gameObject.name);
         //Debug.Log(collision.contacts);
         groundContactPoints.Remove(collision.collider);
     }
