@@ -17,8 +17,8 @@ public class DeepInTheDark : MonoBehaviour
     public float timer;
 
     
-    private Color spectreColor = new Color(97 / 255, 194 / 255, 255 / 255);
-    private float fadeTimer = 0.02f;
+    private Color spectreColor = new Color(127 / 255, 224 / 255, 255 / 255);
+    private float fadeTimer = 0.5f;
     private float initialLightningDelay = 2f;
     private float intervalBetweenLightning = 3f;
 

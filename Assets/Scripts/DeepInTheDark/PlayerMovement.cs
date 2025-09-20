@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     private const float jumpHeight = 1.5f;
 
 
-    private const float frictionCoefficient = 0.99f;
+    private const float frictionCoefficient = 0.97f;
 
     private const float minSpeed = 0.01f;
 
