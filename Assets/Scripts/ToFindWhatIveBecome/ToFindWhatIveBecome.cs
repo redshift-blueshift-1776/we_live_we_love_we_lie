@@ -14,6 +14,9 @@ public class ToFindWhatIveBecome : MonoBehaviour
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private TMP_Text timerGame;
+    [SerializeField] private RawImage[] images;
+    [SerializeField] private Texture[] fills;
+    [SerializeField] private Texture blank;
 
     [Header("Audio")]
     [SerializeField] public GameObject loadingAudio;
@@ -25,6 +28,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
 
     public bool gameActive;
     public float timer;
+
+    public bool[] collected = new bool[6];
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -49,7 +54,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
                 PlayerPrefs.SetInt("PreviousLevel", 2);
                 SceneManager.LoadScene(5); // Change when we have the actual scene
             }
-            timerGame.text = $"Time Remaining: {292f - Mathf.Floor(timer)}";
+            UpdateUI();
             timer += Time.deltaTime;
         }
     }
@@ -65,5 +70,15 @@ public class ToFindWhatIveBecome : MonoBehaviour
         gameAudio.SetActive(true);
         gameActive = true;
         timer = 0f;
+        foreach (RawImage ri in images) {
+            ri.texture = blank;
+        }
+    }
+
+    public void UpdateUI() {
+        timerGame.text = $"Time Remaining: {292f - Mathf.Floor(timer)}";
+        for (int i = 0; i < 6; i++) {
+            images[i].texture = collected[i] ? fills[i] : blank;
+        }
     }
 }

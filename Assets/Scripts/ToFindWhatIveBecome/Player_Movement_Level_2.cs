@@ -121,9 +121,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
             rotationHelper();
         }
         if (gm.gameActive) {
-            HandleMovement();
-            RefillFuel();
-            AlignWithGround();
             // Gravity Handling
             isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, ~0);
             if (controller.isGrounded) {
@@ -142,7 +139,11 @@ public class Player_Movement_Level_2 : MonoBehaviour
                 velocity.y -= 5 * gravity * Time.deltaTime;
             }
 
-            // Move the ambulance
+            HandleMovement();
+            RefillFuel();
+            AlignWithGround();
+
+            // Move the scooter
             //Vector3 move = transform.forward * currentSpeed * Time.deltaTime;
             Vector3 move = new Vector3(0, 0, 0);
             move.y = velocity.y * Time.deltaTime; // Apply gravity
