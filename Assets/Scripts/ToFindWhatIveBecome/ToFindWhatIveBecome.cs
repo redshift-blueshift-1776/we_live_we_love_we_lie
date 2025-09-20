@@ -81,4 +81,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
             images[i].texture = collected[i] ? fills[i] : blank;
         }
     }
+
+    public void CollectItem(int itemIndex) {
+        collected[itemIndex] = true;
+    }
 }

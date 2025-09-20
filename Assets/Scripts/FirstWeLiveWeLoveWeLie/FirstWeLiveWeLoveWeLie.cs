@@ -75,6 +75,10 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     [SerializeField] private GameObject yourCard;
 
+    [SerializeField] public Transform PlayerTo;
+    [SerializeField] public Transform PlayerFrom;
+    [SerializeField] public GameObject player;
+
     private DeckManager deckManager;
     private List<Player> players = new List<Player>();
 
@@ -170,6 +174,12 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     {
         if (roundActive) return;  // Prevent overlapping rounds
         roundActive = true;
+
+        if ((humanPlayerIndex == currentOffenseIndex) || (humanPlayerIndex == currentDefenseIndex)) {
+            player.transform.position = new Vector3(PlayerTo.position.x, PlayerTo.position.y, PlayerTo.position.z);
+        } else {
+            player.transform.position = new Vector3(PlayerFrom.position.x, PlayerFrom.position.y, PlayerFrom.position.z);
+        }
 
         Debug.Log($"Offense: {currentOffenseIndex + 1}, Defense: {currentDefenseIndex + 1}");
         yourCard.SetActive(false);
