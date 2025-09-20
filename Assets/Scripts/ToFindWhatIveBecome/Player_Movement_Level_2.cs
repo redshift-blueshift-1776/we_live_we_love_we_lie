@@ -69,9 +69,9 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
     private Vector3 velocity;
     public float gravity = 32f;
-    public float groundCheckDistance = 2f;
+    public float groundCheckDistance = 1f;
     public LayerMask groundMask;
-    private bool isGrounded;
+    [SerializeField] private bool isGrounded;
 
     [SerializeField] private GameObject crosshair;
     [SerializeField] private GameObject bigCrosshair;
@@ -166,6 +166,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
                 // Debug.DrawRay(hit.point, hit.normal * 30f, Color.green);
                 if (hit.collider.gameObject.name.Contains("Ramp")) {
                     seeARamp = true;
+                    isGrounded = true;
                     Vector3 groundNormal = hit.normal;
 
                     // Use cross-product to build a stable forward
@@ -216,13 +217,16 @@ public class Player_Movement_Level_2 : MonoBehaviour
             // currentBoostFuel -= boostConsumptionRate * Time.deltaTime;
             currentBoostFuel = Mathf.Max(currentBoostFuel, 0);
         }
-        // Accelerate and decelerate
-        currentSpeed += moveInput * acceleration * Time.deltaTime;
-        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
-        currentSpeed *= speedFactor;
 
+        currentSpeed *= speedFactor;
+        currentSpeed += moveInput * acceleration * Time.deltaTime;
+        if (isGrounded) {
+            // Accelerate and decelerate
+            currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
             // Apply friction
-        currentSpeed *= friction;
+            currentSpeed *= friction;
+        }
+        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed * speedFactor, maxSpeed * speedFactor);
 
         // Braking
         if (Input.GetKey(KeyCode.S) && currentSpeed > 0)

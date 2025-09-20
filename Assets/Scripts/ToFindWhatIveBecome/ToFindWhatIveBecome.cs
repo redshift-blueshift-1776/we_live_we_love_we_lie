@@ -43,13 +43,13 @@ public class ToFindWhatIveBecome : MonoBehaviour
     void Update()
     {
         if (gameActive) {
-            if (timer >= 120f) {
+            if (timer >= 292f) {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 PlayerPrefs.SetInt("PreviousLevel", 2);
                 SceneManager.LoadScene(5); // Change when we have the actual scene
             }
-            timerGame.text = $"Time Remaining: {120f - Mathf.Floor(timer)}";
+            timerGame.text = $"Time Remaining: {292f - Mathf.Floor(timer)}";
             timer += Time.deltaTime;
         }
     }
