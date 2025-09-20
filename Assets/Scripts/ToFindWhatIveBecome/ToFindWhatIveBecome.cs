@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 public class ToFindWhatIveBecome : MonoBehaviour
 {
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject[] collectibles;
+    [SerializeField] private List<Transform> collectibleLocations;
 
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
@@ -42,6 +44,19 @@ public class ToFindWhatIveBecome : MonoBehaviour
         cam1.SetActive(false);
         gameActive = false;
         timer = 0f;
+
+        int n = collectibleLocations.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
+            Transform value = collectibleLocations[k];
+            collectibleLocations[k] = collectibleLocations[n];
+            collectibleLocations[n] = value;
+        }
+        for (int i = 0; i < collectibles.Length; i++) {
+            collectibles[i].transform.position = new Vector3(collectibleLocations[i].position.x, collectibleLocations[i].position.y, collectibleLocations[i].position.z);
+        }
     }
 
     // Update is called once per frame

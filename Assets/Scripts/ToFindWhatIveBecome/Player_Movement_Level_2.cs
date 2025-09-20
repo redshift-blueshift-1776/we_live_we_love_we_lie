@@ -357,12 +357,17 @@ public class Player_Movement_Level_2 : MonoBehaviour
         gameObject.transform.Rotate(0, rotX, 0);
     }
 
+    public void SetMouseSensitivity(float sensitivity) {
+        mouseSensitivity = sensitivity;
+        PlayerPrefs.SetFloat("MouseSensitivity", sensitivity); // Save to PlayerPrefs
+    }
+
     void interactRaycast() {
         RaycastHit hit;
         Vector3 origin = Camera.main.transform.position;
         Vector3 dir = Camera.main.transform.forward;
         if (Physics.Raycast(origin, dir, out hit, interactDistance)) {
-            Wall interactableObject = hit.collider.gameObject.GetComponent<Wall>();
+            Collectible interactableObject = hit.collider.gameObject.GetComponent<Collectible>();
             
             if (interactableObject != null) {
                 // TODO: ADD PUSH/PULL INDICATOR TO HUD!!!!!
@@ -382,10 +387,5 @@ public class Player_Movement_Level_2 : MonoBehaviour
             crosshair.SetActive(true);
             bigCrosshair.SetActive(false);
         }
-    }
-
-    public void SetMouseSensitivity(float sensitivity) {
-        mouseSensitivity = sensitivity;
-        PlayerPrefs.SetFloat("MouseSensitivity", sensitivity); // Save to PlayerPrefs
     }
 }

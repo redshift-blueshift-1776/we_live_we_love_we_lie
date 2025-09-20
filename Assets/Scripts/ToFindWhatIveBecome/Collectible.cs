@@ -1,0 +1,47 @@
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using TMPro;
+using UnityEngine.SceneManagement;
+
+public class Collectible : MonoBehaviour
+{
+    public int id;
+    [SerializeField] public GameObject gameManager;
+    public ToFindWhatIveBecome gm;
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        gm = gameManager.GetComponent<ToFindWhatIveBecome>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public IEnumerator collect() {
+        float duration = 2f;
+        float elapsed = 0f;
+        gm.CollectItem(id);
+        Vector3 oldPosition = transform.position + new Vector3(0,0,0);
+        Vector3 targetPosition = transform.position + new Vector3(0,100,0);
+        while (elapsed < duration) {
+            float t = elapsed / duration;
+
+            transform.position = Vector3.Lerp(oldPosition, targetPosition, t);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(gameObject);
+    }
+
+    public void Interact() {
+        Debug.Log("Interacting");
+        StartCoroutine(collect());
+    }
+}
