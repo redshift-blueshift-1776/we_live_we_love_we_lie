@@ -16,6 +16,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     [SerializeField] private GameObject UICanvas;
     [SerializeField] private GameObject EndScreenCanvas;
     [SerializeField] private GameObject winText;
+    [SerializeField] private GameObject skipButton;
 
     [Header("Audio")]
     [SerializeField] public GameObject loadingAudio;
@@ -30,6 +31,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     private Coroutine camMoveRoutine;
 
     public bool gameActive;
+    public bool gameDone;
 
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,6 +46,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         loadingAudio.SetActive(true);
         gameAudio.SetActive(false);
         gameActive = false;
+        gameDone = false;
     }
 
     // Update is called once per frame
@@ -53,10 +56,13 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
             timerText.text = $"Time Remaining: {120 - Mathf.Floor(timer)}";
             timer += Time.deltaTime;
             layerText.text = $"Layer: {bm.currentLayer}";
-            if ((timer > 120f) && bm.currentLayer >= 12) {
+            if ((timer > 120f) && bm.currentLayer >= bm.numLayers) {
                 StartCoroutine(EndGame());
             }
-            if ((timer > 120f) && bm.currentLayer < 12) {
+            if ((timer < 90f) && gameDone) {
+                StartCoroutine(SkipToEnd());
+            }
+            if ((timer > 120f) && bm.currentLayer < bm.numLayers) {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 SceneManager.LoadScene(0); // Change to loss scene once made.
@@ -73,6 +79,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         EndScreenCanvas.SetActive(false);
         loadingAudio.SetActive(false);
         gameAudio.SetActive(true);
+        skipButton.SetActive(false);
         bm.SpawnNextBlock();
     }
 
@@ -103,6 +110,18 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         }
 
         camTransform.position = targetPos; // snap at the end
+    }
+
+    private IEnumerator SkipToEnd() {
+        yield return new WaitForSeconds(3f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        skipButton.SetActive(true);
+    }
+
+    public void SkipRestOfGame() {
+        gameActive = false;
+        StartCoroutine(EndGame());
     }
 
     private IEnumerator EndGame() {
