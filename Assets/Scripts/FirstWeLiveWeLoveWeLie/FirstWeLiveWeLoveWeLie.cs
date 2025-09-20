@@ -63,7 +63,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] private TMP_Text SeatText;
     [SerializeField] private TMP_Text redLeft;
     [SerializeField] private TMP_Text blackLeft;
-    [SerializeField] private TMP_Text playersLeft;
+    [SerializeField] private GameObject stealOrNoStealObject;
+    [SerializeField] private TMP_Text stealOrNoSteal;
 
     [SerializeField] private TMP_Text opponentText;
 
@@ -106,6 +107,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     void Start()
     {
         // At start, only show seat select
+        stealOrNoStealObject.SetActive(false);
         SeatSelectCanvas.SetActive(true);
         UICanvas.SetActive(false);
         ChoiceCanvas.SetActive(false);
@@ -174,6 +176,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     {
         if (roundActive) return;  // Prevent overlapping rounds
         roundActive = true;
+        stealOrNoStealObject.SetActive(false);
 
         if ((humanPlayerIndex == currentOffenseIndex) || (humanPlayerIndex == currentDefenseIndex)) {
             player.transform.position = new Vector3(PlayerTo.position.x, PlayerTo.position.y, PlayerTo.position.z);
@@ -212,8 +215,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                 if (turnActive) return; // Ignore if a turn is already being processed
 
                 float stealChance = 0.5f;
-                if (choice == 0) stealChance -= 0.2f;
-                if (choice == 1) stealChance += 0.2f;
+                if (choice == 0) stealChance -= 0.3f;
+                if (choice == 1) stealChance += 0.3f;
 
                 bool aiSteals = UnityEngine.Random.value < stealChance;
                 ResolveTurn(aiSteals, isHuman: false);
@@ -277,6 +280,14 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         CutsceneType type = isHuman
             ? (steal ? CutsceneType.HumanSteal : CutsceneType.HumanPass)
             : (steal ? CutsceneType.AISteal : CutsceneType.AIPass);
+
+        if (steal) {
+            stealOrNoStealObject.SetActive(true);
+            stealOrNoSteal.text = "STEAL!!!";
+        } else {
+            stealOrNoStealObject.SetActive(true);
+            stealOrNoSteal.text = "NO STEAL!!!";
+        }
 
         cm.PlayCutscene(type, () =>
         {
