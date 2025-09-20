@@ -65,6 +65,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] private TMP_Text blackLeft;
     [SerializeField] private GameObject stealOrNoStealObject;
     [SerializeField] private TMP_Text stealOrNoSteal;
+    [SerializeField] private GameObject yourCard;
+    [SerializeField] private GameObject yourCardReal;
 
     [SerializeField] private TMP_Text opponentText;
 
@@ -73,8 +75,6 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     [SerializeField] private GameObject dialogueManager;
     private DialogueManager dm;
-
-    [SerializeField] private GameObject yourCard;
 
     [SerializeField] public Transform PlayerTo;
     [SerializeField] public Transform PlayerFrom;
@@ -114,6 +114,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         CutsceneCanvas.SetActive(false);
         DialogueCanvas.SetActive(false);
         yourCard.SetActive(false);
+        yourCardReal.SetActive(false);
 
         SeatSlider.minValue = 0;
         SeatSlider.maxValue = numPlayers - 1;
@@ -289,6 +290,12 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             stealOrNoSteal.text = "NO STEAL!!!";
         }
 
+        if (isHuman)
+        {
+            UICanvas.SetActive(true);
+            ChoiceCanvas.SetActive(false);
+        }
+
         cm.PlayCutscene(type, () =>
         {
             // Assign card and update indexes
@@ -296,32 +303,29 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} steals!");
                 AssignCard(players[currentOffenseIndex], defenseCard);
-                if (!isHuman) {
-                    int temp = currentOffenseIndex;
-                    currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
-                    currentDefenseIndex = temp;
-                } else {
-                   currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
-                }
+                // if (currentDefenseIndex != humanPlayerIndex) {
+                //     int temp = currentOffenseIndex;
+                //     currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
+                //     currentDefenseIndex = temp;
+                // } else {
+                //     currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
+                // }
+                currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
             }
             else
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} passes.");
                 AssignCard(players[currentDefenseIndex], defenseCard);
-                if (isHuman) {
-                    int temp = currentOffenseIndex;
-                    currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
-                    currentDefenseIndex = temp;
-                } else {
-                   currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
-                }
-            }
-            
-
-            if (isHuman)
-            {
-                UICanvas.SetActive(true);
-                ChoiceCanvas.SetActive(false);
+                // if (currentDefenseIndex == humanPlayerIndex) {
+                //     int temp = currentOffenseIndex;
+                //     currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
+                //     currentDefenseIndex = temp;
+                // } else {
+                //     currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
+                // }
+                int temp = currentOffenseIndex;
+                currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
+                currentDefenseIndex = temp;
             }
 
             // Check end conditions
@@ -365,6 +369,11 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         }
 
         Debug.Log($"{p.Name} reveals {c.Color}! ({redsRemaining} red, {blacksRemaining} black left)");
+        if (p.Name == "YOU") {
+            yourCardReal.SetActive(true);
+            RawImage cardImage = yourCardReal.GetComponent<RawImage>();
+            cardImage.color = (c.Color == CardColor.Red) ? Color.red : Color.black;
+        }
     }
 
     void CheckEndConditions()

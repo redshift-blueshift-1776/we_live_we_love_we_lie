@@ -10,7 +10,7 @@ public enum CutsceneType { HumanSteal, HumanPass, AISteal, AIPass, HumanDefend }
 public class CutsceneManager : MonoBehaviour
 {
     [SerializeField] public GameObject cutsceneCanvas;
-    public Button skipButton;
+    [SerializeField] public Button skipButton;
 
     private Action onComplete;
 
