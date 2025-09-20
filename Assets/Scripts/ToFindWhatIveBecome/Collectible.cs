@@ -20,7 +20,7 @@ public class Collectible : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        transform.Rotate(0, 90f * Time.deltaTime, 0);
     }
 
     public IEnumerator collect() {
