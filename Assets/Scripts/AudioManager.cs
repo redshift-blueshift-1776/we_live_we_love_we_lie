@@ -24,6 +24,15 @@ public struct Sound
         }
     }
 
+    public bool isPlaying()
+    {
+        if (source != null)
+        {
+            return source.isPlaying;
+        }
+        return false;
+    }
+
     public void Play()
     {
         if (source != null)
@@ -90,6 +99,11 @@ public class AudioManager : MonoBehaviour
     public void setStartTime(string name, float t)
     {
         getSound(name).SetStartTime(t);
+    }
+
+    public bool isPlaying(string name)
+    {
+        return getSound(name).isPlaying();
     }
 
     public void playSound(string name)
