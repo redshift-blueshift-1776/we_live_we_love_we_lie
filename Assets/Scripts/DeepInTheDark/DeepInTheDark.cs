@@ -1,13 +1,21 @@
-using UnityEngine;
-using TMPro;
 using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEngine.Rendering.DebugUI;
 
 public class DeepInTheDark : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public GameObject player;
     public GameObject deathZone;
-    public AudioSource lightningSound;
+
+    //sound
+    public AudioManager audioManager;
+
+    private bool powerOff;
+
+
     public PlayerMovement playerMovement;
 
     private Vector3 initialPlayerPosition;
@@ -17,9 +25,11 @@ public class DeepInTheDark : MonoBehaviour
     public float timer;
 
     
-    private Color spectreColor = new Color(97 / 255, 194 / 255, 255 / 255);
-    private float fadeTimer = 0.02f;
-    private float initialLightningDelay = 2f;
+    private Color spectreColor = new Color(127f / 255f, 224f / 255f, 255f / 255f);
+    private float fadeTimer = 0.25f;
+
+    private float initialLightningDelay = 5f;
+
     private float intervalBetweenLightning = 3f;
 
     [SerializeField] private TMP_Text timerText;
@@ -32,9 +42,13 @@ public class DeepInTheDark : MonoBehaviour
 
     void Start()
     {
+        powerOff = false;
+        audioManager.setStartTime("lightning", 0.1f);
+        audioManager.setStartTime("machineSpark", 3.3f);
         //flashLightning();
         initialPlayerPosition = player.transform.position;
         deathZoneY = deathZone.transform.position.y;
+        StartCoroutine(powerOffSounds());
         InvokeRepeating("flashLightning", initialLightningDelay, intervalBetweenLightning);
     }
 
@@ -49,10 +63,15 @@ public class DeepInTheDark : MonoBehaviour
     {
         if (player.transform.position.y <= deathZoneY)
         {
-
-            player.transform.position = initialPlayerPosition;
-            playerMovement.haltMovement();
+            killPlayer();
         }
+    }
+
+    private void killPlayer()
+    {
+        //TO-DO add checkpoints
+        playerMovement.haltMovement();
+        player.transform.position = initialPlayerPosition;
     }
 
     private void updateTimer()
@@ -70,23 +89,43 @@ public class DeepInTheDark : MonoBehaviour
 
     void flashLightning()
     {
-        lightningSound.Play();
         StartCoroutine(fadeSkyboxColor());
+    }
+
+    private IEnumerator powerOffSounds()
+    {
+        yield return new WaitForSeconds(initialLightningDelay -  1.9f);
+        audioManager.playSound("machineSpark");
+        yield return new WaitForSeconds(1.5f);
+        audioManager.playSound("powerOff");
     }
 
     private IEnumerator fadeSkyboxColor()
     {
-        float duration = fadeTimer;
+        if (powerOff)
+        {
+            audioManager.playSound("lightning");
+        }
+            //allow time for sound to start playing
+
+            float duration = fadeTimer;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             float t = elapsed / duration;
-            RenderSettings.ambientSkyColor = Color.Lerp(spectreColor, Color.black, t);
+            if (elapsed < 0.25 * duration && powerOff)
+            {
+                RenderSettings.ambientSkyColor = Color.Lerp(Color.black, spectreColor, t);
+            } else
+            {
+                RenderSettings.ambientSkyColor = Color.Lerp(spectreColor, Color.black, t);
+            }
+
             elapsed += Time.deltaTime;
             yield return null;
         }
-
+        powerOff = true;
         RenderSettings.ambientSkyColor = Color.black;
     }
 }
