@@ -37,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
     private float yaw;
     private float pitch;
 
+    private bool userInput;
+
     //the maximum angled slope the player can walk up (in degrees)
     private const float maxSlopeAngle = 60f;
 
@@ -61,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
 
         yaw = 0f;
         pitch = 0f;
+
+        userInput = false;
 
         groundContactPoints = new Dictionary<Collider, List<Vector3>>();
     }
@@ -104,7 +108,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void movePlayer()
     {
-        bool playerInput = false;
         bool isRunning = false;
         Vector3 forward = player.transform.forward;
 
@@ -116,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A)
             || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            playerInput = true;
+            userInput = true;
             Vector3 inputVelocity = Vector3.zero;
 
             //only check for WASD input if grounded
@@ -145,10 +148,13 @@ public class PlayerMovement : MonoBehaviour
 
             //inputAcceleration should have no y component
             velocity += inputVelocity;
+        } else
+        {
+            userInput = false;
         }
 
-        //scale velocity to max
-        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+            //scale velocity to max
+            Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
         if (isRunning && horizontalVelocity.magnitude > maxRunningVelocity) {
             horizontalVelocity.Normalize();
@@ -182,8 +188,9 @@ public class PlayerMovement : MonoBehaviour
 
 
         //only apply friction when the player stops giving input (WASD)
-        if (!playerInput)
+        if (!userInput)
         {
+            StartCoroutine(stopSliding());
             Vector3 frictionVector = new Vector3(0, 1f, 0);
 
             frictionVector.x = frictionCoefficient;
@@ -214,6 +221,16 @@ public class PlayerMovement : MonoBehaviour
     public void haltMovement()
     {
         velocity = Vector3.zero;
+    }
+
+    private IEnumerator stopSliding()
+    {
+        yield return new WaitForSeconds(3f);
+        if (!userInput)
+        {
+            velocity.x = 0;
+            velocity.z = 0;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
