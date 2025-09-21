@@ -405,7 +405,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(6);
             }
         }
     }
