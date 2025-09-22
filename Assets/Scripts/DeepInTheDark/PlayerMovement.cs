@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject body;
 
+    public float initialYaw;
+    public float initialPitch;
+
     private Rigidbody playerRigidBody;
 
     private float sensitivityX;
@@ -50,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         playerRigidBody = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         // Hide the hardware cursor
@@ -61,8 +65,8 @@ public class PlayerMovement : MonoBehaviour
         acceleration = new Vector3(0, -g, 0);
         velocity = new Vector3();
 
-        yaw = 0f;
-        pitch = 0f;
+        yaw = initialYaw;
+        pitch = initialPitch;
 
         userInput = false;
 
