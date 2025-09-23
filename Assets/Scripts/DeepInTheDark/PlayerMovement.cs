@@ -188,14 +188,10 @@ public class PlayerMovement : MonoBehaviour
         //only apply friction when the player stops giving input (WASD)
         if (!userInput && !isClimbing)
         {
-            //force player to stop sliding just in case
-            StartCoroutine(stopSliding());
-
             //apply friction to the velocity vector
             Vector3 frictionVector = new Vector3(frictionCoefficient, 1f, frictionCoefficient);
             velocity.Scale(frictionVector);
-        }
-
+        } 
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
     }
@@ -208,9 +204,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space) && groundContactPoints.Count > 0)
         {
-            groundContactPoints.Clear();
+            clearGroundContacts();
             velocity.y = Mathf.Sqrt(2 * g * jumpHeight);
         }
+    }
+
+    public void clearGroundContacts()
+    {
+        groundContactPoints.Clear();
     }
 
     /// <summary>
@@ -277,20 +278,8 @@ public class PlayerMovement : MonoBehaviour
     public void haltMovement()
     {
         velocity = Vector3.zero;
-    }
-
-    /// <summary>
-    /// This function halts the player's horizontal movement after 3 seconds.
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator stopSliding()
-    {
-        yield return new WaitForSeconds(3f);
-        if (!userInput)
-        {
-            velocity.x = 0;
-            velocity.z = 0;
-        }
+        playerRigidBody.linearVelocity = Vector3.zero;
+        playerRigidBody.angularVelocity = Vector3.zero;
     }
 
     /// <summary>

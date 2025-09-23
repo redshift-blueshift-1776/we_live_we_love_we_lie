@@ -7,7 +7,6 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class DeepInTheDark : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     public GameObject player;
     public GameObject deathZone;
 
@@ -107,10 +106,11 @@ public class DeepInTheDark : MonoBehaviour
 
     private void killPlayer()
     {
-        playerMovement.haltMovement();
+        audioManager.playSound("respawn");
         player.transform.position = initialPlayerPosition;
         playerMovement.setPlayerYawPitch(playerMovement.initialYaw, playerMovement.initialPitch);
-        audioManager.playSound("respawn");
+        playerMovement.clearGroundContacts();
+        playerMovement.haltMovement();
     }
 
     private void showFarCamera()
@@ -124,6 +124,8 @@ public class DeepInTheDark : MonoBehaviour
             cameraDistance = (collisionLocation.point - originalCameraPosition).magnitude;
 
             //check if camera would be positioned along wall such that player can see behind the wall
+            //this is not perfect, if the raycast collides with something near the wall, it could still
+            //show what is behind it
             Vector2 collisionNormal = new Vector2(collisionLocation.normal.x, collisionLocation.normal.z);
             Vector2 cameraNormal = new Vector2(playerCamera.forward.x, playerCamera.forward.z);
             if (Vector2.Angle(collisionNormal, cameraNormal) > 90 - fov / 2)
