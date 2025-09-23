@@ -129,7 +129,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        if (getInputDirectionVector().magnitude > 0)
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A)
+            || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
             userInput = true;
             Vector3 inputVelocity = getInputDirectionVector();
@@ -144,13 +145,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
             //scale velocity to max
-        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
-        horizontalVelocity.Normalize();
+            Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
         if (isRunning && horizontalVelocity.magnitude > maxRunningVelocity) {
+            horizontalVelocity.Normalize();
             horizontalVelocity *= maxRunningVelocity;
         } else if (!isRunning && horizontalVelocity.magnitude > maxWalkingVelocity)
         {
+            horizontalVelocity.Normalize();
             horizontalVelocity *= maxWalkingVelocity;
         }
 
@@ -176,10 +178,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        playerRigidBody.MovePosition(playerRigidBody.position + (
-            groundContactPoints.Count > 0 && !isClimbing ? 
-            Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity
-            ) * Time.deltaTime);
+        playerRigidBody.MovePosition(playerRigidBody.position + (groundContactPoints.Count > 0 && !isClimbing ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity) * Time.deltaTime);
 
 
 
@@ -194,8 +193,6 @@ public class PlayerMovement : MonoBehaviour
 
             velocity.Scale(frictionVector);
         }
-
-        //prevent infinite sliding at very low velocities
         if (Mathf.Abs(velocity.x) < minSpeed)
         {
             velocity.x = 0;
@@ -222,7 +219,17 @@ public class PlayerMovement : MonoBehaviour
         Vector3 inputDirection = getInputDirectionVector();
         float newVelocityY = 0f;
 
+        //if player is moving away from the ladder, then stop climbing
+        Vector3 ladderHorizontalPosition = new Vector3(currentLadder.position.x, 0, currentLadder.position.z);
+
+        if (Vector3.Dot(ladderHorizontalPosition - player.transform.position, inputDirection) < 0)
+        {
+            isClimbing = false;
+        }
+
         Vector3 ladderForwardHorizontal = new Vector3(currentLadder.forward.x, 0, currentLadder.forward.z).normalized;
+
+        Debug.Log(currentLadder.position - player.transform.position);
         if (Mathf.Abs(Vector3.Dot(ladderForwardHorizontal, inputDirection)) > 0.01f)
         {
             newVelocityY = climbingVelocity;
