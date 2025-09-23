@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -10,7 +11,12 @@ public class DeepInTheDark : MonoBehaviour
     public GameObject player;
     public GameObject deathZone;
 
-    
+    private Transform playerCamera;
+    private float maxFarCameraDistance = 10f;
+    private float minFarCameraDistance = 2f;
+    private Vector3 originalCameraPosition;
+    private float fov;
+    private bool farCameraMode = false;
 
     //sound
     public AudioManager audioManager;
@@ -45,6 +51,9 @@ public class DeepInTheDark : MonoBehaviour
 
     void Start()
     {
+        //Main Camera name may change!
+        playerCamera = player.transform.Find("Main Camera");
+        fov = playerCamera.GetComponent<Camera>().fieldOfView;
         powerOff = false;
 
         RenderSettings.ambientSkyColor = spectreColor;
@@ -63,6 +72,22 @@ public class DeepInTheDark : MonoBehaviour
     {
         updateTimer();
         handleDeathZone();
+
+
+        originalCameraPosition = player.transform.position + new Vector3(0, 0.6f, 0);
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            farCameraMode = !farCameraMode;
+        }
+
+        if (farCameraMode)
+        {
+            showFarCamera();
+        } else
+        {
+            returnToPlayerCamera();
+        }
     }
 
     private void initializeStartTimes()
@@ -86,6 +111,38 @@ public class DeepInTheDark : MonoBehaviour
         player.transform.position = initialPlayerPosition;
         playerMovement.setPlayerYawPitch(playerMovement.initialYaw, playerMovement.initialPitch);
         audioManager.playSound("respawn");
+    }
+
+    private void showFarCamera()
+    {
+        RaycastHit collisionLocation;
+        bool collided = Physics.Raycast(originalCameraPosition, -playerCamera.forward, out collisionLocation, maxFarCameraDistance);
+        float cameraDistance = maxFarCameraDistance;
+
+        if (collided)
+        {
+            cameraDistance = (collisionLocation.point - originalCameraPosition).magnitude;
+
+            //check if camera would be positioned along wall such that player can see behind the wall
+            Vector2 collisionNormal = new Vector2(collisionLocation.normal.x, collisionLocation.normal.z);
+            Vector2 cameraNormal = new Vector2(playerCamera.forward.x, playerCamera.forward.z);
+            if (Vector2.Angle(collisionNormal, cameraNormal) > 90 - fov / 2)
+            {
+                playerCamera.position = originalCameraPosition;
+                return;
+            }
+
+        }
+
+        playerCamera.position = originalCameraPosition - (cameraDistance >= minFarCameraDistance ? cameraDistance * playerCamera.forward : Vector3.zero);
+    }
+
+    private void returnToPlayerCamera()
+    {
+        if (originalCameraPosition != null)
+        {
+            playerCamera.position = originalCameraPosition;
+        }
     }
 
     private void updateTimer()

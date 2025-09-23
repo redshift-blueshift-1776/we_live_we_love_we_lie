@@ -66,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
         playerRigidBody = GetComponent<Rigidbody>();
 
         acceleration = new Vector3(0, -g, 0);
-        velocity = new Vector3();
+        velocity = Vector3.zero;
 
         setPlayerYawPitch(initialYaw, initialPitch);
 
@@ -334,7 +334,6 @@ public class PlayerMovement : MonoBehaviour
     {
         foreach (ContactPoint contact in collision.contacts)
         {
-            //Debug.Log(groundContactPoints);
             if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
                 if (!groundContactPoints.ContainsKey(collision.collider))
@@ -342,6 +341,10 @@ public class PlayerMovement : MonoBehaviour
                     groundContactPoints.Add(collision.collider, new List<Vector3> { });
                 }
                 groundContactPoints[collision.collider].Add(contact.normal);
+            } else if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
+            {
+                //halt upwards velocity when hitting a ceiling sloped at most maxSlopeAngle
+                velocity.y = 0;
             }
         }
     }
