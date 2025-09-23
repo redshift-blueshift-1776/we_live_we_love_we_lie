@@ -49,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
 
     private bool userInput;
     private bool isClimbing;
-
     //the maximum angled slope the player can walk up (in degrees)
     private const float maxSlopeAngle = 60f;
 
@@ -112,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void rotatePlayer()
     {
-        Vector3 averageNormal = AverageVector(groundContactPoints.Values.ToList().SelectMany(l => l).ToList());
+        Vector3 averageNormal = averageVector(groundContactPoints.Values.ToList().SelectMany(l => l).ToList());
 
         if (groundContactPoints.Count > 0)
         {
@@ -133,6 +132,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void movePlayer()
     {
+
         Vector3 forward = player.transform.forward;
         bool isRunning = Input.GetKey(KeyCode.LeftShift) ? true : false;
 
@@ -330,10 +330,18 @@ public class PlayerMovement : MonoBehaviour
                     groundContactPoints.Add(collision.collider, new List<Vector3> { });
                 }
                 groundContactPoints[collision.collider].Add(contact.normal);
-            } else if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
+            }
+            if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
-                //halt upwards velocity when hitting a ceiling sloped at most maxSlopeAngle
-                velocity.y = 0;
+                // flatten the normal so we only keep horizontal pushback
+                Vector3 horizontalNormal = new Vector3(contact.normal.x, 0f, contact.normal.z).normalized;
+
+                // 0.03 is the lowest possible without it breaking; do not change this
+                Vector3 correction = horizontalNormal * 0.03f;
+                playerRigidBody.MovePosition(playerRigidBody.position + correction);
+
+                // cancel velocity into the ceiling only along horizontal direction
+                velocity = Vector3.ProjectOnPlane(velocity, horizontalNormal);
             }
         }
     }
@@ -345,6 +353,7 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionStay(Collision collision)
     {
+
         foreach (ContactPoint contact in collision.contacts)
         {
             //prevents climbing on slopes that are too steep (controlled by maxSlopeAngle variable)
@@ -359,8 +368,9 @@ public class PlayerMovement : MonoBehaviour
                     velocity.z = 0;
                 }
             }
-
         }
+
+
     }
 
     /// <summary>
@@ -372,6 +382,9 @@ public class PlayerMovement : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         groundContactPoints.Remove(collision.collider);
+
+        //sanity check
+        //ceilingContactPointsPositions.Remove(collision.collider);
     }
 
     /// <summary>
@@ -418,7 +431,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     /// <param name="list"></param>
     /// <returns></returns>
-    private Vector3 AverageVector(List<Vector3> list)
+    private Vector3 averageVector(List<Vector3> list)
     {
         Vector3 averageVector = new Vector3();
         foreach (Vector3 v in list)
