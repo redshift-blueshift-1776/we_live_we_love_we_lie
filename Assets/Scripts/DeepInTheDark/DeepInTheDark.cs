@@ -52,6 +52,7 @@ public class DeepInTheDark : MonoBehaviour
         
         //flashLightning();
         initialPlayerPosition = player.transform.position;
+
         deathZoneY = deathZone.transform.position.y;
         StartCoroutine(powerOffSounds());
         InvokeRepeating("flashLightning", initialLightningDelay, intervalBetweenLightning);
@@ -83,6 +84,7 @@ public class DeepInTheDark : MonoBehaviour
     {
         playerMovement.haltMovement();
         player.transform.position = initialPlayerPosition;
+        playerMovement.setPlayerYawPitch(playerMovement.initialYaw, playerMovement.initialPitch);
         audioManager.playSound("respawn");
     }
 
