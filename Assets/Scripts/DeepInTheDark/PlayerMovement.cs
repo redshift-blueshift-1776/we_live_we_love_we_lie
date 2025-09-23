@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
 
     private const float frictionCoefficient = 0.97f;
 
-    private const float minSpeed = 0.001f;
+    private const float minSpeed = 0.01f;
 
     private float walkingAcceleration = 0.05f;
     private float runningAcceleration = 0.1f;
