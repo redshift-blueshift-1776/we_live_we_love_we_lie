@@ -2,6 +2,7 @@ using Mono.Cecil.Cil;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using Unity.Collections;
 using UnityEngine;
@@ -37,10 +38,17 @@ public class PlayerMovement : MonoBehaviour
     private float maxWalkingVelocity = 5f;
     private float maxRunningVelocity = 8f;
 
+    //default falling speed on a ladder
+    private Transform currentLadder = null;
+    private float defaultLadderFallingVelocity = -3f;
+    private float climbingVelocity = 3f;
+    private float maxSidewaysVelocityOnLadder = 3f;
+
     private float yaw;
     private float pitch;
 
     private bool userInput;
+    private bool isClimbing;
 
     //the maximum angled slope the player can walk up (in degrees)
     private const float maxSlopeAngle = 60f;
@@ -69,6 +77,7 @@ public class PlayerMovement : MonoBehaviour
         pitch = initialPitch;
 
         userInput = false;
+        isClimbing = false;
 
         groundContactPoints = new Dictionary<Collider, List<Vector3>>();
     }
@@ -120,34 +129,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A)
-            || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        if (getInputDirectionVector().magnitude > 0)
         {
             userInput = true;
-            Vector3 inputVelocity = Vector3.zero;
+            Vector3 inputVelocity = getInputDirectionVector();
 
-            //only check for WASD input if grounded
-            if (Input.GetKey(KeyCode.W))
-            {
-                inputVelocity += forward;
-            }
-
-            if (Input.GetKey(KeyCode.A))
-            {
-                inputVelocity -= player.transform.right;
-            }
-
-            if (Input.GetKey(KeyCode.S))
-            {
-                inputVelocity -= forward;
-            }
-
-            if (Input.GetKey(KeyCode.D))
-            {
-                inputVelocity += player.transform.right;
-            }
-
-            inputVelocity.Normalize();
             inputVelocity *= isRunning ? runningAcceleration : walkingAcceleration;
 
             //inputAcceleration should have no y component
@@ -158,14 +144,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
             //scale velocity to max
-            Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+        horizontalVelocity.Normalize();
 
         if (isRunning && horizontalVelocity.magnitude > maxRunningVelocity) {
-            horizontalVelocity.Normalize();
             horizontalVelocity *= maxRunningVelocity;
         } else if (!isRunning && horizontalVelocity.magnitude > maxWalkingVelocity)
         {
-            horizontalVelocity.Normalize();
             horizontalVelocity *= maxWalkingVelocity;
         }
 
@@ -174,21 +159,28 @@ public class PlayerMovement : MonoBehaviour
         
 
         //update vertical velocity
-        if (groundContactPoints.Count == 0)
+        if (isClimbing)
         {
-            //airborne, apply friction after
-            velocity.y += acceleration.y * Time.deltaTime;
-        }
-        else
+            handleClimb();
+        } else
         {
-            //grounded, apply friction after
-            velocity.y = 0;
+            if (groundContactPoints.Count == 0)
+            {
+                //airborne, apply friction after
+                velocity.y += acceleration.y * Time.deltaTime;
+            }
+            else
+            {
+                //grounded, apply friction after
+                velocity.y = 0;
+            }
         }
-        //Debug.Log(inputAcceleration * Time.deltaTime);
 
-        //avoids teleporting into wall issue
-        playerRigidBody.MovePosition(playerRigidBody.position + (groundContactPoints.Count > 0 ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity) * Time.deltaTime);
-        //player.transform.position += (groundContactPoints.Count > 0 ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity) * Time.deltaTime;
+        playerRigidBody.MovePosition(playerRigidBody.position + (
+            groundContactPoints.Count > 0 && !isClimbing ? 
+            Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity
+            ) * Time.deltaTime);
+
 
 
         //only apply friction when the player stops giving input (WASD)
@@ -202,6 +194,8 @@ public class PlayerMovement : MonoBehaviour
 
             velocity.Scale(frictionVector);
         }
+
+        //prevent infinite sliding at very low velocities
         if (Mathf.Abs(velocity.x) < minSpeed)
         {
             velocity.x = 0;
@@ -222,6 +216,35 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void handleClimb()
+    {
+        //check for inputs again
+        Vector3 inputDirection = getInputDirectionVector();
+        float newVelocityY = 0f;
+
+        Vector3 ladderForwardHorizontal = new Vector3(currentLadder.forward.x, 0, currentLadder.forward.z).normalized;
+        if (Mathf.Abs(Vector3.Dot(ladderForwardHorizontal, inputDirection)) > 0.01f)
+        {
+            newVelocityY = climbingVelocity;
+        }
+        else
+        {
+            newVelocityY = defaultLadderFallingVelocity;
+        }
+
+        Vector3 ladderForward = currentLadder.forward;
+        Vector3 ladderRight = currentLadder.right;
+        Vector3 ladderUp = currentLadder.up;
+
+
+        float rightComponent = Vector3.Dot(velocity, ladderRight);
+
+        rightComponent = Mathf.Clamp(rightComponent, -maxSidewaysVelocityOnLadder, maxSidewaysVelocityOnLadder);
+        Debug.Log(ladderUp + " " + newVelocityY + " " + ladderUp * newVelocityY);
+        velocity = ladderUp * newVelocityY + ladderRight * rightComponent;
+        //Debug.Log(velocity);
+    }
+
     public void haltMovement()
     {
         velocity = Vector3.zero;
@@ -235,6 +258,29 @@ public class PlayerMovement : MonoBehaviour
             velocity.x = 0;
             velocity.z = 0;
         }
+    }
+
+    private Vector3 getInputDirectionVector()
+    {
+        Vector3 inputDirection = Vector3.zero;
+        if (Input.GetKey(KeyCode.W))
+        {
+            inputDirection += player.transform.forward;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            inputDirection -= player.transform.right;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            inputDirection -= player.transform.forward;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            inputDirection += player.transform.right;
+        }
+        inputDirection.Normalize();
+        return inputDirection;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -277,6 +323,37 @@ public class PlayerMovement : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         groundContactPoints.Remove(collision.collider);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.tag);
+        if (other.tag.Equals("Ladder"))
+        {
+            //ladder that is too flat, don't climb
+            Debug.Log(Mathf.Acos(other.transform.forward.y));
+            if (Mathf.Acos(other.transform.forward.y) < maxSlopeAngle * Mathf.Deg2Rad)
+            {
+                return;
+            }
+            currentLadder = other.transform;
+
+            isClimbing = true;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag.Equals("Ladder"))
+        {
+            currentLadder = null;
+            isClimbing = false;
+        }
     }
 
 

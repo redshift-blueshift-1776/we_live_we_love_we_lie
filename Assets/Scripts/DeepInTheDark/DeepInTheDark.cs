@@ -10,6 +10,8 @@ public class DeepInTheDark : MonoBehaviour
     public GameObject player;
     public GameObject deathZone;
 
+    
+
     //sound
     public AudioManager audioManager;
 
