@@ -11,10 +11,13 @@ public class Collectible : MonoBehaviour
     public int id;
     [SerializeField] public GameObject gameManager;
     public ToFindWhatIveBecome gm;
+
+    [SerializeField] public GameObject collectSound;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         gm = gameManager.GetComponent<ToFindWhatIveBecome>();
+        collectSound.SetActive(false);
     }
 
     // Update is called once per frame
@@ -42,6 +45,7 @@ public class Collectible : MonoBehaviour
 
     public void Interact() {
         Debug.Log("Interacting");
+        collectSound.SetActive(true);
         StartCoroutine(collect());
     }
 }

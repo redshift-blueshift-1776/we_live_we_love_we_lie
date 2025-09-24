@@ -363,22 +363,26 @@ public class Player_Movement_Level_2 : MonoBehaviour
     }
 
     void interactRaycast() {
-        RaycastHit hit;
         Vector3 origin = Camera.main.transform.position;
         Vector3 dir = Camera.main.transform.forward;
-        if (Physics.Raycast(origin, dir, out hit, interactDistance)) {
-            Collectible interactableObject = hit.collider.gameObject.GetComponent<Collectible>();
-            
-            if (interactableObject != null) {
-                // TODO: ADD PUSH/PULL INDICATOR TO HUD!!!!!
+        RaycastHit[] hits = Physics.RaycastAll(origin, dir, interactDistance);
+        if (hits.Length > 0) {
+            bool foundSomething = false;
+            foreach (RaycastHit hit in hits) {
+                Collectible interactableObject = hit.collider.gameObject.GetComponent<Collectible>();
+                if (interactableObject != null) {
+                    foundSomething = true;
+                    if (Input.GetKeyDown(pushKey)) {
+                        interactableObject.Interact();
+                    } else if (Input.GetKeyDown(pullKey)) {
+                        interactableObject.Interact();
+                    }
+                }
+            }
+            if (foundSomething) {
                 crosshair.SetActive(false);
                 bigCrosshair.SetActive(true);
                 Debug.Log("Raycase");
-                if (Input.GetKeyDown(pushKey)) {
-                    interactableObject.Interact();
-                } else if (Input.GetKeyDown(pullKey)) {
-                    interactableObject.Interact();
-                }
             } else {
                 crosshair.SetActive(true);
                 bigCrosshair.SetActive(false);
