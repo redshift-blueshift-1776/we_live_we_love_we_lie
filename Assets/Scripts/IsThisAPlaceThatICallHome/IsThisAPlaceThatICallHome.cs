@@ -33,11 +33,15 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     public bool gameActive;
     public bool gameDone;
 
+    [SerializeField] private GameObject transition;
+    [SerializeField] private Transition transitionScript;
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         bm = blockManger.GetComponent<BlockManager>();
+        transitionScript = transition.GetComponent<Transition>();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         startCanvas.SetActive(true);
@@ -65,7 +69,8 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
             if ((timer > 120f) && bm.currentLayer < bm.numLayers) {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                SceneManager.LoadScene(0); // Change to loss scene once made.
+                // SceneManager.LoadScene(0); // Change to loss scene once made.
+                transitionScript.ToFail();
             }
         }
     }

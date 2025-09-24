@@ -5,10 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class Death_Zone : MonoBehaviour
 {
+    [SerializeField] private GameObject transition;
+    [SerializeField] private Transition transitionScript;
     // Start is called before the first frame update
     void Start()
     {
-
+        transitionScript = transition.GetComponent<Transition>();
     }
 
     // Update is called once per frame
@@ -21,8 +23,9 @@ public class Death_Zone : MonoBehaviour
         if(col.gameObject.name.Contains("Block")) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            PlayerPrefs.SetInt("PreviousLevel", 1);
-            SceneManager.LoadScene(5); // Change once official scene is made
+            transitionScript.ToFail();
+            // PlayerPrefs.SetInt("PreviousLevel", 1);
+            // SceneManager.LoadScene(5); // Change once official scene is made
         }
     }
 }
