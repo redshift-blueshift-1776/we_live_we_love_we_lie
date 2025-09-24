@@ -24,6 +24,14 @@ public struct Sound
         }
     }
 
+    public void setVolume(float volume)
+    {
+        if (source != null)
+        {
+            source.volume = Mathf.Clamp(volume, 0f, 1f);
+        }
+    }
+
     public bool isPlaying()
     {
         if (source != null)
@@ -99,6 +107,11 @@ public class AudioManager : MonoBehaviour
     public void setStartTime(string name, float t)
     {
         getSound(name).SetStartTime(t);
+    }
+
+    public void setVolume(string name, float volume)
+    {
+        getSound(name).setVolume(volume);
     }
 
     public bool isPlaying(string name)

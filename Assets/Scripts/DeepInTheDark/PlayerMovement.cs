@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject body;
 
+    public AudioManager audioManager;
+
     public float initialYaw;
     public float initialPitch;
 
@@ -49,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool userInput;
     private bool isClimbing;
+    private bool isJumping;
     //the maximum angled slope the player can walk up (in degrees)
     private const float maxSlopeAngle = 60f;
 
@@ -71,12 +74,14 @@ public class PlayerMovement : MonoBehaviour
 
         userInput = false;
         isClimbing = false;
+        isJumping = false;
 
         groundContactPoints = new Dictionary<Collider, List<Vector3>>();
     }
 
     void Update()
     {
+        initializeSounds();
         movePlayer();
         rotateCamera();
         handleJump();
@@ -85,6 +90,11 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         rotatePlayer();
+    }
+
+    private void initializeSounds()
+    {
+        audioManager.setVolume("jump", 0.3f);
     }
 
     /// <summary>
@@ -202,12 +212,22 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void handleJump()
     {
-        if (Input.GetKey(KeyCode.Space) && groundContactPoints.Count > 0)
+        if (Input.GetKey(KeyCode.Space) && groundContactPoints.Count > 0 && !isJumping)
         {
+            audioManager.playSound("jump");
+            isJumping = true;
             clearGroundContacts();
             velocity.y = Mathf.Sqrt(2 * g * jumpHeight);
         }
+
+        //reset jumping when landing on ground
+        if (groundContactPoints.Count > 0)
+        {
+            isJumping = false;
+        }
     }
+
+
 
     public void clearGroundContacts()
     {

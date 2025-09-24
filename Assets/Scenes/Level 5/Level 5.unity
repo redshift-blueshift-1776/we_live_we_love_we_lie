@@ -2388,8 +2388,8 @@ Transform:
   m_GameObject: {fileID: 136867849}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 45.8825, y: 27.2333, z: -30.1616}
-  m_LocalScale: {x: 4.17492, y: 1.409072, z: 2.3233}
+  m_LocalPosition: {x: 45.8825, y: 27.2333, z: -30.3141}
+  m_LocalScale: {x: 4.17492, y: 1.409072, z: 2.6284027}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 254768351}
@@ -17155,17 +17155,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5659841930587057258, guid: b3e1ab00741baad4ab7dc922ce530cd5, type: 3}
       propertyPath: m_text
-      value: '
+      value: 'WASD Controls
 
 
-        WASD Controls
+        Left Shift - Run
 
 
         Space - Jump
 
 
-        F - toggle
-        perspective'
+        F
+        - toggle perspective
+
+        (make sure to always use this one!)'
       objectReference: {fileID: 0}
     - target: {fileID: 5659841930587057258, guid: b3e1ab00741baad4ab7dc922ce530cd5, type: 3}
       propertyPath: m_fontSize
@@ -18003,6 +18005,7 @@ MonoBehaviour:
   player: {fileID: 1219006344}
   playerCamera: {fileID: 425856891}
   body: {fileID: 1720953070}
+  audioManager: {fileID: 403721695}
   initialYaw: 90
   initialPitch: -20
 --- !u!54 &1219006348
@@ -19263,8 +19266,8 @@ Transform:
   m_GameObject: {fileID: 1352490829}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 39.96, y: 27.2333, z: -30.1616}
-  m_LocalScale: {x: 4.17492, y: 1.409072, z: 2.3233}
+  m_LocalPosition: {x: 39.96, y: 27.2333, z: -30.3141}
+  m_LocalScale: {x: 4.17492, y: 1.409072, z: 2.6284027}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 254768351}
@@ -23329,8 +23332,8 @@ Transform:
   m_GameObject: {fileID: 1631118924}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 31.6617, y: 27.2333, z: -30.1616}
-  m_LocalScale: {x: 8.831626, y: 1.409072, z: 2.3233}
+  m_LocalPosition: {x: 31.6617, y: 27.2333, z: -30.3141}
+  m_LocalScale: {x: 8.831626, y: 1.409072, z: 2.6284027}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 254768351}
@@ -30966,6 +30969,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8700959590581043213, guid: c5faefab338cc21478bdf2bfadb1b0db, type: 3}
+      propertyPath: sounds.Array.data[4].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 74380a9fc51eb7d4b831b8a441790fb8, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
