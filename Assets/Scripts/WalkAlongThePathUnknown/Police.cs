@@ -55,10 +55,13 @@ public class Police : MonoBehaviour
 
     [SerializeField] private AudioSource gunSound;
 
+    private Coroutine currentCoroutine;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         currState = EnemyState.Follow;
+        currentCoroutine = null;
         myRigidbody = GetComponent<Rigidbody>();
         gameScript = Game.GetComponent<WalkAlongThePathUnknown>();
         if (!mazeGenerator)
@@ -113,15 +116,24 @@ public class Police : MonoBehaviour
             }
 
             if (currState == EnemyState.Shoot) {
-                transform.LookAt(player.transform);
+                Vector3 pointThisWay = new Vector3(player.transform.position.x, 0, player.transform.position.z);
+                transform.LookAt(pointThisWay);
                 transform.RotateAround(transform.position, transform.up, 180f);
-                ShootBullet();
+                if (currentCoroutine == null) {
+                    currentCoroutine = StartCoroutine(ShootBullet());
+                }
+                
+            } else {
+                currentCoroutine = null;
             }
         }
     }
 
-    private void ShootBullet() {
-
+    public IEnumerator ShootBullet() {
+        while (currState == EnemyState.Shoot) {
+            gunSound.Play();
+            yield return new WaitForSeconds(1f);
+        }
     }
 
     private Dictionary<int, List<int>> BuildAdjacencyList(Maze_Generator maze)

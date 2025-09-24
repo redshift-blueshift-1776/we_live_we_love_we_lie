@@ -121,6 +121,5 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     public void wallFail() {
         wallSoundFail.SetActive(false);
         wallSoundFail.SetActive(true);
-        timer += 15;
     }
 }
