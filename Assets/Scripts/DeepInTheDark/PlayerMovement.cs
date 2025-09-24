@@ -330,7 +330,7 @@ public class PlayerMovement : MonoBehaviour
                     groundContactPoints.Add(collision.collider, new List<Vector3> { });
                 }
                 groundContactPoints[collision.collider].Add(contact.normal);
-                playerRigidBody.linearVelocity = new Vector3(0, playerRigidBody.linearVelocity.y, 0);
+                playerRigidBody.linearVelocity = Vector3.zero;
             }
             if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
@@ -344,6 +344,7 @@ public class PlayerMovement : MonoBehaviour
                 // cancel velocity into the ceiling only along horizontal direction
                 velocity = Vector3.ProjectOnPlane(velocity, horizontalNormal);
                 velocity.y = 0;
+                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, 0, playerRigidBody.linearVelocity.z);
             }
         }
     }
