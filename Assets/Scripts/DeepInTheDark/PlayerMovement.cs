@@ -80,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
     //stores current ground contact colliders and their normals; see rotatePlayer() for more info
     private Dictionary<Collider, List<Vector3>> groundContactPoints;
 
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -209,23 +210,6 @@ public class PlayerMovement : MonoBehaviour
             horizontalVelocity *= speedThreshold;
         }
 
-
-        //if (isSlowWalking && horizontalVelocity.magnitude > maxSlowWalkHorizontalSpeed)
-        //{
-        //    horizontalVelocity.Normalize();
-        //    horizontalVelocity *= maxSlowWalkHorizontalSpeed;
-        //}
-        //else if (isRunning && horizontalVelocity.magnitude > maxRunningHorizontalSpeed)
-        //{
-        //    horizontalVelocity.Normalize();
-        //    horizontalVelocity *= maxRunningHorizontalSpeed;
-        //}
-        //else if (!isRunning && !isSlowWalking && horizontalVelocity.magnitude > maxWalkingHorizontalSpeed)
-        //{
-        //    horizontalVelocity.Normalize();
-        //    horizontalVelocity *= maxWalkingHorizontalSpeed;
-        //}
-
         //update velocities in case they were scaled down
         velocity.x = horizontalVelocity.x;
         velocity.z = horizontalVelocity.z;
@@ -245,8 +229,6 @@ public class PlayerMovement : MonoBehaviour
             groundContactPoints.Count > 0 && !isClimbing ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity
             ) * Time.deltaTime);
 
-
-
         //only apply friction when the player stops giving input (WASD)
         if (!userInput && !isClimbing)
         {
@@ -256,6 +238,8 @@ public class PlayerMovement : MonoBehaviour
         } 
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
+
+        Debug.Log(velocity.y);
     }
 
     /// <summary>
@@ -468,7 +452,6 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionStay(Collision collision)
     {
-
         foreach (ContactPoint contact in collision.contacts)
         {
             if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
@@ -481,7 +464,11 @@ public class PlayerMovement : MonoBehaviour
                 currentFrictionCoefficient = frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]);
                 currMaxSpeedMultiplier = maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]);
             }
-            //}
+            else
+            {
+                //stops players from clipping through corners
+                velocity = Vector3.ProjectOnPlane(velocity, contact.normal);
+            }
         }
 
 
