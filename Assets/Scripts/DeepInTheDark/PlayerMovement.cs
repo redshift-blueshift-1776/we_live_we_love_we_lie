@@ -29,11 +29,13 @@ public class PlayerMovement : MonoBehaviour
 
     private const float jumpHeight = 1.5f;
 
-
-    private const float normalFrictionCoefficient = 0.97f;
-    private const float airFrictionCoefficient = 0.995f;
-    private const float slimeFrictionCoefficient = 0.9f;
-    private const float iceFrictionCoefficient = 0.9999f;
+    private Dictionary<string, float> frictionCoefficients = new Dictionary<string, float>
+    {
+        {"Default", 0.97f},
+        {"Air", 0.995f },
+        {"Slime", 0.9f  },
+        {"Ice", 0.9999f }
+    };
     private float currentFrictionCoefficient;
 
 
@@ -45,15 +47,24 @@ public class PlayerMovement : MonoBehaviour
     private float walkingAcceleration = 0.05f;
     private float runningAcceleration = 0.1f;
 
-    private float maxSlowWalkHorizontalSpeed = 3f;
-    private float maxWalkingHorizontalSpeed = 5f;
-    private float maxRunningHorizontalSpeed = 8f;
+    private const float maxSlowWalkHorizontalSpeed = 3f;
+    private const float maxWalkingHorizontalSpeed = 5f;
+    private const float maxRunningHorizontalSpeed = 8f;
+
+    private Dictionary<string, float> maxSpeedMultipliers = new Dictionary<string, float>
+    {
+        {"Default", 1f},
+        {"Air", 1f },   //same as default but subject to change
+        {"Slime", 0.5f  },
+        {"Ice", 2f }
+    };
+    private float currMaxSpeedMultiplier;
 
 
     private Transform currentLadder = null;
-    private float defaultLadderFallingVelocity = -3f;   //speed at which player falls with no input on a ladder
-    private float climbingVelocity = 3f;
-    private float maxSidewaysVelocityOnLadder = 1f;     //max sideways speed of the player with respect to the ladder's forward vector
+    private const float defaultLadderFallingVelocity = -1.5f;   //speed at which player falls with no input on a ladder
+    private const float climbingVelocity = 3f;
+    private const float maxSidewaysVelocityOnLadder = 1f;     //max sideways speed of the player with respect to the ladder's forward vector
 
     private float yaw;
     private float pitch;
@@ -79,7 +90,9 @@ public class PlayerMovement : MonoBehaviour
         acceleration = new Vector3(0, -g, 0);
         velocity = Vector3.zero;
 
-        currentFrictionCoefficient = normalFrictionCoefficient;
+        currentFrictionCoefficient = frictionCoefficients["Default"];
+
+        currMaxSpeedMultiplier = maxSpeedMultipliers["Default"];
 
         setPlayerYawPitch(initialYaw, initialPitch);
 
@@ -179,18 +192,39 @@ public class PlayerMovement : MonoBehaviour
             Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
         //scale velocities down to max speeds if they were above
-        if (isSlowWalking && horizontalVelocity.magnitude > maxSlowWalkHorizontalSpeed) {
-            horizontalVelocity.Normalize();
-            horizontalVelocity *= maxSlowWalkHorizontalSpeed;
+        float speedThreshold = 0f;
+        if (isSlowWalking)
+        {
+            speedThreshold = maxSlowWalkHorizontalSpeed * currMaxSpeedMultiplier;
+        } else if (isRunning)
+        {
+            speedThreshold = maxRunningHorizontalSpeed * currMaxSpeedMultiplier;
+        } else
+        {
+            speedThreshold = maxWalkingHorizontalSpeed * currMaxSpeedMultiplier;
         }
-        else if (isRunning && horizontalVelocity.magnitude > maxRunningHorizontalSpeed) {
-            horizontalVelocity.Normalize();
-            horizontalVelocity *= maxRunningHorizontalSpeed;
-        } else if (horizontalVelocity.magnitude > maxWalkingHorizontalSpeed)
+        if (horizontalVelocity.magnitude > speedThreshold)
         {
             horizontalVelocity.Normalize();
-            horizontalVelocity *= maxWalkingHorizontalSpeed;
+            horizontalVelocity *= speedThreshold;
         }
+
+
+        //if (isSlowWalking && horizontalVelocity.magnitude > maxSlowWalkHorizontalSpeed)
+        //{
+        //    horizontalVelocity.Normalize();
+        //    horizontalVelocity *= maxSlowWalkHorizontalSpeed;
+        //}
+        //else if (isRunning && horizontalVelocity.magnitude > maxRunningHorizontalSpeed)
+        //{
+        //    horizontalVelocity.Normalize();
+        //    horizontalVelocity *= maxRunningHorizontalSpeed;
+        //}
+        //else if (!isRunning && !isSlowWalking && horizontalVelocity.magnitude > maxWalkingHorizontalSpeed)
+        //{
+        //    horizontalVelocity.Normalize();
+        //    horizontalVelocity *= maxWalkingHorizontalSpeed;
+        //}
 
         //update velocities in case they were scaled down
         velocity.x = horizontalVelocity.x;
@@ -444,19 +478,10 @@ public class PlayerMovement : MonoBehaviour
 
                 //set the type of friction 
                 string tag = collision.gameObject.tag;
-                switch (tag)
-                {
-                    case "Slime":
-                        currentFrictionCoefficient = slimeFrictionCoefficient;
-                        break;
-                    case "Ice":
-                        currentFrictionCoefficient = iceFrictionCoefficient;
-                        break;
-                    default:
-                        currentFrictionCoefficient = normalFrictionCoefficient;
-                        break;
-                }
+                currentFrictionCoefficient = frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]);
+                currMaxSpeedMultiplier = maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]);
             }
+            //}
         }
 
 
@@ -472,7 +497,8 @@ public class PlayerMovement : MonoBehaviour
     {
         groundContactPoints.Remove(collision.collider);
         if (groundContactPoints.Count == 0) {
-            currentFrictionCoefficient = airFrictionCoefficient;
+            currentFrictionCoefficient = frictionCoefficients["Air"];
+            currMaxSpeedMultiplier = maxSpeedMultipliers["Air"];
         }
         //sanity check
         //ceilingContactPointsPositions.Remove(collision.collider);
