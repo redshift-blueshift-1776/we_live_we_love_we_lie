@@ -44,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
     private const float minSpeed = 0.00001f;
     private const float minElasticCollisionVelocity = 1f;
+    private const float ceilingReboundVelocity = -0.25f;
 
     private float walkingAcceleration = 0.05f;
     private float runningAcceleration = 0.1f;
@@ -240,8 +241,6 @@ public class PlayerMovement : MonoBehaviour
         } 
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
-
-        Debug.Log(currentFrictionCoefficient);
     }
 
     /// <summary>
@@ -430,6 +429,8 @@ public class PlayerMovement : MonoBehaviour
                 addGroundCollider(collision, contact);
                 playerRigidBody.linearVelocity = Vector3.zero;
             }
+
+
             if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
                 // flatten the normal so we only keep horizontal pushback
@@ -441,8 +442,8 @@ public class PlayerMovement : MonoBehaviour
 
                 // cancel velocity into the ceiling only along horizontal direction
                 velocity = Vector3.ProjectOnPlane(velocity, horizontalNormal);
-                velocity.y = 0;
-                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, 0, playerRigidBody.linearVelocity.z);
+                velocity.y = ceilingReboundVelocity;
+                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, ceilingReboundVelocity, playerRigidBody.linearVelocity.z);
             }
         }
     }
@@ -465,6 +466,20 @@ public class PlayerMovement : MonoBehaviour
                 string tag = collision.gameObject.tag;
                 currentFrictionCoefficient = Mathf.Min(currentFrictionCoefficient, frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]));
                 currMaxSpeedMultiplier = Mathf.Min(currMaxSpeedMultiplier, maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]));
+            }
+            else if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
+            {
+                // flatten the normal so we only keep horizontal pushback
+                Vector3 horizontalNormal = new Vector3(contact.normal.x, 0f, contact.normal.z).normalized;
+
+                // 0.03 is the lowest possible without it breaking; do not change this
+                Vector3 correction = horizontalNormal * 0.03f;
+                playerRigidBody.MovePosition(playerRigidBody.position + correction);
+
+                // cancel velocity into the ceiling only along horizontal direction
+                velocity = Vector3.ProjectOnPlane(velocity, horizontalNormal);
+                velocity.y = ceilingReboundVelocity;
+                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, ceilingReboundVelocity, playerRigidBody.linearVelocity.z);
             }
             else
             {
