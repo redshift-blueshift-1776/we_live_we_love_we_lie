@@ -9,6 +9,10 @@ using UnityEngine.SceneManagement;
 public class Player_Movement : MonoBehaviour
 {
     [SerializeField] public GameObject gameManager;
+
+    [SerializeField] public GameObject mainCamera;
+    [SerializeField] public GameObject altCamera;
+    [SerializeField] public GameObject fakeBody;
     public WalkAlongThePathUnknown gm;
     private CharacterController controller;
 
@@ -65,6 +69,9 @@ public class Player_Movement : MonoBehaviour
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
         crosshair.SetActive(true);
         bigCrosshair.SetActive(false);
+        mainCamera.SetActive(true);
+        altCamera.SetActive(false);
+        fakeBody.SetActive(false);
     }
 
     void Update()
@@ -182,8 +189,19 @@ public class Player_Movement : MonoBehaviour
         }
     }
 
-    void OnControllerColliderHit(ControllerColliderHit hit) {
-        
+    void OnTriggerEnter(Collider hit) {
+        Debug.Log(hit.gameObject.name);
+        if (hit.gameObject.name.Contains("Bullet")) {
+            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+            if (meshRenderer != null)
+            {
+                meshRenderer.enabled = false; // Disables the Mesh Renderer
+            }
+            mainCamera.SetActive(false);
+            altCamera.SetActive(true);
+            fakeBody.SetActive(true);
+            gm.Fail();
+        }
     }
 
     public void SetMouseSensitivity(float sensitivity) {

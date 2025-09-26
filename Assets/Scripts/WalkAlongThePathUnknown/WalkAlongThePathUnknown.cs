@@ -35,9 +35,13 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     public bool hitRealWall;
 
     public Maze_Generator mg;
+
+    [SerializeField] private GameObject transition;
+    [SerializeField] private Transition transitionScript;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        transitionScript = transition.GetComponent<Transition>();
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
         mazeCanvas.SetActive(false);
@@ -60,14 +64,20 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     {
         if (gameActive) {
             if (timer >= 90f) {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                PlayerPrefs.SetInt("PreviousLevel", 3);
-                SceneManager.LoadScene(5); // Change when we have the actual scene
+                Fail();
             }
             timerGame.text = $"Time Remaining: {90f - Mathf.Floor(timer)}";
             timer += Time.deltaTime;
         }
+    }
+
+    public void Fail() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        PlayerPrefs.SetInt("PreviousLevel", 3);
+        gameActive = false;
+        // SceneManager.LoadScene(5); // Change when we have the actual scene
+        transitionScript.ToFail();
     }
 
     public void soundAlarm() {

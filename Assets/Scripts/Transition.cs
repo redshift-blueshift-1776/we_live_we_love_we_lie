@@ -14,11 +14,14 @@ public class Transition : MonoBehaviour
     [SerializeField] public GameObject failSound;
     [SerializeField] public List<GameObject> toDisable;
 
+    private Coroutine currentCoroutine;
+
     // Start is called before the first frame update
     void Start()
     {
         transitionSound.SetActive(false);
         failSound.SetActive(false);
+        currentCoroutine = null;
     }
 
     // Update is called once per frame
@@ -71,7 +74,9 @@ public class Transition : MonoBehaviour
     }
 
     public void ToLevel1() {
-        StartCoroutine(LoadLevel1());
+        if (currentCoroutine == null) {
+            currentCoroutine = StartCoroutine(LoadLevel1());
+        }
     }
 
     public IEnumerator LoadLevelSelect() {
@@ -104,7 +109,9 @@ public class Transition : MonoBehaviour
     }
 
     public void ToLevelSelect() {
-        StartCoroutine(LoadLevelSelect());
+        if (currentCoroutine == null) {
+            currentCoroutine = StartCoroutine(LoadLevelSelect());
+        }
     }
 
     public IEnumerator LoadMenu() {
@@ -137,7 +144,9 @@ public class Transition : MonoBehaviour
     }
 
     public void ToMenu() {
-        StartCoroutine(LoadMenu());
+        if (currentCoroutine == null) {
+            currentCoroutine = StartCoroutine(LoadMenu());
+        }
     }
 
     public IEnumerator LoadPrevious() {
@@ -155,9 +164,9 @@ public class Transition : MonoBehaviour
         Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
         while (elapsed < duration) {
             float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 3f, t * t * t);
+            // rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 3f, t * t * t);
             bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, ogBWpos / 1.5f, t * t * t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 3f, t * t * t);
+            // leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 3f, t * t * t);
             topWall.transform.localPosition = Vector3.Lerp(ogTWpos, ogTWpos / 1.5f, t * t * t);
             elapsed += Time.deltaTime;
             yield return null;
@@ -170,8 +179,8 @@ public class Transition : MonoBehaviour
         while (elapsed < duration) {
             float t = elapsed / duration;
             rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t);
+            // bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t);
+            // topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t);
             leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t);
             elapsed += Time.deltaTime;
             yield return null;
@@ -185,7 +194,9 @@ public class Transition : MonoBehaviour
     }
 
     public void ToPrevious() {
-        StartCoroutine(LoadPrevious());
+        if (currentCoroutine == null) {
+            currentCoroutine = StartCoroutine(LoadPrevious());
+        }
     }
 
     public IEnumerator LoadFail() {
@@ -218,8 +229,10 @@ public class Transition : MonoBehaviour
     }
 
     public void ToFail() {
-        Scene currentScene = SceneManager.GetActiveScene();
-        PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
-        StartCoroutine(LoadFail());
+        if (currentCoroutine == null) {
+            Scene currentScene = SceneManager.GetActiveScene();
+            PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
+            currentCoroutine = StartCoroutine(LoadFail());
+        }
     }
 }

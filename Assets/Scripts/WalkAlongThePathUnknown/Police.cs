@@ -33,6 +33,7 @@ public class Police : MonoBehaviour
 
     [SerializeField] GameObject bullet;
     [SerializeField] float speed;
+    [SerializeField] GameObject bulletSpawn;
 
     [Header("Maze Configuration")]
     [SerializeField] public GameObject mazeGeneratorObject;
@@ -130,8 +131,13 @@ public class Police : MonoBehaviour
     }
 
     public IEnumerator ShootBullet() {
-        while (currState == EnemyState.Shoot) {
+        while (currState == EnemyState.Shoot && gameScript.gameActive) {
             gunSound.Play();
+            var projectile = Instantiate(bullet, transform);
+            projectile.SetActive(true);
+            var projectileScript = projectile.GetComponent<Bullet>();
+            projectileScript.targetPosition = player.transform.position + new Vector3(0f, 1.5f, 0f);
+            projectileScript.startPosition = bulletSpawn.transform.position;
             yield return new WaitForSeconds(1f);
         }
     }
