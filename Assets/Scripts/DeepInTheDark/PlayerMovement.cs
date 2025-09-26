@@ -30,7 +30,8 @@ public class PlayerMovement : MonoBehaviour
     private const float jumpHeight = 1.5f;
 
 
-    private const float frictionCoefficient = 0.97f;
+    private const float normalFrictionCoefficient = 0.97f;
+    private const float iceFrictionCoefficient = 0.9999f;
     private const float elasticEnergyExponentialDecayCoefficient = 0.125f;
 
     private const float minSpeed = 0.01f;
@@ -39,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
     private float walkingAcceleration = 0.05f;
     private float runningAcceleration = 0.1f;
 
+    private float maxSlowWalkHorizontalSpeed = 2f;
     private float maxWalkingHorizontalSpeed = 5f;
     private float maxRunningHorizontalSpeed = 8f;
 
@@ -148,6 +150,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 forward = player.transform.forward;
         bool isRunning = Input.GetKey(KeyCode.LeftShift) ? true : false;
 
+        //change to LeftControl when deploying (Ctrl interferes with Unity editor shortcuts)
+        bool isSlowWalking = Input.GetKey(KeyCode.CapsLock) ? true : false;
+
 
         if (getInputDirectionVector().magnitude > 0)
         {
@@ -167,7 +172,11 @@ public class PlayerMovement : MonoBehaviour
             Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
         //scale velocities down to max speeds if they were above
-        if (isRunning && horizontalVelocity.magnitude > maxRunningHorizontalSpeed) {
+        if (isSlowWalking && horizontalVelocity.magnitude > maxSlowWalkHorizontalSpeed) {
+            horizontalVelocity.Normalize();
+            horizontalVelocity *= maxSlowWalkHorizontalSpeed;
+        }
+        else if (isRunning && horizontalVelocity.magnitude > maxRunningHorizontalSpeed) {
             horizontalVelocity.Normalize();
             horizontalVelocity *= maxRunningHorizontalSpeed;
         } else if (!isRunning && horizontalVelocity.magnitude > maxWalkingHorizontalSpeed)
@@ -201,7 +210,7 @@ public class PlayerMovement : MonoBehaviour
         if (!userInput && !isClimbing)
         {
             //apply friction to the velocity vector
-            Vector3 frictionVector = new Vector3(frictionCoefficient, 1f, frictionCoefficient);
+            Vector3 frictionVector = new Vector3(normalFrictionCoefficient, 1f, normalFrictionCoefficient);
             velocity.Scale(frictionVector);
         } 
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
