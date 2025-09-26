@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     {
         {"Default", 0.97f},
         {"Air", 0.995f },
+        {"Ladder", 0.1f },
         {"Slime", 0.9f  },
         {"Ice", 0.9999f }
     };
@@ -55,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
     {
         {"Default", 1f},
         {"Air", 1f },   //same as default but subject to change
+        {"Ladder", 0.25f },
         {"Slime", 0.5f  },
         {"Ice", 2f }
     };
@@ -64,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform currentLadder = null;
     private const float defaultLadderFallingVelocity = -1.5f;   //speed at which player falls with no input on a ladder
     private const float climbingVelocity = 3f;
-    private const float maxSidewaysVelocityOnLadder = 1f;     //max sideways speed of the player with respect to the ladder's forward vector
+    private const float maxSidewaysVelocityOnLadder = 0.5f;     //max sideways speed of the player with respect to the ladder's forward vector
 
     private float yaw;
     private float pitch;
@@ -84,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.visible = false;
 
         playerRigidBody = GetComponent<Rigidbody>();
 
@@ -239,7 +241,7 @@ public class PlayerMovement : MonoBehaviour
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
 
-        Debug.Log(velocity.y);
+        Debug.Log(currentFrictionCoefficient);
     }
 
     /// <summary>
@@ -461,13 +463,16 @@ public class PlayerMovement : MonoBehaviour
 
                 //set the type of friction 
                 string tag = collision.gameObject.tag;
-                currentFrictionCoefficient = frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]);
-                currMaxSpeedMultiplier = maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]);
+                currentFrictionCoefficient = Mathf.Min(currentFrictionCoefficient, frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]));
+                currMaxSpeedMultiplier = Mathf.Min(currMaxSpeedMultiplier, maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]));
             }
             else
             {
                 //stops players from clipping through corners
-                velocity = Vector3.ProjectOnPlane(velocity, contact.normal);
+                if (!collision.gameObject.CompareTag("Slime"))
+                {
+                    velocity = Vector3.ProjectOnPlane(velocity, contact.normal);
+                }
             }
         }
 
