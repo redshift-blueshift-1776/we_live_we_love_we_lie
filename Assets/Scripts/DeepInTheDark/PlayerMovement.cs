@@ -31,8 +31,10 @@ public class PlayerMovement : MonoBehaviour
 
 
     private const float frictionCoefficient = 0.97f;
+    private const float elasticEnergyExponentialDecayCoefficient = 0.125f;
 
     private const float minSpeed = 0.01f;
+    private const float minElasticCollisionVelocity = 1f;
 
     private float walkingAcceleration = 0.05f;
     private float runningAcceleration = 0.1f;
@@ -44,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform currentLadder = null;
     private float defaultLadderFallingVelocity = -3f;   //speed at which player falls with no input on a ladder
     private float climbingVelocity = 3f;
-    private float maxSidewaysVelocityOnLadder = 3f;     //max sideways speed of the player with respect to the ladder's forward vector
+    private float maxSidewaysVelocityOnLadder = 1f;     //max sideways speed of the player with respect to the ladder's forward vector
 
     private float yaw;
     private float pitch;
@@ -55,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
     //the maximum angled slope the player can walk up (in degrees)
     private const float maxSlopeAngle = 60f;
 
-    private const float rotationSpeed = 5f;
+    private const float rotationSpeed = 10f;
 
     //stores current ground contact colliders and their normals; see rotatePlayer() for more info
     private Dictionary<Collider, List<Vector3>> groundContactPoints;
@@ -331,6 +333,45 @@ public class PlayerMovement : MonoBehaviour
         return inputDirection;
     }
 
+    private bool handleSlimeBounce(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Slime"))
+        {
+            //Debug.Log($"OnCollisionEnter with Slime - Frame: {Time.frameCount}, velocity.y: {velocity.y}");
+
+            if (Mathf.Abs(velocity.y) >= minElasticCollisionVelocity)
+            {
+                velocity.y = Mathf.Abs(velocity.y *
+                    (1 - Mathf.Exp(
+                        -elasticEnergyExponentialDecayCoefficient * Mathf.Abs(velocity.y))
+                        )
+                    );
+                //Debug.Log($"Bounced to: {velocity.y}");
+
+                return true;
+            }
+            else
+            {
+                velocity.y = 0;
+                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, 0, playerRigidBody.linearVelocity.z);
+            }
+        }
+        return false;
+    }
+
+
+    private void addGroundCollider(Collision collision, ContactPoint contact)
+    {
+        if (!groundContactPoints.ContainsKey(collision.collider))
+        {
+            groundContactPoints.Add(collision.collider, new List<Vector3> { });
+        }
+        if (groundContactPoints[collision.collider].Count == 0)
+        {
+            groundContactPoints[collision.collider].Add(contact.normal);
+        }
+    }
+
     /// <summary>
     /// This function is mainly used to add ground contact points to
     /// the Dictionary containing both information about the Collider
@@ -345,11 +386,12 @@ public class PlayerMovement : MonoBehaviour
         {
             if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
-                if (!groundContactPoints.ContainsKey(collision.collider))
+                if (handleSlimeBounce(collision))
                 {
-                    groundContactPoints.Add(collision.collider, new List<Vector3> { });
+                    return;
                 }
-                groundContactPoints[collision.collider].Add(contact.normal);
+
+                addGroundCollider(collision, contact);
                 playerRigidBody.linearVelocity = Vector3.zero;
             }
             if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
@@ -379,6 +421,12 @@ public class PlayerMovement : MonoBehaviour
 
         foreach (ContactPoint contact in collision.contacts)
         {
+            if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
+            {
+                addGroundCollider(collision, contact);
+                playerRigidBody.linearVelocity = Vector3.zero;
+            }
+
             //prevents climbing on slopes that are too steep (controlled by maxSlopeAngle variable)
             if (contact.normal != Vector3.up)
             {
