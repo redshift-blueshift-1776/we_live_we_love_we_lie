@@ -45,7 +45,6 @@ public struct Sound
     {
         if (source != null)
         {
-            Debug.Log("playing " + name);
             source.Play();
         }
     }

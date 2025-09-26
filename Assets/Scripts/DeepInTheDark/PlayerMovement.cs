@@ -30,13 +30,22 @@ public class PlayerMovement : MonoBehaviour
     private const float jumpHeight = 1.5f;
 
 
-    private const float frictionCoefficient = 0.97f;
+    private const float normalFrictionCoefficient = 0.97f;
+    private const float airFrictionCoefficient = 0.995f;
+    private const float slimeFrictionCoefficient = 0.9f;
+    private const float iceFrictionCoefficient = 0.9999f;
+    private float currentFrictionCoefficient;
 
-    private const float minSpeed = 0.01f;
+
+    private const float elasticEnergyExponentialDecayCoefficient = 0.125f;
+
+    private const float minSpeed = 0.00001f;
+    private const float minElasticCollisionVelocity = 1f;
 
     private float walkingAcceleration = 0.05f;
     private float runningAcceleration = 0.1f;
 
+    private float maxSlowWalkHorizontalSpeed = 3f;
     private float maxWalkingHorizontalSpeed = 5f;
     private float maxRunningHorizontalSpeed = 8f;
 
@@ -44,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform currentLadder = null;
     private float defaultLadderFallingVelocity = -3f;   //speed at which player falls with no input on a ladder
     private float climbingVelocity = 3f;
-    private float maxSidewaysVelocityOnLadder = 3f;     //max sideways speed of the player with respect to the ladder's forward vector
+    private float maxSidewaysVelocityOnLadder = 1f;     //max sideways speed of the player with respect to the ladder's forward vector
 
     private float yaw;
     private float pitch;
@@ -55,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
     //the maximum angled slope the player can walk up (in degrees)
     private const float maxSlopeAngle = 60f;
 
-    private const float rotationSpeed = 5f;
+    private const float rotationSpeed = 10f;
 
     //stores current ground contact colliders and their normals; see rotatePlayer() for more info
     private Dictionary<Collider, List<Vector3>> groundContactPoints;
@@ -69,6 +78,8 @@ public class PlayerMovement : MonoBehaviour
 
         acceleration = new Vector3(0, -g, 0);
         velocity = Vector3.zero;
+
+        currentFrictionCoefficient = normalFrictionCoefficient;
 
         setPlayerYawPitch(initialYaw, initialPitch);
 
@@ -146,6 +157,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 forward = player.transform.forward;
         bool isRunning = Input.GetKey(KeyCode.LeftShift) ? true : false;
 
+        //change to LeftControl when deploying (Ctrl interferes with Unity editor shortcuts)
+        bool isSlowWalking = Input.GetKey(KeyCode.CapsLock) ? true : false;
+
 
         if (getInputDirectionVector().magnitude > 0)
         {
@@ -165,10 +179,14 @@ public class PlayerMovement : MonoBehaviour
             Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
         //scale velocities down to max speeds if they were above
-        if (isRunning && horizontalVelocity.magnitude > maxRunningHorizontalSpeed) {
+        if (isSlowWalking && horizontalVelocity.magnitude > maxSlowWalkHorizontalSpeed) {
+            horizontalVelocity.Normalize();
+            horizontalVelocity *= maxSlowWalkHorizontalSpeed;
+        }
+        else if (isRunning && horizontalVelocity.magnitude > maxRunningHorizontalSpeed) {
             horizontalVelocity.Normalize();
             horizontalVelocity *= maxRunningHorizontalSpeed;
-        } else if (!isRunning && horizontalVelocity.magnitude > maxWalkingHorizontalSpeed)
+        } else if (horizontalVelocity.magnitude > maxWalkingHorizontalSpeed)
         {
             horizontalVelocity.Normalize();
             horizontalVelocity *= maxWalkingHorizontalSpeed;
@@ -199,7 +217,7 @@ public class PlayerMovement : MonoBehaviour
         if (!userInput && !isClimbing)
         {
             //apply friction to the velocity vector
-            Vector3 frictionVector = new Vector3(frictionCoefficient, 1f, frictionCoefficient);
+            Vector3 frictionVector = new Vector3(currentFrictionCoefficient, 1f, currentFrictionCoefficient);
             velocity.Scale(frictionVector);
         } 
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
@@ -331,6 +349,45 @@ public class PlayerMovement : MonoBehaviour
         return inputDirection;
     }
 
+    private bool handleSlimeBounce(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Slime"))
+        {
+            //Debug.Log($"OnCollisionEnter with Slime - Frame: {Time.frameCount}, velocity.y: {velocity.y}");
+
+            if (Mathf.Abs(velocity.y) >= minElasticCollisionVelocity)
+            {
+                velocity.y = Mathf.Abs(velocity.y *
+                    (1 - Mathf.Exp(
+                        -elasticEnergyExponentialDecayCoefficient * Mathf.Abs(velocity.y))
+                        )
+                    );
+                //Debug.Log($"Bounced to: {velocity.y}");
+
+                return true;
+            }
+            else
+            {
+                velocity.y = 0;
+                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, 0, playerRigidBody.linearVelocity.z);
+            }
+        }
+        return false;
+    }
+
+
+    private void addGroundCollider(Collision collision, ContactPoint contact)
+    {
+        if (!groundContactPoints.ContainsKey(collision.collider))
+        {
+            groundContactPoints.Add(collision.collider, new List<Vector3> { });
+        }
+        if (groundContactPoints[collision.collider].Count == 0)
+        {
+            groundContactPoints[collision.collider].Add(contact.normal);
+        }
+    }
+
     /// <summary>
     /// This function is mainly used to add ground contact points to
     /// the Dictionary containing both information about the Collider
@@ -345,11 +402,12 @@ public class PlayerMovement : MonoBehaviour
         {
             if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
-                if (!groundContactPoints.ContainsKey(collision.collider))
+                if (handleSlimeBounce(collision))
                 {
-                    groundContactPoints.Add(collision.collider, new List<Vector3> { });
+                    return;
                 }
-                groundContactPoints[collision.collider].Add(contact.normal);
+
+                addGroundCollider(collision, contact);
                 playerRigidBody.linearVelocity = Vector3.zero;
             }
             if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
@@ -379,16 +437,24 @@ public class PlayerMovement : MonoBehaviour
 
         foreach (ContactPoint contact in collision.contacts)
         {
-            //prevents climbing on slopes that are too steep (controlled by maxSlopeAngle variable)
-            if (contact.normal != Vector3.up)
+            if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
-                if (Mathf.Abs(contact.normal.x) > Mathf.Sin(maxSlopeAngle * Mathf.Deg2Rad))
+                addGroundCollider(collision, contact);
+                playerRigidBody.linearVelocity = Vector3.zero;
+
+                //set the type of friction 
+                string tag = collision.gameObject.tag;
+                switch (tag)
                 {
-                    velocity.x = 0;
-                }
-                if (Mathf.Abs(contact.normal.z) > Mathf.Sin(maxSlopeAngle * Mathf.Deg2Rad))
-                {
-                    velocity.z = 0;
+                    case "Slime":
+                        currentFrictionCoefficient = slimeFrictionCoefficient;
+                        break;
+                    case "Ice":
+                        currentFrictionCoefficient = iceFrictionCoefficient;
+                        break;
+                    default:
+                        currentFrictionCoefficient = normalFrictionCoefficient;
+                        break;
                 }
             }
         }
@@ -405,7 +471,9 @@ public class PlayerMovement : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         groundContactPoints.Remove(collision.collider);
-
+        if (groundContactPoints.Count == 0) {
+            currentFrictionCoefficient = airFrictionCoefficient;
+        }
         //sanity check
         //ceilingContactPointsPositions.Remove(collision.collider);
     }
