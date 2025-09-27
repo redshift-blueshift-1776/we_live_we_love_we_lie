@@ -67,6 +67,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] private TMP_Text stealOrNoSteal;
     [SerializeField] private GameObject yourCard;
     [SerializeField] private GameObject yourCardReal;
+    [SerializeField] public GameObject skipButton;
 
     [SerializeField] private TMP_Text opponentText;
 
@@ -97,6 +98,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     private bool turnActive = false;
     private Action queuedTurn = null;
 
+    private bool showSkipButton = false;
+
     public static FirstWeLiveWeLoveWeLie Instance { get; private set; }
 
     void Awake()
@@ -123,6 +126,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
         cm = cutsceneManager.GetComponent<CutsceneManager>();
         dm = dialogueManager.GetComponent<DialogueManager>();
+        showSkipButton = false;
     }
 
     void Update()
@@ -131,6 +135,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             redLeft.text = $"Red Left: {redsRemaining}";
             blackLeft.text = $"Black Left: {blacksRemaining}";
         }
+        skipButton.SetActive(showSkipButton);
     }
 
     public void OnSeatSliderChanged()
@@ -373,6 +378,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             yourCardReal.SetActive(true);
             RawImage cardImage = yourCardReal.GetComponent<RawImage>();
             cardImage.color = (c.Color == CardColor.Red) ? Color.red : Color.black;
+            showSkipButton = true;
         }
     }
 
