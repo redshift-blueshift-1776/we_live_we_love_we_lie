@@ -362,6 +362,13 @@ public class Player_Movement_Level_2 : MonoBehaviour
         PlayerPrefs.SetFloat("MouseSensitivity", sensitivity); // Save to PlayerPrefs
     }
 
+    void OnTriggerEnter(Collider hit) {
+        Debug.Log(hit.gameObject.name);
+        if (hit.gameObject.name.Contains("Bad Car")) {
+            gm.GameLose();
+        }
+    }
+
     void interactRaycast() {
         Vector3 origin = Camera.main.transform.position;
         Vector3 dir = Camera.main.transform.forward;

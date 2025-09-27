@@ -16,6 +16,7 @@ public class Car : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        transform.LookAt(targetPosition);
         transform.position += transform.forward * speed * Time.deltaTime;
     }
 }

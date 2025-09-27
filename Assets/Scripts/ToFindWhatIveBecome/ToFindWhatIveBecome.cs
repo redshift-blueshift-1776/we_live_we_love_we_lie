@@ -34,9 +34,13 @@ public class ToFindWhatIveBecome : MonoBehaviour
 
     public bool[] collected = new bool[6];
 
+    [SerializeField] private GameObject transition;
+    [SerializeField] private Transition transitionScript;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        transitionScript = transition.GetComponent<Transition>();
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
         winCanvas.SetActive(false);
@@ -65,11 +69,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
     void Update()
     {
         if (gameActive) {
-            if (timer >= 292f) {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                PlayerPrefs.SetInt("PreviousLevel", 2);
-                SceneManager.LoadScene(5); // Change when we have the actual scene
+            if (timer >= 292f) { 
+                GameLose(); // Change when we have the actual scene
             }
             UpdateUI();
             CheckEndConditions();
@@ -110,6 +111,14 @@ public class ToFindWhatIveBecome : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene(3);
+    }
+
+    public void GameLose() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        PlayerPrefs.SetInt("PreviousLevel", 2);
+        gameActive = false;
+        transitionScript.ToFail();
     }
 
     public void UpdateUI() {
