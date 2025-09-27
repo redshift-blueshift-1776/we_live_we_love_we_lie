@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform currentLadder = null;
     private const float defaultLadderFallingVelocity = -1.5f;   //speed at which player falls with no input on a ladder
     private const float climbingVelocity = 3f;
-    private const float maxSidewaysVelocityOnLadder = 0.5f;     //max sideways speed of the player with respect to the ladder's forward vector
+    private const float maxSidewaysVelocityOnLadder = 2f;     //max sideways speed of the player with respect to the ladder's forward vector
 
     private float yaw;
     private float pitch;
@@ -110,9 +110,11 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         initializeSounds();
+        handleSensitivityChange();
         movePlayer();
         rotateCamera();
         handleJump();
+        Debug.Log(sensitivityX + " " + sensitivityY);
     }
 
     private void FixedUpdate()
@@ -154,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
         if (groundContactPoints.Count > 0)
         {
             body.transform.up = Vector3.Slerp(body.transform.up, averageNormal, rotationSpeed * Time.deltaTime);
-        } 
+        }
     }
 
     public void setPlayerYawPitch(float yaw, float pitch)
@@ -192,8 +194,8 @@ public class PlayerMovement : MonoBehaviour
             userInput = false;
         }
 
-            //scale velocity to max
-            Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+        //scale velocity to max
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
         //scale velocities down to max speeds if they were above
         float speedThreshold = 0f;
@@ -216,7 +218,7 @@ public class PlayerMovement : MonoBehaviour
         //update velocities in case they were scaled down
         velocity.x = horizontalVelocity.x;
         velocity.z = horizontalVelocity.z;
-        
+
 
         //update vertical velocity
         if (isClimbing)
@@ -238,7 +240,7 @@ public class PlayerMovement : MonoBehaviour
             //apply friction to the velocity vector
             Vector3 frictionVector = new Vector3(currentFrictionCoefficient, 1f, currentFrictionCoefficient);
             velocity.Scale(frictionVector);
-        } 
+        }
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
     }
@@ -405,6 +407,40 @@ public class PlayerMovement : MonoBehaviour
         {
             groundContactPoints[collision.collider].Add(contact.normal);
         }
+    }
+
+    private void handleSensitivityChange()
+    {
+        if (!Input.GetKey(KeyCode.LeftShift)) {
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            setSensitivityX(sensitivityX - 0.5f);
+        } else if (Input.GetKeyDown(KeyCode.P))
+        {
+            setSensitivityX(sensitivityX + 0.5f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            setSensitivityY(sensitivityY - 0.5f);
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            setSensitivityY(sensitivityY + 0.5f);
+        }
+    }
+
+    private void setSensitivityX(float x)
+    {
+        sensitivityX = x;
+    }
+
+    private void setSensitivityY(float y)
+    {
+        sensitivityY = y;
     }
 
     /// <summary>
