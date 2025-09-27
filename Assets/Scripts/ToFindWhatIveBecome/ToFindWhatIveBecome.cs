@@ -69,7 +69,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
     void Update()
     {
         if (gameActive) {
-            if (timer >= 292f) { 
+            if (timer >= 169f) { 
                 GameLose(); // Change when we have the actual scene
             }
             UpdateUI();
@@ -122,7 +122,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
     }
 
     public void UpdateUI() {
-        timerGame.text = $"Time Remaining: {292f - Mathf.Floor(timer)}";
+        timerGame.text = $"Time Remaining: {169f - Mathf.Floor(timer)}";
         for (int i = 0; i < 6; i++) {
             images[i].texture = collected[i] ? fills[i] : blank;
         }

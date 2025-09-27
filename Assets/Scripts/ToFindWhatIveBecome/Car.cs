@@ -18,5 +18,8 @@ public class Car : MonoBehaviour
     {
         transform.LookAt(targetPosition);
         transform.position += transform.forward * speed * Time.deltaTime;
+        if (Vector3.Distance(transform.position, targetPosition) < 25f) {
+            Destroy(gameObject);
+        }
     }
 }
