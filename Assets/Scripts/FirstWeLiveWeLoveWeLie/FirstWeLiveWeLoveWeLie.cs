@@ -81,6 +81,10 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] public Transform PlayerFrom;
     [SerializeField] public GameObject player;
 
+    [SerializeField] public bool bayesian;
+    [SerializeField] public float probTruthIfSafe = 0.6f;
+    [SerializeField] public float probTruthIfEliminate = 0.2f;
+
     private DeckManager deckManager;
     private List<Player> players = new List<Player>();
 
@@ -215,14 +219,58 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             RawImage cardImage = yourCard.GetComponent<RawImage>();
             cardImage.color = (defenseCard.Color == CardColor.Red) ? Color.red : Color.black;
 
-            string[] options = { "Trust me, pass!", "You'll regret passing!", "Your move, but risky..." };
+            string[] options = { "It's eliminate...", "It's safe...", "Your move, but risky..." };
             dm.ShowDialogueOptions(options, choice =>
             {
                 if (turnActive) return; // Ignore if a turn is already being processed
 
                 float stealChance = 0.5f;
-                if (choice == 0) stealChance -= 0.3f;
-                if (choice == 1) stealChance += 0.3f;
+                if (bayesian) {
+                    if (choice == 0) {
+                        // Player says eliminated
+                        float baseProbRed = redsRemaining / (redsRemaining + blacksRemaining + 0f);
+                        float baseProbBlack = blacksRemaining / (redsRemaining + blacksRemaining + 0f);
+
+                        float probRedTruth = baseProbRed * probTruthIfEliminate;
+                        float probBlackLie = baseProbBlack * (1 - probTruthIfSafe);
+
+                        float impliedRedProb = probRedTruth / (probRedTruth + probBlackLie);
+
+                        Debug.Log("probRedTruth: " + probRedTruth);
+                        Debug.Log("probBlackLie: " + probBlackLie);
+                        Debug.Log("impliedRedProb: " + impliedRedProb);
+
+                        if (probRedTruth > probBlackLie) {
+                            stealChance = 0f;
+                        } else {
+                            stealChance = 1f;
+                        }
+                        Debug.Log("stealChance: " + stealChance);
+                    } else {
+                        // Player says safe
+                        float baseProbRed = redsRemaining / (redsRemaining + blacksRemaining + 0f);
+                        float baseProbBlack = blacksRemaining / (redsRemaining + blacksRemaining + 0f);
+
+                        float probRedLie = baseProbRed * (1 - probTruthIfEliminate);
+                        float probBlackTruth = baseProbBlack * probTruthIfSafe;
+
+                        float impliedRedProb = probRedLie / (probRedLie + probBlackTruth);
+
+                        Debug.Log("probRedLie: " + probRedLie);
+                        Debug.Log("probBlackTruth: " + probBlackTruth);
+                        Debug.Log("impliedRedProb: " + impliedRedProb);
+
+                        if (probRedLie > probBlackTruth) {
+                            stealChance = 0f;
+                        } else {
+                            stealChance = 1f;
+                        }
+                        Debug.Log("stealChance: " + stealChance);
+                    }
+                } else {
+                    if (choice == 0) stealChance -= 0.3f;
+                    if (choice == 1) stealChance += 0.3f;
+                }
 
                 bool aiSteals = UnityEngine.Random.value < stealChance;
                 ResolveTurn(aiSteals, isHuman: false);
