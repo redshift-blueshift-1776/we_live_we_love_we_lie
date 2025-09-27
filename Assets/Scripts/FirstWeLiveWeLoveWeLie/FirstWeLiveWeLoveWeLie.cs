@@ -241,9 +241,9 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                         Debug.Log("impliedRedProb: " + impliedRedProb);
 
                         if (probRedTruth > probBlackLie) {
-                            stealChance = 0f;
+                            stealChance -= 0.25f;
                         } else {
-                            stealChance = 1f;
+                            stealChance += 0.25f;
                         }
                         Debug.Log("stealChance: " + stealChance);
                     } else {
@@ -261,9 +261,9 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                         Debug.Log("impliedRedProb: " + impliedRedProb);
 
                         if (probRedLie > probBlackTruth) {
-                            stealChance = 0f;
+                            stealChance -= 0.25f;
                         } else {
-                            stealChance = 1f;
+                            stealChance += 0.25f;
                         }
                         Debug.Log("stealChance: " + stealChance);
                     }
