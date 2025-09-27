@@ -38,7 +38,7 @@ public class DeepInTheDark : MonoBehaviour
     //this must be at least 1.9 (preferably 2).
     private float initialLightningDelay = 5f;
 
-    private float intervalBetweenLightning = 10f;
+    private float intervalBetweenLightning;
 
     [SerializeField] private TMP_Text timerText;
 
@@ -54,6 +54,7 @@ public class DeepInTheDark : MonoBehaviour
         playerCamera = player.transform.Find("Main Camera");
         fov = playerCamera.GetComponent<Camera>().fieldOfView;
         powerOff = false;
+        intervalBetweenLightning = fadeTimer + 2f;
 
         RenderSettings.ambientSkyColor = spectreColor;
         initializeStartTimes();

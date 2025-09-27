@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     {
         {"Default", 0.97f},
         {"Air", 0.995f },
+        {"Ladder", 0.1f },
         {"Slime", 0.9f  },
         {"Ice", 0.9999f }
     };
@@ -43,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
     private const float minSpeed = 0.00001f;
     private const float minElasticCollisionVelocity = 1f;
+    private const float ceilingReboundVelocity = -0.25f;
 
     private float walkingAcceleration = 0.05f;
     private float runningAcceleration = 0.1f;
@@ -55,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
     {
         {"Default", 1f},
         {"Air", 1f },   //same as default but subject to change
+        {"Ladder", 0.25f },
         {"Slime", 0.5f  },
         {"Ice", 2f }
     };
@@ -64,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform currentLadder = null;
     private const float defaultLadderFallingVelocity = -1.5f;   //speed at which player falls with no input on a ladder
     private const float climbingVelocity = 3f;
-    private const float maxSidewaysVelocityOnLadder = 1f;     //max sideways speed of the player with respect to the ladder's forward vector
+    private const float maxSidewaysVelocityOnLadder = 0.5f;     //max sideways speed of the player with respect to the ladder's forward vector
 
     private float yaw;
     private float pitch;
@@ -80,10 +83,11 @@ public class PlayerMovement : MonoBehaviour
     //stores current ground contact colliders and their normals; see rotatePlayer() for more info
     private Dictionary<Collider, List<Vector3>> groundContactPoints;
 
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.visible = false;
 
         playerRigidBody = GetComponent<Rigidbody>();
 
@@ -209,23 +213,6 @@ public class PlayerMovement : MonoBehaviour
             horizontalVelocity *= speedThreshold;
         }
 
-
-        //if (isSlowWalking && horizontalVelocity.magnitude > maxSlowWalkHorizontalSpeed)
-        //{
-        //    horizontalVelocity.Normalize();
-        //    horizontalVelocity *= maxSlowWalkHorizontalSpeed;
-        //}
-        //else if (isRunning && horizontalVelocity.magnitude > maxRunningHorizontalSpeed)
-        //{
-        //    horizontalVelocity.Normalize();
-        //    horizontalVelocity *= maxRunningHorizontalSpeed;
-        //}
-        //else if (!isRunning && !isSlowWalking && horizontalVelocity.magnitude > maxWalkingHorizontalSpeed)
-        //{
-        //    horizontalVelocity.Normalize();
-        //    horizontalVelocity *= maxWalkingHorizontalSpeed;
-        //}
-
         //update velocities in case they were scaled down
         velocity.x = horizontalVelocity.x;
         velocity.z = horizontalVelocity.z;
@@ -244,8 +231,6 @@ public class PlayerMovement : MonoBehaviour
         playerRigidBody.MovePosition(playerRigidBody.position + (
             groundContactPoints.Count > 0 && !isClimbing ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity
             ) * Time.deltaTime);
-
-
 
         //only apply friction when the player stops giving input (WASD)
         if (!userInput && !isClimbing)
@@ -444,6 +429,8 @@ public class PlayerMovement : MonoBehaviour
                 addGroundCollider(collision, contact);
                 playerRigidBody.linearVelocity = Vector3.zero;
             }
+
+
             if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
                 // flatten the normal so we only keep horizontal pushback
@@ -455,8 +442,8 @@ public class PlayerMovement : MonoBehaviour
 
                 // cancel velocity into the ceiling only along horizontal direction
                 velocity = Vector3.ProjectOnPlane(velocity, horizontalNormal);
-                velocity.y = 0;
-                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, 0, playerRigidBody.linearVelocity.z);
+                velocity.y = ceilingReboundVelocity;
+                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, ceilingReboundVelocity, playerRigidBody.linearVelocity.z);
             }
         }
     }
@@ -468,7 +455,6 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionStay(Collision collision)
     {
-
         foreach (ContactPoint contact in collision.contacts)
         {
             if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
@@ -478,10 +464,31 @@ public class PlayerMovement : MonoBehaviour
 
                 //set the type of friction 
                 string tag = collision.gameObject.tag;
-                currentFrictionCoefficient = frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]);
-                currMaxSpeedMultiplier = maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]);
+                currentFrictionCoefficient = Mathf.Min(currentFrictionCoefficient, frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]));
+                currMaxSpeedMultiplier = Mathf.Min(currMaxSpeedMultiplier, maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]));
             }
-            //}
+            else if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
+            {
+                // flatten the normal so we only keep horizontal pushback
+                Vector3 horizontalNormal = new Vector3(contact.normal.x, 0f, contact.normal.z).normalized;
+
+                // 0.03 is the lowest possible without it breaking; do not change this
+                Vector3 correction = horizontalNormal * 0.03f;
+                playerRigidBody.MovePosition(playerRigidBody.position + correction);
+
+                // cancel velocity into the ceiling only along horizontal direction
+                velocity = Vector3.ProjectOnPlane(velocity, horizontalNormal);
+                velocity.y = ceilingReboundVelocity;
+                playerRigidBody.linearVelocity = new Vector3(playerRigidBody.linearVelocity.x, ceilingReboundVelocity, playerRigidBody.linearVelocity.z);
+            }
+            else
+            {
+                //stops players from clipping through corners
+                if (!collision.gameObject.CompareTag("Slime"))
+                {
+                    velocity = Vector3.ProjectOnPlane(velocity, contact.normal);
+                }
+            }
         }
 
 
