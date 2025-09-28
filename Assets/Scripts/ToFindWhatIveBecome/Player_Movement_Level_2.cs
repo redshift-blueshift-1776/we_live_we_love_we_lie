@@ -19,9 +19,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
     public static float speedUp = 2.5f;
 
     // time to run from standstill
-    private static float timeToRun = 2;
-
-    private float playerSpeed = 0;
 
     private float jumpHeight = 1.0f;
     private float gravityValue = -9.81f;
@@ -38,10 +35,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
     private float defaultFieldOfView;
     private float fieldOfViewMultiplier = 1.18f;
     private float fastFieldOfView;
-
-
-    private readonly KeyCode runKey = KeyCode.LeftShift;
-    private readonly KeyCode failKey = KeyCode.M;
+    
     private readonly KeyCode pushKey = KeyCode.Mouse0;
     private readonly KeyCode pullKey = KeyCode.Mouse1;
 
@@ -51,12 +45,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
     [SerializeField] private float brakeForce = 20f; // Braking power
     [SerializeField] private float friction = 0.98f; // Simulated drag
     [SerializeField] private float speedMultiplier = 2f; // Speed boost with Shift
-
-    [Header("Boost")]
-    [SerializeField] public float maxBoostFuel = 10f; // Max fuel for boosting
-    [SerializeField] private float boostConsumptionRate = 1f; // Fuel usage per second
-    [SerializeField] private float boostRefillRate = 5f; // Fuel refill rate at hospital
-    public float currentBoostFuel;
 
     public float currentSpeed = 0f;
     // private Rigidbody rb;
@@ -101,7 +89,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
         defaultFieldOfView = Camera.main.fieldOfView;
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         //rb = GetComponent<Rigidbody>();
-        currentBoostFuel = maxBoostFuel;
         //rb.freezeRotation = true; // Prevent the ambulance from tipping over
         controller = GetComponent<CharacterController>();
         boxCollider = GetComponent<BoxCollider>();
@@ -116,7 +103,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
     {
         if (gm.gameActive) {
             // modify player velocity
-            jumpHelper();
             // horizontalMovementHelper();
             // move player
             // controller.Move(playerVelocity * Time.deltaTime);
@@ -143,7 +129,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
             }
 
             HandleMovement();
-            RefillFuel();
             AlignWithGround();
 
             // Move the scooter
@@ -206,18 +191,13 @@ public class Player_Movement_Level_2 : MonoBehaviour
             moveInput = -1f;
 
         // Boost logic
-        bool isBoosting = Input.GetKey(KeyCode.LeftShift) && currentBoostFuel > 0;
+        bool isBoosting = Input.GetKey(KeyCode.LeftShift);
         float speedFactor = isBoosting ? speedMultiplier : 1f;
 
-        if (isBoosting)
-        {
-            // currentBoostFuel -= boostConsumptionRate * Time.deltaTime;
-            currentBoostFuel = Mathf.Max(currentBoostFuel, 0);
-        }
-
-        currentSpeed *= speedFactor;
-        currentSpeed += moveInput * acceleration * Time.deltaTime;
+        
         if (isGrounded) {
+            currentSpeed *= speedFactor;
+            currentSpeed += moveInput * acceleration * Time.deltaTime;
             // Apply friction
             currentSpeed *= friction;
         }
@@ -271,71 +251,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
         }
 
         lastPosition = new Vector3(transform.position.x, 0, transform.position.z);
-    }
-
-    private void RefillFuel()
-    {
-        // if (Vector3.Distance(transform.position, destination.transform.position) <= dropoffRadius)
-        // {
-        //     currentBoostFuel += boostRefillRate * Time.deltaTime;
-        //     currentBoostFuel = Mathf.Min(currentBoostFuel, maxBoostFuel);
-        // }
-    }
-
-
-    void jumpHelper() {
-        // // groundedPlayer = controller.isGrounded;
-        // if (groundedPlayer && playerVelocity.y < 0) {
-        //     playerVelocity.y = 0f;
-        // }
-
-        // // Changes the height position of the player..
-        // if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer) {
-        //     playerVelocity.y += jumpVelocity;
-        // }
-        // playerVelocity.y += gravityValue * Time.deltaTime;
-    }
-
-
-    void horizontalMovementHelper() {
-        playerVelocity.x = 0;
-        playerVelocity.z = 0;
-
-        float diffFOV = math.abs(fastFieldOfView - defaultFieldOfView);
-
-        float hSpeed = 0.0f;
-        float vSpeed = 0.0f;
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            vSpeed += 1.0f;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            vSpeed -= 1.0f;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            hSpeed -= 1.0f;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            hSpeed += 1.0f;
-        }
-
-        if (Input.GetKey(runKey) && vSpeed > 0) {
-            playerSpeed = Mathf.MoveTowards(playerSpeed, maxSpeed, maxSpeed * Time.deltaTime / timeToRun);
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / timeToRun);
-        } else {
-            playerSpeed = Mathf.MoveTowards(playerSpeed, basePlayerSpeed, maxSpeed * Time.deltaTime / timeToRun);
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / timeToRun);
-        }
-        if (Input.GetKey(failKey)) {
-            Cursor.lockState = Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            SceneManager.LoadScene("MoveInMenu");
-        }
-        playerVelocity += Vector3.Normalize(gameObject.transform.right * hSpeed + gameObject.transform.forward * vSpeed) * playerSpeed;
     }
 
 
