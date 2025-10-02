@@ -11,6 +11,8 @@ public class Love_Truck_Passenger : MonoBehaviour
         WeightsDance2,
         Aluminum1,
         Aluminum2,
+        Aluminum3,
+        Aluminum4,
         Floss1,
         Floss2,
         Floss3,
@@ -33,6 +35,7 @@ public class Love_Truck_Passenger : MonoBehaviour
         Weights,
         Champion,
         Aluminum,
+        AluminumV2,
         Floss,
         Floss24
     }
@@ -183,6 +186,8 @@ public class Love_Truck_Passenger : MonoBehaviour
         Quaternion xn90 = Quaternion.Euler(-90, 0, 0);
         Quaternion x90z45 = Quaternion.Euler(90, 0, 45);
         Quaternion x90zn45 = Quaternion.Euler(90, 0, -45);
+        Quaternion x45 = Quaternion.Euler(45, 0, 0);
+        Quaternion xn45 = Quaternion.Euler(-45, 0, 0);
 
         Quaternion leftArmTarget = leftArmStart;
         Quaternion leftArmLowerTarget = leftArmLowerStart;
@@ -272,6 +277,30 @@ public class Love_Truck_Passenger : MonoBehaviour
                 rightLegTarget = defaultRotation;
                 rightLegLowerTarget = defaultRotation;
                 currentPose = Pose.Aluminum2;
+                break;
+
+            case Pose.Aluminum3:
+                leftArmTarget = x45z45;
+                leftArmLowerTarget = x90;
+                rightArmTarget = x60zn45;
+                rightArmLowerTarget = x45;
+                leftLegTarget = defaultRotation;
+                leftLegLowerTarget = defaultRotation;
+                rightLegTarget = defaultRotation;
+                rightLegLowerTarget = defaultRotation;
+                currentPose = Pose.Aluminum3;
+                break;
+
+            case Pose.Aluminum4:
+                leftArmTarget = x60z45;
+                leftArmLowerTarget = x45;
+                rightArmTarget = x45zn45;
+                rightArmLowerTarget = x90;
+                leftLegTarget = defaultRotation;
+                leftLegLowerTarget = defaultRotation;
+                rightLegTarget = defaultRotation;
+                rightLegLowerTarget = defaultRotation;
+                currentPose = Pose.Aluminum4;
                 break;
 
             case Pose.Floss1:
@@ -479,6 +508,12 @@ public class Love_Truck_Passenger : MonoBehaviour
                 currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Aluminum2));
             } else {
                 currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Aluminum1));
+            }
+        } else if (dance == Dance.AluminumV2) {
+            if (currentPose == Pose.Aluminum3) {
+                currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Aluminum4));
+            } else {
+                currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Aluminum3));
             }
         } else if (dance == Dance.Floss) {
             if (currentPose == Pose.Floss1) {
