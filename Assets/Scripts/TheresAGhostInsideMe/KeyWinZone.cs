@@ -18,7 +18,7 @@ public class KeyWinZone : MonoBehaviour
 
     void OnTriggerEnter(Collider col) {
         Debug.Log(col.gameObject.name);
-        if(col.gameObject.name.Contains("Key")) {
+        if(col.gameObject.name == "Key") {
             gm.nextBoard();
         }
     }
