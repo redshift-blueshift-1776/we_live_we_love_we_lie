@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class KeyWinZone : MonoBehaviour
+public class TrapLossZone : MonoBehaviour
 {
     [SerializeField] public GameObject gameManager;
     public TheresAGhostInsideMe gm;
@@ -18,8 +18,10 @@ public class KeyWinZone : MonoBehaviour
 
     void OnTriggerEnter(Collider col) {
         Debug.Log(col.gameObject.name);
-        if(col.gameObject.name.Contains("Key")) {
-            gm.nextBoard();
+        if(col.gameObject.name.Contains("Trap")) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            gm.GameLose();
         }
     }
 }

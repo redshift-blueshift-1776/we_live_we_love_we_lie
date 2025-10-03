@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class TheresAGhostInsideMe : MonoBehaviour
 {
     [SerializeField] public int boardsToBeat;
+    [SerializeField] public float timeLimit;
     [SerializeField] public GameObject board;
     [SerializeField] public GameObject trap;
     [SerializeField] public GameObject key;
@@ -20,6 +21,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private GameObject winCanvas;
     [SerializeField] private TMP_Text timerGame;
+    [SerializeField] private TMP_Text puzzles;
 
     [Header("Audio")]
     [SerializeField] public GameObject loadingAudio;
@@ -74,6 +76,9 @@ public class TheresAGhostInsideMe : MonoBehaviour
     void Update()
     {
         if (gameActive) {
+            if (timer >= timeLimit) { 
+                GameLose(); // Change when we have the actual scene
+            }
             if (Input.GetKeyDown(KeyCode.C)) {
                 cam1.SetActive(!cam1.activeSelf);
                 cam2.SetActive(!cam2.activeSelf);
@@ -103,6 +108,9 @@ public class TheresAGhostInsideMe : MonoBehaviour
             if (boardIndex >= boardsToBeat) {
                 StartCoroutine(GameWin());
             }
+            timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
+            puzzles.text = $"Puzzle: {Mathf.Min(boardIndex + 1, 10)}/{boardsToBeat}";
+            timer += Time.deltaTime;
         }
     }
 
