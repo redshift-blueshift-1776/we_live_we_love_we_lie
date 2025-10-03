@@ -68,6 +68,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] private TMP_Text stealOrNoSteal;
     [SerializeField] private GameObject yourCard;
     [SerializeField] private GameObject yourCardReal;
+    [SerializeField] private GameObject cardInBriefcaseSafe;
+    [SerializeField] private GameObject cardInBriefcaseEliminate;
     [SerializeField] public GameObject skipButton;
 
     [SerializeField] private TMP_Text opponentText;
@@ -132,6 +134,10 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         cm = cutsceneManager.GetComponent<CutsceneManager>();
         dm = dialogueManager.GetComponent<DialogueManager>();
         showSkipButton = false;
+        cm.cutsceneCamera.SetActive(false);
+        cm.mainCamera.SetActive(true);
+        cardInBriefcaseEliminate.SetActive(false);
+        cardInBriefcaseSafe.SetActive(false);
     }
 
     void Update()
@@ -218,7 +224,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             Debug.Log("Your turn as DEFENSE. Choose dialogue to influence offense.");
             yourCard.SetActive(true);
             RawImage cardImage = yourCard.GetComponent<RawImage>();
-            cardImage.color = (defenseCard.Color == CardColor.Red) ? Color.red : Color.black;
+            cardImage.color = (defenseCard.Color == CardColor.Red) ? Color.red : Color.green;
 
             string[] options = { "It's eliminate...", "It's safe...", "Your move, but risky..." };
             dm.ShowDialogueOptions(options, choice =>
@@ -332,9 +338,23 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
         turnActive = true;
 
-        CutsceneType type = isHuman
-            ? (steal ? CutsceneType.HumanSteal : CutsceneType.HumanPass)
-            : (steal ? CutsceneType.AISteal : CutsceneType.AIPass);
+        // CutsceneType type = isHuman
+        //     ? (steal ? CutsceneType.HumanSteal : CutsceneType.HumanPass)
+        //     : (steal ? CutsceneType.AISteal : CutsceneType.AIPass);
+        CutsceneType type = CutsceneType.HumanDefendSteal;
+        if (isHuman && steal) {
+            type = CutsceneType.HumanSteal;
+        } else if (isHuman && !steal) {
+            type = CutsceneType.HumanPass;
+        } else if ((humanPlayerIndex == currentDefenseIndex) && steal) {
+            type = CutsceneType.HumanDefendSteal;
+        } else if ((humanPlayerIndex == currentDefenseIndex) && !steal) {
+            type = CutsceneType.HumanDefendPass;
+        } else if (!isHuman && steal) {
+            type = CutsceneType.AISteal;
+        } else if (!isHuman && !steal) {
+            type = CutsceneType.AIPass;
+        }
 
         if (steal) {
             stealOrNoStealObject.SetActive(true);
@@ -350,6 +370,11 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             ChoiceCanvas.SetActive(false);
         }
 
+        yourCard.SetActive(false);
+
+        cardInBriefcaseEliminate.SetActive(defenseCard.Color == CardColor.Red);
+        cardInBriefcaseSafe.SetActive(defenseCard.Color != CardColor.Red);
+
         cm.PlayCutscene(type, () =>
         {
             // Assign card and update indexes
@@ -357,26 +382,12 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} steals!");
                 AssignCard(players[currentOffenseIndex], defenseCard);
-                // if (currentDefenseIndex != humanPlayerIndex) {
-                //     int temp = currentOffenseIndex;
-                //     currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
-                //     currentDefenseIndex = temp;
-                // } else {
-                //     currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
-                // }
                 currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
             }
             else
             {
                 Debug.Log($"{players[currentOffenseIndex].Name} passes.");
                 AssignCard(players[currentDefenseIndex], defenseCard);
-                // if (currentDefenseIndex == humanPlayerIndex) {
-                //     int temp = currentOffenseIndex;
-                //     currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
-                //     currentDefenseIndex = temp;
-                // } else {
-                //     currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers; 
-                // }
                 int temp = currentOffenseIndex;
                 currentOffenseIndex = (currentOffenseIndex + 1) % numPlayers;
                 currentDefenseIndex = temp;
@@ -426,7 +437,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         if (p.Name == "YOU") {
             yourCardReal.SetActive(true);
             RawImage cardImage = yourCardReal.GetComponent<RawImage>();
-            cardImage.color = (c.Color == CardColor.Red) ? Color.red : Color.black;
+            cardImage.color = (c.Color == CardColor.Red) ? Color.red : Color.green;
             showSkipButton = true;
         }
     }
