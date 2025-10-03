@@ -212,7 +212,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
         // Wall detection with Raycast
         Vector3 moveDirection = transform.forward.normalized;
-        float rayLength = 1.0f + Mathf.Abs(currentSpeed * Time.deltaTime); // look ahead
+        float rayLength = 1.0f + Mathf.Abs(currentSpeed * Time.deltaTime) / 5f; // look ahead
         RaycastHit hit;
 
         if (Physics.Raycast(transform.position, moveDirection, out hit, rayLength))
