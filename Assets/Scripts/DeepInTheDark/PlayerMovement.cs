@@ -114,7 +114,6 @@ public class PlayerMovement : MonoBehaviour
         movePlayer();
         rotateCamera();
         handleJump();
-        Debug.Log(sensitivityX + " " + sensitivityY);
     }
 
     private void FixedUpdate()
@@ -396,6 +395,20 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
+    private IEnumerator handleBlockCrumble(Collision collision)
+    {
+        CrumblingPlatform platformScript = collision.gameObject.GetComponent<CrumblingPlatform>();
+        GameObject platformObject = collision.gameObject;
+
+        if (!platformScript.isBlockCrumbling())
+        {
+            platformScript.setBlockCrumbling(true);
+            StartCoroutine(platformScript.crumble());
+        }
+        yield return new WaitForSeconds(platformScript.getFadeTime());
+        removeGroundCollider(platformObject);
+    }
+
 
     private void addGroundCollider(Collision collision, ContactPoint contact)
     {
@@ -406,6 +419,41 @@ public class PlayerMovement : MonoBehaviour
         if (groundContactPoints[collision.collider].Count == 0)
         {
             groundContactPoints[collision.collider].Add(contact.normal);
+        }
+    }
+
+    public void removeGroundCollider(Collider collider)
+    {
+        Debug.Log("removing collider " + collider.tag);
+        groundContactPoints.Remove(collider);
+    }
+
+    public void removeGroundCollider(GameObject obj)
+    {
+        Collider colliderToRemove = null;
+        foreach (KeyValuePair<Collider, List<Vector3>> kvp in groundContactPoints)
+        {
+            if (kvp.Key.gameObject == obj)
+            {
+                colliderToRemove = kvp.Key;
+                break;
+            }
+        }
+
+        if (colliderToRemove != null)
+        {
+            Debug.Log("removing collider " + obj.tag);
+            groundContactPoints.Remove(colliderToRemove);
+
+            if (groundContactPoints.Count == 0)
+            {
+                currentFrictionCoefficient = frictionCoefficients["Air"];
+                currMaxSpeedMultiplier = maxSpeedMultipliers["Air"];
+            }
+        }
+        else
+        {
+            Debug.Log("Could not find collider for GameObject: " + obj.tag);
         }
     }
 
@@ -455,12 +503,19 @@ public class PlayerMovement : MonoBehaviour
     {
         foreach (ContactPoint contact in collision.contacts)
         {
+            if (collision.gameObject.CompareTag("Crumbling"))
+            {
+                StartCoroutine(handleBlockCrumble(collision));
+            }
+
             if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
                 if (handleSlimeBounce(collision))
                 {
                     return;
                 }
+
+                Debug.Log("adding ground collider " + collision.gameObject.tag);
 
                 addGroundCollider(collision, contact);
                 playerRigidBody.linearVelocity = Vector3.zero;
@@ -493,6 +548,14 @@ public class PlayerMovement : MonoBehaviour
     {
         foreach (ContactPoint contact in collision.contacts)
         {
+            if (collision.gameObject.CompareTag("Crumbling"))
+            {
+                CrumblingPlatform platformScript = collision.gameObject.GetComponent<CrumblingPlatform>();
+                if (platformScript != null && platformScript.isBlockCrumbling())
+                {
+                    continue;
+                }
+            }
             if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
                 addGroundCollider(collision, contact);
@@ -538,7 +601,8 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionExit(Collision collision)
     {
-        groundContactPoints.Remove(collision.collider);
+        Debug.Log("exited collider " + collision.gameObject.tag);
+        removeGroundCollider(collision.collider);
         if (groundContactPoints.Count == 0) {
             currentFrictionCoefficient = frictionCoefficients["Air"];
             currMaxSpeedMultiplier = maxSpeedMultipliers["Air"];
@@ -546,6 +610,7 @@ public class PlayerMovement : MonoBehaviour
         //sanity check
         //ceilingContactPointsPositions.Remove(collision.collider);
     }
+
 
     /// <summary>
     /// This function updates currentLadder and isClimbing so that the player can start
