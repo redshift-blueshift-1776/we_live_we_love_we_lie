@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class WalkAlongThePathUnknown : MonoBehaviour
 {
+    [SerializeField] public bool endless;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject maze;
 

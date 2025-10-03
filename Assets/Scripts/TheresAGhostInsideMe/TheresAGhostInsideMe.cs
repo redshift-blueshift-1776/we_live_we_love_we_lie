@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class TheresAGhostInsideMe : MonoBehaviour
 {
+    [SerializeField] public bool endless;
     [SerializeField] public int boardsToBeat;
     [SerializeField] public float timeLimit;
     [SerializeField] public GameObject board;

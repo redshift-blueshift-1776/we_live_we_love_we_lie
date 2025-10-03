@@ -84,8 +84,8 @@ public class Transition : MonoBehaviour
         foreach (GameObject g in toDisable) {
             g.SetActive(false);
         }
-        yield return new WaitForSeconds(2f);
-        float duration = 1.5f;
+        // yield return new WaitForSeconds(2f);
+        float duration = 2f;
         float elapsed = 0f;
         Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
         Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
@@ -119,8 +119,8 @@ public class Transition : MonoBehaviour
         foreach (GameObject g in toDisable) {
             g.SetActive(false);
         }
-        yield return new WaitForSeconds(2f);
-        float duration = 1.5f;
+        // yield return new WaitForSeconds(2f);
+        float duration = 2f;
         float elapsed = 0f;
         Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
         Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
@@ -251,9 +251,9 @@ public class Transition : MonoBehaviour
         Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
         while (elapsed < duration) {
             float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 1.2f, t * t * t);
+            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 1.5f, t * t * t);
             // bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, ogBWpos / 1.5f, t * t * t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 1.2f, t * t * t);
+            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 1.5f, t * t * t);
             // topWall.transform.localPosition = Vector3.Lerp(ogTWpos, ogTWpos / 1.5f, t * t * t);
             elapsed += Time.deltaTime;
             yield return null;

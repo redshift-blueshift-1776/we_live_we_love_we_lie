@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class IsThisAPlaceThatICallHome : MonoBehaviour
 {
+    [SerializeField] public bool endless;
     public float timer;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private TMP_Text layerText;

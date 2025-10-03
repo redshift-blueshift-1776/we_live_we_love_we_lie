@@ -46,6 +46,7 @@ public class Player
 public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 {
     [Header("Game Settings")]
+    [SerializeField] public bool endless;
     [SerializeField] private int numPlayers = 12;
     [SerializeField] private int numRed = 6;
     [SerializeField] private int numBlack = 6;

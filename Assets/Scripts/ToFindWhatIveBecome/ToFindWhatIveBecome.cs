@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class ToFindWhatIveBecome : MonoBehaviour
 {
+    [SerializeField] public bool endless;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject[] collectibles;
     [SerializeField] private List<Transform> collectibleLocations;
