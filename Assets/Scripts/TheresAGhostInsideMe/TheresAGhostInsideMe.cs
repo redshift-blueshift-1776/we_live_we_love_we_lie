@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class TheresAGhostInsideMe : MonoBehaviour
 {
+    [SerializeField] public int boardsToBeat;
     [SerializeField] public GameObject board;
     [SerializeField] public GameObject trap;
     [SerializeField] public GameObject key;
@@ -35,9 +36,16 @@ public class TheresAGhostInsideMe : MonoBehaviour
     public bool rotateRight;
     public bool rotateUp;
     public bool rotateDown;
+
+    public int boardIndex;
+
+    [SerializeField] private GameObject transition;
+    [SerializeField] private Transition transitionScript;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        boardIndex = 0;
+        transitionScript = transition.GetComponent<Transition>();
         gameActive = false;
         timer = 0f;
         startCanvas.SetActive(true);
@@ -82,7 +90,27 @@ public class TheresAGhostInsideMe : MonoBehaviour
                 rotateRight = false;
             }
             rotateBoard();
+            if (boardIndex >= boardsToBeat) {
+                StartCoroutine(GameWin());
+            }
         }
+    }
+
+    public IEnumerator GameWin() {
+        winCanvas.SetActive(true);
+        gameActive = false;
+        yield return new WaitForSeconds(3f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene(0);
+    }
+
+    public void GameLose() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        PlayerPrefs.SetInt("PreviousLevel", 7);
+        gameActive = false;
+        transitionScript.ToFail();
     }
 
     public void rotateBoard() {
@@ -122,6 +150,18 @@ public class TheresAGhostInsideMe : MonoBehaviour
     }
 
     public void nextBoard() {
-        GameObject newBoard = boards[0];
+        Debug.Log("Next Board");
+        boardIndex++;
+        if (boardIndex >= boards.Length) {
+            return;
+        }
+        GameObject newBoard = boards[boardIndex];
+        board = newBoard;
+        for (int i = 0; i < boards.Length; i++) {
+            boards[i].SetActive(false);
+            if (i == boardIndex) {
+                boards[i].SetActive(true);
+            }
+        }
     }
 }
