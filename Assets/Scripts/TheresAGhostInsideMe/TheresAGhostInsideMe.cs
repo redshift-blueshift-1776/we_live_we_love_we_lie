@@ -53,6 +53,16 @@ public class TheresAGhostInsideMe : MonoBehaviour
         winCanvas.SetActive(false);
         loadingAudio.SetActive(true);
         gameAudio.SetActive(false);
+        System.Random rng = new System.Random();
+        int n = boards.Length;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            GameObject value = boards[k];
+            boards[k] = boards[n];
+            boards[n] = value;
+        }
         board = boards[0];
         board.SetActive(true);
         for (int i = 1; i < boards.Length; i++) {
