@@ -6,12 +6,14 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject body;
+    public GameObject settings;
 
     public AudioManager audioManager;
 
@@ -19,9 +21,13 @@ public class PlayerMovement : MonoBehaviour
     public float initialPitch;
 
     private Rigidbody playerRigidBody;
+    private bool inSettings;
 
-    private float sensitivityX = 2.5f;
-    private float sensitivityY = 2.0f;
+    private float sensitivityX;
+    private float sensitivityY;
+
+    public Slider sliderX;
+    public Slider sliderY;
 
     private const float g = 9.8f;
     private Vector3 acceleration;
@@ -88,10 +94,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
-
+        initializeSounds();
         playerRigidBody = GetComponent<Rigidbody>();
+
+        inSettings = false;
+        settings.SetActive(inSettings);
+        sensitivityX = sliderX.value;
+        sensitivityY = sliderY.value;
 
         acceleration = new Vector3(0, -g, 0);
         velocity = Vector3.zero;
@@ -111,16 +121,41 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        initializeSounds();
+        handleSettings();
         handleSensitivityChange();
-        movePlayer();
-        rotateCamera();
-        handleJump();
+        if (!inSettings)
+        {
+            StartCoroutine(RelockCursor());
+            movePlayer();
+            rotateCamera();
+            handleJump();
+        } else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        Debug.Log(sensitivityX);
+    }
+
+    private IEnumerator RelockCursor()
+    {
+        yield return null; // wait until next frame
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void FixedUpdate()
     {
         rotatePlayer();
+    }
+
+    private void handleSettings()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            inSettings = !inSettings;
+            settings.SetActive(inSettings);
+        }
     }
 
     private void initializeSounds()
@@ -463,34 +498,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void handleSensitivityChange()
     {
-        if (!Input.GetKey(KeyCode.LeftShift)) {
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            setSensitivityX(sensitivityX - 0.5f);
-        } else if (Input.GetKeyDown(KeyCode.P))
-        {
-            setSensitivityX(sensitivityX + 0.5f);
-        }
-
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            setSensitivityY(sensitivityY - 0.5f);
-        }
-        else if (Input.GetKeyDown(KeyCode.L))
-        {
-            setSensitivityY(sensitivityY + 0.5f);
-        }
+        setSensitivityX(sliderX.value);
+        setSensitivityY(sliderY.value);
     }
 
-    private void setSensitivityX(float x)
+    public void setSensitivityX(float x)
     {
         sensitivityX = x;
     }
 
-    private void setSensitivityY(float y)
+    public void setSensitivityY(float y)
     {
         sensitivityY = y;
     }
