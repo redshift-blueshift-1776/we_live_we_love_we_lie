@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 [System.Serializable]
-public struct Sound
+public class Sound
 {
     public string name;
     public AudioClip clip;
@@ -84,8 +84,9 @@ public class AudioManager : MonoBehaviour
     public Sound[] sounds;
     private Dictionary<string, int> soundIndices = new Dictionary<string, int>();
 
-    void Start()
+    void Awake()
     {
+        Debug.Log(sounds);
         for (int i = 0; i < sounds.Count(); i++)
         {
             sounds[i].Init(gameObject);

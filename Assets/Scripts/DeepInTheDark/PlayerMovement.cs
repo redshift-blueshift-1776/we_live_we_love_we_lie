@@ -1,10 +1,6 @@
-using Mono.Cecil.Cil;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Runtime.CompilerServices;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public float initialYaw;
     public float initialPitch;
 
-    private Rigidbody playerRigidBody;
+    public Rigidbody playerRigidBody;
     private bool inSettings;
 
     private float sensitivityX;
@@ -29,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     public Slider sliderX;
     public Slider sliderY;
 
-    private const float g = 9.8f;
+    private float g;
     private Vector3 acceleration;
     private Vector3 velocity;
 
@@ -94,14 +90,20 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
+        //Cursor.visible = false;
+
+
         initializeSounds();
-        playerRigidBody = GetComponent<Rigidbody>();
 
         inSettings = false;
         settings.SetActive(inSettings);
+
         sensitivityX = sliderX.value;
         sensitivityY = sliderY.value;
+
+        g = 9.8f;
 
         acceleration = new Vector3(0, -g, 0);
         velocity = Vector3.zero;
@@ -125,7 +127,8 @@ public class PlayerMovement : MonoBehaviour
         handleSensitivityChange();
         if (!inSettings)
         {
-            StartCoroutine(RelockCursor());
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             movePlayer();
             rotateCamera();
             handleJump();
@@ -135,13 +138,6 @@ public class PlayerMovement : MonoBehaviour
             Cursor.visible = true;
         }
         Debug.Log(sensitivityX);
-    }
-
-    private IEnumerator RelockCursor()
-    {
-        yield return null; // wait until next frame
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void FixedUpdate()
@@ -208,13 +204,15 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void movePlayer()
     {
+        if (playerRigidBody == null)
+        {
+            return;
+        }
 
-        Vector3 forward = player.transform.forward;
         bool isRunning = Input.GetKey(KeyCode.LeftShift) ? true : false;
 
         //change to LeftControl when deploying (Ctrl interferes with Unity editor shortcuts)
         bool isSlowWalking = Input.GetKey(KeyCode.CapsLock) ? true : false;
-
 
         if (getInputDirectionVector().magnitude > 0)
         {
@@ -229,7 +227,6 @@ public class PlayerMovement : MonoBehaviour
         {
             userInput = false;
         }
-
         //scale velocity to max
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
@@ -250,11 +247,9 @@ public class PlayerMovement : MonoBehaviour
             horizontalVelocity.Normalize();
             horizontalVelocity *= speedThreshold;
         }
-
         //update velocities in case they were scaled down
         velocity.x = horizontalVelocity.x;
         velocity.z = horizontalVelocity.z;
-
 
         //update vertical velocity
         if (isClimbing)
@@ -264,7 +259,6 @@ public class PlayerMovement : MonoBehaviour
         {
             velocity.y = (groundContactPoints.Count == 0) ? (velocity.y + acceleration.y * Time.deltaTime) : 0;
         }
-
         //handles movement on a ramp
         playerRigidBody.MovePosition(playerRigidBody.position + (
             groundContactPoints.Count > 0 && !isClimbing ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity
@@ -359,7 +353,6 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 ladderRight = currentLadder.right;
         Vector3 ladderUp = currentLadder.up;
-
 
         float rightComponent = Vector3.Dot(velocity, ladderRight);
 
