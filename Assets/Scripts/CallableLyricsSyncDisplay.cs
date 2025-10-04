@@ -134,14 +134,6 @@ public class CallableLyricsSyncDisplay : MonoBehaviour
         // doProgressCoroutine = StartCoroutine(progressBar());
     }
 
-    // public IEnumerator progressBar() {
-    //     while (isAutoPlaying) {
-    //         UpdateLyricsProgressBar();
-    //         yield return null;
-    //     }
-    //     yield return null;
-    // }
-
     public IEnumerator doLyrics() {
         if (nextLyricTime == 0) {
             nextLyricTime = AudioSettings.dspTime;

@@ -35,7 +35,10 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     public bool gameDone;
 
     [SerializeField] private GameObject transition;
-    [SerializeField] private Transition transitionScript;
+    private Transition transitionScript;
+
+    [SerializeField] private GameObject callableLyricsSyncDisplay;
+    private CallableLyricsSyncDisplay clsd;
 
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -43,6 +46,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     {
         bm = blockManger.GetComponent<BlockManager>();
         transitionScript = transition.GetComponent<Transition>();
+        clsd = callableLyricsSyncDisplay.GetComponent<CallableLyricsSyncDisplay>();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         startCanvas.SetActive(true);

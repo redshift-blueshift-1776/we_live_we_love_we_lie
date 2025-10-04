@@ -38,6 +38,9 @@ public class ToFindWhatIveBecome : MonoBehaviour
     [SerializeField] private GameObject transition;
     [SerializeField] private Transition transitionScript;
 
+    [SerializeField] private GameObject callableLyricsSyncDisplay;
+    private CallableLyricsSyncDisplay clsd;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
