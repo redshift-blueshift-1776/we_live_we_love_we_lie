@@ -196,8 +196,8 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
         
         if (isGrounded) {
-            currentSpeed *= speedFactor;
-            currentSpeed += moveInput * acceleration * Time.deltaTime;
+            // currentSpeed *= speedFactor;
+            currentSpeed += moveInput * acceleration * Time.deltaTime * speedFactor;
             // Apply friction
             currentSpeed *= friction;
         }
@@ -211,20 +211,20 @@ public class Player_Movement_Level_2 : MonoBehaviour
         if (Mathf.Abs(currentSpeed) < 0.05f) currentSpeed = 0f;
 
         // Wall detection with Raycast
-        Vector3 moveDirection = transform.forward.normalized;
-        float rayLength = 1.0f + Mathf.Abs(currentSpeed * Time.deltaTime) / 5f; // look ahead
-        RaycastHit hit;
+        // Vector3 moveDirection = transform.forward.normalized;
+        // float rayLength = 1.0f + Mathf.Abs(currentSpeed * Time.deltaTime) / 5f; // look ahead
+        // RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, moveDirection, out hit, rayLength))
-        {
-            if (!hit.collider.isTrigger && !hit.collider.gameObject.name.Contains("Ramp")) // ignore triggers
-            {
-                Debug.Log("Wall detected: " + hit.collider.name);
+        // if (Physics.Raycast(transform.position, moveDirection, out hit, rayLength))
+        // {
+        //     if (!hit.collider.isTrigger && !hit.collider.gameObject.name.Contains("Ramp")) // ignore triggers
+        //     {
+        //         Debug.Log("Wall detected: " + hit.collider.name);
 
-                // Stop or slow down when close
-                currentSpeed = Mathf.Lerp(currentSpeed, 0f, 0.5f);
-            }
-        }
+        //         // Stop or slow down when close
+        //         currentSpeed = Mathf.Lerp(currentSpeed, 0f, 0.5f);
+        //     }
+        // }
 
         // Apply movement
         Vector3 movement = transform.forward * currentSpeed * Time.deltaTime;
