@@ -29,13 +29,14 @@ public class PlayerMovement : MonoBehaviour
 
     private const float jumpHeight = 1.5f;
 
+    //values greater than 1 speed the player up!
     private Dictionary<string, float> frictionCoefficients = new Dictionary<string, float>
     {
         {"Default", 0.97f},
         {"Air", 0.995f },
         {"Ladder", 0.1f },
         {"Slime", 0.9f  },
-        {"Ice", 0.9999f }
+        {"Ice", 1.01f }
     };
     private float currentFrictionCoefficient;
 
@@ -47,8 +48,8 @@ public class PlayerMovement : MonoBehaviour
     private const float maxElasticCollisionConservation = 0.8f;
     private const float ceilingReboundVelocity = -0.25f;
 
-    private float walkingAcceleration = 0.05f;
-    private float runningAcceleration = 0.1f;
+    private float walkingAcceleration = 50f;
+    private float runningAcceleration = 100f;
 
     private const float maxSlowWalkHorizontalSpeed = 3f;
     private const float maxWalkingHorizontalSpeed = 5f;
@@ -188,7 +189,7 @@ public class PlayerMovement : MonoBehaviour
             inputVelocity *= isRunning ? runningAcceleration : walkingAcceleration;
 
             //inputAcceleration should have no y component
-            velocity += inputVelocity;
+            velocity += inputVelocity * Time.deltaTime;
         } else
         {
             userInput = false;
@@ -428,7 +429,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void removeGroundCollider(Collider collider)
     {
-        Debug.Log("removing collider " + collider.tag);
         groundContactPoints.Remove(collider);
     }
 
@@ -519,8 +519,6 @@ public class PlayerMovement : MonoBehaviour
                     return;
                 }
 
-                Debug.Log("adding ground collider " + collision.gameObject.tag);
-
                 addGroundCollider(collision, contact);
                 playerRigidBody.linearVelocity = Vector3.zero;
             }
@@ -567,8 +565,15 @@ public class PlayerMovement : MonoBehaviour
 
                 //set the type of friction 
                 string tag = collision.gameObject.tag;
+
                 currentFrictionCoefficient = Mathf.Min(currentFrictionCoefficient, frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]));
                 currMaxSpeedMultiplier = Mathf.Min(currMaxSpeedMultiplier, maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]));
+
+                if (tag.Equals("Ice"))
+                {
+                    currentFrictionCoefficient = frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]);
+                    currMaxSpeedMultiplier = maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]);
+                }
             }
             else if (contact.normal.y <= -Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
             {
@@ -605,7 +610,6 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionExit(Collision collision)
     {
-        Debug.Log("exited collider " + collision.gameObject.tag);
         removeGroundCollider(collision.collider);
         if (groundContactPoints.Count == 0) {
             currentFrictionCoefficient = frictionCoefficients["Air"];
