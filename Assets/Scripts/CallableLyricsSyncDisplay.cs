@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CallableLyricsSyncDisplay : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class CallableLyricsSyncDisplay : MonoBehaviour
         }
     }
 
-    [SerializeField] private TMPro.TextMeshProUGUI lyricsDisplay;
+    [SerializeField] private TMP_Text lyricsDisplay;
     [SerializeField] private float beatsPerMinute = 120f;
 
     [SerializeField] private GameObject canvas;
