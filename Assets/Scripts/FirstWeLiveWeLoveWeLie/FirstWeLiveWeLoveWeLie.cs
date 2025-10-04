@@ -143,8 +143,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     void Update()
     {
         if (UICanvas.activeSelf) {
-            redLeft.text = $"Red Left: {redsRemaining}";
-            blackLeft.text = $"Black Left: {blacksRemaining}";
+            redLeft.text = $"Eliminates Left: {redsRemaining}";
+            blackLeft.text = $"Safes Left: {blacksRemaining}";
         }
         skipButton.SetActive(showSkipButton);
     }
@@ -462,7 +462,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             }
             Debug.Log("Game Over.");
             CardColor finalColor = players[humanPlayerIndex].GetCardColor();
-            Debug.Log($"Human’s last card color: {finalColor}");
+            Debug.Log($"Human's last card color: {finalColor}");
 
             if (finalColor == CardColor.Red)
             {
