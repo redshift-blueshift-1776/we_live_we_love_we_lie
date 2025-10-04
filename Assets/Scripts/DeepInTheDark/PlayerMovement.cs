@@ -44,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
     private const float minSpeed = 0.00001f;
     private const float minElasticCollisionVelocity = 1f;
+    private const float maxElasticCollisionConservation = 0.8f;
     private const float ceilingReboundVelocity = -0.25f;
 
     private float walkingAcceleration = 0.05f;
@@ -314,6 +315,8 @@ public class PlayerMovement : MonoBehaviour
             isClimbing = false;
         }
 
+        body.transform.up = Vector3.up;
+
         Vector3 ladderForwardHorizontal = new Vector3(currentLadder.forward.x, 0, currentLadder.forward.z).normalized;
 
         newVelocityY = Mathf.Abs(Vector3.Dot(ladderForwardHorizontal, inputDirection)) > 0.01f ? climbingVelocity : defaultLadderFallingVelocity;
@@ -378,9 +381,10 @@ public class PlayerMovement : MonoBehaviour
             if (Mathf.Abs(velocity.y) >= minElasticCollisionVelocity)
             {
                 velocity.y = Mathf.Abs(velocity.y *
-                    (1 - Mathf.Exp(
-                        -elasticEnergyExponentialDecayCoefficient * Mathf.Abs(velocity.y))
+                    Mathf.Clamp(1 - Mathf.Exp(
+                        -elasticEnergyExponentialDecayCoefficient * Mathf.Abs(velocity.y)
                         )
+                    , 0f, maxElasticCollisionConservation)
                     );
                 //Debug.Log($"Bounced to: {velocity.y}");
 
