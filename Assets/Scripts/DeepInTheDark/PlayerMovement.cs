@@ -137,7 +137,6 @@ public class PlayerMovement : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        Debug.Log(sensitivityX);
     }
 
     private void FixedUpdate()
@@ -275,14 +274,38 @@ public class PlayerMovement : MonoBehaviour
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
     }
 
+    private const float jumpBufferTime = 0.2f; // Window to buffer jump input before landing
+    private float jumpBufferTimer = 0f;
+    private const float autoJumpTime = 1.5f;
+    private float autoJumpTimer = 0f;
     /// <summary>
     /// Removed all ground contact points and sets upward velocity such that
     /// the jump height will be achieved. This is calculated using physics kinematics.
     /// </summary>
     private void handleJump()
     {
-        if (Input.GetKey(KeyCode.Space) && groundContactPoints.Count > 0 && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
+            jumpBufferTimer = jumpBufferTime;
+        }
+        
+        if (jumpBufferTimer > 0)
+        {
+            jumpBufferTimer -= Time.deltaTime;
+        }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            autoJumpTimer += Time.deltaTime;
+        }
+
+
+        bool canCoyoteJump = Input.GetKey(KeyCode.Space) && jumpBufferTimer > 0;
+        bool canAutoJump = autoJumpTimer >= autoJumpTime;
+
+        if ((canCoyoteJump || canAutoJump) && groundContactPoints.Count > 0 && !isJumping)
+        {
+            autoJumpTimer = 0f;
             audioManager.playSound("jump");
             isJumping = true;
             clearGroundContacts();
@@ -294,6 +317,7 @@ public class PlayerMovement : MonoBehaviour
         {
             isJumping = false;
         }
+
     }
 
 
