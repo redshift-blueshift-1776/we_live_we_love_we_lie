@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
         {"Air", 0.995f },
         {"Ladder", 0.1f },
         {"Slime", 0.9f  },
-        {"Ice", 1.01f }
+        {"Ice", 1.05f }
     };
     private float currentFrictionCoefficient;
 
