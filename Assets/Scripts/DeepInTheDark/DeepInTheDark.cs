@@ -88,6 +88,11 @@ public class DeepInTheDark : MonoBehaviour
         {
             returnToPlayerCamera();
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            killPlayer();
+        }
     }
 
     private void initializeStartTimes()
