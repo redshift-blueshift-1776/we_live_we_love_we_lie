@@ -288,7 +288,7 @@ public class PlayerMovement : MonoBehaviour
         {
             jumpBufferTimer = jumpBufferTime;
         }
-        
+
         if (jumpBufferTimer > 0)
         {
             jumpBufferTimer -= Time.deltaTime;
@@ -454,6 +454,20 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator handleBlockCrumble(Collision collision)
     {
+        bool validLanding = false;
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
+            {
+                validLanding = true;
+                break;
+            }
+        }
+        if (!validLanding)
+        {
+            yield break;
+        }
+
         CrumblingPlatform platformScript = collision.gameObject.GetComponent<CrumblingPlatform>();
         GameObject platformObject = collision.gameObject;
 
@@ -498,7 +512,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (colliderToRemove != null)
         {
-            Debug.Log("removing collider " + obj.tag);
             groundContactPoints.Remove(colliderToRemove);
 
             if (groundContactPoints.Count == 0)
@@ -506,10 +519,6 @@ public class PlayerMovement : MonoBehaviour
                 currentFrictionCoefficient = frictionCoefficients["Air"];
                 currMaxSpeedMultiplier = maxSpeedMultipliers["Air"];
             }
-        }
-        else
-        {
-            Debug.Log("Could not find collider for GameObject: " + obj.tag);
         }
     }
 
@@ -527,6 +536,12 @@ public class PlayerMovement : MonoBehaviour
     public void setSensitivityY(float y)
     {
         sensitivityY = y;
+    }
+
+    public void handleFrictionChange()
+    {
+        currentFrictionCoefficient = Mathf.Min(currentFrictionCoefficient, frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]));
+        currMaxSpeedMultiplier = Mathf.Min(currMaxSpeedMultiplier, maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]));
     }
 
     /// <summary>
@@ -589,6 +604,7 @@ public class PlayerMovement : MonoBehaviour
                 CrumblingPlatform platformScript = collision.gameObject.GetComponent<CrumblingPlatform>();
                 if (platformScript != null && platformScript.isBlockCrumbling())
                 {
+                    handleFrictionChange();
                     continue;
                 }
             }
@@ -600,11 +616,11 @@ public class PlayerMovement : MonoBehaviour
                 //set the type of friction 
                 string tag = collision.gameObject.tag;
 
-                currentFrictionCoefficient = Mathf.Min(currentFrictionCoefficient, frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]));
-                currMaxSpeedMultiplier = Mathf.Min(currMaxSpeedMultiplier, maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]));
+                handleFrictionChange();
 
                 if (tag.Equals("Ice"))
                 {
+                    //this here sets it strictly to ice (no Mathf.Min)
                     currentFrictionCoefficient = frictionCoefficients.GetValueOrDefault(tag, frictionCoefficients["Default"]);
                     currMaxSpeedMultiplier = maxSpeedMultipliers.GetValueOrDefault(tag, maxSpeedMultipliers["Default"]);
                 }
