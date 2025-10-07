@@ -8,7 +8,7 @@ public class CrumblingPlatform : MonoBehaviour
     private BoxCollider blockCollider;
     private Renderer blockRenderer;
     public float fadeTime = 1.0f;
-    public float recoveryTime = 5.0f;
+    public float recoveryTime = 3.0f;
    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
