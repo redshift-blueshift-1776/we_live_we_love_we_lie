@@ -86,7 +86,6 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log(sounds);
         for (int i = 0; i < sounds.Count(); i++)
         {
             sounds[i].Init(gameObject);

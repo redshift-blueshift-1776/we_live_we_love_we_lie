@@ -7,9 +7,8 @@ public class CrumblingPlatform : MonoBehaviour
     private Color originalColor;
     private BoxCollider blockCollider;
     private Renderer blockRenderer;
-    private float fadeTime;
-    private float recoveryTime;
-    public PlayerMovement playerMovement;
+    public float fadeTime = 1.0f;
+    public float recoveryTime = 5.0f;
    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,8 +17,6 @@ public class CrumblingPlatform : MonoBehaviour
         blockCollider = gameObject.GetComponent<BoxCollider>();
         blockRenderer = gameObject.GetComponent<Renderer>();
         originalColor = blockRenderer.material.color;
-        fadeTime = 2.0f;
-        recoveryTime = 5.0f;
     }
 
     // Update is called once per frame
