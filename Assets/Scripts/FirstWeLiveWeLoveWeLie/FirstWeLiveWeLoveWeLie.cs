@@ -253,6 +253,14 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                             stealChance += 0.25f;
                         }
                         Debug.Log("stealChance: " + stealChance);
+
+                        if (defenseCard.Color == CardColor.Red) {
+                            // Told the truth
+                            probTruthIfEliminate = (probTruthIfEliminate + 1f) / 2f;
+                        } else {
+                            // Lied
+                            probTruthIfSafe = (probTruthIfSafe + 0f) / 2f;
+                        }
                     } else {
                         // Player says safe
                         float baseProbRed = redsRemaining / (redsRemaining + blacksRemaining + 0f);
@@ -273,6 +281,14 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                             stealChance += 0.25f;
                         }
                         Debug.Log("stealChance: " + stealChance);
+
+                        if (defenseCard.Color == CardColor.Red) {
+                            // Lied
+                            probTruthIfEliminate = (probTruthIfEliminate + 0f) / 2f;
+                        } else {
+                            // Told the truth
+                            probTruthIfSafe = (probTruthIfSafe + 1f) / 2f;
+                        }
                     }
                 } else {
                     if (choice == 0) stealChance -= 0.3f;
