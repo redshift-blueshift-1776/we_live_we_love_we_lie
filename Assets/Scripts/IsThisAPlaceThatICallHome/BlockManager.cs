@@ -27,6 +27,8 @@ public class BlockManager : MonoBehaviour
     private int blockIndex = 0;
     public int currentLayer = 0; 
 
+    private bool endless;
+
     void Awake()
     {
         BlockController.ResetLayerCounter();
@@ -37,23 +39,22 @@ public class BlockManager : MonoBehaviour
         gm = gameManager.GetComponent<IsThisAPlaceThatICallHome>();
         currentLayer = 0;
         blockIndex = 0;
+        if (gm.endless) {
+            endless = true;
+        }
         // SpawnNextBlock();
     }
 
-    public void SpawnNextBlock()
-    {
-        if (currentLayer < numLayers) {
-            if (blockIndex < hardcodedBlocks.Count)
-            {
+    public void SpawnNextBlock() {
+        if (endless) {
+            if (blockIndex < hardcodedBlocks.Count) {
                 BlockPairData pair = hardcodedBlocks[blockIndex];
                 SpawnBlock(pair.leftBlock, BlockSide.Left);
                 SpawnBlock(pair.rightBlock, BlockSide.Right);
                 blockIndex++;
                 currentLayer++;
                 gm.MoveCameraUp(currentLayer);
-            }
-            else
-            {
+            } else {
                 BlockPairData pair = blockPairs[Random.Range(0, blockPairs.Count)];
 
                 // Each side independently
@@ -65,8 +66,29 @@ public class BlockManager : MonoBehaviour
                 gm.MoveCameraUp(currentLayer);
             }
         } else {
-            Debug.Log("asdf");
-            gm.gameDone = true;
+            if (currentLayer < numLayers) {
+                if (blockIndex < hardcodedBlocks.Count) {
+                    BlockPairData pair = hardcodedBlocks[blockIndex];
+                    SpawnBlock(pair.leftBlock, BlockSide.Left);
+                    SpawnBlock(pair.rightBlock, BlockSide.Right);
+                    blockIndex++;
+                    currentLayer++;
+                    gm.MoveCameraUp(currentLayer);
+                } else {
+                    BlockPairData pair = blockPairs[Random.Range(0, blockPairs.Count)];
+
+                    // Each side independently
+                    SpawnBlock(pair.leftBlock, BlockSide.Left);
+                    SpawnBlock(pair.rightBlock, BlockSide.Right);
+
+                    currentLayer++;
+                    blockIndex++;
+                    gm.MoveCameraUp(currentLayer);
+                }
+            } else {
+                Debug.Log("asdf");
+                gm.gameDone = true;
+            }
         }
     }
 

@@ -62,20 +62,26 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     void Update()
     {
         if (gameActive) {
-            timerText.text = $"Time Remaining: {120 - Mathf.Floor(timer)}";
-            timer += Time.deltaTime;
-            layerText.text = $"Layer: {bm.currentLayer}";
-            if ((timer > 120f) && bm.currentLayer >= bm.numLayers) {
-                StartCoroutine(EndGame());
-            }
-            if ((timer < 90f) && gameDone) {
-                StartCoroutine(SkipToEnd());
-            }
-            if ((timer > 120f) && bm.currentLayer < bm.numLayers) {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                // SceneManager.LoadScene(0); // Change to loss scene once made.
-                transitionScript.ToFail();
+            if (endless) {
+                timerText.text = $"Time: {Mathf.Floor(timer)}";
+                timer += Time.deltaTime;
+                layerText.text = $"Layer: {bm.currentLayer}";
+            } else {
+                timerText.text = $"Time Remaining: {120 - Mathf.Floor(timer)}";
+                timer += Time.deltaTime;
+                layerText.text = $"Layer: {bm.currentLayer}";
+                if ((timer > 120f) && bm.currentLayer >= bm.numLayers) {
+                    StartCoroutine(EndGame());
+                }
+                if ((timer < 90f) && gameDone) {
+                    StartCoroutine(SkipToEnd());
+                }
+                if ((timer > 120f) && bm.currentLayer < bm.numLayers) {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                    // SceneManager.LoadScene(0); // Change to loss scene once made.
+                    transitionScript.ToFail();
+                }
             }
         }
     }
