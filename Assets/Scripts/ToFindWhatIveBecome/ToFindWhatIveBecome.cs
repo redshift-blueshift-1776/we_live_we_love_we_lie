@@ -13,6 +13,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
     [SerializeField] private GameObject[] collectibles;
     [SerializeField] private List<Transform> collectibleLocations;
 
+    [SerializeField] private List<Transform> alternateLocations;
+
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject gameCanvas;
@@ -55,17 +57,38 @@ public class ToFindWhatIveBecome : MonoBehaviour
         gameActive = false;
         timer = 0f;
 
-        int n = collectibleLocations.Count;
-        while (n > 1)
-        {
-            n--;
-            int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
-            Transform value = collectibleLocations[k];
-            collectibleLocations[k] = collectibleLocations[n];
-            collectibleLocations[n] = value;
-        }
-        for (int i = 0; i < collectibles.Length; i++) {
-            collectibles[i].transform.position = new Vector3(collectibleLocations[i].position.x, collectibleLocations[i].position.y, collectibleLocations[i].position.z);
+        shuffleCollectibles(endless);
+    }
+
+    public void shuffleCollectibles(bool alternate) {
+        if (alternate) {
+            int n = alternateLocations.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
+                Transform value = alternateLocations[k];
+                alternateLocations[k] = alternateLocations[n];
+                alternateLocations[n] = value;
+            }
+            for (int i = 0; i < collectibles.Length; i++) {
+                collectibles[i].SetActive(true);
+                collectibles[i].transform.position = new Vector3(alternateLocations[i].position.x, alternateLocations[i].position.y, alternateLocations[i].position.z);
+            }
+        } else {
+            int n = collectibleLocations.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
+                Transform value = collectibleLocations[k];
+                collectibleLocations[k] = collectibleLocations[n];
+                collectibleLocations[n] = value;
+            }
+            for (int i = 0; i < collectibles.Length; i++) {
+                collectibles[i].SetActive(true);
+                collectibles[i].transform.position = new Vector3(collectibleLocations[i].position.x, collectibleLocations[i].position.y, collectibleLocations[i].position.z);
+            }
         }
     }
 
@@ -104,7 +127,15 @@ public class ToFindWhatIveBecome : MonoBehaviour
             win = win && b;
         }
         if (win) {
-            StartCoroutine(GameWin());
+            if (endless) {
+                shuffleCollectibles(true);
+                timer = 0f;
+                foreach (RawImage ri in images) {
+                    ri.texture = blank;
+                }
+            } else {
+                StartCoroutine(GameWin());
+            }
         }
     }
 
@@ -126,7 +157,11 @@ public class ToFindWhatIveBecome : MonoBehaviour
     }
 
     public void UpdateUI() {
-        timerGame.text = $"Time Remaining: {169f - Mathf.Floor(timer)}";
+        if (endless) {
+            timerGame.text = $"Time Remaining: {169f - Mathf.Floor(timer)}";
+        } else {
+            timerGame.text = $"Time Remaining: {169f - Mathf.Floor(timer)}";
+        }
         for (int i = 0; i < 6; i++) {
             images[i].texture = collected[i] ? fills[i] : blank;
         }

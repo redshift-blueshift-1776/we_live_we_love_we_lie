@@ -16,6 +16,7 @@ public class Collectible : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        gameObject.SetActive(true);
         gm = gameManager.GetComponent<ToFindWhatIveBecome>();
         collectSound.SetActive(false);
     }
@@ -40,7 +41,8 @@ public class Collectible : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
-        Destroy(gameObject);
+        // Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void Interact() {
