@@ -43,6 +43,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
     [SerializeField] private GameObject callableLyricsSyncDisplay;
     private CallableLyricsSyncDisplay clsd;
 
+    private bool usingAlternate;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -57,10 +59,12 @@ public class ToFindWhatIveBecome : MonoBehaviour
         gameActive = false;
         timer = 0f;
 
-        shuffleCollectibles(endless);
+        usingAlternate = endless;
+        shuffleCollectibles(usingAlternate);
     }
 
     public void shuffleCollectibles(bool alternate) {
+        collected = new bool[6];
         if (alternate) {
             int n = alternateLocations.Count;
             while (n > 1)
@@ -128,7 +132,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
         }
         if (win) {
             if (endless) {
-                shuffleCollectibles(true);
+                usingAlternate = !usingAlternate;
+                shuffleCollectibles(usingAlternate);
                 timer = 0f;
                 foreach (RawImage ri in images) {
                     ri.texture = blank;
