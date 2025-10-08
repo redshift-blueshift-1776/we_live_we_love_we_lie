@@ -28,6 +28,7 @@ public class Collectible : MonoBehaviour
     }
 
     public IEnumerator collect() {
+        bool oldUsingAlternate = gm.usingAlternate;
         float duration = 2f;
         float elapsed = 0f;
         gm.CollectItem(id);
@@ -42,7 +43,11 @@ public class Collectible : MonoBehaviour
             yield return null;
         }
         // Destroy(gameObject);
-        gameObject.SetActive(false);
+        if (!gm.endless) {
+            gameObject.SetActive(false);
+        } else if (gm.usingAlternate == oldUsingAlternate) {
+            transform.position = transform.position + new Vector3(0,-1000,0);
+        }
     }
 
     public void Interact() {
