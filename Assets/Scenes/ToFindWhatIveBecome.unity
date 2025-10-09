@@ -543,7 +543,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5151581593922290984, guid: 0faa3e35e2c9448e985e22f1cb42bfc2, type: 3}
       propertyPath: lyricsText.Array.size
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5151581593922290984, guid: 0faa3e35e2c9448e985e22f1cb42bfc2, type: 3}
       propertyPath: 'lyricsText.Array.data[0]'
@@ -572,6 +572,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5151581593922290984, guid: 0faa3e35e2c9448e985e22f1cb42bfc2, type: 3}
       propertyPath: 'lyricsText.Array.data[6]'
+      value: 8:(Use W and S to move forwards and backwards.)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5151581593922290984, guid: 0faa3e35e2c9448e985e22f1cb42bfc2, type: 3}
+      propertyPath: 'lyricsText.Array.data[7]'
+      value: 8:(Use left shift to boost, and use the mouse/trackpad to turn.)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5151581593922290984, guid: 0faa3e35e2c9448e985e22f1cb42bfc2, type: 3}
+      propertyPath: 'lyricsText.Array.data[8]'
       value: '1:'
       objectReference: {fileID: 0}
     - target: {fileID: 7177754554061693157, guid: 0faa3e35e2c9448e985e22f1cb42bfc2, type: 3}
@@ -5868,6 +5876,8 @@ MonoBehaviour:
   - {fileID: 1639297799}
   - {fileID: 1855039228}
   - {fileID: 714263261}
+  alternateLocations: []
+  alternateLocations2: []
   startCanvas: {fileID: 1914914398}
   gameCanvas: {fileID: 1908451715}
   winCanvas: {fileID: 1966796976}
@@ -5897,6 +5907,8 @@ MonoBehaviour:
   transition: {fileID: 705278724}
   transitionScript: {fileID: 0}
   callableLyricsSyncDisplay: {fileID: 0}
+  usingAlternate: 0
+  carSpeed: 200
 --- !u!1 &1746412828
 GameObject:
   m_ObjectHideFlags: 0
