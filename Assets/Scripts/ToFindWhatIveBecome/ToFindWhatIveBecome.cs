@@ -47,6 +47,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
 
     public int usingAlternate;
 
+    public float carSpeed = 200f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -60,6 +62,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
         cam1.SetActive(false);
         gameActive = false;
         timer = 0f;
+
+        carSpeed = 200f;
 
         usingAlternate = endless ? 1 : 0;
         if (endless) {
@@ -224,6 +228,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
     public IEnumerator resetGame() {
         usingAlternate = (usingAlternate + 1) % 3;
         timer = 0f;
+        carSpeed = (4 * carSpeed + 100f) / 5f;
         gameActive = false;
         yield return new WaitForSeconds(3f);
         shuffleCollectibles(usingAlternate);

@@ -34,6 +34,7 @@ public class Car_Spawner : MonoBehaviour
                 var newCar = Instantiate(car, transform);
                 newCar.SetActive(true);
                 var newCarScript = newCar.GetComponent<Car>();
+                newCarScript.speed = gm.carSpeed;
                 newCarScript.targetPosition = targetPosition;
                 newCarScript.startPosition = startPosition;  
             }
