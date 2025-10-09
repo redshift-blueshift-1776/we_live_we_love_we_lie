@@ -13,9 +13,12 @@ public class MassElimination : MonoBehaviour
     [SerializeField] public GameObject transition;
 
     [SerializeField] public GameObject camera;
+
+    [SerializeField] public TMP_Text playersRemaining;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        playersRemaining.text = "Players Remaining:\n1000";
         MakeGrid();
         StartCoroutine(MoveCamera());
     }
@@ -27,14 +30,15 @@ public class MassElimination : MonoBehaviour
     }
 
     public IEnumerator MoveCamera() {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(3.69f);
         float duration = 13f;
         float elapsed = 0f;
         Quaternion rotationStart = camera.transform.localRotation;
         Quaternion targetRotation = Quaternion.Euler(0, 0, 0);
         while (elapsed < duration) {
-            camera.transform.position += new Vector3(0, -1.5f * Time.deltaTime, 200 * Time.deltaTime);
+            camera.transform.position += new Vector3(0, -1.69f * Time.deltaTime, 200 * Time.deltaTime);
             camera.transform.localRotation = Quaternion.Slerp(rotationStart, targetRotation, elapsed / duration);
+            playersRemaining.text = $"Players Remaining:\n{(int) Mathf.Lerp(1000, 276, elapsed / duration)}";
             elapsed += Time.deltaTime;
             yield return null;
         }
