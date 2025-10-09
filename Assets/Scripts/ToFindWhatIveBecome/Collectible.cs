@@ -47,6 +47,7 @@ public class Collectible : MonoBehaviour
             gameObject.SetActive(false);
         } else if (gm.usingAlternate == oldUsingAlternate) {
             transform.position = transform.position + new Vector3(0,-1000,0);
+            collectSound.SetActive(false);
         }
     }
 
