@@ -28,7 +28,7 @@ public class Collectible : MonoBehaviour
     }
 
     public IEnumerator collect() {
-        bool oldUsingAlternate = gm.usingAlternate;
+        int oldUsingAlternate = gm.usingAlternate;
         float duration = 2f;
         float elapsed = 0f;
         gm.CollectItem(id);

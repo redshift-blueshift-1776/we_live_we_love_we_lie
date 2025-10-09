@@ -15,6 +15,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
 
     [SerializeField] private List<Transform> alternateLocations;
 
+    [SerializeField] private List<Transform> alternateLocations2;
+
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject gameCanvas;
@@ -43,7 +45,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
     [SerializeField] private GameObject callableLyricsSyncDisplay;
     private CallableLyricsSyncDisplay clsd;
 
-    public bool usingAlternate;
+    public int usingAlternate;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,13 +61,21 @@ public class ToFindWhatIveBecome : MonoBehaviour
         gameActive = false;
         timer = 0f;
 
-        usingAlternate = endless;
+        usingAlternate = endless ? 1 : 0;
+        if (endless) {
+            for (int i = 0; i < 9; i++) {
+                alternateLocations2.Add(collectibleLocations[collectibleLocations.Count - 1]);
+                collectibleLocations.RemoveAt(collectibleLocations.Count - 1);
+            }
+        }
         shuffleCollectibles(usingAlternate);
     }
 
-    public void shuffleCollectibles(bool alternate) {
+    public void shuffleCollectibles(int alternate) {
+        Debug.Log(alternate);
         collected = new bool[6];
-        if (alternate) {
+
+        if (alternate == 1) {
             int n = alternateLocations.Count;
             while (n > 1)
             {
@@ -79,7 +89,26 @@ public class ToFindWhatIveBecome : MonoBehaviour
                 collectibles[i].SetActive(true);
                 collectibles[i].transform.position = new Vector3(alternateLocations[i].position.x, alternateLocations[i].position.y, alternateLocations[i].position.z);
             }
-        } else {
+            
+            // Shuffle collectibleLocations and alternateLocations2
+            int clCount = collectibleLocations.Count;
+            int al2Count = alternateLocations2.Count;
+            collectibleLocations.AddRange(alternateLocations2);
+            n = clCount + al2Count;
+            while (n > 1)
+            {
+                n--;
+                int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
+                Transform value = collectibleLocations[k];
+                collectibleLocations[k] = collectibleLocations[n];
+                collectibleLocations[n] = value;
+            }
+            alternateLocations2.Clear();
+            for (int i = 0; i < 9; i++) {
+                alternateLocations2.Add(collectibleLocations[collectibleLocations.Count - 1]);
+                collectibleLocations.RemoveAt(collectibleLocations.Count - 1);
+            }
+        } else if (alternate == 0) {
             int n = collectibleLocations.Count;
             while (n > 1)
             {
@@ -92,6 +121,57 @@ public class ToFindWhatIveBecome : MonoBehaviour
             for (int i = 0; i < collectibles.Length; i++) {
                 collectibles[i].SetActive(true);
                 collectibles[i].transform.position = new Vector3(collectibleLocations[i].position.x, collectibleLocations[i].position.y, collectibleLocations[i].position.z);
+            }
+
+            // Shuffle alternateLocations and alternateLocations2
+            int alCount = alternateLocations.Count;
+            int al2Count = alternateLocations2.Count;
+            alternateLocations.AddRange(alternateLocations2);
+            n = alCount + al2Count;
+            while (n > 1)
+            {
+                n--;
+                int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
+                Transform value = alternateLocations[k];
+                alternateLocations[k] = alternateLocations[n];
+                alternateLocations[n] = value;
+            }
+            alternateLocations2.Clear();
+            for (int i = 0; i < 9; i++) {
+                alternateLocations2.Add(alternateLocations[alternateLocations.Count - 1]);
+                alternateLocations.RemoveAt(alternateLocations.Count - 1);
+            }
+        } else {
+            int n = alternateLocations2.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
+                Transform value = alternateLocations2[k];
+                alternateLocations2[k] = alternateLocations2[n];
+                alternateLocations2[n] = value;
+            }
+            for (int i = 0; i < collectibles.Length; i++) {
+                collectibles[i].SetActive(true);
+                collectibles[i].transform.position = new Vector3(alternateLocations2[i].position.x, alternateLocations2[i].position.y, alternateLocations2[i].position.z);
+            }
+            // Shuffle collectibleLocations and alternateLocations
+            int clCount = collectibleLocations.Count;
+            int alCount = alternateLocations.Count;
+            collectibleLocations.AddRange(alternateLocations);
+            n = clCount + alCount;
+            while (n > 1)
+            {
+                n--;
+                int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
+                Transform value = collectibleLocations[k];
+                collectibleLocations[k] = collectibleLocations[n];
+                collectibleLocations[n] = value;
+            }
+            alternateLocations.Clear();
+            for (int i = 0; i < 12; i++) {
+                alternateLocations.Add(collectibleLocations[collectibleLocations.Count - 1]);
+                collectibleLocations.RemoveAt(collectibleLocations.Count - 1);
             }
         }
     }
@@ -142,7 +222,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
     }
 
     public IEnumerator resetGame() {
-        usingAlternate = !usingAlternate;
+        usingAlternate = (usingAlternate + 1) % 3;
         timer = 0f;
         gameActive = false;
         yield return new WaitForSeconds(3f);

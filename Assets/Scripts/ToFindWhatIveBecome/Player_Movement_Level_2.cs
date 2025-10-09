@@ -148,10 +148,10 @@ public class Player_Movement_Level_2 : MonoBehaviour
         bool seeARamp = false;
         foreach (RaycastHit hit in hits)
         { 
-            Debug.Log(hit.collider.gameObject.name);
+            // Debug.Log(hit.collider.gameObject.name);
             if (!hit.collider.transform.IsChildOf(transform)) // ignore self
             {
-                Debug.Log("Hit normal: " + hit.normal);
+                // Debug.Log("Hit normal: " + hit.normal);
                 // Debug.DrawRay(hit.point, hit.normal * 30f, Color.green);
                 if (hit.collider.gameObject.name.Contains("Ramp")) {
                     seeARamp = true;
