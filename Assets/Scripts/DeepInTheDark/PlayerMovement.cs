@@ -264,7 +264,7 @@ public class PlayerMovement : MonoBehaviour
             ) * Time.deltaTime);
 
         //only apply friction when the player stops giving input (WASD)
-        if (!userInput && !isClimbing)
+        if (!userInput)
         {
             //apply friction to the velocity vector
             Vector3 frictionVector = new Vector3(currentFrictionCoefficient, 1f, currentFrictionCoefficient);
