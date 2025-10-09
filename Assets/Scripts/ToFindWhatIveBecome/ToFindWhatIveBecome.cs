@@ -79,6 +79,23 @@ public class ToFindWhatIveBecome : MonoBehaviour
         Debug.Log(alternate);
         collected = new bool[6];
 
+        if (!endless) {
+            int n = collectibleLocations.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = UnityEngine.Random.Range(0, n + 1); // Using Unity's Random.Range
+                Transform value = collectibleLocations[k];
+                collectibleLocations[k] = collectibleLocations[n];
+                collectibleLocations[n] = value;
+            }
+            for (int i = 0; i < collectibles.Length; i++) {
+                collectibles[i].SetActive(true);
+                collectibles[i].transform.position = new Vector3(collectibleLocations[i].position.x, collectibleLocations[i].position.y, collectibleLocations[i].position.z);
+            }
+            return;
+        }
+
         if (alternate == 1) {
             int n = alternateLocations.Count;
             while (n > 1)

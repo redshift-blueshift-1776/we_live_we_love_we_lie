@@ -10,13 +10,19 @@ public class EliminationPillar : MonoBehaviour
 {
     [SerializeField] private GameObject leftHinge;
     [SerializeField] private GameObject rightHinge;
-    [SerializeField] private GameObject transition;
+    [SerializeField] public GameObject transition;
     private Transition transitionScript;
+
+    [SerializeField] public float delay = 2f;
+    [SerializeField] public bool eliminate;
+    [SerializeField] public bool drop;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         transitionScript = transition.GetComponent<Transition>();
-        StartCoroutine(OpenTrapDoor());
+        if (drop) {
+            StartCoroutine(OpenTrapDoor());
+        }
     }
 
     // Update is called once per frame
@@ -32,7 +38,7 @@ public class EliminationPillar : MonoBehaviour
         Quaternion rightStart = rightHinge.transform.localRotation;
         Quaternion targetRotationLeft = Quaternion.Euler(0, 0, -90);
         Quaternion targetRotationRight = Quaternion.Euler(0, 0, 90);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(delay);
         while (elapsed < duration) {
             float t = elapsed / duration;
 
@@ -43,6 +49,8 @@ public class EliminationPillar : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(3f);
-        transitionScript.ToFail();
+        if (eliminate) {
+            transitionScript.ToFail();
+        }
     }
 }
