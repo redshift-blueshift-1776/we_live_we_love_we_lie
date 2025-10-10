@@ -6258,6 +6258,7 @@ MonoBehaviour:
   transitionScript: {fileID: 0}
   callableLyricsSyncDisplay: {fileID: 0}
   usingAlternate: 0
+  carSpeed: 200
 --- !u!1 &1746412828
 GameObject:
   m_ObjectHideFlags: 0
@@ -9722,6 +9723,7 @@ GameObject:
   - component: {fileID: 3414167129208782217}
   - component: {fileID: 2105210417890455079}
   - component: {fileID: 5033810847521197196}
+  - component: {fileID: 5607677787629846898}
   m_Layer: 0
   m_Name: SAT Spire
   m_TagString: Untagged
@@ -9729,6 +9731,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!64 &5607677787629846898
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5607677787629846897}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4394420077881190621, guid: 8ccfd54a112dc4c64990331a82c18cc9, type: 3}
 --- !u!1 &5675563909512418047
 GameObject:
   m_ObjectHideFlags: 0
