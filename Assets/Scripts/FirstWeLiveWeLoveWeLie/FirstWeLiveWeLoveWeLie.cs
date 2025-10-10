@@ -483,7 +483,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             if (finalColor == CardColor.Red)
             {
                 PlayerPrefs.SetInt("PreviousLevel", 4);
-                SceneManager.LoadScene(5);
+                SceneManager.LoadScene(9);
             }
             else
             {

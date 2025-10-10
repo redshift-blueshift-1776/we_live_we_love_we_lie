@@ -270,7 +270,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
         Cursor.visible = true;
         PlayerPrefs.SetInt("PreviousLevel", 2);
         gameActive = false;
-        transitionScript.ToFail();
+        SceneManager.LoadScene(9);
+        // transitionScript.ToFail();
     }
 
     public void UpdateUI() {

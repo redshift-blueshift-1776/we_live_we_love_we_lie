@@ -230,8 +230,8 @@ public class Transition : MonoBehaviour
 
     public void ToFail() {
         if (currentCoroutine == null) {
-            Scene currentScene = SceneManager.GetActiveScene();
-            PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
+            // Scene currentScene = SceneManager.GetActiveScene();
+            // PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
             currentCoroutine = StartCoroutine(LoadFail());
         }
     }

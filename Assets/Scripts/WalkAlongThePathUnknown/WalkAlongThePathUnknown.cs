@@ -77,8 +77,13 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         Cursor.visible = true;
         PlayerPrefs.SetInt("PreviousLevel", 3);
         gameActive = false;
-        // SceneManager.LoadScene(5); // Change when we have the actual scene
-        transitionScript.ToFail();
+        StartCoroutine(LoadFailScene());
+        // transitionScript.ToFail();
+    }
+
+    public IEnumerator LoadFailScene() {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(9); // Change when we have the actual scene
     }
 
     public void soundAlarm() {

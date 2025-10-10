@@ -165,7 +165,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(2); // Change to 2 once To Find What I've Become is made.
+        SceneManager.LoadScene(10); // Change to 2 once To Find What I've Become is made.
     }
 
 
