@@ -81,6 +81,8 @@ public class Sound
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager Instance { get; private set; }
+
     public Sound[] sounds;
     private Dictionary<string, int> soundIndices = new Dictionary<string, int>();
 
@@ -100,6 +102,10 @@ public class AudioManager : MonoBehaviour
 
     private Sound getSound(string name)
     {
+        if (!soundIndices.ContainsKey(name))
+        {
+            return null;
+        }
         return sounds[soundIndices[name]];
     }
 
