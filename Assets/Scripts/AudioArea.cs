@@ -60,7 +60,7 @@ public class AudioArea : MonoBehaviour
         {
             StopCoroutine(currCoroutine);
         }
-        currCoroutine = fadeInMusic(5, 0);
+        currCoroutine = fadeInMusic(2, 0);
         StartCoroutine(currCoroutine);
         timeSinceLeft = 0;
     }

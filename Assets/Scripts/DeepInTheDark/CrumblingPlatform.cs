@@ -25,7 +25,7 @@ public class CrumblingPlatform : MonoBehaviour
         
     }
 
-    public bool isBlockCrumbling()
+    public bool isBlockCrumbling() 
     {
         return isCrumbling;
     }

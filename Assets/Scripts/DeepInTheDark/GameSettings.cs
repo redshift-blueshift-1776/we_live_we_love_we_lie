@@ -17,12 +17,10 @@ public class GameSettings : MonoBehaviour
     {
         inSettings = false;
         settingStack = new Stack<string>();
-        Debug.Log(mouseSettingsButton != null ? "Mouse Settings Button found" : "Mouse Settings Button is NULL!");
 
         mouseSettingsButton.onClick.AddListener(() =>
         {
             settingStack.Push("Mouse");
-            Debug.Log("Pushed Mouse; stack count = " + settingStack.Count);
         });
 
 

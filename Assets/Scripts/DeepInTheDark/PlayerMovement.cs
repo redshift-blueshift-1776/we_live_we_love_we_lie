@@ -502,6 +502,35 @@ public class PlayerMovement : MonoBehaviour
         removeGroundCollider(platformObject);
     }
 
+    private IEnumerator handleCassette(Collision collision)
+    {
+        bool validLanding = false;
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
+            {
+                validLanding = true;
+                break;
+            }
+        }
+        if (!validLanding)
+        {
+            yield break;
+        }
+
+        CassetteBlock cassetteScript = collision.gameObject.GetComponent<CassetteBlock>();
+        GameObject cassetteObject = collision.gameObject;
+        while (true)
+        {
+            if (!cassetteScript.visible)
+            {
+                removeGroundCollider(cassetteObject);
+                yield break;
+            }   
+            yield return null;
+        }
+    }
+
 
     private void addGroundCollider(Collision collision, ContactPoint contact)
     {
@@ -591,6 +620,9 @@ public class PlayerMovement : MonoBehaviour
             if (collision.gameObject.CompareTag("Crumbling"))
             {
                 StartCoroutine(handleBlockCrumble(collision));
+            } else if (collision.gameObject.CompareTag("Cassette"))
+            {
+                StartCoroutine(handleCassette(collision));
             }
 
             if (contact.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
@@ -635,6 +667,14 @@ public class PlayerMovement : MonoBehaviour
             {
                 CrumblingPlatform platformScript = collision.gameObject.GetComponent<CrumblingPlatform>();
                 if (platformScript != null && platformScript.isBlockCrumbling())
+                {
+                    handleFrictionChange();
+                    continue;
+                }
+            } else if (collision.gameObject.CompareTag("Cassette"))
+            {
+                CassetteBlock cassetteScript = collision.gameObject.GetComponent<CassetteBlock>();
+                if (cassetteScript != null && cassetteScript.visible)
                 {
                     handleFrictionChange();
                     continue;
@@ -697,7 +737,6 @@ public class PlayerMovement : MonoBehaviour
             currentFrictionCoefficient = frictionCoefficients["Air"];
             currMaxSpeedMultiplier = maxSpeedMultipliers["Air"];
         }
-        //sanity check
         //ceilingContactPointsPositions.Remove(collision.collider);
     }
 
