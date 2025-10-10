@@ -27,6 +27,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
     [Header("Audio")]
     [SerializeField] public GameObject loadingAudio;
     [SerializeField] public GameObject gameAudio;
+    [SerializeField] public GameObject failSound;
 
     [Header("Cameras")]
     [SerializeField] public GameObject cam1;
@@ -56,6 +57,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
         winCanvas.SetActive(false);
         loadingAudio.SetActive(true);
         gameAudio.SetActive(false);
+        failSound.SetActive(false);
         System.Random rng = new System.Random();
         int n = boards.Length;
         while (n > 1)
@@ -125,11 +127,18 @@ public class TheresAGhostInsideMe : MonoBehaviour
     }
 
     public void GameLose() {
+        failSound.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         PlayerPrefs.SetInt("PreviousLevel", 7);
         gameActive = false;
-        transitionScript.ToFail();
+        // transitionScript.ToFail();
+        StartCoroutine(LoadFailScene());
+    }
+
+    public IEnumerator LoadFailScene() {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(9); // Change when we have the actual scene
     }
 
     public void rotateBoard() {
