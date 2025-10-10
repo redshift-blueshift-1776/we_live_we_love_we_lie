@@ -27,6 +27,8 @@ public class Love_Truck_Passenger : MonoBehaviour
         Champion2,
         Champion3,
         Champion4,
+        Donja1,
+        Donja2
     }
 
     public enum Dance {
@@ -37,7 +39,8 @@ public class Love_Truck_Passenger : MonoBehaviour
         Aluminum,
         AluminumV2,
         Floss,
-        Floss24
+        Floss24,
+        Donja
     }
 
     // [SerializeField] public GameObject game;
@@ -171,6 +174,8 @@ public class Love_Truck_Passenger : MonoBehaviour
         Quaternion rightLegStart = rightLegJoint.transform.localRotation;
         Quaternion rightLegLowerStart = rightLegLowerJoint.transform.localRotation;
 
+        Quaternion mainStart = transform.localRotation;
+
         // Target rotations based on pose
         Quaternion defaultRotation = Quaternion.Euler(0, 0, 0);
         Quaternion z90 = Quaternion.Euler(0, 0, 90);
@@ -198,11 +203,18 @@ public class Love_Truck_Passenger : MonoBehaviour
         Quaternion rightLegTarget = rightLegStart;
         Quaternion rightLegLowerTarget = rightLegLowerStart;
 
+        Quaternion mainTarget = mainStart;
+
         Quaternion z45 = Quaternion.Euler(0, 0, 45);
         Quaternion zn15 = Quaternion.Euler(0, 0, -15);
         Quaternion zn45 = Quaternion.Euler(0, 0, -45);
         Quaternion x60z45 = Quaternion.Euler(60, 0, 45);
         Quaternion x60zn45 = Quaternion.Euler(60, 0, -45);
+
+        Quaternion y30 = Quaternion.Euler(0, 30, 0);
+        Quaternion yn30 = Quaternion.Euler(0, -30, 0);
+        Quaternion x30y30z45 = Quaternion.Euler(30, 30, 45);
+        Quaternion x105 = Quaternion.Euler(105, 0, 0);
 
         switch (pose)
         {
@@ -446,6 +458,32 @@ public class Love_Truck_Passenger : MonoBehaviour
                 rightArmLowerTarget = defaultRotation;
                 currentPose = Pose.Champion4;
                 break;
+
+            case Pose.Donja1:
+                leftLegTarget = defaultRotation;
+                leftLegLowerTarget = defaultRotation;
+                rightLegTarget = defaultRotation;
+                rightLegLowerTarget = defaultRotation;
+                leftArmTarget = defaultRotation;
+                leftArmLowerTarget = defaultRotation;
+                rightArmTarget = defaultRotation;
+                rightArmLowerTarget = defaultRotation;
+                mainTarget = defaultRotation;
+                currentPose = Pose.Donja1;
+                break;
+
+            case Pose.Donja2:
+                leftLegTarget = defaultRotation;
+                leftLegLowerTarget = defaultRotation;
+                rightLegTarget = defaultRotation;
+                rightLegLowerTarget = defaultRotation;
+                leftArmTarget = x30y30z45;
+                leftArmLowerTarget = x105;
+                rightArmTarget = x45zn45;
+                rightArmLowerTarget = x90;
+                mainTarget = yn30;
+                currentPose = Pose.Donja2;
+                break;
             
             default:
                 leftLegTarget = defaultRotation;
@@ -468,6 +506,7 @@ public class Love_Truck_Passenger : MonoBehaviour
             leftLegLowerJoint.transform.localRotation = Quaternion.Slerp(leftLegLowerStart, leftLegLowerTarget, t);
             rightLegJoint.transform.localRotation = Quaternion.Slerp(rightLegStart, rightLegTarget, t);
             rightLegLowerJoint.transform.localRotation = Quaternion.Slerp(rightLegLowerStart, rightLegLowerTarget, t);
+            transform.localRotation = Quaternion.Slerp(mainStart, mainTarget, t);
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -548,6 +587,12 @@ public class Love_Truck_Passenger : MonoBehaviour
                 currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Champion4));
             } else {
                 currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Champion1));
+            }
+        } else if (dance == Dance.Donja) {
+            if (currentPose == Pose.Donja1) {
+                currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Donja2));
+            } else {
+                currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Donja1));
             }
         } else {
             currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Default));
