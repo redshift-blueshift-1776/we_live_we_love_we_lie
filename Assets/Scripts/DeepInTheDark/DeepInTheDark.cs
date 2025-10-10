@@ -114,7 +114,7 @@ public class DeepInTheDark : MonoBehaviour
     {
         audioManager.playSound("respawn");
         player.transform.position = initialPlayerPosition;
-        playerMovement.setPlayerYawPitch(playerMovement.initialYaw, playerMovement.initialPitch);
+        playerMovement.setPlayerYawPitch(playerMovement.getInitialYaw(), playerMovement.getInitialPitch());
         playerMovement.clearGroundContacts();
         playerMovement.haltMovement();
     }
