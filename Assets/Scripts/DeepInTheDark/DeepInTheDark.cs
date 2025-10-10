@@ -57,7 +57,7 @@ public class DeepInTheDark : MonoBehaviour
         intervalBetweenLightning = fadeTimer + 2f;
 
         RenderSettings.ambientSkyColor = spectreColor;
-        initializeStartTimes();
+        initializeAudio();
         
         //flashLightning();
         initialPlayerPosition = player.transform.position;
@@ -95,11 +95,18 @@ public class DeepInTheDark : MonoBehaviour
         }
     }
 
-    private void initializeStartTimes()
+    private void initializeAudio()
     {
         audioManager.setStartTime("lightning", 0.1f);
+        audioManager.setVolume("lightning", 0.5f);
+
         audioManager.setStartTime("machineSpark", 3.3f);
+        audioManager.setVolume("machineSpark", 0.05f);
+
+        audioManager.setVolume("powerOff", 0.05f);
+
         audioManager.setStartTime("respawn", 0.1f);
+        audioManager.setVolume("respawn", 0.5f);
     }
 
     private void handleDeathZone()

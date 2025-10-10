@@ -175,7 +175,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void initializeSounds()
     {
-        audioManager.setVolume("jump", 0.3f);
+        audioManager.setVolume("jump", 0.05f);
     }
 
     /// <summary>
@@ -466,7 +466,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Slime"))
         {
-            //Debug.Log($"OnCollisionEnter with Slime - Frame: {Time.frameCount}, velocity.y: {velocity.y}");
 
             if (Mathf.Abs(velocity.y) >= minElasticCollisionVelocity)
             {
@@ -476,7 +475,6 @@ public class PlayerMovement : MonoBehaviour
                         )
                     , 0f, maxElasticCollisionConservation)
                     );
-                //Debug.Log($"Bounced to: {velocity.y}");
 
                 return true;
             }
