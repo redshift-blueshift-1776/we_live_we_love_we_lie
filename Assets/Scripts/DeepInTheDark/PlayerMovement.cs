@@ -95,15 +95,25 @@ public class PlayerMovement : MonoBehaviour
         //Cursor.visible = false;
         //Cursor.visible = false;
         
-        initialYaw = player.transform.rotation.eulerAngles.y;
+        //initialYaw = player.transform.rotation.eulerAngles.y;
+        initialYaw = playerCamera.transform.localRotation.eulerAngles.y;
         initialPitch = playerCamera.transform.localRotation.eulerAngles.x;
-
-        if (initialYaw > 180f) {
+        while (initialYaw > 180f) {
             initialYaw -= 360f;
         }
-        if (initialPitch > 180f)
+        while (initialYaw < -180f)
+        {
+            initialYaw += 360f;
+        }
+
+
+        while (initialPitch > 180f)
         {
             initialPitch -= 360f;
+        }
+        while (initialPitch < -180f)
+        {
+            initialPitch += 360f;
         }
         initializeSounds();
 
@@ -180,8 +190,9 @@ public class PlayerMovement : MonoBehaviour
         pitch -= mouseY; //inverted
         pitch = Mathf.Clamp(pitch, -90f, 90f);
 
-        player.transform.rotation = Quaternion.Euler(0, yaw, 0);
-        playerCamera.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
+        //player.transform.rotation = Quaternion.Euler(0, yaw, 0);
+        //playerRigidBody.MoveRotation(Quaternion.Euler(0, yaw, 0));
+        playerCamera.transform.localRotation = Quaternion.Euler(pitch, yaw, 0);
     }
 
     /// <summary>
@@ -196,6 +207,15 @@ public class PlayerMovement : MonoBehaviour
 
         if (groundContactPoints.Count > 0)
         {
+            Vector3 forward = Vector3.ProjectOnPlane(body.transform.forward, averageNormal).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(forward, averageNormal);
+            body.transform.rotation = Quaternion.Slerp(
+                body.transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+
+            //purposefully lock the rotation forward
             body.transform.up = Vector3.Slerp(body.transform.up, averageNormal, rotationSpeed * Time.deltaTime);
         }
     }
@@ -416,21 +436,27 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 getInputDirectionVector()
     {
         Vector3 inputDirection = Vector3.zero;
+        Vector3 forward = playerCamera.transform.forward;
+        Vector3 right = playerCamera.transform.right;
+
+        forward.y = 0;
+        right.y = 0;
+
         if (Input.GetKey(KeyCode.W))
         {
-            inputDirection += player.transform.forward;
+            inputDirection += forward;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            inputDirection -= player.transform.right;
+            inputDirection -= right;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            inputDirection -= player.transform.forward;
+            inputDirection -= forward;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            inputDirection += player.transform.right;
+            inputDirection += right;
         }
         inputDirection.Normalize();
         return inputDirection;
