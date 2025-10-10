@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject body;
-    public GameObject settings;
+    public GameSettings gameSettings;
 
     public AudioManager audioManager;
 
@@ -18,7 +18,6 @@ public class PlayerMovement : MonoBehaviour
     private float initialPitch;
 
     public Rigidbody playerRigidBody;
-    private bool inSettings;
 
     private float sensitivityX;
     private float sensitivityY;
@@ -117,8 +116,6 @@ public class PlayerMovement : MonoBehaviour
         }
         initializeSounds();
 
-        inSettings = false;
-        settings.SetActive(inSettings);
 
         sensitivityX = sliderX.value;
         sensitivityY = sliderY.value;
@@ -143,9 +140,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        handleSettings();
         handleSensitivityChange();
-        if (!inSettings)
+        if (!gameSettings.isInSettings())
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -162,15 +158,6 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         rotatePlayer();
-    }
-
-    private void handleSettings()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            inSettings = !inSettings;
-            settings.SetActive(inSettings);
-        }
     }
 
     private void initializeSounds()
