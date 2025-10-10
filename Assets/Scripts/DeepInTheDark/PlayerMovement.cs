@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,8 +14,8 @@ public class PlayerMovement : MonoBehaviour
 
     public AudioManager audioManager;
 
-    public float initialYaw;
-    public float initialPitch;
+    private float initialYaw;
+    private float initialPitch;
 
     public Rigidbody playerRigidBody;
     private bool inSettings;
@@ -93,8 +94,17 @@ public class PlayerMovement : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
         //Cursor.visible = false;
+        
+        initialYaw = player.transform.rotation.eulerAngles.y;
+        initialPitch = playerCamera.transform.localRotation.eulerAngles.x;
 
-
+        if (initialYaw > 180f) {
+            initialYaw -= 360f;
+        }
+        if (initialPitch > 180f)
+        {
+            initialPitch -= 360f;
+        }
         initializeSounds();
 
         inSettings = false;
@@ -194,6 +204,7 @@ public class PlayerMovement : MonoBehaviour
     {
         this.yaw = yaw;
         this.pitch = pitch;
+        rotateCamera();
     }
 
     /// <summary>
@@ -536,6 +547,16 @@ public class PlayerMovement : MonoBehaviour
     public void setSensitivityY(float y)
     {
         sensitivityY = y;
+    }
+
+    public float getInitialYaw()
+    {
+        return initialYaw;
+    }
+
+    public float getInitialPitch()
+    {
+        return initialPitch;
     }
 
     public void handleFrictionChange()
