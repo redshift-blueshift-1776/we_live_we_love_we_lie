@@ -48,6 +48,9 @@ public class TheresAGhostInsideMe : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 1f;
         boardIndex = 0;
         transitionScript = transition.GetComponent<Transition>();
         gameActive = false;
