@@ -253,7 +253,7 @@ public class Heart : MonoBehaviour
                 float vy = currVelocity.y;
                 float vz = currVelocity.z;
                 playerMovement.setPlayerVelocity(new Vector3(-vx, vy, -vz));
-                audioManager.playSound($"bounce{Random.Range(0, 4)}");
+                audioManager.playSound($"bounce{Random.Range(1, 4)}");
             }
         }
     }
