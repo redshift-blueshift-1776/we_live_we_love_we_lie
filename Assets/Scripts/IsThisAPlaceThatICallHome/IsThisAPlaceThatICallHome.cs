@@ -148,7 +148,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         winText.SetActive(false);
         Vector3 startPos = camTransform.position;
         Vector3 targetPos = new Vector3(camTransform.position.x,
-            camTransform.position.y + 20, camTransform.position.z - 100);
+            camTransform.position.y + 50, camTransform.position.z - 100);
 
         float t = 0f;
         while (t < 1f)
