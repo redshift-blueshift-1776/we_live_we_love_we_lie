@@ -17,7 +17,6 @@ public class AudioArea : MonoBehaviour
         timeSinceLeft = Mathf.Infinity;
         restartSoundThreshold = 5f;
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -42,15 +41,17 @@ public class AudioArea : MonoBehaviour
     }
 
     private void startPlaying() {
-        if (timeSinceLeft >= restartSoundThreshold && !audioSource.isPlaying)
+        if (timeSinceLeft >= restartSoundThreshold && audioSource.volume < 0.01f)
         {
+            audioSource.Stop();
             audioSource.Play();
+            timeSinceLeft = 0;
         }
         if (currCoroutine != null)
         {
             StopCoroutine(currCoroutine);
         }
-        currCoroutine = fadeInMusic(5, 1);
+        currCoroutine = fadeInMusic(1, 1);
         StartCoroutine(currCoroutine);
     }
 
@@ -60,9 +61,8 @@ public class AudioArea : MonoBehaviour
         {
             StopCoroutine(currCoroutine);
         }
-        currCoroutine = fadeInMusic(2, 0);
+        currCoroutine = fadeInMusic(1, 0);
         StartCoroutine(currCoroutine);
-        timeSinceLeft = 0;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -78,12 +78,6 @@ public class AudioArea : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             playerInArea = false;
-            if (currCoroutine != null)
-            {
-                StopCoroutine(currCoroutine);
-            }
-            currCoroutine = fadeInMusic(5, 0);
-            StartCoroutine(currCoroutine);
         }
     }
 
