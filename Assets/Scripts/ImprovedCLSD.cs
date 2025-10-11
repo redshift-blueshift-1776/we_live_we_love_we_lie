@@ -32,6 +32,8 @@ public class ImprovedCLSD : MonoBehaviour
 
     [SerializeField] private TMP_Text lyricsDisplay;
     [SerializeField] private TMP_Text lyricsDisplayRight;
+    [SerializeField] private GameObject lyricsBackground;
+    [SerializeField] private GameObject lyricsBackgroundRight;
     [SerializeField] private float beatsPerMinute = 120f;
 
     [SerializeField] private GameObject canvas;
@@ -59,6 +61,9 @@ public class ImprovedCLSD : MonoBehaviour
         nextLyricTime = 0;
         currentLine = 0;
         lyricsDisplay.text = ""; // Start with an empty display
+        lyricsDisplayRight.text = ""; // Start with an empty display
+        lyricsBackgroundRight.SetActive(false);
+        lyricsBackground.SetActive(false);
         canvas.SetActive(false);
         originalLyricsBarWidth = lyricsProgressBarFill.sizeDelta.x;
         if (autoStart) {
@@ -174,15 +179,22 @@ public class ImprovedCLSD : MonoBehaviour
 
     public IEnumerator fillLyrics() {
         float elapsed = 0f;
-        float duration = lyrics[currentLine].duration / 4;
+        float duration = lyrics[currentLine].duration / 4 * secondsPerBeat;
         while (elapsed < duration) {
+            if (currentLine < lyrics.Count) {
+                yield return null;
+            }
             string chars = lyrics[currentLine].text;
             int numChars = (int) (chars.Length * elapsed / duration);
             string charsToPut = chars.Substring(0, numChars);
             if (lyrics[currentLine].rightSide) {
+                lyricsBackgroundRight.SetActive(true);
+                lyricsBackground.SetActive(false);
                 lyricsDisplayRight.text = charsToPut;
                 lyricsDisplay.text = "";
             } else {
+                lyricsBackgroundRight.SetActive(false);
+                lyricsBackground.SetActive(true);
                 lyricsDisplay.text = charsToPut;
                 lyricsDisplayRight.text = "";
             }
@@ -190,12 +202,12 @@ public class ImprovedCLSD : MonoBehaviour
             yield return null;
         }
         if (lyrics[currentLine].rightSide) {
-                lyricsDisplayRight.text = lyrics[currentLine].text;
-                lyricsDisplay.text = "";
-            } else {
-                lyricsDisplay.text = lyrics[currentLine].text;
-                lyricsDisplayRight.text = "";
-            }
+            lyricsDisplayRight.text = lyrics[currentLine].text;
+            lyricsDisplay.text = "";
+        } else {
+            lyricsDisplay.text = lyrics[currentLine].text;
+            lyricsDisplayRight.text = "";
+        }
         yield return null;
     }
 
