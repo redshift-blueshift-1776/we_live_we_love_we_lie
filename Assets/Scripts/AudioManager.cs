@@ -77,6 +77,47 @@ public class Sound
     {
         return name;
     }
+
+    //3D sound settings
+
+    public void setSpatialBlend(float t)
+    {
+        source.spatialBlend = Mathf.Clamp01(t);
+    }
+
+    public void setDopplerLevel(float t)
+    {
+        source.dopplerLevel = Mathf.Clamp(0, t, 5f);
+    }
+
+    public void setVolumeRolloffMode(string s = "")
+    {
+        if (s == "Linear")
+        {
+            source.rolloffMode = AudioRolloffMode.Linear;
+        } else
+        {
+            source.rolloffMode = AudioRolloffMode.Logarithmic;
+        }
+    }
+
+    public void setMinDistance(float t)
+    {
+        if (t >= source.maxDistance)
+        {
+            return;
+        }
+        source.minDistance = Mathf.Max(0, t);
+    }
+
+    public void setMaxDistance(float t)
+    {
+        if (t <= source.minDistance)
+        {
+            return;
+        }
+        source.maxDistance = Mathf.Max(0, t);
+    }
 }
 
 public class AudioManager : MonoBehaviour
@@ -144,4 +185,30 @@ public class AudioManager : MonoBehaviour
         getSound(name).Stop();
     }
 
+    //3D sound settings
+
+    public void setSpatialBlend(string name, float t)
+    {
+        getSound(name).setSpatialBlend(t);
+    }
+
+    public void setDopplerLevel(string name, float t)
+    {
+        getSound(name).setDopplerLevel(t);
+    }
+
+    public void setVolumeRolloffMode(string name, string s)
+    {
+        getSound(name).setVolumeRolloffMode(s);
+    }
+
+    public void setMinDistance(string name, float t)
+    {
+        getSound(name).setMinDistance(t);
+    }
+
+    public void setMaxDistance(string name, float t)
+    {
+        getSound(name).setMaxDistance(t);
+    }
 }
