@@ -32,7 +32,14 @@ public class CassetteBlock : MonoBehaviour
     {
         Color color = blockRenderer.material.color;
         blockRenderer.material.color = new Color(color.r, color.g, color.b, visible ? 1f : 0.1f);
-        blockCollider.enabled = visible;
+        if (visible)
+        {
+            blockRenderer.material.EnableKeyword("_EMISSION");
+        } else
+        {
+            blockRenderer.material.DisableKeyword("_EMISSION");
+        }
+            blockCollider.enabled = visible;
     }
 
     public void startProcess()
