@@ -73,50 +73,78 @@ public class Sound
         }
     }
 
+    public void setIsLooping(bool b)
+    {
+        if (source != null)
+        {
+            source.loop = b;
+        }
+    }
+
     public string getName()
     {
         return name;
+    }
+
+    public float getLength()
+    {
+        return source.clip.length;
     }
 
     //3D sound settings
 
     public void setSpatialBlend(float t)
     {
-        source.spatialBlend = Mathf.Clamp01(t);
+        if (source != null) {
+            source.spatialBlend = Mathf.Clamp01(t);
+        }
     }
 
     public void setDopplerLevel(float t)
     {
-        source.dopplerLevel = Mathf.Clamp(0, t, 5f);
+        if (source != null)
+        {
+            source.dopplerLevel = Mathf.Clamp(0, t, 5f);
+        }
     }
 
     public void setVolumeRolloffMode(string s = "")
     {
-        if (s == "Linear")
+        if (source != null)
         {
-            source.rolloffMode = AudioRolloffMode.Linear;
-        } else
-        {
-            source.rolloffMode = AudioRolloffMode.Logarithmic;
+            if (s == "Linear")
+            {
+                source.rolloffMode = AudioRolloffMode.Linear;
+            }
+            else
+            {
+                source.rolloffMode = AudioRolloffMode.Logarithmic;
+            }
         }
     }
 
     public void setMinDistance(float t)
     {
-        if (t >= source.maxDistance)
+        if (source != null)
         {
-            return;
+            if (t >= source.maxDistance)
+            {
+                return;
+            }
+            source.minDistance = Mathf.Max(0, t);
         }
-        source.minDistance = Mathf.Max(0, t);
     }
 
     public void setMaxDistance(float t)
     {
-        if (t <= source.minDistance)
+        if (source != null)
         {
-            return;
+            if (t <= source.minDistance)
+            {
+                return;
+            }
+            source.maxDistance = Mathf.Max(0, t);
         }
-        source.maxDistance = Mathf.Max(0, t);
     }
 }
 
@@ -185,8 +213,17 @@ public class AudioManager : MonoBehaviour
         getSound(name).Stop();
     }
 
-    //3D sound settings
+    public void setIsLooping(string name, bool b)
+    {
+        getSound(name).setIsLooping(b);
+    }
 
+    public float getLength(string name)
+    {
+        return getSound(name).getLength();
+    }
+
+    //3D sound settings
     public void setSpatialBlend(string name, float t)
     {
         getSound(name).setSpatialBlend(t);

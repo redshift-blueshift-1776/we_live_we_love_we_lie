@@ -11,24 +11,32 @@ public class GameSettings : MonoBehaviour
     public Button mouseSettingsButton;
 
     private bool inSettings;
+    private bool gameEnded;
     private Stack<string> settingStack;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         inSettings = false;
+        gameEnded = false;
         settingStack = new Stack<string>();
 
         mouseSettingsButton.onClick.AddListener(() =>
         {
             settingStack.Push("Mouse");
         });
-
-
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {   
+        if (gameEnded)
+        {
+            settingStack.Clear();
+            inSettings = false;
+            setPage();
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!inSettings)
@@ -39,7 +47,18 @@ public class GameSettings : MonoBehaviour
                 settingStack.Pop();
             }
         }
+
         setPage();
+    }
+
+    public bool getGameEnded()
+    {
+        return gameEnded;
+    }
+
+    public void setGameEnded(bool b)
+    {
+        gameEnded = b;
     }
 
     private void disableAllPages()
@@ -53,14 +72,15 @@ public class GameSettings : MonoBehaviour
         if (settingStack.Count == 0)
         {
             inSettings = false;
-            Time.timeScale = 1f;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             AudioListener.pause = false;
         } else
         {
             inSettings = true;
-            Time.timeScale = 0f;
             AudioListener.pause = true;
-
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             string page = settingStack.Peek();
             switch (page)
             {

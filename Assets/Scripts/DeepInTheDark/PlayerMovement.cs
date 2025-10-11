@@ -10,7 +10,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject body;
-    public GameSettings gameSettings;
 
     public AudioManager audioManager;
 
@@ -18,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private float initialPitch;
 
     public Rigidbody playerRigidBody;
+    public GameSettings gameSettings;
 
     private float sensitivityX;
     private float sensitivityY;
@@ -87,13 +87,12 @@ public class PlayerMovement : MonoBehaviour
     //stores current ground contact colliders and their normals; see rotatePlayer() for more info
     private Dictionary<Collider, List<Vector3>> groundContactPoints;
 
-
+    private bool gameEnded;
     void Start()
     {
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
-        //Cursor.visible = false;
-        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         //initialYaw = player.transform.rotation.eulerAngles.y;
         initialYaw = playerCamera.transform.localRotation.eulerAngles.y;
         initialPitch = playerCamera.transform.localRotation.eulerAngles.x;
@@ -148,10 +147,6 @@ public class PlayerMovement : MonoBehaviour
             movePlayer();
             rotateCamera();
             handleJump();
-        } else
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
     }
 
@@ -212,6 +207,16 @@ public class PlayerMovement : MonoBehaviour
         this.yaw = yaw;
         this.pitch = pitch;
         rotateCamera();
+    }
+
+    public Vector3 getPlayerVelocity()
+    {
+        return velocity;
+    }
+
+    public void setPlayerVelocity(Vector3 velocity)
+    {
+        this.velocity = velocity;
     }
 
     /// <summary>

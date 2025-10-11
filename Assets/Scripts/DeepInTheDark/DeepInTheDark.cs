@@ -44,7 +44,6 @@ public class DeepInTheDark : MonoBehaviour
 
 
     [SerializeField] private GameObject startCanvas;
-    [SerializeField] private GameObject UICanvas;
     [SerializeField] private GameObject EndScreenCanvas;
     [SerializeField] private GameObject winText;
 
