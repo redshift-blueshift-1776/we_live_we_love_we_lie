@@ -216,8 +216,10 @@ public class Heart : MonoBehaviour
     {
         blackScreen.gameObject.SetActive(true);
 
+        audioManager.setVolume("collectLoop", 0);
         audioManager.stopSound("collectLoop");
         audioManager.playSound("collectOutro");
+
 
         float fadeDuration = audioManager.getLength("collectOutro");
         float t = 0;
