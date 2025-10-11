@@ -60,36 +60,6 @@ public class CassetteBlock : MonoBehaviour
             yield return null;
         }
     }
-    //public IEnumerator startClicking()
-    //{
-    //    float t = 0;
-    //    float quarterInterval = fullInterval / 4f;
-    //    int quarterCount = 0;
-    //    while (true)
-    //    {
-    //        t += Time.deltaTime;
-    //        if (t >= quarterInterval)
-    //        {
-    //            t = 0;
-    //            float vol1 = area1.getVolume();
-    //            float vol2 = area2.getVolume();
-
-    //            float maxVol = Mathf.Max(vol1, vol2);
-
-    //            if (maxVol > 0)
-    //            {
-    //                if ((clickType == 1 && quarterCount % 2 == 0) || (clickType != 1 && quarterCount % 2 == 1))
-    //                {
-    //                    audioManager.setVolume(soundName, maxVol);
-    //                    audioManager.playSound(soundName);
-    //                }
-    //            }
-    //            quarterCount = (quarterCount + 1) % 4;
-    //        }
-
-    //        yield return null;
-    //    }
-    //}
     public IEnumerator startClicking()
     {
         float startTime = Time.time;
@@ -101,7 +71,6 @@ public class CassetteBlock : MonoBehaviour
             float elapsed = Time.time - startTime;
             int currentQuarter = Mathf.FloorToInt(elapsed / quarterInterval) % 4;
 
-            // Only trigger when we move to a new quarter
             if (currentQuarter != lastQuarter)
             {
                 lastQuarter = currentQuarter;
