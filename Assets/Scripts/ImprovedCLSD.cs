@@ -174,7 +174,7 @@ public class ImprovedCLSD : MonoBehaviour
 
     public IEnumerator fillLyrics() {
         float elapsed = 0f;
-        float duration = 2 * secondsPerBeat;
+        float duration = lyrics[currentLine].duration / 4;
         while (elapsed < duration) {
             string chars = lyrics[currentLine].text;
             int numChars = (int) (chars.Length * elapsed / duration);
