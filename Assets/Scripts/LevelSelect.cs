@@ -1,8 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LevelSelect : MonoBehaviour
 {
-    [SerializeField] public GameObject[][] levelButtons;
+    [SerializeField] public GameObject[] easyButtons;
+    [SerializeField] public GameObject[] hardButtons;
+    [SerializeField] public GameObject[] endlessButtons;
     [SerializeField] public GameObject currentBackground;
     [SerializeField] public GameObject leftBackground;
     [SerializeField] public GameObject rightBackground;
@@ -13,14 +21,13 @@ public class LevelSelect : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        easyButtons[0].SetActive(true);
+        hardButtons[0].SetActive(true);
+        endlessButtons[0].SetActive(true);
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (i == 0) {
-                    levelButtons[i][j].SetActive(true);
-                    levelButtons[i][j].transform.position = new Vector3(0, 0 - 100 * j, 0);
-                }
-                levelButtons[i][j].SetActive(unlocked[i][j]);
-            }
+            easyButtons[i].SetActive(unlocked[i][0]);
+            hardButtons[i].SetActive(unlocked[i][1]);
+            endlessButtons[i].SetActive(unlocked[i][2]);
         }
         currentPage = 1;
     }
