@@ -13,7 +13,7 @@ public class PlayerMovement7 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        characterController.Move(getInputDirectionVector() * Time.deltaTime);
+        
     }
 
     private Vector3 getInputDirectionVector()
@@ -38,5 +38,16 @@ public class PlayerMovement7 : MonoBehaviour
             direction += right;
         }
         return direction.normalized;
+    }
+
+    private void movePlayer()
+    {
+        Vector3 direction = getInputDirectionVector();
+
+        CollisionFlags flags = characterController.collisionFlags;
+        if ((flags & CollisionFlags.Sides) != 0)
+        {
+
+        }
     }
 }
