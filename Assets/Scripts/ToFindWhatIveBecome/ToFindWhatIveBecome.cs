@@ -22,6 +22,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private GameObject winCanvas;
     [SerializeField] private TMP_Text timerGame;
+    [SerializeField] private TMP_Text winText;
     [SerializeField] private RawImage[] images;
     [SerializeField] private Texture[] fills;
     [SerializeField] private Texture blank;
@@ -49,6 +50,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
 
     public float carSpeed = 200f;
 
+    public int iteration;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -62,6 +65,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
         cam1.SetActive(false);
         gameActive = false;
         timer = 0f;
+
+        iteration = 1;
 
         carSpeed = 200f;
 
@@ -247,6 +252,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
         timer = 0f;
         carSpeed = (4 * carSpeed + 100f) / 5f;
         gameActive = false;
+        winCanvas.SetActive(true);
+        winText.text = $"Iteration {iteration} Complete! Shuffling...";
         yield return new WaitForSeconds(3f);
         shuffleCollectibles(usingAlternate);
         gameActive = true;
@@ -254,6 +261,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
         foreach (RawImage ri in images) {
             ri.texture = blank;
         }
+        iteration++;
+        winCanvas.SetActive(false);
     }
 
     public IEnumerator GameWin() {
