@@ -67,6 +67,12 @@ public class LevelSelect : MonoBehaviour
         }
 
         UpdateButtonsForPage(currentPage);
+        if (currentPage > 0) {
+            UpdateButtonsForPage(currentPage - 1);
+        }
+        if (currentPage < 7) {
+            UpdateButtonsForPage(currentPage + 1);
+        }
     }
 
     public void OnNextPage()
@@ -125,6 +131,12 @@ public class LevelSelect : MonoBehaviour
 
         currentPage = newPage;
         UpdateButtonsForPage(currentPage);
+        if (currentPage > 0) {
+            UpdateButtonsForPage(currentPage - 1);
+        }
+        if (currentPage < 7) {
+            UpdateButtonsForPage(currentPage + 1);
+        }
         isSliding = false;
     }
 
