@@ -53,6 +53,7 @@ public class Collectible : MonoBehaviour
 
     public void Interact() {
         Debug.Log("Interacting");
+        collectSound.SetActive(false);
         collectSound.SetActive(true);
         StartCoroutine(collect());
     }

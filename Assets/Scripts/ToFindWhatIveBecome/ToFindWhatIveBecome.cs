@@ -277,7 +277,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
     public void GameLose() {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        PlayerPrefs.SetInt("PreviousLevel", 2);
+        Scene currentScene = SceneManager.GetActiveScene();
+        PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
         gameActive = false;
         SceneManager.LoadScene(9);
         // transitionScript.ToFail();

@@ -24,7 +24,9 @@ public class Death_Zone : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             // transitionScript.ToFail();
-            PlayerPrefs.SetInt("PreviousLevel", 1);
+            // PlayerPrefs.SetInt("PreviousLevel", 1);
+            Scene currentScene = SceneManager.GetActiveScene();
+            PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
             SceneManager.LoadScene(9); // Change once official scene is made
         }
     }
