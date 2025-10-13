@@ -55,15 +55,21 @@ public class CassetteBlock : MonoBehaviour
 
     public IEnumerator appearAndDisappear()
     {
-        float t = 0;
+        float startTime = Time.time;
+        int lastInterval = -1;
+
         while (true)
         {
-            t += Time.deltaTime;
-            if (t >= fullInterval)
+            float elapsed = Time.time - startTime;
+            int currentInterval = Mathf.FloorToInt(elapsed / fullInterval);
+
+            // toggle visibility when moving to a new interval
+            if (currentInterval != lastInterval && currentInterval > 0)
             {
                 visible = !visible;
-                t = 0;
+                lastInterval = currentInterval;
             }
+
             yield return null;
         }
     }
