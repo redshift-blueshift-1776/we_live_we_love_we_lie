@@ -36,7 +36,7 @@ public class MassElimination : MonoBehaviour
         Quaternion rotationStart = camera.transform.localRotation;
         Quaternion targetRotation = Quaternion.Euler(0, 0, 0);
         while (elapsed < duration) {
-            camera.transform.position += new Vector3(0, -1.69f * Time.deltaTime, 200 * Time.deltaTime);
+            camera.transform.position += new Vector3(0, -1.69f * Time.deltaTime, 201 * Time.deltaTime);
             camera.transform.localRotation = Quaternion.Slerp(rotationStart, targetRotation, elapsed / duration);
             playersRemaining.text = $"Players Remaining:\n{(int) Mathf.Lerp(1000, 276, elapsed / duration)}";
             elapsed += Time.deltaTime;
@@ -59,21 +59,22 @@ public class MassElimination : MonoBehaviour
         {
             for (int z = 0; z < 145; z++)
             {
-                GameObject square = Instantiate(pillar);
-                square.transform.SetParent(transform);
+                if (x != 2 || z != 0) {
+                    GameObject square = Instantiate(pillar);
+                    square.transform.SetParent(transform);
 
-                square.transform.localScale = new Vector3(1f, 1f, 1f);
+                    square.transform.localScale = new Vector3(1f, 1f, 1f);
 
-                float worldX = x * 20 - 40;
-                float worldZ = z * 20;
+                    float worldX = x * 20 - 40;
+                    float worldZ = z * 20;
 
-                square.transform.localPosition = new Vector3(worldX, 0f, worldZ);
-
-                EliminationPillar ep = square.GetComponent<EliminationPillar>();
-                ep.transition = transition;
-                ep.eliminate = false;
-                ep.drop = true;
-                ep.delay = 2f + (Mathf.Abs(x - 2) + z) / 10f;
+                    square.transform.localPosition = new Vector3(worldX, 0f, worldZ);
+                    EliminationPillar ep = square.GetComponent<EliminationPillar>();
+                    ep.transition = transition;
+                    ep.eliminate = false;
+                    ep.drop = true;
+                    ep.delay = 2f + (Mathf.Abs(x - 2) + z) / 10f;
+                }
             }
         }
     }
