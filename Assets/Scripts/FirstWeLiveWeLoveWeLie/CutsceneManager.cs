@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using TMPro;
 
 public enum CutsceneType { HumanSteal, HumanPass, AISteal, AIPass, HumanDefendSteal, HumanDefendPass }
 
@@ -11,6 +12,10 @@ public class CutsceneManager : MonoBehaviour
 {
     [SerializeField] public GameObject cutsceneCanvas;
     [SerializeField] public Button skipButton;
+    [SerializeField] public GameObject gameManager;
+    public FirstWeLiveWeLoveWeLie gm;
+    [SerializeField] public GameObject blackScreen;
+    [SerializeField] public TMP_Text quoteText;
 
     [Header("Cameras")]
     [SerializeField] public GameObject mainCamera;
@@ -21,6 +26,12 @@ public class CutsceneManager : MonoBehaviour
     [SerializeField] public GameObject briefcasePivot;
 
     private Action onComplete;
+
+    void Start() {
+        gm = gameManager.GetComponent<FirstWeLiveWeLoveWeLie>();
+        blackScreen.SetActive(false);
+        quoteText.text = "";
+    }
 
     public void PlayCutscene(CutsceneType type, Action onComplete)
     {
@@ -39,8 +50,70 @@ public class CutsceneManager : MonoBehaviour
         }
         
         // For now, auto-complete after 2 seconds
-        StartCoroutine(OpenBriefcase(2f));
+        if (type == CutsceneType.HumanSteal) {
+            StartCoroutine(RevealWhatWeChose());
+        } else {
+            StartCoroutine(OpenBriefcase(2f));
+        }
         // StartCoroutine(AutoEnd(2f));
+    }
+
+    public IEnumerator RevealWhatWeChose() {
+        blackScreen.SetActive(true);
+        quoteText.text = "";
+        if (gm.aiLied && gm.defenseCard.Color == CardColor.Red) {
+            yield return new WaitForSeconds(3f);
+            float duration = 3f;
+            float elapsed = 0f;
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+
+                string chars = "But sometimes, the people you think you can trust the most...";
+                int numChars = (int) (chars.Length * t);
+                string charsToPut = chars.Substring(0, numChars);
+                quoteText.text = charsToPut;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            quoteText.text = "But sometimes, the people you think you can trust the most...";
+            yield return new WaitForSeconds(5f);
+            duration = 3f;
+            elapsed = 0f;
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+
+                string chars = "Are actually those you can trust the least...";
+                int numChars = (int) (chars.Length * t);
+                string charsToPut = chars.Substring(0, numChars);
+                quoteText.text = charsToPut;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            quoteText.text = "Are actually the people you can trust the least...";
+            yield return new WaitForSeconds(5f);
+            blackScreen.SetActive(false);
+            quoteText.text = "";
+        } else {
+            yield return new WaitForSeconds(3f);
+            float duration = 3f;
+            float elapsed = 0f;
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+
+                string chars = "Your chance to rejoin the game development program depends on this...";
+                int numChars = (int) (chars.Length * t);
+                string charsToPut = chars.Substring(0, numChars);
+                quoteText.text = charsToPut;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            quoteText.text = "Your chance to rejoin the game development program depends on this...";
+            yield return new WaitForSeconds(5f);
+            blackScreen.SetActive(false);
+            quoteText.text = "";
+        }
+        StartCoroutine(OpenBriefcase(5f));
+        yield return null;
     }
 
     public IEnumerator OpenBriefcase(float delay)
@@ -74,7 +147,7 @@ public class CutsceneManager : MonoBehaviour
     void Skip()
     {
         Debug.Log("Cutscene skipped.");
-        EndCutscene();
+        gm.SkipToEnd();
     }
 
     void EndCutscene()

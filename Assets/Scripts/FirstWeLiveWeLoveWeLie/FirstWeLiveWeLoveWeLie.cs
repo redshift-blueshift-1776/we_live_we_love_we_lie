@@ -98,7 +98,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     private int redsRemaining;
     private int blacksRemaining;
 
-    private Card defenseCard; // card currently being contested
+    public Card defenseCard; // card currently being contested
     private int cardIndex = 0; // which slot to fill next
 
     private bool roundActive = false;
@@ -106,6 +106,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     private Action queuedTurn = null;
 
     private bool showSkipButton = false;
+
+    public bool aiLied;
 
     public static FirstWeLiveWeLoveWeLie Instance { get; private set; }
 
@@ -291,8 +293,12 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                         }
                     }
                 } else {
-                    if (choice == 0) stealChance -= 0.3f;
-                    if (choice == 1) stealChance += 0.3f;
+                    // if (choice == 0) stealChance -= 0.3f;
+                    // if (choice == 1) stealChance += 0.3f;
+
+                    // Made this deterministic
+                    if (choice == 0) stealChance = 0f;
+                    if (choice == 1) stealChance = 1f;
                 }
 
                 bool aiSteals = UnityEngine.Random.value < stealChance;
@@ -310,19 +316,21 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         // UICanvas.SetActive(false);
         ChoiceCanvas.SetActive(true);
         if (defenseCard.Color == CardColor.Red) {
-            bool aiLies = UnityEngine.Random.value < 0.2f; // placeholder strategy
+            bool aiLies = UnityEngine.Random.value < 0.25f; // placeholder strategy
             if (aiLies) {
                 opponentText.text = "It's safe.";
             } else {
                 opponentText.text = "It's not safe.";
             }
+            aiLied = aiLies;
         } else {
-            bool aiLies = UnityEngine.Random.value < 0.2f; // placeholder strategy
+            bool aiLies = UnityEngine.Random.value < 0.25f; // placeholder strategy
             if (aiLies) {
                 opponentText.text = "It's not safe.";
             } else {
                 opponentText.text = "It's safe.";
             }
+            aiLied = aiLies;
         }
     }
 
@@ -482,13 +490,34 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
             if (finalColor == CardColor.Red)
             {
-                PlayerPrefs.SetInt("PreviousLevel", 4);
+                if (bayesian) {
+                    PlayerPrefs.SetInt("PreviousLevel", 15);
+                } else {
+                    PlayerPrefs.SetInt("PreviousLevel", 4);
+                }
                 SceneManager.LoadScene(9);
             }
             else
             {
                 SceneManager.LoadScene(6);
             }
+        }
+    }
+
+    public void SkipToEnd() {
+        CardColor finalColor = players[humanPlayerIndex].GetCardColor();
+        if (finalColor == CardColor.Red)
+        {
+            if (bayesian) {
+                PlayerPrefs.SetInt("PreviousLevel", 15);
+            } else {
+                PlayerPrefs.SetInt("PreviousLevel", 4);
+            }
+            SceneManager.LoadScene(9);
+        }
+        else
+        {
+            SceneManager.LoadScene(6);
         }
     }
 
