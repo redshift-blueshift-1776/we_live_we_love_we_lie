@@ -27,35 +27,11 @@ public class Win_Zone : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             int sceneID = SceneManager.GetActiveScene().buildIndex;
-            if (sceneID == 1) {
-                SceneManager.LoadScene(0);
-            }
             if (sceneID == 3) {
-                SceneManager.LoadScene(4);
-            }
-            if (sceneID == 5) {
-                SceneManager.LoadScene(7);
-            }
-            if (sceneID == 7) {
-                SceneManager.LoadScene(9);
-            }
-            if (sceneID == 9) {
-                SceneManager.LoadScene(11);
-            }
-            if (sceneID == 11) {
-                SceneManager.LoadScene(13);
-            }
-            if (sceneID == 11) {
-                SceneManager.LoadScene(13);
-            }
-            if (sceneID == 13) {
                 SceneManager.LoadScene(15);
             }
-            if (sceneID == 15) {
-                SceneManager.LoadScene(17);
-            }
-            if (sceneID == 17) {
-                SceneManager.LoadScene(19);
+            if (sceneID == 16) {
+                SceneManager.LoadScene(4);
             }
         }
     }
