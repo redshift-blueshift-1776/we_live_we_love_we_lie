@@ -297,7 +297,7 @@ public class PlayerMovement : MonoBehaviour
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
     }
 
-    private const float jumpBufferTime = 0.2f; // Window to buffer jump input before landing
+    private const float jumpBufferTime = 0.2f; // window to buffer jump input before landing
     private float jumpBufferTimer = 0f;
     private const float autoJumpTime = 1.5f;
     private float autoJumpTimer = 0f;
