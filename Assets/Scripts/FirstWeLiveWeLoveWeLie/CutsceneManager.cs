@@ -76,13 +76,13 @@ public class CutsceneManager : MonoBehaviour
                 yield return null;
             }
             quoteText.text = "But sometimes, the people you think you can trust the most...";
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(3.5f);
             duration = 3f;
             elapsed = 0f;
             while (elapsed < duration) {
                 float t = elapsed / duration;
 
-                string chars = "Are actually those you can trust the least...";
+                string chars = "Are actually the people you can trust the least...";
                 int numChars = (int) (chars.Length * t);
                 string charsToPut = chars.Substring(0, numChars);
                 quoteText.text = charsToPut;
@@ -90,7 +90,7 @@ public class CutsceneManager : MonoBehaviour
                 yield return null;
             }
             quoteText.text = "Are actually the people you can trust the least...";
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(3.5f);
             blackScreen.SetActive(false);
             quoteText.text = "";
         } else {
@@ -108,7 +108,7 @@ public class CutsceneManager : MonoBehaviour
                 yield return null;
             }
             quoteText.text = "Your chance to rejoin the game development program depends on this...";
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(3.5f);
             blackScreen.SetActive(false);
             quoteText.text = "";
         }
