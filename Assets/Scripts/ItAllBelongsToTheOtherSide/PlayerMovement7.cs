@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,18 +10,31 @@ public class PlayerMovement7 : MonoBehaviour
     private const float m = 1.0f;   //mass
     private const float g = 9.8f;
 
-    private const float staticCoefficientOfFriction = 0.75f;
-    private const float kineticCoefficientOfFriction = 0.7f;
+    private const float staticCoefficientOfFriction = 1.5f;
+    private const float kineticCoefficientOfFriction = 1.4f;
 
-    private float airResistanceCoefficient = 1f;
+    private float airResistanceVerticalCoefficient = 0.25f;
+    private float airResistanceHorizontalCoefficient = 0.1f;
 
     private float minHorizontalComponentVelocityThreshold = 0.0001f;
 
-    private const float moveForceMagnitude = 30f;
+    private const float walkForceMagnitude = 30f;
+    private const float runForceMagnitude = 60f;
 
-    private const float maxSpeed = 3f;
+    private const float airAccelerationMultiplier = 0.6f;
+    private const float airForceMagnitude = 30f;
 
-    private const float maxJumpHeight = 1f;
+    private const float bhopSpeedRetention = 0.95f;
+    private const float landingSpeedRetention = 0.7f;
+    private const float bhopTimingWindow = 0.1f;
+    private float timeSinceGrounded = 0f;
+    private bool wasGroundedLastFrame = false;
+
+    private const float maxWalkSpeed = 2f;
+    private const float maxRunSpeed = 4f;
+    private const float maxAirSpeed = 6f;
+
+    private const float maxJumpHeight = 1.25f;
 
     private const float sensitivityX = 2.5f;
     private const float sensitivityY = 2f;
@@ -28,9 +42,9 @@ public class PlayerMovement7 : MonoBehaviour
     private float yaw;
     private float pitch;
 
-    private Vector3 velocity;
-    private bool isGrounded;
-
+    private Vector3 velocity = Vector3.zero;
+    private bool isGrounded = false;
+    private bool isSprinting = false;
     
     private void Awake()
     {
@@ -38,9 +52,6 @@ public class PlayerMovement7 : MonoBehaviour
     }
     void Start()
     {
-        velocity = Vector3.zero;
-        isGrounded = false;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -56,20 +67,36 @@ public class PlayerMovement7 : MonoBehaviour
     void Update()
     {
         rotateCamera();
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            isSprinting = true;
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            isSprinting = false;
+        }
+        
+        Debug.Log(new Vector3(velocity.x, 0, velocity.z) + " " + (new Vector3(velocity.x, 0, velocity.z)).magnitude);
     }
 
     private void FixedUpdate()
     {
+        if (isGrounded)
+        {
+            timeSinceGrounded = timeSinceGrounded + (!wasGroundedLastFrame ? 0f : Time.fixedDeltaTime);
+        } 
+
         Vector3 netForce = getNetForce();
 
-        Vector3 frictionForce = getFrictionForce();
+        Vector3 frictionForce = getGroundFrictionForce();
 
         Vector3 acceleration = getAcceleration(netForce);
 
         velocity += acceleration * Time.fixedDeltaTime;
 
-        handleVerticalVelocityConstraints();
-        handleHorizontalVelocityConstraints(frictionForce);
+        handleVerticalVelocityChanges();
+        handleHorizontalVelocityChanges(frictionForce);
 
         movePlayer();
     }
@@ -93,7 +120,7 @@ public class PlayerMovement7 : MonoBehaviour
         gravityForce.y = -m * g;
 
         Vector3 airResistanceForce = Vector3.zero;
-        airResistanceForce.y = -airResistanceCoefficient * velocity.y;
+        airResistanceForce.y = -airResistanceVerticalCoefficient * velocity.y;
 
         verticalForce = gravityForce + airResistanceForce;
 
@@ -103,7 +130,7 @@ public class PlayerMovement7 : MonoBehaviour
 
     private float getInitialJumpVelocity()
     {
-        float k = airResistanceCoefficient;
+        float k = airResistanceVerticalCoefficient;
         float h = maxJumpHeight;
 
         /** from solving first order linear differential equation v' + kv/m = -g through integrating factor method:
@@ -129,12 +156,28 @@ public class PlayerMovement7 : MonoBehaviour
         Vector3 horizontalForce = Vector3.zero;
 
         Vector3 externalForce = getExternalForce();
-        Vector3 frictionForce = getFrictionForce();
 
-        horizontalForce = externalForce;
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+
         if (isGrounded)
         {
-            horizontalForce += frictionForce;
+            bool passingMaxSpeed = (isSprinting && horizontalVelocity.magnitude > maxRunSpeed)
+                                    || (!isSprinting && horizontalVelocity.magnitude > maxWalkSpeed);
+
+            if (!passingMaxSpeed)
+            {
+                horizontalForce += externalForce;
+            }
+
+            horizontalForce += getGroundFrictionForce();
+        } else
+        {
+            if (horizontalVelocity.magnitude < maxAirSpeed)
+            {
+                horizontalForce += getAirStrafeForce(externalForce, horizontalVelocity);
+            }
+
+            horizontalForce += getAirResistanceForce();
         }
 
         return horizontalForce;
@@ -142,15 +185,17 @@ public class PlayerMovement7 : MonoBehaviour
 
     private Vector3 getExternalForce()
     {
+        bool isSprinting = Input.GetKey(KeyCode.LeftShift);
+
         Vector3 externalForce = Vector3.zero;
-        Vector3 inputDirection = getInputDirectionVector() * moveForceMagnitude;
+        Vector3 inputDirection = getInputDirectionVector() * (isSprinting ? runForceMagnitude : walkForceMagnitude);
         externalForce.x = inputDirection.x;
         externalForce.z = inputDirection.z;
 
         return externalForce;
     }
 
-    private Vector3 getFrictionForce()
+    private Vector3 getGroundFrictionForce()
     {
         Vector3 frictionForce = new Vector3(-sign(velocity.x), 0, -sign(velocity.z));
         bool isEffectivelyMoving = Mathf.Abs(velocity.x) >= minHorizontalComponentVelocityThreshold
@@ -162,11 +207,56 @@ public class PlayerMovement7 : MonoBehaviour
         return frictionForce;
     }
 
-    private void handleVerticalVelocityConstraints()
+    private Vector3 getAirResistanceForce()
+    {
+        Vector3 frictionForce = new Vector3(-sign(velocity.x), 0, -sign(velocity.z));
+        float frictionForceComponent = airResistanceHorizontalCoefficient * new Vector3(velocity.x, 0, velocity.z).magnitude;
+        frictionForce.x *= frictionForceComponent;
+        frictionForce.z *= frictionForceComponent;
+
+        return frictionForce;
+    }
+
+    private Vector3 getAirStrafeForce(Vector3 inputForce, Vector3 currentVelocity)
+    {
+        if (inputForce.magnitude < 0.01f)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 airForce = inputForce.normalized * airForceMagnitude;
+        Vector3 direction = inputForce.normalized;
+
+        float alignment = Vector3.Dot(currentVelocity, direction);
+
+        if (alignment > 0.85f && currentVelocity.magnitude > 1f)
+        {
+            return Vector3.zero;
+        }
+
+        return direction * airForceMagnitude * airAccelerationMultiplier;
+    }
+
+    private void handleVerticalVelocityChanges()
     {
         CollisionFlags flags = characterController.collisionFlags;
+
         if ((flags & CollisionFlags.Below) != 0)
         {
+            if (!wasGroundedLastFrame)
+            {
+                if (timeSinceGrounded < bhopTimingWindow)
+                {
+                    velocity.x *= bhopSpeedRetention;
+                    velocity.z *= bhopSpeedRetention;
+                } else
+                {
+                    velocity.x *= landingSpeedRetention;
+                    velocity.z *= landingSpeedRetention;
+                }
+            }
+
+
             velocity.y = 0;
             isGrounded = true;
         }
@@ -175,22 +265,12 @@ public class PlayerMovement7 : MonoBehaviour
             isGrounded = false;
         }
 
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
-        {
-            velocity.y = getInitialJumpVelocity();
-        }
+        handleJump();
     }
 
-    private void handleHorizontalVelocityConstraints(Vector3 frictionForce)
+    private void handleHorizontalVelocityChanges(Vector3 frictionForce)
     {
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
-
-        if (horizontalVelocity.magnitude > maxSpeed)
-        {
-            horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
-            velocity.x = horizontalVelocity.x;
-            velocity.z = horizontalVelocity.z;
-        }
 
         if (Vector3.Dot(horizontalVelocity, frictionForce) > 0)
         {
@@ -215,27 +295,36 @@ public class PlayerMovement7 : MonoBehaviour
         Vector3 forward = new Vector3(playerCamera.transform.forward.x, 0, playerCamera.transform.forward.z);
         Vector3 right = new Vector3(playerCamera.transform.right.x, 0, playerCamera.transform.right.z);
 
-        if (isGrounded)
+
+        if (Input.GetKey(KeyCode.W))
         {
-            if (Input.GetKey(KeyCode.W))
-            {
-                direction += forward;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                direction -= right;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                direction -= forward;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                direction += right;
-            }
+            direction += forward;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            direction -= right;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            direction -= forward;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            direction += right;
         }
 
+
         return direction.normalized;
+    }
+
+    private void handleJump()
+    {
+        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        {
+            isGrounded = false;
+            velocity.y = getInitialJumpVelocity();
+            timeSinceGrounded = 0f;
+        }
     }
 
     private void movePlayer()
