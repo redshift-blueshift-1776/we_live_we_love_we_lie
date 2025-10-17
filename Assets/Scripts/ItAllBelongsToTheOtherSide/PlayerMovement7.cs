@@ -1,11 +1,13 @@
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class PlayerMovement7 : MonoBehaviour
 {
     [SerializeField] private GameObject playerCamera;
     private CharacterController characterController;
+    [SerializeField] private GameObject body;
 
     private const float m = 1.0f;   //mass
     private const float g = 9.8f;
@@ -16,7 +18,7 @@ public class PlayerMovement7 : MonoBehaviour
     private float airResistanceVerticalCoefficient = 0.25f;
     private float airResistanceHorizontalCoefficient = 0.1f;
 
-    private float minHorizontalComponentVelocityThreshold = 0.0001f;
+    private float minHorizontalComponentVelocityThreshold = 0.01f;
 
     private const float walkForceMagnitude = 30f;
     private const float runForceMagnitude = 60f;
@@ -66,6 +68,7 @@ public class PlayerMovement7 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isGrounded = checkGrounded();
         rotateCamera();
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -77,7 +80,6 @@ public class PlayerMovement7 : MonoBehaviour
             isSprinting = false;
         }
         
-        Debug.Log(new Vector3(velocity.x, 0, velocity.z) + " " + (new Vector3(velocity.x, 0, velocity.z)).magnitude);
     }
 
     private void FixedUpdate()
@@ -94,11 +96,11 @@ public class PlayerMovement7 : MonoBehaviour
         Vector3 acceleration = getAcceleration(netForce);
 
         velocity += acceleration * Time.fixedDeltaTime;
-
-        handleVerticalVelocityChanges();
+        
         handleHorizontalVelocityChanges(frictionForce);
 
         movePlayer();
+        handleVerticalVelocityChanges();
     }
 
     private Vector3 getNetForce()
@@ -117,7 +119,10 @@ public class PlayerMovement7 : MonoBehaviour
         Vector3 verticalForce = Vector3.zero;
 
         Vector3 gravityForce = Vector3.zero;
-        gravityForce.y = -m * g;
+
+        if (!isGrounded) {
+            gravityForce.y = -m * g;
+        }
 
         Vector3 airResistanceForce = Vector3.zero;
         airResistanceForce.y = -airResistanceVerticalCoefficient * velocity.y;
@@ -239,9 +244,7 @@ public class PlayerMovement7 : MonoBehaviour
 
     private void handleVerticalVelocityChanges()
     {
-        CollisionFlags flags = characterController.collisionFlags;
-
-        if ((flags & CollisionFlags.Below) != 0)
+        if (characterController.isGrounded)
         {
             if (!wasGroundedLastFrame)
             {
@@ -255,16 +258,10 @@ public class PlayerMovement7 : MonoBehaviour
                     velocity.z *= landingSpeedRetention;
                 }
             }
-
-
             velocity.y = 0;
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
         }
 
+        wasGroundedLastFrame = isGrounded;
         handleJump();
     }
 
@@ -358,5 +355,49 @@ public class PlayerMovement7 : MonoBehaviour
         {
             return 0;
         }
+    }
+
+    public Vector3 getVelocity()
+    {
+        return velocity;
+    }
+
+    public float getCurrentMaxSpeed()
+    {
+        if (isGrounded)
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                return maxRunSpeed;
+            } else
+            {
+                return maxWalkSpeed;
+            }
+        } 
+
+        return Mathf.Infinity;
+    }
+
+    public bool checkGrounded()
+    {
+        float xWidth = body.transform.localScale.x;
+        float yWidth = 2 * body.transform.localScale.y;
+        float zWidth = body.transform.localScale.z;
+
+        float initX = body.transform.position.x - xWidth / 2;
+        float initY = body.transform.position.y - yWidth / 2;
+        float initZ = body.transform.position.z - zWidth / 2;
+        for (float x = 0; x <= xWidth; x += xWidth / 4)
+        {
+            for (float z = 0; z <= zWidth; z += zWidth / 4)
+            {
+                Vector3 origin = new Vector3(initX + x, initY, initZ + z);
+                if (Physics.Raycast(origin, Vector3.down, 0.2f))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
