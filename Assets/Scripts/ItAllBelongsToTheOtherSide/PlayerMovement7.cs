@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement7 : MonoBehaviour
@@ -7,7 +8,6 @@ public class PlayerMovement7 : MonoBehaviour
 
     private const float m = 1.0f;   //mass
     private const float g = 9.8f;
-    private const float gForce = m * g;
 
     private const float staticCoefficientOfFriction = 0.75f;
     private const float kineticCoefficientOfFriction = 0.7f;
@@ -19,6 +19,14 @@ public class PlayerMovement7 : MonoBehaviour
     private const float moveForceMagnitude = 30f;
 
     private const float maxSpeed = 3f;
+
+    private const float maxJumpHeight = 1f;
+
+    private const float sensitivityX = 2.5f;
+    private const float sensitivityY = 2f;
+
+    private float yaw;
+    private float pitch;
 
     private Vector3 velocity;
     private bool isGrounded;
@@ -33,13 +41,21 @@ public class PlayerMovement7 : MonoBehaviour
         velocity = Vector3.zero;
         isGrounded = false;
 
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
+        yaw = playerCamera.transform.localRotation.eulerAngles.y;
+        pitch = playerCamera.transform.localRotation.eulerAngles.x;
+        while (Mathf.Abs(yaw) > 180f)
+        {
+            yaw -= Mathf.Sign(yaw) * 360f;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        rotateCamera();
     }
 
     private void FixedUpdate()
@@ -69,13 +85,43 @@ public class PlayerMovement7 : MonoBehaviour
     }
 
 
-    //TO-DO: modify for jumping
     private Vector3 getVerticalForce()
     {
         Vector3 verticalForce = Vector3.zero;
-        verticalForce.y = -m * g + airResistanceCoefficient * velocity.y;
+
+        Vector3 gravityForce = Vector3.zero;
+        gravityForce.y = -m * g;
+
+        Vector3 airResistanceForce = Vector3.zero;
+        airResistanceForce.y = -airResistanceCoefficient * velocity.y;
+
+        verticalForce = gravityForce + airResistanceForce;
+
 
         return verticalForce;
+    }
+
+    private float getInitialJumpVelocity()
+    {
+        float k = airResistanceCoefficient;
+        float h = maxJumpHeight;
+
+        /** from solving first order linear differential equation v' + kv/m = -g through integrating factor method:
+         *  f(v_0) = v_0 - mg/k * ln(1 + kv_0/(mg)) - kh/m
+         *  f'(v_0) = 1 - mg / (mg + kv_0)
+         *  initial upward velocity is sqrt(2mgh) without air resistance; use as initial guess
+         *  apply newton's method of approximation
+         */
+        float v0 = Mathf.Sqrt(2 * m * g * h);
+        const float iterations = 3;
+        for (int i = 0; i < iterations; i++)
+        {
+            float f = v0 - (m * g / k) * Mathf.Log(1 + k * v0 / (m * g)) - k * h / m;
+            float fPrime = 1 - m * g / (m * g + k * v0);
+            v0 = v0 - f / fPrime;
+        }
+
+        return v0;
     }
 
     private Vector3 getHorizontalForce()
@@ -128,6 +174,11 @@ public class PlayerMovement7 : MonoBehaviour
         {
             isGrounded = false;
         }
+
+        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        {
+            velocity.y = getInitialJumpVelocity();
+        }
     }
 
     private void handleHorizontalVelocityConstraints(Vector3 frictionForce)
@@ -164,28 +215,44 @@ public class PlayerMovement7 : MonoBehaviour
         Vector3 forward = new Vector3(playerCamera.transform.forward.x, 0, playerCamera.transform.forward.z);
         Vector3 right = new Vector3(playerCamera.transform.right.x, 0, playerCamera.transform.right.z);
 
-        if (Input.GetKey(KeyCode.W))
+        if (isGrounded)
         {
-            direction += forward;
+            if (Input.GetKey(KeyCode.W))
+            {
+                direction += forward;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                direction -= right;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                direction -= forward;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                direction += right;
+            }
         }
-        if (Input.GetKey(KeyCode.A))
-        {
-            direction -= right;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            direction -= forward;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            direction += right;
-        }
+
         return direction.normalized;
     }
 
     private void movePlayer()
     {
         characterController.Move(velocity * Time.deltaTime);
+    }
+
+    private void rotateCamera()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * sensitivityX;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivityY;
+
+        yaw += mouseX;
+        pitch -= mouseY; //inverted
+        pitch = Mathf.Clamp(pitch, -90f, 90f);
+
+        playerCamera.transform.localRotation = Quaternion.Euler(pitch, yaw, 0);
     }
 
     private int sign(float x)
