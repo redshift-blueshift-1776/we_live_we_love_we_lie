@@ -101,6 +101,18 @@ public class OutsideWorld : MonoBehaviour
                 doingStuff = true;
             }
         }
+        if (currentBeat - initialBeat == 88) {
+            if (!doingStuff) {
+                StartCoroutine(MoveThings());
+                doingStuff = true;
+            }
+        }
+        if (currentBeat - initialBeat == 96) {
+            if (!doingStuff) {
+                StartCoroutine(MoveThings());
+                doingStuff = true;
+            }
+        }
     }
 
     public IEnumerator MoveThings() {
@@ -176,14 +188,34 @@ public class OutsideWorld : MonoBehaviour
             Vector3 targetPos = transform.position + new Vector3(0, 0, -990);
             Quaternion startRotation = Level4Reference.transform.localRotation;
             Quaternion targetRotation = Quaternion.Euler(-45, 0, 0);
+            Vector3 startPos2 = Level3Reference.transform.localPosition;
+            Vector3 targetPos2 = Level3Reference.transform.localPosition + new Vector3(0, 1000, 100);
             while (elapsed < duration) {
                 transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+                Level3Reference.transform.localPosition = Vector3.Lerp(startPos2, targetPos2, (float) (elapsed / duration));
                 Level4Reference.transform.localRotation = Quaternion.Slerp(startRotation, targetRotation, (float) (elapsed / duration));
                 elapsed += Time.deltaTime;
                 yield return null;
             }
             transform.position = targetPos;
             Level4Reference.transform.localRotation = targetRotation;
+            Level3Reference.transform.localPosition = targetPos2;
+        }
+        if (phase == 5) {
+            double duration = 7 * secondsPerBeat;
+            double elapsed = 0;
+            Vector3 startPos = transform.position;
+            Vector3 targetPos = transform.position + new Vector3(0, 0, -420);
+            Vector3 startPos2 = Level4Reference.transform.localPosition;
+            Vector3 targetPos2 = Level4Reference.transform.localPosition + new Vector3(0, -500, 100);
+            while (elapsed < duration) {
+                transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+                Level4Reference.transform.localPosition = Vector3.Lerp(startPos2, targetPos2, (float) (elapsed / duration));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            Level4Reference.transform.localPosition = targetPos2;
+            transform.position = targetPos;
         }
         phase++;
         doingStuff = false;
