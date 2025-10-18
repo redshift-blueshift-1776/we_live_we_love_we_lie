@@ -338,7 +338,8 @@ public class PlayerMovement7 : MonoBehaviour
         pitch -= mouseY; //inverted
         pitch = Mathf.Clamp(pitch, -90f, 90f);
 
-        playerCamera.transform.localRotation = Quaternion.Euler(pitch, yaw, 0);
+        transform.localRotation = Quaternion.Euler(0, yaw, 0);
+        playerCamera.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
     }
 
     private int sign(float x)
