@@ -18,7 +18,7 @@ public class PlayerMovement7 : MonoBehaviour
     private float airResistanceVerticalCoefficient = 0.25f;
     private float airResistanceHorizontalCoefficient = 0.1f;
 
-    private float minHorizontalComponentVelocityThreshold = 0.01f;
+    private float minHorizontalComponentVelocityThreshold = 0.0001f;
 
     private const float walkForceMagnitude = 30f;
     private const float runForceMagnitude = 60f;

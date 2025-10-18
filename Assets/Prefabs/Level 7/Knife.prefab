@@ -246,7 +246,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -320,15 +320,45 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 53348e4552955ca4bbdc5fe865d5d46c, type: 2}
     - target: {fileID: 919132149155446097, guid: 521c68098f4ba484f93cd6abad7453a6, type: 3}
       propertyPath: m_Name
-      value: Cone
+      value: Blade
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 521c68098f4ba484f93cd6abad7453a6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2508940990958839710}
   m_SourcePrefab: {fileID: 100100000, guid: 521c68098f4ba484f93cd6abad7453a6, type: 3}
 --- !u!4 &2809813069647410125 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 521c68098f4ba484f93cd6abad7453a6, type: 3}
   m_PrefabInstance: {fileID: 2410779733033227302}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3293721999198988663 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 521c68098f4ba484f93cd6abad7453a6, type: 3}
+  m_PrefabInstance: {fileID: 2410779733033227302}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &2508940990958839710
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3293721999198988663}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3613567641014311022, guid: 521c68098f4ba484f93cd6abad7453a6, type: 3}
