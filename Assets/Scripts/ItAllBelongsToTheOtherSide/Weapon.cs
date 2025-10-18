@@ -24,7 +24,7 @@ public class Weapon : MonoBehaviour
 
     private Dictionary<string, float> weaponAttackCooldown = new Dictionary<string, float>()
     {
-        {"Knife", 1f},
+        {"Knife", 0.5f},
         {"Pistol", 0.25f},
         {"AssaultRifle", 0.2f},
         {"Sniper", 3f},
