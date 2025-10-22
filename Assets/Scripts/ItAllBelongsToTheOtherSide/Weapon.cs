@@ -12,6 +12,11 @@ public class Weapon : MonoBehaviour
     [SerializeField] private AnimationClip knifeAttackAnimation;
     public WeaponInfo weaponInfo;
 
+    private Dictionary<string, float> weaponSpread = new Dictionary<string, float>()
+    {
+        
+    };
+
 
     void Start()
     {
