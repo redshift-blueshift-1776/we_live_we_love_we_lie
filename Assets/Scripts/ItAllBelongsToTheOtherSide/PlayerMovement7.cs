@@ -9,6 +9,9 @@ public class PlayerMovement7 : MonoBehaviour
     private CharacterController characterController;
     [SerializeField] private GameObject body;
 
+    [SerializeField] private GameSettings gameSettings;
+    [SerializeField] private Player7 player7;
+
     private const float m = 1.0f;   //mass
     private const float g = 9.8f;
 
@@ -47,6 +50,8 @@ public class PlayerMovement7 : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     private bool isGrounded = false;
     private bool isSprinting = false;
+
+    private bool inUIMenu = false;
     
     private void Awake()
     {
@@ -69,7 +74,11 @@ public class PlayerMovement7 : MonoBehaviour
     void Update()
     {
         isGrounded = checkGrounded();
-        rotateCamera();
+        inUIMenu = gameSettings.isInSettings() || player7.getIsInWeaponShop();
+        if (!inUIMenu)
+        {
+            rotateCamera();
+        }
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -400,5 +409,10 @@ public class PlayerMovement7 : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void setInUIMenu(bool b)
+    {
+        inUIMenu = b;
     }
 }

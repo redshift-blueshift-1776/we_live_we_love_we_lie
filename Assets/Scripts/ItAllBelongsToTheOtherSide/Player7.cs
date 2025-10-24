@@ -11,9 +11,12 @@ public class Player7 : MonoBehaviour
     [SerializeField] private TMP_Text healthNumberText;
     [SerializeField] private Image healthBarFill;
 
+    [SerializeField] private GameObject weaponShopCanvas;
+    private bool isInWeaponShop = false;
+
     void Start()
     {
-        
+        weaponShopCanvas.SetActive(false);
     }
 
     // Update is called once per frame
@@ -22,5 +25,25 @@ public class Player7 : MonoBehaviour
         healthNumberText.text = (Mathf.Ceil(health)).ToString();
         healthBarSlider.value = Mathf.Clamp(health, 0, 100);
         healthBarFill.color = Color.Lerp(Color.white, Color.red, 1 - health / 100);
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            isInWeaponShop = !isInWeaponShop;
+        }
+        if (isInWeaponShop)
+        {
+            weaponShopCanvas.SetActive(isInWeaponShop);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        } else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+    
+    public bool getIsInWeaponShop()
+    {
+        return isInWeaponShop;
     }
 }
