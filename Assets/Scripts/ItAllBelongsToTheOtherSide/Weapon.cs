@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
     private string activeWeapon = "Knife";
     private float timeSinceAttack = Mathf.Infinity;
 
+    [SerializeField] private Player7 player7;
     [SerializeField] private Animator knifeAnimator;
     [SerializeField] private AnimationClip knifeAttackAnimation;
     public WeaponInfo weaponInfo;
@@ -26,7 +27,10 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        handleAttack();
+        if (!player7.getIsInWeaponShop())
+        {
+            handleAttack();
+        }
         timeSinceAttack += Time.deltaTime;
     }
 
