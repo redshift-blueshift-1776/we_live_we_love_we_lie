@@ -203,7 +203,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8155743}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MP7
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8155743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -969,6 +981,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!4 &116379683 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+  m_PrefabInstance: {fileID: 5186601517259537862}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &135286071
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,6 +1105,63 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1001 &141544457
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 441578035}
+    m_Modifications:
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.976
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.021
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99809736
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0019026523
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8046312151006634574, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_Name
+      value: Left Dual Beretta
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bfc9811853abc644bbaad18655c38558, type: 3}
 --- !u!1 &148347422
 GameObject:
   m_ObjectHideFlags: 0
@@ -1483,9 +1557,9 @@ RectTransform:
   - {fileID: 2040702841}
   m_Father: {fileID: 356340613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -325}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &163357702
@@ -1616,9 +1690,9 @@ RectTransform:
   - {fileID: 1579120807}
   m_Father: {fileID: 356340613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -525}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &167719468
@@ -1799,7 +1873,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 172408488}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: M4A4
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &172408488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1922,7 +2008,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 175101085}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SCAR-20
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &175101085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3011,7 +3109,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 279087349}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: AUG
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &279087349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3950,9 +4060,9 @@ RectTransform:
   - {fileID: 1452620448}
   m_Father: {fileID: 356340613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -25}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &418043701
@@ -4283,7 +4393,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 439122971}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: UMP-45
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &439122971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4458,6 +4580,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 439190242}
   m_CullTransparentMesh: 1
+--- !u!1 &441578034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 441578035}
+  m_Layer: 0
+  m_Name: Dual Berettas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &441578035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441578034}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1187383138}
+  - {fileID: 116379683}
+  m_Father: {fileID: 871626635}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &445650003
 GameObject:
   m_ObjectHideFlags: 0
@@ -4542,7 +4697,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 445650006}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Sawed-Off
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &445650006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4665,7 +4832,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 445657723}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Nova
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &445657723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5238,7 +5417,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 513814710}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: G3SG1
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &513814710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5886,7 +6077,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 569650699}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: R8 Revolver
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &569650699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6120,7 +6323,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 587015495}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: P2000
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &587015495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7573,7 +7788,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 725535069}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: CZ75-Auto
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &725535069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8134,7 +8361,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 781921597}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Galil AR
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &781921597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8393,7 +8632,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 801900960}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SSG 08
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &801900960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8643,6 +8894,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 809084202}
   m_CullTransparentMesh: 1
+--- !u!1001 &844648106
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 871626635}
+    m_Modifications:
+    - target: {fileID: 4671722771651714895, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_Name
+      value: P2000 Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 4671722771651714895, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99152493
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.0740212
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.10647083
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.007948457
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -8.539
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -12.258
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
 --- !u!1 &846721913
 GameObject:
   m_ObjectHideFlags: 0
@@ -8777,6 +9089,42 @@ MonoBehaviour:
   m_Spacing: {x: 25, y: 25}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!1 &871626634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 871626635}
+  m_Layer: 0
+  m_Name: Pistols
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &871626635
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871626634}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.016, y: -0.138, z: 0.183}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1279625235}
+  - {fileID: 7115993838599535659}
+  - {fileID: 7640358633924929236}
+  - {fileID: 1477676555}
+  - {fileID: 441578035}
+  m_Father: {fileID: 2028475202}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &874288845
 GameObject:
   m_ObjectHideFlags: 0
@@ -8936,7 +9284,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 884435911}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Dual Berettas
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &884435911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9139,7 +9499,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 941210512}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: M249
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &941210512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9702,7 +10074,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 996237066}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Desert Eagle
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &996237066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10206,7 +10590,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1112424227}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Five-SeveN
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1112424227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10404,7 +10800,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1138156524}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: P250
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1138156524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10593,6 +11001,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1146352053}
   m_CullTransparentMesh: 1
+--- !u!4 &1187383138 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+  m_PrefabInstance: {fileID: 141544457}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1193622992
 GameObject:
   m_ObjectHideFlags: 0
@@ -11165,6 +11578,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278232800}
   m_CullTransparentMesh: 1
+--- !u!4 &1279625235 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+  m_PrefabInstance: {fileID: 3632014310042727985}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1290966884
 GameObject:
   m_ObjectHideFlags: 0
@@ -11755,7 +12173,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1321731684}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: FAMAS
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1321731684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11990,7 +12420,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1351094162}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: AWP
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1351094162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12640,7 +13082,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1377457676}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MP9
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1377457676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12763,7 +13217,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1387885889}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: XM1014
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1387885889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12886,7 +13352,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1390491534}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: P90
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1390491534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13299,7 +13777,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1419028443}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Glock-18
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1419028443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13986,6 +14476,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1474541877}
   m_CullTransparentMesh: 1
+--- !u!4 &1477676555 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6602727027277621792, guid: 89f7b4c54ac93c049b3c20a8cf336cc4, type: 3}
+  m_PrefabInstance: {fileID: 844648106}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1491069956
 GameObject:
   m_ObjectHideFlags: 0
@@ -14924,9 +15419,9 @@ RectTransform:
   - {fileID: 595468691}
   m_Father: {fileID: 356340613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -425}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1549614623
@@ -15042,7 +15537,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1562214741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15583,7 +16078,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1594175031}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: M4A1-S
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1594175031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16292,7 +16799,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1704311579}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Tec-9
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1704311579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16999,7 +17518,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1779334238}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MP5-SD
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1779334238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17408,7 +17939,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1843519614}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MAC-10
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1843519614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17481,9 +18024,9 @@ RectTransform:
   - {fileID: 1528587793}
   m_Father: {fileID: 356340613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -225}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1845757626
@@ -17664,7 +18207,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1846600680}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedSecondary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: USP-S
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1846600680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17737,9 +18292,9 @@ RectTransform:
   - {fileID: 49411432}
   m_Father: {fileID: 356340613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -125}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1854008763
@@ -18267,7 +18822,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1898745694}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: AK-47
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1898745694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19007,7 +19574,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2019194548}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Negev
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2019194548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19151,6 +19730,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 889869557}
+  - {fileID: 871626635}
   m_Father: {fileID: 1104381089}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2040702840
@@ -20007,7 +20587,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2104852938}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: PP-Bizon
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2104852938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20130,7 +20722,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2111141576}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MAG-7
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2111141576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20253,7 +20857,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2116067107}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1562214745}
+        m_TargetAssemblyTypeName: WeaponUI, Assembly-CSharp
+        m_MethodName: setSelectedPrimary
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SG 553
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2116067107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20578,6 +21194,222 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144957903}
   m_CullTransparentMesh: 1
+--- !u!1001 &3632014310042727985
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 871626635}
+    m_Modifications:
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99809736
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0019026523
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 342077086833260820, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1549748232292467558, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e76bf394e132dc94a949517e17b4000a, type: 2}
+    - target: {fileID: 2291100104655408251, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_Name
+      value: 'USP-S Model '
+      objectReference: {fileID: 0}
+    - target: {fileID: 2291100104655408251, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2446279937087355035, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e76bf394e132dc94a949517e17b4000a, type: 2}
+    - target: {fileID: 2822217825830346684, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e76bf394e132dc94a949517e17b4000a, type: 2}
+    - target: {fileID: 3883230566641589051, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e76bf394e132dc94a949517e17b4000a, type: 2}
+    - target: {fileID: 4630996757743744992, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e76bf394e132dc94a949517e17b4000a, type: 2}
+    - target: {fileID: 5573949722177383951, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e76bf394e132dc94a949517e17b4000a, type: 2}
+    - target: {fileID: 5855283615512092767, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e76bf394e132dc94a949517e17b4000a, type: 2}
+    - target: {fileID: 9194125981442765024, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e76bf394e132dc94a949517e17b4000a, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a57da938af4e7cf43ae1a6ae9acc40e0, type: 3}
+--- !u!1001 &5186601517259537862
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 441578035}
+    m_Modifications:
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99809736
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0019026523
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275397675166525097, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8046312151006634574, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+      propertyPath: m_Name
+      value: Right Dual Beretta
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bfc9811853abc644bbaad18655c38558, type: 3}
+--- !u!1001 &7115993838599535658
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 871626635}
+    m_Modifications:
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99809736
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0019026523
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7736712180352965338, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_Name
+      value: Glock-18 Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 7736712180352965338, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+--- !u!4 &7115993838599535659 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6737004722371847984, guid: c66bde6bbcf327542a05a0bc43907f6e, type: 3}
+  m_PrefabInstance: {fileID: 7115993838599535658}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7392370036361028369
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20630,6 +21462,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Knife
       objectReference: {fileID: 0}
+    - target: {fileID: 7024989422856051103, guid: 397101ac2ca3dac469ac222199091c1c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20638,6 +21474,72 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1904885269}
   m_SourcePrefab: {fileID: 100100000, guid: 397101ac2ca3dac469ac222199091c1c, type: 3}
+--- !u!1001 &7640358633924929235
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 871626635}
+    m_Modifications:
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99809736
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.043577887
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0019026523
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3329139820333619657, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_Name
+      value: P250 Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 3329139820333619657, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+--- !u!4 &7640358633924929236 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 340101177324826562, guid: bd2d819f3803e4244a0308b8668e0980, type: 3}
+  m_PrefabInstance: {fileID: 7640358633924929235}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

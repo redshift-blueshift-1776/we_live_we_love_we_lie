@@ -7,6 +7,8 @@ public class WeaponUI : MonoBehaviour
     private Color selectedColor = new Color(1, 1, 0);
     ColorBlock defaultColorBlock = new ColorBlock();
     ColorBlock selectedColorBlock = new ColorBlock();
+
+    #region Weapon Categories
     [Header("Weapon Categories")]
     [SerializeField] private GameObject pistols;
     [SerializeField] private GameObject shotguns;
@@ -14,7 +16,9 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private GameObject assaultRifles;
     [SerializeField] private GameObject sniperRifles;
     [SerializeField] private GameObject machineGuns;
+    #endregion
 
+    #region Weapon Category Buttons
     [Header("Weapon Category Buttons")]
     [SerializeField] private Button pistolsButton;
     [SerializeField] private Button shotgunsButton;
@@ -22,7 +26,9 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private Button assaultRiflesButton;
     [SerializeField] private Button sniperRiflesButton;
     [SerializeField] private Button machineGunsButton;
+    #endregion
 
+    #region Pistols
     [Header("Pistols")]
     [Header("USP-S")]
     [SerializeField] private Button USPSButton;
@@ -73,7 +79,9 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private Button R8RevolverButton;
     [SerializeField] private GameObject R8RevolverButtonBorder;
     [SerializeField] private GameObject R8RevolverButtonBackground;
+    #endregion
 
+    #region Shotguns
     [Header("Shotguns")]
     [Header("MAG-7")]
     [SerializeField] private Button MAG7Button;
@@ -94,7 +102,9 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private Button XM1014Button;
     [SerializeField] private GameObject XM1014ButtonBorder;
     [SerializeField] private GameObject XM1014ButtonBackground;
+    #endregion
 
+    #region SMGs
     [Header("MAC-10")]
     [SerializeField] private Button MAC10Button;
     [SerializeField] private GameObject MAC10ButtonBorder;
@@ -129,7 +139,9 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private Button UMP45Button;
     [SerializeField] private GameObject UMP45ButtonBorder;
     [SerializeField] private GameObject UMP45ButtonBackground;
+    #endregion
 
+    #region Assault Rifles
     [Header("AssaultRifles")]
     [Header("AK-47")]
     [SerializeField] private Button AK47Button;
@@ -165,7 +177,9 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private Button SG553Button;
     [SerializeField] private GameObject SG553ButtonBorder;
     [SerializeField] private GameObject SG553ButtonBackground;
+    #endregion
 
+    #region Sniper Rifles
     [Header("Sniper Rifles")]
     [Header("AWP")]
     [SerializeField] private Button AWPButton;
@@ -186,7 +200,9 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private Button SSG08Button;
     [SerializeField] private GameObject SSG08ButtonBorder;
     [SerializeField] private GameObject SSG08ButtonBackground;
+    #endregion
 
+    #region Machine Guns
     [Header("Machine Guns")]
     [Header("M249")]
     [SerializeField] private Button M249Button;
@@ -197,8 +213,11 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private Button NegevButton;
     [SerializeField] private GameObject NegevButtonBorder;
     [SerializeField] private GameObject NegevButtonBackground;
+    #endregion
 
     private string selectedCategory = "Pistols";
+    private string selectedPrimary = "";
+    private string selectedSecondary = "";
     void Start()
     {
         defaultColorBlock = pistolsButton.colors;
@@ -209,6 +228,9 @@ public class WeaponUI : MonoBehaviour
         selectedColorBlock.pressedColor = selectedColor;
         selectedColorBlock.selectedColor = selectedColor;
         displayWeapons();
+
+        disableAllPrimaryWeaponUI();
+        disableAllSecondaryWeaponUI();
     }
 
     // Update is called once per frame
@@ -216,7 +238,7 @@ public class WeaponUI : MonoBehaviour
     {
     }
 
-    private void disableAllPages()
+    private void disableAllCategoryUI()
     {
         pistols.SetActive(false);
         shotguns.SetActive(false);
@@ -233,9 +255,55 @@ public class WeaponUI : MonoBehaviour
         machineGunsButton.colors = defaultColorBlock;
     }
 
+    private void disableAllPrimaryWeaponUI()
+    {
+        MAG7ButtonBorder.SetActive(false);
+        NovaButtonBorder.SetActive(false);
+        SawedOffButtonBorder.SetActive(false);
+        XM1014ButtonBorder.SetActive(false);
+
+        MAC10ButtonBorder.SetActive(false);
+        MP5SDButtonBorder.SetActive(false);
+        MP7ButtonBorder.SetActive(false);
+        MP9ButtonBorder.SetActive(false);
+        PPBizonButtonBorder.SetActive(false);
+        P90ButtonBorder.SetActive(false);
+        UMP45ButtonBorder.SetActive(false);
+
+        AK47ButtonBorder.SetActive(false);
+        AUGButtonBorder.SetActive(false);
+        FAMASButtonBorder.SetActive(false);
+        GalilARButtonBorder.SetActive(false);
+        M4A1SButtonBorder.SetActive(false);
+        M4A4ButtonBorder.SetActive(false);
+        SG553ButtonBorder.SetActive(false);
+
+        AWPButtonBorder.SetActive(false);
+        G3SG1ButtonBorder.SetActive(false);
+        SCAR20ButtonBorder.SetActive(false);
+        SSG08ButtonBorder.SetActive(false);
+
+        M249ButtonBorder.SetActive(false);
+        NegevButtonBorder.SetActive(false);
+    }
+
+    private void disableAllSecondaryWeaponUI()
+    {
+        USPSButtonBorder.SetActive(false);
+        Glock18ButtonBorder.SetActive(false);
+        P250ButtonBorder.SetActive(false);
+        P2000ButtonBorder.SetActive(false);
+        DualBerettasButtonBorder.SetActive(false);
+        FiveSeveNButtonBorder.SetActive(false);
+        Tec9ButtonBorder.SetActive(false);
+        CZ75AutoButtonBorder.SetActive(false);
+        DesertEagleButtonBorder.SetActive(false);
+        R8RevolverButtonBorder.SetActive(false);
+    }
+
     private void displayWeapons()
     {
-        disableAllPages();
+        disableAllCategoryUI();
         switch (selectedCategory)
         {
             case "Pistols":
@@ -269,9 +337,136 @@ public class WeaponUI : MonoBehaviour
         }
     }
 
+    private void displaySelectedPrimary()
+    {
+        disableAllPrimaryWeaponUI();
+        switch (selectedPrimary)
+        {
+            case "MAG70":
+                MAG7ButtonBorder.SetActive(true);
+                break;
+            case "Nova":
+                NovaButtonBorder.SetActive(true);
+                break;
+            case "Sawed-Off":
+                SawedOffButtonBorder.SetActive(true);
+                break;
+            case "XM1014":
+                XM1014ButtonBorder.SetActive(true);
+                break;
+            case "MAC-10":
+                MAC10ButtonBorder.SetActive(true);
+                break;
+            case "MP5-SD":
+                MP5SDButtonBorder.SetActive(true);
+                break;
+            case "MP7":
+                MP7ButtonBorder.SetActive(true);
+                break;
+            case "MP9":
+                MP9ButtonBorder.SetActive(true);
+                break;
+            case "PP-Bizon":
+                PPBizonButtonBorder.SetActive(true);
+                break;
+            case "P90":
+                P90ButtonBorder.SetActive(true);
+                break;
+            case "UMP-45":
+                UMP45ButtonBorder.SetActive(true);
+                break;
+            case "AK-47":
+                AK47ButtonBorder.SetActive(true);
+                break;
+            case "AUG":
+                AUGButtonBorder.SetActive(true);
+                break;
+            case "FAMAS":
+                FAMASButtonBorder.SetActive(true);
+                break;
+            case "Galil AR":
+                GalilARButtonBorder.SetActive(true);
+                break;
+            case "M4A1-S":
+                M4A1SButtonBorder.SetActive(true);
+                break;
+            case "M4A4":
+                M4A4ButtonBorder.SetActive(true);
+                break;
+            case "SG 553":
+                SG553ButtonBorder.SetActive(true);
+                break;
+            case "AWP":
+                AWPButtonBorder.SetActive(true);
+                break;
+            case "G3SG1":
+                G3SG1ButtonBorder.SetActive(true);
+                break;
+            case "SCAR-20":
+                SCAR20ButtonBorder.SetActive(true);
+                break;
+            case "SSG 08":
+                SSG08ButtonBorder.SetActive(true);
+                break;
+            default:
+                MAG7ButtonBorder.SetActive(true);
+                break;
+        }
+    }
+
+    private void displaySelectedSecondary()
+    {
+        disableAllSecondaryWeaponUI();
+        switch (selectedSecondary)
+        {
+            case "USP-S":
+                USPSButtonBorder.SetActive(true);
+                break;
+            case "Glock-18":
+                Glock18ButtonBorder.SetActive(true);
+                break;
+            case "P250":
+                P250ButtonBorder.SetActive(true);
+                break;
+            case "P2000":
+                P2000ButtonBorder.SetActive(true);
+                break;
+            case "Dual Berettas":
+                DualBerettasButtonBorder.SetActive(true);
+                break;
+            case "Five-SeveN":
+                FiveSeveNButtonBorder.SetActive(true);
+                break;
+            case "Tec-9":
+                Tec9ButtonBorder.SetActive(true);
+                break;
+            case "CZ75-Auto":
+                CZ75AutoButtonBorder.SetActive(true);
+                break;
+            case "Desert Eagle":
+                DesertEagleButtonBorder.SetActive(true);
+                break;
+            case "R8 Revolver":
+                R8RevolverButtonBorder.SetActive(true);
+                break;
+        }
+    }
+
     public void setSelectedCategory(string category)
     {
         selectedCategory = category;
         displayWeapons();
+    }
+
+    public void setSelectedPrimary(string weapon)
+    {
+        selectedPrimary = weapon;
+        displaySelectedPrimary();
+    }
+
+    public void setSelectedSecondary(string weapon)
+    {
+        selectedSecondary = weapon;
+        displaySelectedSecondary();
     }
 }
