@@ -56,18 +56,18 @@ public class Note : MonoBehaviour
     }
 
     public void OnTriggerEnter(Collider c) {
-        Debug.Log(c.gameObject.name);
+        // Debug.Log(c.gameObject.name);
         if (c.gameObject.name == "RealLaser") {
             hitNote();
         }
     }
 
     public void hitNote() {
-        Debug.Log("hitNote");
+        // Debug.Log("hitNote");
         if (realNote) {
             int scoreToAdd = (int) (10 - 20 * Mathf.Abs(elapsed - delay - duration / 2f));
             scoreToAdd = (scoreToAdd > 0) ? scoreToAdd : 0;
-            Debug.Log(scoreToAdd);
+            // Debug.Log(scoreToAdd);
             gm.addScore(scoreToAdd);
             Destroy(gameObject);
         } else {

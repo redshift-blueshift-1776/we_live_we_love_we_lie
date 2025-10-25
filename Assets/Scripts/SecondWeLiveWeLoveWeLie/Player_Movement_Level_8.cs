@@ -19,10 +19,6 @@ public class Player_Movement_Level_8 : MonoBehaviour
     public static float speedUp = 2.5f;
 
     // time to run from standstill
-    private static float timeToRun = 2;
-
-    private float playerSpeed = 0;
-
     private float jumpHeight = 1.0f;
     private float gravityValue = -9.81f;
 
@@ -33,20 +29,9 @@ public class Player_Movement_Level_8 : MonoBehaviour
     public static float mouseSensitivity = 1;
 
 
-    private float interactDistance = 5f;
-
-
     private float maxSpeed;
-
-    private float defaultFieldOfView;
-    private float fieldOfViewMultiplier = 1.18f;
-    private float fastFieldOfView;
-
-
-    private readonly KeyCode runKey = KeyCode.LeftShift;
     private readonly KeyCode failKey = KeyCode.M;
-    private readonly KeyCode mainKey = KeyCode.Alpha1;
-    private readonly KeyCode pullKey = KeyCode.Mouse1;
+    private readonly KeyCode mainKey = KeyCode.Space;
 
     // [SerializeField] private GameObject crosshair;
     // [SerializeField] private GameObject bigCrosshair;
@@ -63,9 +48,6 @@ public class Player_Movement_Level_8 : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
         controller.skinWidth = 0.1f * controller.radius;
-        maxSpeed = Player_Movement.basePlayerSpeed * Player_Movement.speedUp;
-        defaultFieldOfView = Camera.main.fieldOfView;
-        fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
         // crosshair.SetActive(true);
         // bigCrosshair.SetActive(false);
@@ -76,64 +58,10 @@ public class Player_Movement_Level_8 : MonoBehaviour
     void Update()
     {
         if (gm.gameActive) {
-            // modify player velocity
-            // jumpHelper();
-            // horizontalMovementHelper();
-            // move player
-            // controller.Move(playerVelocity * Time.deltaTime);
             interactRaycast();
             rotationHelper();
         }
     }
-
-
-    void jumpHelper() {
-        groundedPlayer = controller.isGrounded;
-        playerVelocity.y = 0f;
-    }
-
-
-    void horizontalMovementHelper() {
-        playerVelocity.x = 0;
-        playerVelocity.z = 0;
-
-        float diffFOV = math.abs(fastFieldOfView - defaultFieldOfView);
-
-        float hSpeed = 0.0f;
-        float vSpeed = 0.0f;
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            vSpeed += 1.0f;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            vSpeed -= 1.0f;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            hSpeed -= 1.0f;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            hSpeed += 1.0f;
-        }
-
-        if (Input.GetKey(runKey) && vSpeed > 0) {
-            playerSpeed = Mathf.MoveTowards(playerSpeed, maxSpeed, maxSpeed * Time.deltaTime / timeToRun);
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / timeToRun);
-        } else {
-            playerSpeed = Mathf.MoveTowards(playerSpeed, basePlayerSpeed, maxSpeed * Time.deltaTime / timeToRun);
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / timeToRun);
-        }
-        if (Input.GetKey(failKey)) {
-            Cursor.lockState = Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            SceneManager.LoadScene("MoveInMenu");
-        }
-        playerVelocity += Vector3.Normalize(gameObject.transform.right * hSpeed + gameObject.transform.forward * vSpeed) * playerSpeed;
-    }
-
 
     void rotationHelper() {
         // Rotates the camera and character object
@@ -165,46 +93,7 @@ public class Player_Movement_Level_8 : MonoBehaviour
             fakeLaser.transform.rotation = mainCamera.transform.rotation;
             fakeLaser.transform.position = mainCamera.transform.position + new Vector3(0, -0.5f, 0);
         }
-        // RaycastHit hit;
-        // Vector3 origin = Camera.main.transform.position;
-        // Vector3 dir = Camera.main.transform.forward;
-        // if (Physics.Raycast(origin, dir, out hit, interactDistance)) {
-        //     Wall interactableObject = hit.collider.gameObject.GetComponent<Wall>();
-            
-        //     if (interactableObject != null) {
-        //         // TODO: ADD PUSH/PULL INDICATOR TO HUD!!!!!
-        //         crosshair.SetActive(false);
-        //         bigCrosshair.SetActive(true);
-        //         Debug.Log("Raycase");
-        //         if (Input.GetKeyDown(mainKey)) {
-        //             interactableObject.Interact();
-        //         } else if (Input.GetKeyDown(pullKey)) {
-        //             interactableObject.Interact();
-        //         }
-        //     } else {
-        //         crosshair.SetActive(true);
-        //         bigCrosshair.SetActive(false);
-        //     }
-        // } else {
-        //     crosshair.SetActive(true);
-        //     bigCrosshair.SetActive(false);
-        // }
     }
-
-    // void OnTriggerEnter(Collider hit) {
-    //     Debug.Log(hit.gameObject.name);
-    //     if (hit.gameObject.name.Contains("Bullet")) {
-    //         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-    //         if (meshRenderer != null)
-    //         {
-    //             meshRenderer.enabled = false; // Disables the Mesh Renderer
-    //         }
-    //         mainCamera.SetActive(false);
-    //         altCamera.SetActive(true);
-    //         fakeBody.SetActive(true);
-    //         gm.Fail();
-    //     }
-    // }
 
     public void SetMouseSensitivity(float sensitivity) {
         mouseSensitivity = sensitivity;

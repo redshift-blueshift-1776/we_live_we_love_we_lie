@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
@@ -14,6 +13,10 @@ public class GenerateWorld : MonoBehaviour
 {
     [SerializeField] public GameObject Level1Reference;
     [SerializeField] public GameObject Pillar;
+    [SerializeField] public GameObject player;
+    [SerializeField] public GameObject Building;
+    [SerializeField] public GameObject gameManager;
+    [SerializeField] public SecondWeLiveWeLoveWeLie gm;
 
     private double secondsPerBeat;
 
@@ -29,8 +32,8 @@ public class GenerateWorld : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        gm = gameManager.GetComponent<SecondWeLiveWeLoveWeLie>();
         nextChangeTime = BeatManager.Instance.GetNextBeatTime();
-        initialBeat = BeatManager.Instance.GetCurrentBeatNumber();
         secondsPerBeat = 60.0 / 145.0;
         Debug.Log(secondsPerBeat);
         phase = 0;
@@ -42,7 +45,77 @@ public class GenerateWorld : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (gm.gameActive) {
+            if (!BeatManager.Instance.audioSource.isPlaying) return;
+
+            if (initialBeat == -1) {
+                initialBeat = BeatManager.Instance.GetCurrentBeatNumber();
+            }
+
+            int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
+
+            if (currentBeat - initialBeat == 16) {
+                if (!doingStuff) {
+                    StartCoroutine(MoveThings());
+                    doingStuff = true;
+                }
+            }
+            if (currentBeat - initialBeat == 64) {
+                if (!doingStuff) {
+                    StartCoroutine(MoveThings());
+                    doingStuff = true;
+                }
+            }
+            if (currentBeat - initialBeat == 192) {
+                if (!doingStuff) {
+                    StartCoroutine(MoveThings());
+                    doingStuff = true;
+                }
+            }
+        }
+    }
+
+    public IEnumerator MoveThings() {
+        Debug.Log("Moving things" + phase);
+        if (phase == 0) {
+            double duration = 7 * secondsPerBeat;
+            double elapsed = 0;
+            Vector3 startPos = Building.transform.position;
+            Vector3 targetPos = Building.transform.position + new Vector3(0, -150, 0);
+            while (elapsed < duration) {
+                Building.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            Building.transform.position = targetPos;
+        }
+        if (phase == 1) {
+            double duration = 7 * secondsPerBeat;
+            double elapsed = 0;
+            Vector3 startPos = player.transform.position;
+            Vector3 targetPos = player.transform.position + new Vector3(0, 0, -10);
+            while (elapsed < duration) {
+                player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            player.transform.position = targetPos;
+        }
+        if (phase == 2) {
+            double duration = 7 * secondsPerBeat;
+            double elapsed = 0;
+            Vector3 startPos = player.transform.position;
+            Vector3 targetPos = player.transform.position + new Vector3(0, 0, 100);
+            while (elapsed < duration) {
+                player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            player.transform.position = targetPos;
+        }
+        phase++;
+        doingStuff = false;
+        yield return null;
     }
 
     public void GenerateLevel1() {
