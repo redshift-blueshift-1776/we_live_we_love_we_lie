@@ -63,11 +63,16 @@ public class Note : MonoBehaviour
     }
 
     public void hitNote() {
+        Debug.Log("hitNote");
         if (realNote) {
-            int scoreToAdd = (int) (10 - 20 * Mathf.Abs(elapsed - duration / 2f));
+            int scoreToAdd = (int) (10 - 20 * Mathf.Abs(elapsed - delay - duration / 2f));
+            scoreToAdd = (scoreToAdd > 0) ? scoreToAdd : 0;
+            Debug.Log(scoreToAdd);
             gm.addScore(scoreToAdd);
+            Destroy(gameObject);
         } else {
             gm.addScore(-10);
+            Destroy(gameObject);
         }
     }
 }
