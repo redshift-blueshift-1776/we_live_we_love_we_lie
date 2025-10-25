@@ -55,6 +55,13 @@ public class Note : MonoBehaviour
         elapsed += Time.deltaTime;
     }
 
+    public void OnTriggerEnter(Collider c) {
+        Debug.Log(c.gameObject.name);
+        if (c.gameObject.name == "RealLaser") {
+            hitNote();
+        }
+    }
+
     public void hitNote() {
         if (realNote) {
             int scoreToAdd = (int) (10 - 20 * Mathf.Abs(elapsed - duration / 2f));

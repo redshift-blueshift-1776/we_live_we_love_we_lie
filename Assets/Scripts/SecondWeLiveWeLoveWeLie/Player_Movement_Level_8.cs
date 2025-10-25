@@ -45,11 +45,15 @@ public class Player_Movement_Level_8 : MonoBehaviour
 
     private readonly KeyCode runKey = KeyCode.LeftShift;
     private readonly KeyCode failKey = KeyCode.M;
-    private readonly KeyCode pushKey = KeyCode.Mouse0;
+    private readonly KeyCode mainKey = KeyCode.Alpha1;
     private readonly KeyCode pullKey = KeyCode.Mouse1;
 
-    [SerializeField] private GameObject crosshair;
-    [SerializeField] private GameObject bigCrosshair;
+    // [SerializeField] private GameObject crosshair;
+    // [SerializeField] private GameObject bigCrosshair;
+
+    [SerializeField] public GameObject laser;
+    [SerializeField] public GameObject fakeLaser;
+    [SerializeField] public GameObject mainCamera;
 
 
     private void Start()
@@ -63,8 +67,10 @@ public class Player_Movement_Level_8 : MonoBehaviour
         defaultFieldOfView = Camera.main.fieldOfView;
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
-        crosshair.SetActive(true);
-        bigCrosshair.SetActive(false);
+        // crosshair.SetActive(true);
+        // bigCrosshair.SetActive(false);
+        laser.SetActive(false);
+        fakeLaser.SetActive(false);
     }
 
     void Update()
@@ -75,7 +81,7 @@ public class Player_Movement_Level_8 : MonoBehaviour
             // horizontalMovementHelper();
             // move player
             // controller.Move(playerVelocity * Time.deltaTime);
-            // interactRaycast();
+            interactRaycast();
             rotationHelper();
         }
     }
@@ -148,30 +154,41 @@ public class Player_Movement_Level_8 : MonoBehaviour
     }
 
     void interactRaycast() {
-        RaycastHit hit;
-        Vector3 origin = Camera.main.transform.position;
-        Vector3 dir = Camera.main.transform.forward;
-        if (Physics.Raycast(origin, dir, out hit, interactDistance)) {
-            Wall interactableObject = hit.collider.gameObject.GetComponent<Wall>();
-            
-            if (interactableObject != null) {
-                // TODO: ADD PUSH/PULL INDICATOR TO HUD!!!!!
-                crosshair.SetActive(false);
-                bigCrosshair.SetActive(true);
-                Debug.Log("Raycase");
-                if (Input.GetKeyDown(pushKey)) {
-                    interactableObject.Interact();
-                } else if (Input.GetKeyDown(pullKey)) {
-                    interactableObject.Interact();
-                }
-            } else {
-                crosshair.SetActive(true);
-                bigCrosshair.SetActive(false);
-            }
+        if (Input.GetKey(mainKey)) {
+            laser.SetActive(true);
+            fakeLaser.SetActive(false);
+            laser.transform.rotation = mainCamera.transform.rotation;
+            laser.transform.position = mainCamera.transform.position + new Vector3(0, -0.5f, 0);
         } else {
-            crosshair.SetActive(true);
-            bigCrosshair.SetActive(false);
+            laser.SetActive(false);
+            fakeLaser.SetActive(true);
+            fakeLaser.transform.rotation = mainCamera.transform.rotation;
+            fakeLaser.transform.position = mainCamera.transform.position + new Vector3(0, -0.5f, 0);
         }
+        // RaycastHit hit;
+        // Vector3 origin = Camera.main.transform.position;
+        // Vector3 dir = Camera.main.transform.forward;
+        // if (Physics.Raycast(origin, dir, out hit, interactDistance)) {
+        //     Wall interactableObject = hit.collider.gameObject.GetComponent<Wall>();
+            
+        //     if (interactableObject != null) {
+        //         // TODO: ADD PUSH/PULL INDICATOR TO HUD!!!!!
+        //         crosshair.SetActive(false);
+        //         bigCrosshair.SetActive(true);
+        //         Debug.Log("Raycase");
+        //         if (Input.GetKeyDown(mainKey)) {
+        //             interactableObject.Interact();
+        //         } else if (Input.GetKeyDown(pullKey)) {
+        //             interactableObject.Interact();
+        //         }
+        //     } else {
+        //         crosshair.SetActive(true);
+        //         bigCrosshair.SetActive(false);
+        //     }
+        // } else {
+        //     crosshair.SetActive(true);
+        //     bigCrosshair.SetActive(false);
+        // }
     }
 
     // void OnTriggerEnter(Collider hit) {
