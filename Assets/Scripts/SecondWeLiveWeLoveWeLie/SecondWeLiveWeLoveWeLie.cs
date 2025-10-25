@@ -18,7 +18,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject gameCanvas;
-    [SerializeField] private TMP_Text timerGame;
+    [SerializeField] private TMP_Text scoreGame;
 
     [Header("Audio")]
     [SerializeField] public GameObject loadingAudio;
@@ -29,9 +29,16 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     public float timer;
 
     public List<GameObject> notes;
+
+    public int score;
+
+    private double secondsPerBeat;
+
+    private double nextChangeTime;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        secondsPerBeat = 60.0 / 145.0;
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
         loadingAudio.SetActive(true);
@@ -49,13 +56,46 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             if (timer >= 169f) { 
                 Fail(); // Change when we have the actual scene
             }
+            scoreGame.text = "Score: " + score;
             timer += Time.deltaTime;
         }
     }
 
     public void GenerateNotes() {
         if (hard) {
+            string[] notes = {
+            "16,1,0,10",
+            "20,1,0,10",
+            "24,1,0,0",
+            "28,1,0,-10",
+            "32,1,0,-20",
+            };
+        } else {
+            string[] notes = {
+            "16,10,0,20",
+            "20,5,0,20",
+            "-24,0,0,20",
+            "28,-5,0,20",
+            "32,-10,0,20",
+            };
 
+            foreach (string n in notes) {
+                string[] parts = n.Split(',');
+                if (parts.Length < 4) continue;
+
+                if (float.TryParse(parts[0], out float duration)) {
+                    float.TryParse(parts[1], out float x_pos);
+                    float.TryParse(parts[2], out float y_pos);
+                    float.TryParse(parts[3], out float z_pos);
+                    GameObject newNote = Instantiate(note);
+                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(x_pos, y_pos, z_pos);
+                    Note newNoteScript = newNote.GetComponent<Note>();
+                    newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
+                    newNoteScript.duration = 4f * (float) secondsPerBeat;
+                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
+                    newNoteScript.realNote = (duration > 0);
+                }
+            }
         }
     }
 
@@ -77,6 +117,10 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         gameActive = false;
         StartCoroutine(LoadFailScene());
         // transitionScript.ToFail();
+    }
+
+    public void addScore(int scoreToAdd) {
+        score += scoreToAdd;
     }
 
     public IEnumerator LoadFailScene() {
