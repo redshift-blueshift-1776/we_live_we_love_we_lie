@@ -38,7 +38,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        secondsPerBeat = 60.0 / 145.0;
+        secondsPerBeat = 60.0 / 145.0 / 4.0;
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
         loadingAudio.SetActive(true);
@@ -72,11 +72,22 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             };
         } else {
             string[] notes = {
-            "16,10,0,20",
-            "20,5,0,20",
-            "-24,0,0,20",
-            "28,-5,0,20",
-            "32,-10,0,20",
+            "64,10,0,20",
+            "80,5,0,20",
+            "-96,0,0,20",
+            "112,-5,0,20",
+            "128,-10,0,20",
+            "144,-10,5,20",
+            "152,-5,5,20",
+            "-160,0,5,20",
+            "168,5,5,20",
+            "176,10,5,20",
+            "256,10,0,120",
+            "272,5,0,120",
+            "288,0,0,120",
+            "296,0,5,120",
+            "304,-5,5,120",
+            "320,-10,0,120",
             };
 
             foreach (string n in notes) {
@@ -91,8 +102,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     newNote.transform.localPosition = player.transform.localPosition + new Vector3(x_pos, y_pos, z_pos);
                     Note newNoteScript = newNote.GetComponent<Note>();
                     newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
-                    newNoteScript.duration = 4f * (float) secondsPerBeat;
-                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
+                    newNoteScript.duration = 16f * (float) secondsPerBeat;
+                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
                     newNoteScript.realNote = (duration > 0);
                 }
             }
