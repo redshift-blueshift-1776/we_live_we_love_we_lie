@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class MassElimination : MonoBehaviour
 {
+    [SerializeField] public bool menu;
     [SerializeField] public float timeBetween = 0.1f;
     [SerializeField] public GameObject pillar;
     [SerializeField] public GameObject transition;
@@ -18,15 +19,26 @@ public class MassElimination : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        playersRemaining.text = "Players Remaining:\n1000";
-        MakeGrid();
-        StartCoroutine(MoveCamera());
+        if (menu) {
+            StartCoroutine(MenuLoop());
+        } else {
+            playersRemaining.text = "Players Remaining:\n1000";
+            MakeGrid();
+            StartCoroutine(MoveCamera());
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public IEnumerator MenuLoop() {
+        while (true) {
+            MakeGrid();
+            yield return new WaitForSeconds(16f);
+        }
     }
 
     public IEnumerator MoveCamera() {
