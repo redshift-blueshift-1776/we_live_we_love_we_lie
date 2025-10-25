@@ -34,7 +34,7 @@ public class GenerateWorld : MonoBehaviour
     {
         gm = gameManager.GetComponent<SecondWeLiveWeLoveWeLie>();
         nextChangeTime = BeatManager.Instance.GetNextBeatTime();
-        secondsPerBeat = 60.0 / 145.0;
+        secondsPerBeat = 60.0 / 145.0 / 4.0;
         Debug.Log(secondsPerBeat);
         phase = 0;
         doingStuff = false;
@@ -54,7 +54,7 @@ public class GenerateWorld : MonoBehaviour
 
             int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
 
-            if (currentBeat - initialBeat == 16) {
+            if (currentBeat - initialBeat == 32) {
                 if (!doingStuff) {
                     StartCoroutine(MoveThings());
                     doingStuff = true;
@@ -72,13 +72,19 @@ public class GenerateWorld : MonoBehaviour
                     doingStuff = true;
                 }
             }
+            if (currentBeat - initialBeat == 320) {
+                if (!doingStuff) {
+                    StartCoroutine(MoveThings());
+                    doingStuff = true;
+                }
+            }
         }
     }
 
     public IEnumerator MoveThings() {
         Debug.Log("Moving things" + phase);
         if (phase == 0) {
-            double duration = 7 * secondsPerBeat;
+            double duration = 15 * secondsPerBeat;
             double elapsed = 0;
             Vector3 startPos = Building.transform.position;
             Vector3 targetPos = Building.transform.position + new Vector3(0, -150, 0);
@@ -90,7 +96,7 @@ public class GenerateWorld : MonoBehaviour
             Building.transform.position = targetPos;
         }
         if (phase == 1) {
-            double duration = 7 * secondsPerBeat;
+            double duration = 15 * secondsPerBeat;
             double elapsed = 0;
             Vector3 startPos = player.transform.position;
             Vector3 targetPos = player.transform.position + new Vector3(0, 0, -10);
@@ -102,10 +108,22 @@ public class GenerateWorld : MonoBehaviour
             player.transform.position = targetPos;
         }
         if (phase == 2) {
-            double duration = 7 * secondsPerBeat;
+            double duration = 31 * secondsPerBeat;
             double elapsed = 0;
             Vector3 startPos = player.transform.position;
-            Vector3 targetPos = player.transform.position + new Vector3(0, 0, 100);
+            Vector3 targetPos = player.transform.position + new Vector3(100, 0, 100);
+            while (elapsed < duration) {
+                player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            player.transform.position = targetPos;
+        }
+        if (phase == 3) {
+            double duration = 127 * secondsPerBeat;
+            double elapsed = 0;
+            Vector3 startPos = player.transform.position;
+            Vector3 targetPos = player.transform.position + new Vector3(0, 50, 0);
             while (elapsed < duration) {
                 player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
                 elapsed += Time.deltaTime;

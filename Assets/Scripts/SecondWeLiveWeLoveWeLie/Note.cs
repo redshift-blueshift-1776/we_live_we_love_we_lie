@@ -26,7 +26,9 @@ public class Note : MonoBehaviour
             return;
         }
         if (elapsed > duration + delay) {
-            gm.addScore(-10);
+            if (realNote) {
+                gm.addScore(-10);
+            }
             Destroy(gameObject);
         }
 
