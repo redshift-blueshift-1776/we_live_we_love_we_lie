@@ -120,10 +120,10 @@ public class GenerateWorld : MonoBehaviour
             player.transform.position = targetPos;
         }
         if (phase == 3) {
-            double duration = 127 * secondsPerBeat;
+            double duration = 255 * secondsPerBeat;
             double elapsed = 0;
             Vector3 startPos = player.transform.position;
-            Vector3 targetPos = player.transform.position + new Vector3(0, 50, 0);
+            Vector3 targetPos = player.transform.position + new Vector3(0, 100, 0);
             while (elapsed < duration) {
                 player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
                 elapsed += Time.deltaTime;

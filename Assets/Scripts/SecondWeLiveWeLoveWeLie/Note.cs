@@ -69,6 +69,7 @@ public class Note : MonoBehaviour
         if (realNote) {
             int scoreToAdd = (int) (10 - 20 * Mathf.Abs(elapsed - delay - duration / 2f));
             scoreToAdd = (scoreToAdd > 0) ? scoreToAdd : 0;
+            scoreToAdd = (scoreToAdd > 8) ? 10 : scoreToAdd;
             // Debug.Log(scoreToAdd);
             gm.addScore(scoreToAdd);
             Destroy(gameObject);
