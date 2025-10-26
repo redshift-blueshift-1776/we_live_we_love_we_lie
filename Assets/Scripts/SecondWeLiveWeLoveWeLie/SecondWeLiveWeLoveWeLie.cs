@@ -359,8 +359,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     Note newNoteScript = newNote.GetComponent<Note>();
                     newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
                     newNoteScript.duration = 16f * (float) secondsPerBeat;
-                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
-                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
+                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
+                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
                     newNoteScript.realNote = (duration > 0);
                 }
             }
@@ -386,8 +386,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             // Drop
             "320,90,0,120",
             "324,90,5,120",
-            "-328,90,10,120",
-            "332,95,10,120",
+            // "-328,95,5,120",
+            "332,90,10,120",
 
             "336,100,10,120",
             "344,100,15,120",
@@ -415,23 +415,23 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             "432,100,55,120",
 
             "448,100,60,120",
-            "450,95,60,120",
-            "452,90,60,120",
-            "454,90,65,120",
+            // "450,95,60,120",
+            // "452,90,60,120",
+            // "454,90,65,120",
             "456,95,65,120",
-            "458,100,65,120",
+            // "458,100,65,120",
             "460,100,66,120",
             "461,100,67,120",
             "462,100,68,120",
             "463,100,69,120",
             "464,100,70,120",
-            "466,105,70,120",
-            "468,110,70,120",
-            "470,110,75,120",
+            // "466,105,70,120",
+            // "468,110,70,120",
+            // "470,110,75,120",
             "472,105,75,120",
-            "474,100,75,120",
-            "476,100,80,120",
-            "478,100,85,120",
+            // "474,100,75,120",
+            // "476,100,80,120",
+            // "478,100,85,120",
             };
 
             notes = notes.Concat(SonicBlasterPattern(480, 95, 85, 120)).ToArray();
@@ -550,8 +550,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     Note newNoteScript = newNote.GetComponent<Note>();
                     newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
                     newNoteScript.duration = 16f * (float) secondsPerBeat;
-                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
-                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
+                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
+                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
                     newNoteScript.realNote = (duration > 0);
                 }
             }
