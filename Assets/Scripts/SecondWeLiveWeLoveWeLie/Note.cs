@@ -66,6 +66,9 @@ public class Note : MonoBehaviour
 
     public void hitNote() {
         // Debug.Log("hitNote");
+        if (elapsed < delay) {
+            return;
+        }
         if (realNote) {
             int scoreToAdd = (int) (10 - 20 * Mathf.Abs(elapsed - delay - duration / 2f));
             scoreToAdd = (scoreToAdd > 0) ? scoreToAdd : 0;

@@ -66,24 +66,24 @@ public class GenerateWorld : MonoBehaviour
                     doingStuff = true;
                 }
             }
-            if (currentBeat - initialBeat == 192) {
-                if (!doingStuff) {
-                    StartCoroutine(MoveThings());
-                    doingStuff = true;
-                }
-            }
-            if (currentBeat - initialBeat == 320) {
-                if (!doingStuff) {
-                    StartCoroutine(MoveThings());
-                    doingStuff = true;
-                }
-            }
-            if (currentBeat - initialBeat == 512) {
-                if (!doingStuff) {
-                    StartCoroutine(MoveThings());
-                    doingStuff = true;
-                }
-            }
+            // if (currentBeat - initialBeat == 192) {
+            //     if (!doingStuff) {
+            //         StartCoroutine(MoveThings());
+            //         doingStuff = true;
+            //     }
+            // }
+            // if (currentBeat - initialBeat == 320) {
+            //     if (!doingStuff) {
+            //         StartCoroutine(MoveThings());
+            //         doingStuff = true;
+            //     }
+            // }
+            // if (currentBeat - initialBeat == 512) {
+            //     if (!doingStuff) {
+            //         StartCoroutine(MoveThings());
+            //         doingStuff = true;
+            //     }
+            // }
         }
     }
 
@@ -102,10 +102,10 @@ public class GenerateWorld : MonoBehaviour
             Building.transform.position = targetPos;
         }
         if (phase == 1) {
-            double duration = 15 * secondsPerBeat;
+            double duration = 2047 * secondsPerBeat;
             double elapsed = 0;
             Vector3 startPos = player.transform.position;
-            Vector3 targetPos = player.transform.position + new Vector3(0, 0, -10);
+            Vector3 targetPos = player.transform.position + new Vector3(0, 0, 20470f / 2f);
             while (elapsed < duration) {
                 player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
                 elapsed += Time.deltaTime;
@@ -113,42 +113,42 @@ public class GenerateWorld : MonoBehaviour
             }
             player.transform.position = targetPos;
         }
-        if (phase == 2) {
-            double duration = 31 * secondsPerBeat;
-            double elapsed = 0;
-            Vector3 startPos = player.transform.position;
-            Vector3 targetPos = player.transform.position + new Vector3(100, 0, 100);
-            while (elapsed < duration) {
-                player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
-            player.transform.position = targetPos;
-        }
-        if (phase == 3) {
-            double duration = 191 * secondsPerBeat;
-            double elapsed = 0;
-            Vector3 startPos = player.transform.position;
-            Vector3 targetPos = player.transform.position + new Vector3(0, 100, 0);
-            while (elapsed < duration) {
-                player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
-            player.transform.position = targetPos;
-        }
-        if (phase == 4) {
-            double duration = 127 * secondsPerBeat;
-            double elapsed = 0;
-            Vector3 startPos = player.transform.position;
-            Vector3 targetPos = player.transform.position + new Vector3(-100, 0, 0);
-            while (elapsed < duration) {
-                player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
-            player.transform.position = targetPos;
-        }
+        // if (phase == 2) {
+        //     double duration = 31 * secondsPerBeat;
+        //     double elapsed = 0;
+        //     Vector3 startPos = player.transform.position;
+        //     Vector3 targetPos = player.transform.position + new Vector3(100, 0, 100);
+        //     while (elapsed < duration) {
+        //         player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+        //         elapsed += Time.deltaTime;
+        //         yield return null;
+        //     }
+        //     player.transform.position = targetPos;
+        // }
+        // if (phase == 3) {
+        //     double duration = 191 * secondsPerBeat;
+        //     double elapsed = 0;
+        //     Vector3 startPos = player.transform.position;
+        //     Vector3 targetPos = player.transform.position + new Vector3(0, 100, 0);
+        //     while (elapsed < duration) {
+        //         player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+        //         elapsed += Time.deltaTime;
+        //         yield return null;
+        //     }
+        //     player.transform.position = targetPos;
+        // }
+        // if (phase == 4) {
+        //     double duration = 127 * secondsPerBeat;
+        //     double elapsed = 0;
+        //     Vector3 startPos = player.transform.position;
+        //     Vector3 targetPos = player.transform.position + new Vector3(-100, 0, 0);
+        //     while (elapsed < duration) {
+        //         player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
+        //         elapsed += Time.deltaTime;
+        //         yield return null;
+        //     }
+        //     player.transform.position = targetPos;
+        // }
         phase++;
         doingStuff = false;
         yield return null;
