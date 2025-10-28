@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Weapon : MonoBehaviour
 {
-    private string activeWeapon = "Knife";
     private float timeSinceAttack = Mathf.Infinity;
 
     [SerializeField] private Player7 player7;
@@ -64,8 +65,18 @@ public class Weapon : MonoBehaviour
     [Header("Machine Guns")]
     [SerializeField] private GameObject M249;
     [SerializeField] private GameObject Negev;
-    #endregion 
+    #endregion
 
+    #region UI
+    [Header("UI")]
+    [SerializeField] private Image primaryWeaponBorder;
+    [SerializeField] private TMP_Text primaryWeaponText;
+
+    [SerializeField] private Image secondaryWeaponBorder;
+    [SerializeField] private TMP_Text secondaryWeaponText;
+
+    [SerializeField] private Image knifeWeaponBorder;
+    #endregion
     private int weaponIndex = 3;
     private string primaryWeapon = "";
     private string secondaryWeapon = "";
@@ -111,16 +122,31 @@ public class Weapon : MonoBehaviour
         {
             primaryWeaponContainer.SetActive(true);
             secondaryWeaponContainer.SetActive(false);
+
+            primaryWeaponBorder.color = Color.yellow;
+            secondaryWeaponBorder.color = Color.white;
+            knifeWeaponBorder.color = Color.white;
+
             knife.SetActive(false);
         } else if (weaponIndex == 2)
         {
             primaryWeaponContainer.SetActive(false);
             secondaryWeaponContainer.SetActive(true);
+
+            primaryWeaponBorder.color = Color.white;
+            secondaryWeaponBorder.color = Color.yellow;
+            knifeWeaponBorder.color = Color.white;
+
             knife.SetActive(false);
         } else if (weaponIndex == 3)
         {
             primaryWeaponContainer.SetActive(false);
             secondaryWeaponContainer.SetActive(false);
+
+            primaryWeaponBorder.color = Color.white;
+            secondaryWeaponBorder.color = Color.white;
+            knifeWeaponBorder.color = Color.yellow;
+
             knife.SetActive(true);
         }
     }
@@ -196,6 +222,8 @@ public class Weapon : MonoBehaviour
     {
         primaryWeapon = primary;
         weaponIndex = 1;
+        primaryWeaponText.text = primary;
+
         disableAllPrimary();
         switch (primaryWeapon)
         {
@@ -275,6 +303,7 @@ public class Weapon : MonoBehaviour
     {
         secondaryWeapon = secondary;
         weaponIndex = 2;
+        secondaryWeaponText.text = secondary;
 
         disableAllSecondary();
         switch (secondaryWeapon)

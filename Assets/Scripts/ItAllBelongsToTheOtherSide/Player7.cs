@@ -47,4 +47,9 @@ public class Player7 : MonoBehaviour
     {
         return isInWeaponShop;
     }
+
+    public void setIsInWeaponShop(bool b)
+    {
+        isInWeaponShop = b;
+    }
 }
