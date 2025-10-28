@@ -8,6 +8,8 @@ public class WeaponUI : MonoBehaviour
     ColorBlock defaultColorBlock = new ColorBlock();
     ColorBlock selectedColorBlock = new ColorBlock();
 
+    [SerializeField] private Weapon weaponScript;
+
     #region Weapon Categories
     [Header("Weapon Categories")]
     [SerializeField] private GameObject pistols;
@@ -236,6 +238,7 @@ public class WeaponUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
 
     private void disableAllCategoryUI()
@@ -342,7 +345,7 @@ public class WeaponUI : MonoBehaviour
         disableAllPrimaryWeaponUI();
         switch (selectedPrimary)
         {
-            case "MAG70":
+            case "MAG7":
                 MAG7ButtonBorder.SetActive(true);
                 break;
             case "Nova":
@@ -412,6 +415,8 @@ public class WeaponUI : MonoBehaviour
                 MAG7ButtonBorder.SetActive(true);
                 break;
         }
+
+        weaponScript.updatePrimary(selectedPrimary);
     }
 
     private void displaySelectedSecondary()
@@ -450,6 +455,8 @@ public class WeaponUI : MonoBehaviour
                 R8RevolverButtonBorder.SetActive(true);
                 break;
         }
+
+        weaponScript.updateSecondary(selectedSecondary);
     }
 
     public void setSelectedCategory(string category)

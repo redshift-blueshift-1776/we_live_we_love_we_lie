@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public GameObject knife;
     private string activeWeapon = "Knife";
     private float timeSinceAttack = Mathf.Infinity;
 
@@ -13,11 +12,63 @@ public class Weapon : MonoBehaviour
     [SerializeField] private AnimationClip knifeAttackAnimation;
     public WeaponInfo weaponInfo;
 
-    private Dictionary<string, float> weaponSpread = new Dictionary<string, float>()
-    {
-        
-    };
+    [SerializeField] private GameObject primaryWeaponContainer;
+    [SerializeField] private GameObject secondaryWeaponContainer;
 
+    #region Weapons
+    [Header("Knife")]
+    [SerializeField] private GameObject knife;
+
+    [Header("Pistols")]
+    [SerializeField] private GameObject USPS;
+    [SerializeField] private GameObject Glock18;
+    [SerializeField] private GameObject P250;
+    [SerializeField] private GameObject P2000;
+    [SerializeField] private GameObject DualBerettas;
+    [SerializeField] private GameObject FiveSeveN;
+    [SerializeField] private GameObject Tec9;
+    [SerializeField] private GameObject CZ75Auto;
+    [SerializeField] private GameObject DesertEagle;
+    [SerializeField] private GameObject R8Revolver;
+
+    [Header("Shotguns")]
+    [SerializeField] private GameObject MAG7;
+    [SerializeField] private GameObject Nova;
+    [SerializeField] private GameObject SawedOff;
+    [SerializeField] private GameObject XM1014;
+
+    [Header("SMGs")]
+    [SerializeField] private GameObject MAC10;
+    [SerializeField] private GameObject MP5SD;
+    [SerializeField] private GameObject MP7;
+    [SerializeField] private GameObject MP9;
+    [SerializeField] private GameObject PPBizon;
+    [SerializeField] private GameObject P90;
+    [SerializeField] private GameObject UMP45;
+
+    [Header("Assault Rifles")]
+    [SerializeField] private GameObject AK47;
+    [SerializeField] private GameObject AUG;
+    [SerializeField] private GameObject FAMAS;
+    [SerializeField] private GameObject GalilAR;
+    [SerializeField] private GameObject M4A1S;
+    [SerializeField] private GameObject M4A4;
+    [SerializeField] private GameObject SG553;
+
+    [Header("Sniper Rifles")]
+    [SerializeField] private GameObject AWP;
+    [SerializeField] private GameObject G3SG1;
+    [SerializeField] private GameObject SCAR20;
+    [SerializeField] private GameObject SSG08;
+
+    [Header("Machine Guns")]
+    [SerializeField] private GameObject M249;
+    [SerializeField] private GameObject Negev;
+    #endregion 
+
+    private int weaponIndex = 3;
+    private string primaryWeapon = "";
+    private string secondaryWeapon = "";
 
     void Start()
     {
@@ -27,29 +78,238 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        displayWeaponModel();
+
         if (!player7.getIsInWeaponShop())
         {
-            handleAttack();
+            handleKnifeAttack();
         }
         timeSinceAttack += Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (primaryWeapon != "")
+            {
+                weaponIndex = 1;
+            }
+        } else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            if (secondaryWeapon != "") 
+            {
+                weaponIndex = 2;
+            }
+        } else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            weaponIndex = 3;
+        }
+
     }
 
-    private void handleAttack()
+    private void displayWeaponModel()
     {
-        if (activeWeapon == "Knife")
+        if (weaponIndex == 1)
         {
-            if (Input.GetMouseButton(0))
-            {
-                if (!knifeAnimator.GetCurrentAnimatorStateInfo(0).IsName("KnifeAttack")
-                    && timeSinceAttack >= weaponInfo.getWeaponAttackCooldown("Knife"))
-                {
-                    knifeAnimator.Play("KnifeAttack", 0, 0f);
-                    timeSinceAttack = 0f;
-                }
-            } else if (Input.GetMouseButtonDown(1))
-            { 
-
-            }
+            primaryWeaponContainer.SetActive(true);
+            secondaryWeaponContainer.SetActive(false);
+            knife.SetActive(false);
+        } else if (weaponIndex == 2)
+        {
+            primaryWeaponContainer.SetActive(false);
+            secondaryWeaponContainer.SetActive(true);
+            knife.SetActive(false);
+        } else if (weaponIndex == 3)
+        {
+            primaryWeaponContainer.SetActive(false);
+            secondaryWeaponContainer.SetActive(false);
+            knife.SetActive(true);
         }
     }
+
+    private void handleKnifeAttack()
+    {
+        if (weaponIndex != 3)
+        {
+            return;
+        }
+        if (Input.GetMouseButton(0))
+        {
+            if (!knifeAnimator.GetCurrentAnimatorStateInfo(0).IsName("KnifeAttack")
+                && timeSinceAttack >= weaponInfo.getWeaponAttackCooldown("Knife"))
+            {
+                knifeAnimator.Play("KnifeAttack", 0, 0f);
+                timeSinceAttack = 0f;
+            }
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
+
+        }
+    }
+
+    private void disableAllPrimary()
+    {
+        MAG7.SetActive(false);
+        Nova.SetActive(false);
+        SawedOff.SetActive(false);
+        XM1014.SetActive(false);
+
+        MAC10.SetActive(false);
+        MP5SD.SetActive(false);
+        MP7.SetActive(false);
+        MP9.SetActive(false);
+        PPBizon.SetActive(false);
+        P90.SetActive(false);
+        UMP45.SetActive(false);
+
+        AK47.SetActive(false);
+        AUG.SetActive(false);
+        FAMAS.SetActive(false);
+        GalilAR.SetActive(false);
+        M4A1S.SetActive(false);
+        M4A4.SetActive(false);
+        SG553.SetActive(false);
+
+        AWP.SetActive(false);
+        G3SG1.SetActive(false);
+        SCAR20.SetActive(false);
+        SSG08.SetActive(false);
+
+        M249.SetActive(false);
+        Negev.SetActive(false);
+    }
+
+    private void disableAllSecondary()
+    {
+        USPS.SetActive(false);
+        Glock18.SetActive(false);
+        P250.SetActive(false);
+        P2000.SetActive(false);
+        DualBerettas.SetActive(false);
+        FiveSeveN.SetActive(false);
+        Tec9.SetActive(false);
+        CZ75Auto.SetActive(false);
+        DesertEagle.SetActive(false);
+        R8Revolver.SetActive(false);
+    }
+
+    public void updatePrimary(string primary)
+    {
+        primaryWeapon = primary;
+        weaponIndex = 1;
+        disableAllPrimary();
+        switch (primaryWeapon)
+        {
+            case "MAG7":
+                MAG7.SetActive(true);
+                break;
+            case "Nova":
+                Nova.SetActive(true);
+                break;
+            case "Sawed-Off":
+                SawedOff.SetActive(true);
+                break;
+            case "XM1014":
+                XM1014.SetActive(true);
+                break;
+            case "MAC-10":
+                MAC10.SetActive(true);
+                break;
+            case "MP5-SD":
+                MP5SD.SetActive(true);
+                break;
+            case "MP7":
+                MP7.SetActive(true);
+                break;
+            case "MP9":
+                MP9.SetActive(true);
+                break;
+            case "PP-Bizon":
+                PPBizon.SetActive(true);
+                break;
+            case "P90":
+                P90.SetActive(true);
+                break;
+            case "UMP-45":
+                UMP45.SetActive(true);
+                break;
+            case "AK-47":
+                AK47.SetActive(true);
+                break;
+            case "AUG":
+                AUG.SetActive(true);
+                break;
+            case "FAMAS":
+                FAMAS.SetActive(true);
+                break;
+            case "Galil AR":
+                GalilAR.SetActive(true);
+                break;
+            case "M4A1-S":
+                M4A1S.SetActive(true);
+                break;
+            case "M4A4":
+                M4A4.SetActive(true);
+                break;
+            case "SG 553":
+                SG553.SetActive(true);
+                break;
+            case "AWP":
+                AWP.SetActive(true);
+                break;
+            case "G3SG1":
+                G3SG1.SetActive(true);
+                break;
+            case "SCAR-20":
+                SCAR20.SetActive(true);
+                break;
+            case "SSG 08":
+                SSG08.SetActive(true);
+                break;
+            default:
+                MAG7.SetActive(true);
+                break;
+        }
+    }
+
+    public void updateSecondary(string secondary)
+    {
+        secondaryWeapon = secondary;
+        weaponIndex = 2;
+
+        disableAllSecondary();
+        switch (secondaryWeapon)
+        {
+            case "USP-S":
+                USPS.SetActive(true);
+                break;
+            case "Glock-18":
+                Glock18.SetActive(true);
+                break;
+            case "P250":
+                P250.SetActive(true);
+                break;
+            case "P2000":
+                P2000.SetActive(true);
+                break;
+            case "Dual Berettas":
+                DualBerettas.SetActive(true);
+                break;
+            case "Five-SeveN":
+                FiveSeveN.SetActive(true);
+                break;
+            case "Tec-9":
+                Tec9.SetActive(true);
+                break;
+            case "CZ75-Auto":
+                CZ75Auto.SetActive(true);
+                break;
+            case "Desert Eagle":
+                DesertEagle.SetActive(true);
+                break;
+            case "R8 Revolver":
+                R8Revolver.SetActive(true);
+                break;
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ public class Player7 : MonoBehaviour
     [SerializeField] private Image healthBarFill;
 
     [SerializeField] private GameObject weaponShopCanvas;
+
     private bool isInWeaponShop = false;
 
     void Start()
@@ -30,9 +31,9 @@ public class Player7 : MonoBehaviour
         {
             isInWeaponShop = !isInWeaponShop;
         }
+        weaponShopCanvas.SetActive(isInWeaponShop);
         if (isInWeaponShop)
         {
-            weaponShopCanvas.SetActive(isInWeaponShop);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         } else
