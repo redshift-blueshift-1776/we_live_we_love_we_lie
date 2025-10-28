@@ -236,6 +236,99 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         return ret;
     }
 
+    public string[] YellowClockPattern(int time_start, float x_start, float y_start, float z_start) {
+        string[] ret = new string[12];
+        if (hard) {
+            ret = new string[15];
+
+            ret[0] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 4;
+            y_start += 1;
+            ret[1] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start -= 1;
+            ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start -= 1;
+            ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1f;
+            ret[4] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1f;
+            ret[5] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 4;
+            x_start += 2f;
+
+            ret[6] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1f;
+            ret[7] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 1;
+            x_start -= 0.5f;
+            ret[8] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 1;
+            x_start -= 0.5f;
+            ret[9] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[10] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            ret[11] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1;
+            ret[12] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1;
+            ret[13] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 4;
+            x_start -= 2;
+
+            ret[14] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+        } else {
+            ret = new string[4];
+            ret[0] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 4;
+            y_start += 1;
+            ret[1] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start -= 1;
+            time_start += 2;
+            time_start += 4;
+            y_start += 0.2f;
+            time_start += 1;
+            y_start += 0.2f;
+            time_start += 1;
+            y_start += 0.2f;
+            time_start += 1;
+            y_start += 0.2f;
+            time_start += 1;
+            y_start += 0.2f;
+            time_start += 4;
+            x_start += 1;
+            ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            time_start += 2;
+            ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+        }
+        return ret;
+    }
+
+    public string[] randomScatter(int[] times, int spread) {
+        string[] ret = new string[times.Length];
+        for (int i = 0; i < times.Length; i++) {
+            ret[i] = "" + times[i] + "," + UnityEngine.Random.Range(-1 * spread, spread + 1) + "," + UnityEngine.Random.Range(-1 * spread, spread + 1);
+        }
+        return ret;
+    }
+
+    public void solveMaze(int[] times, Vector3 mazeLocation, List<(int, int)> mstEdges) {
+        
+        return;
+    }
+
     public void GenerateNotes() {
         if (hard) {
             string[] notes = {
@@ -448,6 +541,22 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             notes = notes.Concat(SpectrePattern(512, 0f, 0f, 0f)).ToArray();
 
             notes = notes.Concat(SpectrePattern(544, 0f, 0f, 0f)).ToArray();
+
+            int[] times = {
+                576,
+                -584,
+                596,
+                -604,
+                612,
+                -620,
+                628,
+                -636,
+                644,
+                -652,
+                660
+            };
+
+            notes = notes.Concat(randomScatter(times,1)).ToArray();
 
             foreach (string n in notes) {
                 string[] parts = n.Split(',');
