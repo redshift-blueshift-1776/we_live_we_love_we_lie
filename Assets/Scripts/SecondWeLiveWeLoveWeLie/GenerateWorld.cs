@@ -105,7 +105,7 @@ public class GenerateWorld : MonoBehaviour
             double duration = 2047 * secondsPerBeat;
             double elapsed = 0;
             Vector3 startPos = player.transform.position;
-            Vector3 targetPos = player.transform.position + new Vector3(0, 0, 20470f / 2f);
+            Vector3 targetPos = player.transform.position + new Vector3(0, 0, 20470f / 1f);
             while (elapsed < duration) {
                 player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
                 elapsed += Time.deltaTime;

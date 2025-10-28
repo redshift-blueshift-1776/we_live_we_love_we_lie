@@ -123,19 +123,21 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             y_start += 1;
             ret[17] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
         } else {
-            ret = new string[12];
+            ret = new string[10];
             ret[0] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start -= 1;
             time_start += 2;
-            ret[1] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             y_start += 1;
             time_start += 2;
-            ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            ret[1] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start += 1;
             time_start += 2;
+            y_start += 0.2f;
+            ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 1;
             y_start += 0.2f;
             ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
@@ -147,25 +149,21 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             time_start += 1;
             y_start += 0.2f;
             ret[6] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
-            time_start += 1;
-            y_start += 0.2f;
-            ret[7] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start += 1;
             time_start += 2;
             y_start += 1;
+            ret[7] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start -= 1;
+            time_start += 2;
+            x_start -= 1;
             ret[8] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
-            time_start += 2;
-            x_start -= 1;
-            ret[9] = "" + (time_start * -1) + "," + x_start + "," + y_start + "," + z_start;
-            time_start += 2;
-            x_start -= 1;
-            ret[10] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start -= 1;
             time_start += 2;
             y_start += 1;
-            ret[11] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            ret[9] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
         }
         return ret;
     }
@@ -209,7 +207,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             x_start += 1;
             ret[11] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
         } else {
-            ret = new string[10];
+            ret = new string[4];
             ret[0] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             y_start += 1;
@@ -217,29 +215,23 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             time_start += 2;
             x_start -= 1;
             time_start += 2;
-            ret[2] = "" + (time_start * -1) + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             y_start += 0.2f;
-            ret[3] = "" + (time_start * -1) + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
             y_start += 0.2f;
-            ret[4] = "" + (time_start * -1) + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
             y_start += 0.2f;
-            ret[5] = "" + (time_start * -1) + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
             y_start += 0.2f;
-            ret[6] = "" + (time_start * -1) + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
             y_start += 0.2f;
-            ret[7] = "" + (time_start * -1) + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             x_start += 1;
-            ret[8] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start += 1;
             time_start += 2;
-            ret[9] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
         }
         return ret;
     }
@@ -257,6 +249,18 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             "-160,0,-1",
             "168,2,1",
             "176,1,1",
+
+            "200,0,0",
+            "-208,0,-1",
+            "216,0,-2",
+            "-220,0,-1",
+            "224,0,0",
+            "-228,0,1",
+            "232,0,2",
+            "-236,0,1",
+            "240,0,0",
+            "-244,0,-1",
+            "248,0,-2",
 
             "256,1,0,120",
             "272,0,0,120",
@@ -342,7 +346,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     float.TryParse(parts[2], out float y_pos);
                     // float.TryParse(parts[3], out float z_pos);
                     GameObject newNote = Instantiate(note);
-                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(x_pos, y_pos, (Mathf.Abs(duration) - 64f) * 5f + 120f);
+                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(x_pos, y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
+                    newNote.transform.localScale = new Vector3(1f, 1f, 1f);
                     Note newNoteScript = newNote.GetComponent<Note>();
                     newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
                     newNoteScript.duration = 16f * (float) secondsPerBeat;
@@ -363,6 +368,11 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             "-160,0,-1",
             "168,2,1",
             "176,1,1",
+
+            "192,0,0",
+            "208,0,-1",
+            "224,0,1",
+            "240,0,-1",
 
             "256,1,0,120",
             "272,0,0,120",
@@ -397,21 +407,21 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
             "368,0,0,120",
             // "370,-1,0,120",
-            "372,-1,-1,120",
+            // "372,-1,-1,120",
             // "374,0,-1,120",
-            "376,1,-1,120",
+            // "376,1,-1,120",
             // "378,1,0,120",
-            "380,1,1,120",
+            // "380,1,1,120",
             // "382,0,1,120",
 
             "384,1,0,120",
             // "388,0,0,120",
             // "390,-0.5,0,120",
-            // "392,-0.5,-1,120",
-            "396,-0.6,-1,120",
-            "397,-0.7,-1,120",
-            "398,-0.8,-1,120",
-            "399,-0.9,-1,120",
+            "392,-0.5,-1,120",
+            // "396,-0.6,-1,120",
+            // "397,-0.7,-1,120",
+            // "398,-0.8,-1,120",
+            // "399,-0.9,-1,120",
             "400,-1,-1,120",
             // "404,0,1,120",
             // "406,1,1,120",
@@ -419,7 +429,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
             "416,0,0,120",
             "420,-1,0,120",
-            "422,-1,-1,120",
+            // "422,-1,-1,120",
             "424,0,-1,120",
             "428,1,-1,120",
             // "429,1,0,120",
@@ -428,7 +438,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             "432,0,0,120",
             // "436,-1,0,120",
             // "438,-1,1,120",
-            "440,0,2,120",
+            // "440,0,2,120",
             };
 
             notes = notes.Concat(SonicBlasterPattern(448, 0f, 0f, 0f)).ToArray();
@@ -448,7 +458,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     float.TryParse(parts[2], out float y_pos);
                     // float.TryParse(parts[3], out float z_pos);
                     GameObject newNote = Instantiate(note);
-                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(x_pos, y_pos, (Mathf.Abs(duration) - 64f) * 5f + 120f);
+                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(2f * x_pos, 2f * y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
+                    newNote.transform.localScale = new Vector3(3f, 3f, 1f);
                     Note newNoteScript = newNote.GetComponent<Note>();
                     newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
                     newNoteScript.duration = 16f * (float) secondsPerBeat;
