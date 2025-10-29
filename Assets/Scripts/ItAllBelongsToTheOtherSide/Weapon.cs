@@ -10,6 +10,7 @@ public class Weapon : MonoBehaviour
 
     [SerializeField] private Player7 player7;
     [SerializeField] private GameObject playerCamera;
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private Animator knifeAnimator;
     [SerializeField] private AnimationClip knifeAttackAnimation;
     public WeaponInfo weaponInfo;
@@ -84,9 +85,11 @@ public class Weapon : MonoBehaviour
     private string primaryWeapon = "";
     private string secondaryWeapon = "";
 
+    private string primaryWeaponCategory = "";
+
     void Start()
     {
-        
+        playDrawWeaponSound();
     }
 
     // Update is called once per frame
@@ -100,7 +103,7 @@ public class Weapon : MonoBehaviour
             handleKnifeAttack();
         }
         timeSinceAttack += Time.deltaTime;
-
+        int prevWeaponIndex = weaponIndex;
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             if (primaryWeapon != "")
@@ -116,6 +119,11 @@ public class Weapon : MonoBehaviour
         } else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             weaponIndex = 3;
+        }
+
+        if (prevWeaponIndex != weaponIndex)
+        {
+            playDrawWeaponSound();
         }
 
     }
@@ -164,6 +172,7 @@ public class Weapon : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0)) {
             RaycastHit hitData;
+            playShootWeaponSound();
             if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, 1000f))
             {
                 GameObject objectHit = hitData.collider.gameObject;
@@ -174,6 +183,111 @@ public class Weapon : MonoBehaviour
                 newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
                 newBulletHole.transform.SetParent(objectHit.transform);
                 StartCoroutine(fadeBulletHole(newBulletHole));
+            }
+        }
+    }
+
+    private void playDrawWeaponSound()
+    {
+        if (weaponIndex == 2) {
+            if (secondaryWeapon == "USP-S")
+            {
+                audioManager.playSound("USPSDraw");
+            }
+            else
+            {
+                audioManager.playSound("DefaultPistolDraw");
+            }
+        } else if (weaponIndex == 3)
+        {
+            audioManager.playSound("KnifeDraw");
+        } else
+        {
+            //primary weapon
+            if (primaryWeapon == "AWP")
+            {
+                audioManager.playSound("AWPDraw");
+            }
+            else if (primaryWeapon == "SSG 08")
+            {
+                audioManager.playSound("SSG08Draw");
+            }
+            else
+            {
+                switch (primaryWeaponCategory)
+                {
+                    case "Shotgun":
+                        audioManager.playSound("DefaultShotgunDraw");
+                        break;
+                    case "SMG":
+                        audioManager.playSound("DefaultSMGDraw");
+                        break;
+                    case "AssaultRifle":
+                        audioManager.playSound("DefaultARDraw");
+                        break;
+                    case "SniperRifle":
+                        audioManager.playSound("SCAR20Draw");
+                        break;
+                    case "MachineGun":
+                        audioManager.playSound("DefaultMGDraw");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    private void playShootWeaponSound()
+    {
+        if (weaponIndex == 2)
+        {
+            if (secondaryWeapon == "USP-S")
+            {
+                audioManager.playSound("USPSShoot");
+            }
+            else
+            {
+                audioManager.playSound("DefaultPistolShoot");
+            }
+        }
+        else if (weaponIndex == 3)
+        {
+            audioManager.playSound("KnifeSlash");
+        }
+        else
+        {
+            //primary weapon
+            if (primaryWeapon == "AWP")
+            {
+                audioManager.playSound("AWPShoot");
+            }
+            else if (primaryWeapon == "SSG 08")
+            {
+                audioManager.playSound("SSG08Shoot");
+            }
+            else
+            {
+                switch (primaryWeaponCategory)
+                {
+                    case "Shotgun":
+                        audioManager.playSound("DefaultShotgunShoot");
+                        break;
+                    case "SMG":
+                        audioManager.playSound("DefaultSMGShoot");
+                        break;
+                    case "AssaultRifle":
+                        audioManager.playSound("DefaultARShoot");
+                        break;
+                    case "SniperRifle":
+                        audioManager.playSound("SCAR20Shoot");
+                        break;
+                    case "MachineGun":
+                        audioManager.playSound("DefaultMGShoot");
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -208,6 +322,7 @@ public class Weapon : MonoBehaviour
                 && timeSinceAttack >= weaponInfo.getWeaponAttackCooldown("Knife"))
             {
                 knifeAnimator.Play("KnifeAttack", 0, 0f);
+                playShootWeaponSound();
                 timeSinceAttack = 0f;
             }
         }
@@ -274,74 +389,105 @@ public class Weapon : MonoBehaviour
         {
             case "MAG7":
                 MAG7.SetActive(true);
+                primaryWeaponCategory = "Shotgun";
                 break;
             case "Nova":
                 Nova.SetActive(true);
+                primaryWeaponCategory = "Shotgun";
                 break;
             case "Sawed-Off":
                 SawedOff.SetActive(true);
+                primaryWeaponCategory = "Shotgun";
                 break;
             case "XM1014":
                 XM1014.SetActive(true);
+                primaryWeaponCategory = "Shotgun";
                 break;
             case "MAC-10":
                 MAC10.SetActive(true);
+                primaryWeaponCategory = "SMG";
                 break;
             case "MP5-SD":
                 MP5SD.SetActive(true);
+                primaryWeaponCategory = "SMG";
                 break;
             case "MP7":
                 MP7.SetActive(true);
+                primaryWeaponCategory = "SMG";
                 break;
             case "MP9":
                 MP9.SetActive(true);
+                primaryWeaponCategory = "SMG";
                 break;
             case "PP-Bizon":
                 PPBizon.SetActive(true);
+                primaryWeaponCategory = "SMG";
                 break;
             case "P90":
                 P90.SetActive(true);
+                primaryWeaponCategory = "SMG";
                 break;
             case "UMP-45":
                 UMP45.SetActive(true);
+                primaryWeaponCategory = "SMG";
                 break;
             case "AK-47":
                 AK47.SetActive(true);
+                primaryWeaponCategory = "AssaultRifle";
                 break;
             case "AUG":
                 AUG.SetActive(true);
+                primaryWeaponCategory = "AssaultRifle";
                 break;
             case "FAMAS":
                 FAMAS.SetActive(true);
+                primaryWeaponCategory = "AssaultRifle";
                 break;
             case "Galil AR":
                 GalilAR.SetActive(true);
+                primaryWeaponCategory = "AssaultRifle";
                 break;
             case "M4A1-S":
                 M4A1S.SetActive(true);
+                primaryWeaponCategory = "AssaultRifle";
                 break;
             case "M4A4":
                 M4A4.SetActive(true);
+                primaryWeaponCategory = "AssaultRifle";
                 break;
             case "SG 553":
                 SG553.SetActive(true);
+                primaryWeaponCategory = "AssaultRifle";
                 break;
             case "AWP":
                 AWP.SetActive(true);
+                primaryWeaponCategory = "SniperRifle";
                 break;
             case "G3SG1":
                 G3SG1.SetActive(true);
+                primaryWeaponCategory = "SniperRifle";
                 break;
             case "SCAR-20":
                 SCAR20.SetActive(true);
+                primaryWeaponCategory = "SniperRifle";
                 break;
             case "SSG 08":
                 SSG08.SetActive(true);
+                primaryWeaponCategory = "SniperRifle";
+                break;
+            case "M249":
+                M249.SetActive(true);
+                primaryWeaponCategory = "MachineGun";
+                break;
+            case "Negev":
+                Negev.SetActive(true);
+                primaryWeaponCategory = "MachineGun";
                 break;
             default:
                 MAG7.SetActive(true);
                 break;
         }
+        playDrawWeaponSound();
     }
 
     public void updateSecondary(string secondary)
@@ -384,6 +530,7 @@ public class Weapon : MonoBehaviour
                 R8Revolver.SetActive(true);
                 break;
         }
+        playDrawWeaponSound();
     }
 
 }
