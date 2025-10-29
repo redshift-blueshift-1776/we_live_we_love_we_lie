@@ -556,7 +556,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 660
             };
 
-            notes = notes.Concat(randomScatter(times,1)).ToArray();
+            notes = notes.Concat(randomScatter(times,3)).ToArray();
 
             foreach (string n in notes) {
                 string[] parts = n.Split(',');
