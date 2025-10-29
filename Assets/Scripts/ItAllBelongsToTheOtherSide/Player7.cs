@@ -7,6 +7,7 @@ public class Player7 : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private float health = 60f;
 
+    [SerializeField] private GameObject UICanvas;
     [SerializeField] private Slider healthBarSlider;
     [SerializeField] private TMP_Text healthNumberText;
     [SerializeField] private Image healthBarFill;
@@ -17,6 +18,7 @@ public class Player7 : MonoBehaviour
 
     void Start()
     {
+        UICanvas.SetActive(true);
         weaponShopCanvas.SetActive(false);
     }
 

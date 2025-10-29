@@ -9,12 +9,15 @@ public class Weapon : MonoBehaviour
     private float timeSinceAttack = Mathf.Infinity;
 
     [SerializeField] private Player7 player7;
+    [SerializeField] private GameObject playerCamera;
     [SerializeField] private Animator knifeAnimator;
     [SerializeField] private AnimationClip knifeAttackAnimation;
     public WeaponInfo weaponInfo;
 
     [SerializeField] private GameObject primaryWeaponContainer;
     [SerializeField] private GameObject secondaryWeaponContainer;
+
+    [SerializeField] private GameObject bulletHolePrefab;
 
     #region Weapons
     [Header("Knife")]
@@ -93,6 +96,7 @@ public class Weapon : MonoBehaviour
 
         if (!player7.getIsInWeaponShop())
         {
+            handleShoot();
             handleKnifeAttack();
         }
         timeSinceAttack += Time.deltaTime;
@@ -149,6 +153,47 @@ public class Weapon : MonoBehaviour
 
             knife.SetActive(true);
         }
+    }
+
+    private void handleShoot()
+    {
+        if (weaponIndex == 3)
+        {
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(0)) {
+            RaycastHit hitData;
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, 1000f))
+            {
+                GameObject objectHit = hitData.collider.gameObject;
+                Debug.Log(hitData.normal);
+                GameObject newBulletHole = Instantiate(bulletHolePrefab);
+                newBulletHole.transform.position = hitData.point;
+                newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
+                newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                newBulletHole.transform.SetParent(objectHit.transform);
+                StartCoroutine(fadeBulletHole(newBulletHole));
+            }
+        }
+    }
+
+    private const float bulletDecayTime = 5f;
+    private IEnumerator fadeBulletHole(GameObject bulletHole)
+    {
+        float t = 0;
+        Color color = bulletHole.GetComponent<MeshRenderer>().material.color;
+        while (t < bulletDecayTime)
+        {
+            float normalizedT = t / bulletDecayTime;
+
+            bulletHole.GetComponent<MeshRenderer>().material.color = new Color(color.r, color.g, color.b, 1 - normalizedT);
+
+            t += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(bulletHole);
+        yield return null;
     }
 
     private void handleKnifeAttack()
