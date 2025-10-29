@@ -34,7 +34,7 @@ public class Wall : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
-        Destroy(gameObject);
+        // Destroy(gameObject);
     }
 
     public void Interact() {

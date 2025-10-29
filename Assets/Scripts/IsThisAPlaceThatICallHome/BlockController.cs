@@ -11,6 +11,8 @@ public class BlockController : MonoBehaviour
     private Renderer rend;
     private Rigidbody rb;
 
+    public bool yellowInsteadOfBlue;
+
     // Pair control
     private static int activeUnplacedInLayer = 0;
 
@@ -26,6 +28,8 @@ public class BlockController : MonoBehaviour
     {
         rend = GetComponent<MeshRenderer>();
         rb = GetComponent<Rigidbody>();
+
+        yellowInsteadOfBlue = (UnityEngine.Random.Range(0f, 1f) < 0.5f);
 
         // Ghost mode
         SetTransparency(0.5f);
@@ -79,6 +83,11 @@ public class BlockController : MonoBehaviour
     {
         if (rend != null)
         {
+            if (alpha < 1f) {
+                rend.material = yellowInsteadOfBlue ? manager.yellow : manager.blue;
+            } else {
+                rend.material = yellowInsteadOfBlue ? manager.opaqueYellow : manager.opaqueBlue;
+            }
             Color c = rend.material.color;
             c.a = alpha;
             rend.material.color = c;

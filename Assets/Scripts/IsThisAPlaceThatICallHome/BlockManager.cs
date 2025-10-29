@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 public class BlockManager : MonoBehaviour
 {
+    [SerializeField] public Material opaqueBlue;
+    [SerializeField] public Material opaqueYellow;
+    [SerializeField] public Material blue;
+    [SerializeField] public Material yellow;
+    
     [Header("Block Prefabs (single or pair prefabs)")]
     [SerializeField] private List<GameObject> blockPrefabs;
 
