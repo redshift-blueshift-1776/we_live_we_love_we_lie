@@ -12,6 +12,8 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject maze;
 
+    [SerializeField] public Material cutsceneMaterial;
+
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject mazeCanvas;
@@ -77,6 +79,18 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         Cursor.visible = true;
         PlayerPrefs.SetInt("PreviousLevel", 3);
         gameActive = false;
+        foreach (GameObject g in mg.walls) {
+            if (g.activeSelf) {
+                Renderer rend = g.GetComponent<MeshRenderer>();
+                rend.material = cutsceneMaterial;
+            }
+        }
+        foreach (GameObject g in mg.removedWalls) {
+            if (g.activeSelf) {
+                Renderer rend = g.GetComponent<MeshRenderer>();
+                rend.material = cutsceneMaterial;
+            }
+        }
         StartCoroutine(LoadFailScene());
         // transitionScript.ToFail();
     }

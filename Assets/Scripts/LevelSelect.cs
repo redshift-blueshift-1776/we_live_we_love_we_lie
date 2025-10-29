@@ -75,6 +75,8 @@ public class LevelSelect : MonoBehaviour
         if (currentPage < 7) {
             UpdateButtonsForPage(currentPage + 1);
         }
+        previousButton.SetActive(currentPage > 0);
+        nextButton.SetActive(currentPage < pages.Length - 1);
     }
 
     public void OnNextPage()
