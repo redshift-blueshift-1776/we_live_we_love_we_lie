@@ -13,6 +13,8 @@ public class LevelSelect : MonoBehaviour
     [SerializeField] public RectTransform pageContainer; // parent holding all pages
     [SerializeField] public float slideDuration = 0.5f;
     [SerializeField] public float pageWidth = 1920f;
+    [SerializeField] public GameObject previousButton;
+    [SerializeField] public GameObject nextButton;
 
     [Header("Unlocked Data")]
     [SerializeField] public bool[] unlockedEasy;
@@ -138,6 +140,8 @@ public class LevelSelect : MonoBehaviour
             UpdateButtonsForPage(currentPage + 1);
         }
         isSliding = false;
+        previousButton.SetActive(currentPage > 0);
+        nextButton.SetActive(currentPage < pages.Length - 1);
     }
 
     void UpdateButtonsForPage(int pageIndex)
