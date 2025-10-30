@@ -416,16 +416,6 @@ public class WeaponInfo : MonoBehaviour
         {"Negev", 5},
     };
 
-    private Dictionary<string, float> weaponAttackCooldown = new Dictionary<string, float>()
-    {
-        {"Knife", 0.5f},
-        {"Pistol", 0.25f},
-        {"AssaultRifle", 0.2f},
-        {"Sniper", 3f},
-        {"SMG", 0.1f},
-        {"MG", 0.1f}
-    };
-
     public Dictionary<string, float> getWeaponStats(string weaponName, bool scoped)
     {
         Dictionary<string, float> stats = new Dictionary<string, float>();
@@ -452,16 +442,6 @@ public class WeaponInfo : MonoBehaviour
     void Update()
     {
         
-    }
-
-    public float getWeaponDamage(string name)
-    {
-        return weaponAttackDamage.GetValueOrDefault(name, 0f);
-    }
-
-    public float getWeaponAttackCooldown(string name)
-    {
-        return weaponAttackCooldown.GetValueOrDefault(name, Mathf.Infinity);
     }
 
     public float convertRPMToPeriod(float rpm)
