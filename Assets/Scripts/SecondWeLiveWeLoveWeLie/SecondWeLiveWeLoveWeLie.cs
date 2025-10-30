@@ -16,6 +16,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     [SerializeField] public bool hard;
 
+    [SerializeField] public GameObject maze;
+
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject gameCanvas;
@@ -324,8 +326,104 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         return ret;
     }
 
-    public void solveMaze(int[] times, Vector3 mazeLocation, List<(int, int)> mstEdges) {
-        
+    public void solveMaze(int[] times, GameObject maze) {
+        string[] newNotes = new string[9];
+        Maze_Generator_Level_8 mg = maze.GetComponent<Maze_Generator_Level_8>();
+        List<(int from, int to)> mstEdges = mg.mstEdges;
+        int gridSize = 5;
+        int totalCells = gridSize * gridSize;
+        int start = 0;
+        int goal = totalCells - 1;
+        Dictionary<int, List<int>> graph = new Dictionary<int, List<int>>();
+        for (int i = 0; i < totalCells; i++) graph[i] = new List<int>();
+
+        foreach (var edge in mstEdges)
+        {
+            graph[edge.from].Add(edge.to);
+            graph[edge.to].Add(edge.from);
+        }
+        // BFS to solve from 0 to 24, since it's 5x5.
+        Queue<int> queue = new Queue<int>();
+        Dictionary<int, int> parent = new Dictionary<int, int>();
+        HashSet<int> visited = new HashSet<int>();
+
+        queue.Enqueue(start);
+        visited.Add(start);
+        parent[start] = -1;
+
+        bool found = false;
+        while (queue.Count > 0 && !found)
+        {
+            int current = queue.Dequeue();
+            foreach (int neighbor in graph[current])
+            {
+                if (!visited.Contains(neighbor))
+                {
+                    visited.Add(neighbor);
+                    parent[neighbor] = current;
+                    queue.Enqueue(neighbor);
+                    if (neighbor == goal)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        List<int> path = new List<int>();
+        if (found)
+        {
+            int current = goal;
+            while (current != -1)
+            {
+                path.Add(current);
+                current = parent[current];
+            }
+            path.Reverse();
+        }
+        else
+        {
+            Debug.LogWarning("No path found in maze!");
+            return;
+        }
+
+        // Keep the first 9 squares.
+        int stepsToKeep = Mathf.Min(9, path.Count);
+        List<int> limitedPath = path.GetRange(0, stepsToKeep);
+
+        // Each grid square is 50 x 50, 0 in the top left, 24 in the bottom right.
+        List<(float x, float y)> coords = new List<(float, float)>();
+        foreach (int idx in limitedPath)
+        {
+            int row = idx / gridSize;
+            int col = idx % gridSize;
+
+            // Convert to offsets
+            float x_pos = col * 50f - 100f;
+            float y_pos = -row * 50f + 100f;
+            coords.Add((x_pos, y_pos));
+        }
+        Debug.Log("making maze notes");
+
+        // Instantiate notes corresponding to path steps
+        for (int i = 0; i < coords.Count && i < times.Length; i++)
+        {
+            Debug.Log("Making note " + i);
+            float duration = times[i];
+            float x_pos = coords[i].x;
+            float y_pos = coords[i].y;
+
+            GameObject newNote = Instantiate(note);
+            newNote.transform.position = new Vector3(x_pos + maze.transform.position.x, y_pos+ maze.transform.position.y, maze.transform.position.z);
+            newNote.transform.localScale = new Vector3(25f, 25f, 1f);
+
+            Note newNoteScript = newNote.GetComponent<Note>();
+            newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
+            newNoteScript.duration = 16f * (float)secondsPerBeat;
+            newNoteScript.delay = Mathf.Abs(duration * (float)secondsPerBeat) - 8f * (float)secondsPerBeat;
+            newNoteScript.realNote = (duration > 0);
+        }
         return;
     }
 
@@ -543,20 +641,19 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             notes = notes.Concat(SpectrePattern(544, 0f, 0f, 0f)).ToArray();
 
             int[] times = {
-                576,
-                -584,
-                596,
-                -604,
-                612,
-                -620,
-                628,
-                -636,
-                644,
-                -652,
-                660
+                576 + 8,
+                582 + 8,
+                584 + 8,
+                588 + 8,
+                590 + 8,
+                596 + 8,
+                598 + 8,
+                600 + 8,
+                604 + 8,
             };
 
-            notes = notes.Concat(randomScatter(times,3)).ToArray();
+            // notes = notes.Concat(randomScatter(times,3)).ToArray();
+            solveMaze(times, maze);
 
             foreach (string n in notes) {
                 string[] parts = n.Split(',');
@@ -567,13 +664,13 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     float.TryParse(parts[2], out float y_pos);
                     // float.TryParse(parts[3], out float z_pos);
                     GameObject newNote = Instantiate(note);
-                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(2f * x_pos, 2f * y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
+                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(3f * x_pos, 3f * y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
                     newNote.transform.localScale = new Vector3(3f, 3f, 1f);
                     Note newNoteScript = newNote.GetComponent<Note>();
                     newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
                     newNoteScript.duration = 16f * (float) secondsPerBeat;
-                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
-                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
+                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
+                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
                     newNoteScript.realNote = (duration > 0);
                 }
             }
