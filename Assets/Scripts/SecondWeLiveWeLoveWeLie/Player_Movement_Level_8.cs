@@ -10,7 +10,7 @@ public class Player_Movement_Level_8 : MonoBehaviour
 {
     [SerializeField] public GameObject gameManager;
     public SecondWeLiveWeLoveWeLie gm;
-    private CharacterController controller;
+    // private CharacterController controller;
 
     private Vector3 playerVelocity = new(0,0,0);
     private bool groundedPlayer;
@@ -39,15 +39,17 @@ public class Player_Movement_Level_8 : MonoBehaviour
     [SerializeField] public GameObject laser;
     [SerializeField] public GameObject fakeLaser;
     [SerializeField] public GameObject mainCamera;
+    [SerializeField] public GameObject gunAndArms;
+    [SerializeField] public GameObject laserAnchor;
 
 
     private void Start()
     {
         gm = gameManager.GetComponent<SecondWeLiveWeLoveWeLie>();
         jumpVelocity = Mathf.Sqrt(-2 * gravityValue * jumpHeight);
-        controller = gameObject.GetComponent<CharacterController>();
-        // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
-        controller.skinWidth = 0.1f * controller.radius;
+        // controller = gameObject.GetComponent<CharacterController>();
+        // // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
+        // controller.skinWidth = 0.1f * controller.radius;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
         // crosshair.SetActive(true);
         // bigCrosshair.SetActive(false);
@@ -83,15 +85,20 @@ public class Player_Movement_Level_8 : MonoBehaviour
 
     void interactRaycast() {
         if (Input.GetKey(mainKey)) {
+            // Raycast and see if we hit a note block
+            // If so, change the size of the laser to be enough to hit the note block, but not
+            // too large so that it hits another one.
             laser.SetActive(true);
             fakeLaser.SetActive(false);
             laser.transform.rotation = mainCamera.transform.rotation;
-            laser.transform.position = mainCamera.transform.position + new Vector3(0, -0.5f, 0);
+            gunAndArms.transform.rotation = mainCamera.transform.rotation;
+            laser.transform.position = laserAnchor.transform.position;
         } else {
             laser.SetActive(false);
             fakeLaser.SetActive(true);
             fakeLaser.transform.rotation = mainCamera.transform.rotation;
-            fakeLaser.transform.position = mainCamera.transform.position + new Vector3(0, -0.5f, 0);
+            gunAndArms.transform.rotation = mainCamera.transform.rotation;
+            fakeLaser.transform.position = laserAnchor.transform.position;
         }
     }
 
