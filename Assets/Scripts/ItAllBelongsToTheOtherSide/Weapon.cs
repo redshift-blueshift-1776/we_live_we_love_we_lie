@@ -90,6 +90,7 @@ public class Weapon : MonoBehaviour
     void Start()
     {
         playDrawWeaponSound();
+        knifeStats = weaponInfo.getWeaponStats("Knife", false);
     }
 
     // Update is called once per frame
@@ -310,6 +311,8 @@ public class Weapon : MonoBehaviour
         yield return null;
     }
 
+
+    private Dictionary<string, float> knifeStats = new Dictionary<string, float>();
     private void handleKnifeAttack()
     {
         if (weaponIndex != 3)
@@ -319,7 +322,7 @@ public class Weapon : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             if (!knifeAnimator.GetCurrentAnimatorStateInfo(0).IsName("KnifeAttack")
-                && timeSinceAttack >= weaponInfo.getWeaponAttackCooldown("Knife"))
+                && timeSinceAttack >= knifeStats.GetValueOrDefault("fireCooldown", 0.4f))
             {
                 knifeAnimator.Play("KnifeAttack", 0, 0f);
                 playShootWeaponSound();

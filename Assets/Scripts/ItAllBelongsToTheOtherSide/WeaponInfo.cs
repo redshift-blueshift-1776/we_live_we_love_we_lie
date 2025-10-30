@@ -313,7 +313,7 @@ public class WeaponInfo : MonoBehaviour
     //1 if true, 0 if false
     private Dictionary<string, float> weaponHoldToShoot = new Dictionary<string, float>()
     {
-        {"Knife", 0},
+        {"Knife", 1},
         //pistols
         {"USP-S", 0},
         {"Glock-18", 0},
@@ -426,6 +426,21 @@ public class WeaponInfo : MonoBehaviour
         {"MG", 0.1f}
     };
 
+    public Dictionary<string, float> getWeaponStats(string weaponName, bool scoped)
+    {
+        Dictionary<string, float> stats = new Dictionary<string, float>();
+        stats.Add("attack", weaponAttackDamage.GetValueOrDefault(weaponName));
+        stats.Add("range", weaponRange.GetValueOrDefault(weaponName));
+        stats.Add("headshotMultiplier", weaponHeadshotMultiplier);
+        stats.Add("fireCooldown", convertRPMToPeriod(weaponFireRate.GetValueOrDefault(weaponName)));
+        stats.Add("magazineSize", weaponMagazineSize.GetValueOrDefault(weaponName));
+        stats.Add("totalAmmo", weaponTotalAmmo.GetValueOrDefault(weaponName));
+        stats.Add("mobility" + (scoped ? " Scoped" : ""), weaponMobility.GetValueOrDefault(weaponName));
+        stats.Add("holdToShoot", weaponHoldToShoot.GetValueOrDefault(weaponName));
+        stats.Add("baseInaccuracy" + (scoped ? " Scoped" : ""), weaponBaseInaccuracy.GetValueOrDefault(weaponName));
+
+        return stats;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
