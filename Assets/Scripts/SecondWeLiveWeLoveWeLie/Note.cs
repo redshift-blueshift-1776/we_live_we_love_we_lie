@@ -12,11 +12,19 @@ public class Note : MonoBehaviour
     [SerializeField] public GameObject[] circles;
     [SerializeField] public GameObject[] xs;
 
+    [SerializeField] public GameObject hitSound;
+    [SerializeField] public GameObject wrongSound;
+
+    public bool noteHit;
+
     public float elapsed;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         elapsed = 0;
+        noteHit = false;
+        hitSound.SetActive(false);
+        wrongSound.SetActive(false);
     }
 
     // Update is called once per frame
@@ -26,8 +34,8 @@ public class Note : MonoBehaviour
             return;
         }
         if (elapsed > duration + delay) {
-            if (realNote) {
-                gm.addScore(-10);
+            if (realNote && !noteHit) {
+                gm.addScore(-5);
             }
             Destroy(gameObject);
         }
@@ -37,15 +45,15 @@ public class Note : MonoBehaviour
                 x.SetActive(false);
             }
             foreach (GameObject x in circles) {
-                x.SetActive(elapsed > delay);
+                x.SetActive((elapsed > delay) && !noteHit);
             }
             foreach (GameObject x in indicators) {
-                x.SetActive(elapsed > delay);
+                x.SetActive((elapsed > delay) && !noteHit);
                 x.transform.localScale = new Vector3(1.0f - (elapsed - delay) / duration, 0.54f, 1.0f - (elapsed - delay) / duration);
             }
         } else {
             foreach (GameObject x in xs) {
-                x.SetActive(true);
+                x.SetActive(!noteHit);
             }
             foreach (GameObject x in circles) {
                 x.SetActive(false);
@@ -69,16 +77,19 @@ public class Note : MonoBehaviour
         if (elapsed < delay) {
             return;
         }
+        noteHit = true;
         if (realNote) {
+            hitSound.SetActive(true);
             int scoreToAdd = (int) (10 - 20 * Mathf.Abs(elapsed - delay - duration / 2f));
-            scoreToAdd = (scoreToAdd > 0) ? scoreToAdd : 0;
+            scoreToAdd = (scoreToAdd > 1) ? scoreToAdd : 1;
             scoreToAdd = (scoreToAdd > 8) ? 10 : scoreToAdd;
             // Debug.Log(scoreToAdd);
             gm.addScore(scoreToAdd);
-            Destroy(gameObject);
+            // Destroy(gameObject);
         } else {
+            wrongSound.SetActive(true);
             gm.addScore(-10);
-            Destroy(gameObject);
+            // Destroy(gameObject);
         }
     }
 }

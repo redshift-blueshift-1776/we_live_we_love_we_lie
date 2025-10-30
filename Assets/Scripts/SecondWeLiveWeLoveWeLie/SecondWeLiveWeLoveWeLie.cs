@@ -135,7 +135,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             time_start += 2;
             ret[1] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            x_start += 3;
             time_start += 2;
             y_start += 0.2f;
             ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
@@ -152,7 +152,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             y_start += 0.2f;
             ret[6] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            x_start -= 1;
             time_start += 2;
             y_start += 1;
             ret[7] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
@@ -638,18 +638,29 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
             notes = notes.Concat(SpectrePattern(512, 0f, 0f, 0f)).ToArray();
 
-            notes = notes.Concat(SpectrePattern(544, 0f, 0f, 0f)).ToArray();
+            // notes = notes.Concat(SpectrePattern(544, 0f, 0f, 0f)).ToArray();
 
+            // int[] times = {
+            //     576 + 8,
+            //     582 + 8,
+            //     584 + 8,
+            //     588 + 8,
+            //     590 + 8,
+            //     596 + 8,
+            //     598 + 8,
+            //     600 + 8,
+            //     604 + 8,
+            // };
             int[] times = {
-                576 + 8,
-                582 + 8,
-                584 + 8,
-                588 + 8,
-                590 + 8,
-                596 + 8,
-                598 + 8,
-                600 + 8,
-                604 + 8,
+                576,
+                582,
+                584,
+                588,
+                590,
+                596,
+                598,
+                600,
+                604,
             };
 
             // notes = notes.Concat(randomScatter(times,3)).ToArray();
@@ -669,8 +680,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     Note newNoteScript = newNote.GetComponent<Note>();
                     newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
                     newNoteScript.duration = 16f * (float) secondsPerBeat;
-                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
-                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
+                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
+                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
                     newNoteScript.realNote = (duration > 0);
                 }
             }
