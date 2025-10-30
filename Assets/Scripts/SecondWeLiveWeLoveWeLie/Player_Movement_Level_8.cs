@@ -30,7 +30,7 @@ public class Player_Movement_Level_8 : MonoBehaviour
 
 
     private float maxSpeed;
-    private readonly KeyCode failKey = KeyCode.M;
+    // private readonly KeyCode failKey = KeyCode.M;
     private readonly KeyCode mainKey = KeyCode.Space;
 
     // [SerializeField] private GameObject crosshair;
