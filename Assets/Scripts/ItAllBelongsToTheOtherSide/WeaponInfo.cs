@@ -55,6 +55,57 @@ public class WeaponInfo : MonoBehaviour
         {"Negev", 35},
     };
 
+    //range in unity units
+    private Dictionary<string, float> weaponRange = new Dictionary<string, float>()
+    {
+        {"Knife", 1},
+
+        //pistols
+        {"USP-S", 25},
+        {"Glock-18", 25},
+        {"P250", 25},
+        {"P2000", 25},
+        {"Dual Berettas", 15},
+        {"Tec-9", 25},
+        {"CZ75-Auto", 10},
+        {"Desert Eagle", 50},
+        {"R8 Revolver", 75},
+
+        //shotguns
+        {"MAG-7", 5},
+        {"Nova", 10},
+        {"Sawed-Off", 6},
+        {"XM-1014", 8},
+
+        //SMGs
+        {"MAC-10", 10},
+        {"MP5-SD", 15},
+        {"MP7", 15},
+        {"MP9", 15},
+        {"PP-Bizon", 15},
+        {"P90", 12},
+        {"UMP-45", 15},
+
+        //assault rifles
+        {"AK47", 50},
+        {"AUG", 50},
+        {"FAMAS", 50},
+        {"Galil AR", 50},
+        {"M4A1S", 50},
+        {"M4A4", 50},
+        {"SG 553", 50},
+
+        //snipers
+        {"AWP", 200},
+        {"G3SG1", 30},
+        {"SCAR-20", 30},
+        {"SSG 08", 300},
+
+        //machine guns
+        {"M249", 120},
+        {"Negev", 150},
+    };
+
     private const float weaponHeadshotMultiplier = 4.0f;
 
     //fire rate is in shots per minute; convert to period (s)
@@ -154,6 +205,215 @@ public class WeaponInfo : MonoBehaviour
         //machine guns
         {"M249", 100},
         {"Negev", 150},
+    };
+
+    private Dictionary<string, float> weaponTotalAmmo = new Dictionary<string, float>()
+    {
+        //pistols
+        {"USP-S", 24},
+        {"Glock-18", 120},
+        {"P250", 26},
+        {"P2000", 52},
+        {"Dual Berettas", 120},
+        {"Tec-9", 90},
+        {"CZ75-Auto", 12},
+        {"Desert Eagle", 35},
+        {"R8 Revolver", 8},
+
+        //shotguns
+        {"MAG-7", 32},
+        {"Nova", 32},
+        {"Sawed-Off", 32},
+        {"XM-1014", 32},
+
+        //SMGs
+        {"MAC-10", 100},
+        {"MP5-SD", 120},
+        {"MP7", 120},
+        {"MP9", 120},
+        {"PP-Bizon", 120},
+        {"P90", 100},
+        {"UMP-45", 100},
+
+        //assault rifles
+        {"AK47", 90},
+        {"AUG", 90},
+        {"FAMAS", 90},
+        {"Galil AR", 90},
+        {"M4A1S", 80},
+        {"M4A4", 90},
+        {"SG 553", 90},
+
+        //snipers
+        {"AWP", 30},
+        {"G3SG1", 90},
+        {"SCAR-20", 90},
+        {"SSG 08", 90},
+
+        //machine guns
+        {"M249", 200},
+        {"Negev", 300},
+    };
+
+    private Dictionary<string, float> weaponMobility = new Dictionary<string, float>()
+    {
+        {"Knife", 250},
+        //pistols
+        {"USP-S", 240},
+        {"Glock-18", 240},
+        {"P250", 240},
+        {"P2000", 240},
+        {"Dual Berettas", 240},
+        {"Tec-9", 240},
+        {"CZ75-Auto", 240},
+        {"Desert Eagle", 230},
+        {"R8 Revolver", 180},
+
+        //shotguns
+        {"MAG-7", 225},
+        {"Nova", 220},
+        {"Sawed-Off", 210},
+        {"XM-1014", 215},
+
+        //SMGs
+        {"MAC-10", 240},
+        {"MP5-SD", 235},
+        {"MP7", 220},
+        {"MP9", 240},
+        {"PP-Bizon", 240},
+        {"P90", 230},
+        {"UMP-45", 230},
+
+        //assault rifles
+        {"AK47", 215},
+        {"AUG", 220},
+        {"AUG Scoped", 150},
+        {"FAMAS", 220},
+        {"Galil AR", 215},
+        {"M4A1S", 225},
+        {"M4A4", 225},
+        {"SG 553", 210},
+        {"SG 553 Scoped", 150},
+
+        //snipers
+        {"AWP", 200},
+        {"AWP Scoped", 100},
+        {"G3SG1", 215},
+        {"G3SG1 Scoped", 120},
+        {"SCAR-20", 215},
+        {"SCAR-20 Scoped", 120},
+        {"SSG 08", 230},
+        {"SSG 08 Scoped", 230},
+
+        //machine guns
+        {"M249", 195},
+        {"Negev", 150},
+    };
+
+    //1 if true, 0 if false
+    private Dictionary<string, float> weaponHoldToShoot = new Dictionary<string, float>()
+    {
+        {"Knife", 0},
+        //pistols
+        {"USP-S", 0},
+        {"Glock-18", 0},
+        {"P250", 0},
+        {"P2000", 0},
+        {"Dual Berettas", 0},
+        {"Tec-9", 0},
+        {"CZ75-Auto", 1},
+        {"Desert Eagle", 0},
+        {"R8 Revolver", 1},
+
+        //shotguns
+        {"MAG-7", 0},
+        {"Nova", 0},
+        {"Sawed-Off", 0},
+        {"XM-1014", 1},
+
+        //SMGs
+        {"MAC-10", 1},
+        {"MP5-SD", 1},
+        {"MP7", 1},
+        {"MP9", 1},
+        {"PP-Bizon", 1},
+        {"P90", 1},
+        {"UMP-45", 1},
+
+        //assault rifles
+        {"AK47", 1},
+        {"AUG", 1},
+        {"FAMAS", 1},
+        {"Galil AR", 1},
+        {"M4A1S", 1},
+        {"M4A4", 1},
+        {"SG 553", 1},
+
+        //snipers
+        {"AWP", 0},
+        {"G3SG1", 1},
+        {"SCAR-20", 1},
+        {"SSG 08", 0},
+
+        //machine guns
+        {"M249", 1},
+        {"Negev", 1},
+    };
+
+    //max angle weapon shots deviate in
+    private Dictionary<string, float> weaponBaseInaccuracy = new Dictionary<string, float>()
+    {
+        {"Knife", 0},
+        //pistols
+        {"USP-S", 3},
+        {"Glock-18", 3},
+        {"P250", 3},
+        {"P2000", 3},
+        {"Dual Berettas", 3},
+        {"Tec-9", 3},
+        {"CZ75-Auto", 15},
+        {"Desert Eagle", 2},
+        {"R8 Revolver", 1},
+
+        //shotguns
+        {"MAG-7", 20},
+        {"Nova", 20},
+        {"Sawed-Off", 20},
+        {"XM-1014", 20},
+
+        //SMGs
+        {"MAC-10", 10},
+        {"MP5-SD", 10},
+        {"MP7", 10},
+        {"MP9", 10},
+        {"PP-Bizon", 10},
+        {"P90", 10},
+        {"UMP-45", 10},
+
+        //assault rifles
+        {"AK47", 5},
+        {"AUG", 5},
+        {"AUG Scoped", 2},
+        {"FAMAS", 5},
+        {"Galil AR", 5},
+        {"M4A1S", 5},
+        {"M4A4", 5},
+        {"SG 553", 5},
+        {"SG 553 Scoped", 1},
+
+        //snipers
+        {"AWP", 60},
+        {"AWP Scoped", 1},
+        {"G3SG1", 60},
+        {"G3SG1 Scoped", 1},
+        {"SCAR-20", 60},
+        {"SCAR-20 Scoped", 1},
+        {"SSG 08", 60},
+        {"SSG 08 Scoped", 0},
+
+        //machine guns
+        {"M249", 5},
+        {"Negev", 5},
     };
 
     private Dictionary<string, float> weaponAttackCooldown = new Dictionary<string, float>()
