@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class WeaponInfo : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class WeaponInfo : MonoBehaviour
         {"MAG-7", 30},
         {"Nova", 26},
         {"Sawed-Off", 32},
-        {"XM-1014", 20},
+        {"XM1014", 20},
 
         //SMGs
         {"MAC-10", 29},
@@ -75,7 +76,7 @@ public class WeaponInfo : MonoBehaviour
         {"MAG-7", 5},
         {"Nova", 10},
         {"Sawed-Off", 6},
-        {"XM-1014", 8},
+        {"XM1014", 8},
 
         //SMGs
         {"MAC-10", 10},
@@ -128,7 +129,7 @@ public class WeaponInfo : MonoBehaviour
         {"MAG-7", 70.59f},
         {"Nova", 68.18f},
         {"Sawed-Off", 70.59f},
-        {"XM-1014", 171.43f},
+        {"XM1014", 171.43f},
 
         //SMGs
         {"MAC-10", 800},
@@ -176,7 +177,7 @@ public class WeaponInfo : MonoBehaviour
         {"MAG-7", 5},
         {"Nova", 8},
         {"Sawed-Off", 7},
-        {"XM-1014", 7},
+        {"XM1014", 7},
 
         //SMGs
         {"MAC-10", 30},
@@ -224,7 +225,7 @@ public class WeaponInfo : MonoBehaviour
         {"MAG-7", 32},
         {"Nova", 32},
         {"Sawed-Off", 32},
-        {"XM-1014", 32},
+        {"XM1014", 32},
 
         //SMGs
         {"MAC-10", 100},
@@ -273,7 +274,7 @@ public class WeaponInfo : MonoBehaviour
         {"MAG-7", 225},
         {"Nova", 220},
         {"Sawed-Off", 210},
-        {"XM-1014", 215},
+        {"XM1014", 215},
 
         //SMGs
         {"MAC-10", 240},
@@ -313,7 +314,7 @@ public class WeaponInfo : MonoBehaviour
     //1 if true, 0 if false
     private Dictionary<string, float> weaponHoldToShoot = new Dictionary<string, float>()
     {
-        {"Knife", 0},
+        {"Knife", 1},
         //pistols
         {"USP-S", 0},
         {"Glock-18", 0},
@@ -329,7 +330,7 @@ public class WeaponInfo : MonoBehaviour
         {"MAG-7", 0},
         {"Nova", 0},
         {"Sawed-Off", 0},
-        {"XM-1014", 1},
+        {"XM1014", 1},
 
         //SMGs
         {"MAC-10", 1},
@@ -379,7 +380,7 @@ public class WeaponInfo : MonoBehaviour
         {"MAG-7", 20},
         {"Nova", 20},
         {"Sawed-Off", 20},
-        {"XM-1014", 20},
+        {"XM1014", 20},
 
         //SMGs
         {"MAC-10", 10},
@@ -416,16 +417,40 @@ public class WeaponInfo : MonoBehaviour
         {"Negev", 5},
     };
 
-    private Dictionary<string, float> weaponAttackCooldown = new Dictionary<string, float>()
-    {
-        {"Knife", 0.5f},
-        {"Pistol", 0.25f},
-        {"AssaultRifle", 0.2f},
-        {"Sniper", 3f},
-        {"SMG", 0.1f},
-        {"MG", 0.1f}
+    private HashSet<string> scopedWeapons = new HashSet<string> {
+        "AUG",
+        "SG 553",
+        "AWP",
+        "G3SG1",
+        "SCAR-20",
+        "SSG 08"
     };
 
+    public Dictionary<string, float> getWeaponStats(string weaponName, bool scoped)
+    {
+        if (!isWeaponScoped(weaponName))
+        {
+            scoped = false;
+        }
+
+        Dictionary<string, float> stats = new Dictionary<string, float>();
+        stats.Add("attack", weaponAttackDamage.GetValueOrDefault(weaponName));
+        stats.Add("range", weaponRange.GetValueOrDefault(weaponName));
+        stats.Add("headshotMultiplier", weaponHeadshotMultiplier);
+        stats.Add("fireCooldown", convertRPMToPeriod(weaponFireRate.GetValueOrDefault(weaponName)));
+        stats.Add("magazineSize", weaponMagazineSize.GetValueOrDefault(weaponName));
+        stats.Add("totalAmmo", weaponTotalAmmo.GetValueOrDefault(weaponName));
+        stats.Add("mobility" + (scoped ? " Scoped" : ""), weaponMobility.GetValueOrDefault(weaponName));
+        stats.Add("holdToShoot", weaponHoldToShoot.GetValueOrDefault(weaponName));
+        stats.Add("baseInaccuracy" + (scoped ? " Scoped" : ""), weaponBaseInaccuracy.GetValueOrDefault(weaponName));
+
+        return stats;
+    }
+
+    public bool isWeaponScoped(string weaponName)
+    {
+        return scopedWeapons.Contains(weaponName);
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -437,16 +462,6 @@ public class WeaponInfo : MonoBehaviour
     void Update()
     {
         
-    }
-
-    public float getWeaponDamage(string name)
-    {
-        return weaponAttackDamage.GetValueOrDefault(name, 0f);
-    }
-
-    public float getWeaponAttackCooldown(string name)
-    {
-        return weaponAttackCooldown.GetValueOrDefault(name, Mathf.Infinity);
     }
 
     public float convertRPMToPeriod(float rpm)
