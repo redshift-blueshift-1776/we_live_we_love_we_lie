@@ -91,6 +91,7 @@ public class Weapon : MonoBehaviour
     {
         playDrawWeaponSound();
         knifeStats = weaponInfo.getWeaponStats("Knife", false);
+        StartCoroutine(handleShoot());
     }
 
     // Update is called once per frame
@@ -100,7 +101,6 @@ public class Weapon : MonoBehaviour
 
         if (!player7.getIsInWeaponShop())
         {
-            handleShoot();
             handleKnifeAttack();
         }
         timeSinceAttack += Time.deltaTime;
@@ -164,27 +164,53 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    private void handleShoot()
+    private Dictionary<string, float> primaryWeaponStats = new Dictionary<string, float>();
+    private Dictionary<string, float> secondaryWeaponStats = new Dictionary<string, float>();
+    private IEnumerator handleShoot()
     {
-        if (weaponIndex == 3)
+        float t = 0;
+        float fireCooldown = Mathf.Infinity;
+        bool canHoldDown = false;
+        while (true)
         {
-            return;
-        }
-
-        if (Input.GetMouseButtonDown(0)) {
-            RaycastHit hitData;
-            playShootWeaponSound();
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, 1000f))
+            if (!player7.getIsInWeaponShop() && weaponIndex != 3)
             {
-                GameObject objectHit = hitData.collider.gameObject;
-                Debug.Log(hitData.normal);
-                GameObject newBulletHole = Instantiate(bulletHolePrefab);
-                newBulletHole.transform.position = hitData.point;
-                newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
-                newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
-                newBulletHole.transform.SetParent(objectHit.transform);
-                StartCoroutine(fadeBulletHole(newBulletHole));
+                if (weaponIndex == 1)
+                {
+                    fireCooldown = primaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
+                    canHoldDown = primaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
+                }
+                else if (weaponIndex == 2)
+                {
+                    fireCooldown = secondaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
+                    canHoldDown = secondaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
+                }
+                if (t >= fireCooldown && 
+                    (Input.GetMouseButtonDown(0) || (canHoldDown && Input.GetMouseButton(0)))
+                   )
+                {
+                    shoot();
+                    t = 0;
+                }
             }
+            t += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private void shoot()
+    {
+        RaycastHit hitData;
+        playShootWeaponSound();
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, 1000f))
+        {
+            GameObject objectHit = hitData.collider.gameObject;
+            GameObject newBulletHole = Instantiate(bulletHolePrefab);
+            newBulletHole.transform.position = hitData.point;
+            newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
+            newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
+            newBulletHole.transform.SetParent(objectHit.transform);
+            StartCoroutine(fadeBulletHole(newBulletHole));
         }
     }
 
@@ -331,7 +357,7 @@ public class Weapon : MonoBehaviour
         }
         else if (Input.GetMouseButtonDown(1))
         {
-
+            //TO-DO: add new knife animation attack
         }
     }
 
@@ -386,6 +412,7 @@ public class Weapon : MonoBehaviour
         primaryWeapon = primary;
         weaponIndex = 1;
         primaryWeaponText.text = primary;
+        primaryWeaponStats = weaponInfo.getWeaponStats(primary, false);
 
         disableAllPrimary();
         switch (primaryWeapon)
@@ -498,6 +525,7 @@ public class Weapon : MonoBehaviour
         secondaryWeapon = secondary;
         weaponIndex = 2;
         secondaryWeaponText.text = secondary;
+        secondaryWeaponStats = weaponInfo.getWeaponStats(secondary, false);
 
         disableAllSecondary();
         switch (secondaryWeapon)
