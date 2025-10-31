@@ -29,35 +29,48 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] public GameObject loadingAudio;
     [SerializeField] public GameObject gameAudio;
 
-    public bool gameActive;
+    // public bool gameActive;
 
     public float timer;
 
-    public List<GameObject> notes;
+    // public List<GameObject> notes;
 
     public int score;
 
-    private double secondsPerBeat;
+    public BeatManager beatManager;
+    public bool gameActive = false;
 
-    private double nextChangeTime;
+    public List<string> notes; // each: "beat,x,y"
+
+    private double dspStartTime;
+    private float secondsPerBeat;
+    private int nextNoteIndex = 0;
+
+    // How early (in seconds) to spawn a note before it should appear
+    private const double SPAWN_LEAD_TIME = 2.0;
 
     public bool madeNotes;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         madeNotes = false;
-        secondsPerBeat = 60.0 / 145.0 / 4.0;
+        secondsPerBeat = 60.0f / 145.0f / 4.0f;
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
         loadingAudio.SetActive(true);
         gameAudio.SetActive(false);
         gameActive = false;
         timer = 0f;
+
+        beatManager = BeatManager.Instance;
+        dspStartTime = beatManager.StartDspTime;
+        // secondsPerBeat = (float)beatManager.secondsPerBeat;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // secondsPerBeat = (float)beatManager.secondsPerBeat;
         if (gameActive) {
             if (!madeNotes) {
                 GenerateNotes();
