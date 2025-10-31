@@ -19,6 +19,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] public GameObject maze;
 
     [SerializeField] public GameObject[] briefcases;
+    [SerializeField] public GameObject[] briefcasePivots;
 
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
@@ -50,10 +51,12 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     private const double SPAWN_LEAD_TIME = 2.0;
 
     public bool madeNotes;
+    public bool didBriefcases;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         madeNotes = false;
+        didBriefcases = false;
         secondsPerBeat = 60.0f / 145.0f / 4.0f;
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
@@ -75,6 +78,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
             double currentDspTime = AudioSettings.dspTime;
             double songTime = currentDspTime - beatManager.StartDspTime;
+            timer += Time.deltaTime;
 
             // The DSP-based note spawning code goes here
             while (nextNoteIndex < notes.Count)
@@ -111,6 +115,14 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     nextNoteIndex++;
                 }
             }
+
+            if (timer / (float) secondsPerBeat > 550f && !didBriefcases) {
+                Debug.Log(timer / (float) secondsPerBeat);
+                DoBriefcases(new int[] { 576+64, 576+64+8, 576+64+16 }, briefcases, briefcasePivots);
+                // DoBriefcases(new int[] { 64, 64+8, 64+16 }, briefcases, briefcasePivots);
+                didBriefcases = true;
+            }
+
 
             // if (songTime >= 169f) {
             //     Fail();
@@ -496,24 +508,73 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         return;
     }
 
-    public void doBriefcases(int[] times, GameObject[] briefcases, GameObject[] briefcasePivots) {
-        for (int i = 0; i < 3; i++) {
+    public void DoBriefcases(int[] times, GameObject[] briefcases, GameObject[] briefcasePivots)
+    {
+        StartCoroutine(SpawnBriefcaseNotes(times, briefcases, briefcasePivots));
+    }
+
+    private IEnumerator SpawnBriefcaseNotes(int[] times, GameObject[] briefcases, GameObject[] briefcasePivots)
+    {
+        if (briefcases.Length < 3 || briefcasePivots.Length < 3)
+        {
+            Debug.LogWarning("Need exactly 3 briefcases and pivots!");
+            yield break;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            int beatTime = times[i];
+            float spawnTime = beatTime * (float)secondsPerBeat;
+            float waitTime = Mathf.Max(0, spawnTime - (float)timer);
+
+            // Wait until it's time to open the briefcase
+            yield return new WaitForSeconds(waitTime);
+
             GameObject b = briefcases[i];
             GameObject bp = briefcasePivots[i];
-            float duration = times[i];
+
+            bool isReal = UnityEngine.Random.value < 0.5f;
+
+            StartCoroutine(OpenBriefcase(bp, isReal));
+
+            Debug.Log($"[Briefcase {i}] Spawning {(isReal ? "real" : "fake")} note at {timer:F2}s");
 
             GameObject newNote = Instantiate(note);
-            newNote.transform.position = new Vector3(b.transform.position.x, b.transform.position.y, b.transform.position.z);
-            newNote.transform.localScale = new Vector3(25f, 25f, 1f);
+            newNote.transform.position = b.transform.position;
+            newNote.transform.localScale = new Vector3(25f, 5f, 25f);
             newNote.transform.rotation = b.transform.rotation;
+            // Avoid parent scaling/rotation issues — don’t parent to b unless needed
+            // newNote.transform.SetParent(b.transform);
 
             Note newNoteScript = newNote.GetComponent<Note>();
             newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
-            newNoteScript.duration = 16f * (float)secondsPerBeat;
-            newNoteScript.delay = Mathf.Abs(duration * (float)secondsPerBeat) - 8f * (float)secondsPerBeat;
-            newNoteScript.realNote = (UnityEngine.Random.Range(0f,1f) < 0.5f);
+            newNoteScript.duration = 32f * (float)secondsPerBeat;
+
+            // 👇 key fix: set delay relative to current timer
+            newNoteScript.delay = (float)timer + 4f * (float)secondsPerBeat; 
+            newNoteScript.realNote = isReal;
         }
     }
+
+
+    private IEnumerator OpenBriefcase(GameObject pivot, bool isReal)
+    {
+        float openAngle = isReal ? 105f : 90f; // real ones open wider
+        float duration = 0.5f;
+        float elapsed = 0f;
+        Quaternion startRot = pivot.transform.rotation;
+        Quaternion endRot = startRot * Quaternion.Euler(openAngle, 0f, 0f);
+
+        while (elapsed < duration)
+        {
+            pivot.transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        pivot.transform.rotation = endRot;
+    }
+
+
 
     public void GenerateNotes() {
         if (madeNotes) return;
