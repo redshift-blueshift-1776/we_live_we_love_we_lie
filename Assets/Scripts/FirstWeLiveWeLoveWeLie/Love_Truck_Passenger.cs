@@ -28,7 +28,9 @@ public class Love_Truck_Passenger : MonoBehaviour
         Champion3,
         Champion4,
         Donja1,
-        Donja2
+        Donja2,
+        SixSeven1,
+        SixSeven2
     }
 
     public enum Dance {
@@ -40,7 +42,8 @@ public class Love_Truck_Passenger : MonoBehaviour
         AluminumV2,
         Floss,
         Floss24,
-        Donja
+        Donja,
+        SixSeven
     }
 
     // [SerializeField] public GameObject game;
@@ -215,6 +218,7 @@ public class Love_Truck_Passenger : MonoBehaviour
         Quaternion yn30 = Quaternion.Euler(0, -30, 0);
         Quaternion x30y30z45 = Quaternion.Euler(30, 30, 45);
         Quaternion x105 = Quaternion.Euler(105, 0, 0);
+        Quaternion x135 = Quaternion.Euler(135, 0, 0);
 
         switch (pose)
         {
@@ -484,6 +488,32 @@ public class Love_Truck_Passenger : MonoBehaviour
                 mainTarget = yn30;
                 currentPose = Pose.Donja2;
                 break;
+
+            case Pose.SixSeven1:
+                leftLegTarget = defaultRotation;
+                leftLegLowerTarget = defaultRotation;
+                rightLegTarget = defaultRotation;
+                rightLegLowerTarget = defaultRotation;
+                leftArmTarget = defaultRotation;
+                leftArmLowerTarget = x45;
+                rightArmTarget = defaultRotation;
+                rightArmLowerTarget = x135;
+                // mainTarget = defaultRotation;
+                currentPose = Pose.SixSeven1;
+                break;
+
+            case Pose.SixSeven2:
+                leftLegTarget = defaultRotation;
+                leftLegLowerTarget = defaultRotation;
+                rightLegTarget = defaultRotation;
+                rightLegLowerTarget = defaultRotation;
+                leftArmTarget = defaultRotation;
+                leftArmLowerTarget = x135;
+                rightArmTarget = defaultRotation;
+                rightArmLowerTarget = x45;
+                // mainTarget = defaultRotation;
+                currentPose = Pose.SixSeven2;
+                break;
             
             default:
                 leftLegTarget = defaultRotation;
@@ -593,6 +623,12 @@ public class Love_Truck_Passenger : MonoBehaviour
                 currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Donja2));
             } else {
                 currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Donja1));
+            }
+        } else if (dance == Dance.SixSeven) {
+            if (currentPose == Pose.SixSeven1) {
+                currentPoseCoroutine = StartCoroutine(ChangePose(Pose.SixSeven2));
+            } else {
+                currentPoseCoroutine = StartCoroutine(ChangePose(Pose.SixSeven1));
             }
         } else {
             currentPoseCoroutine = StartCoroutine(ChangePose(Pose.Default));

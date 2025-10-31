@@ -33,6 +33,10 @@ public class Note : MonoBehaviour
         if (!gm.gameActive) {
             return;
         }
+        if (noteHit) {
+            Renderer r = gameObject.GetComponent<MeshRenderer>();
+            r.enabled = false;
+        }
         if (elapsed > duration + delay) {
             if (realNote && !noteHit) {
                 gm.addScore(-5);

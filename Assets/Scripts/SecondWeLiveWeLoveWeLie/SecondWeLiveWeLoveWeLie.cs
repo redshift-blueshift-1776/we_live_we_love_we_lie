@@ -18,6 +18,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     [SerializeField] public GameObject maze;
 
+    [SerializeField] public GameObject[] briefcases;
+
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject gameCanvas;
@@ -137,24 +139,24 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             time_start += 2;
             x_start += 3;
             time_start += 2;
-            y_start += 0.2f;
+            y_start += 0.5f;
             ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
-            y_start += 0.2f;
+            y_start += 0.5f;
             ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
-            y_start += 0.2f;
+            y_start += 0.5f;
             ret[4] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
-            y_start += 0.2f;
+            y_start += 0.5f;
             ret[5] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
-            y_start += 0.2f;
+            y_start += 0.5f;
             ret[6] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start -= 1;
             time_start += 2;
-            y_start += 1;
+            y_start -= 1;
             ret[7] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start -= 1;
@@ -404,12 +406,12 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             float y_pos = -row * 50f + 100f;
             coords.Add((x_pos, y_pos));
         }
-        Debug.Log("making maze notes");
+        // Debug.Log("making maze notes");
 
         // Instantiate notes corresponding to path steps
         for (int i = 0; i < coords.Count && i < times.Length; i++)
         {
-            Debug.Log("Making note " + i);
+            // Debug.Log("Making note " + i);
             float duration = times[i];
             float x_pos = coords[i].x;
             float y_pos = coords[i].y;
@@ -425,6 +427,25 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             newNoteScript.realNote = (duration > 0);
         }
         return;
+    }
+
+    public void doBriefcases(int[] times, GameObject[] briefcases, GameObject[] briefcasePivots) {
+        for (int i = 0; i < 3; i++) {
+            GameObject b = briefcases[i];
+            GameObject bp = briefcasePivots[i];
+            float duration = times[i];
+
+            GameObject newNote = Instantiate(note);
+            newNote.transform.position = new Vector3(b.transform.position.x, b.transform.position.y, b.transform.position.z);
+            newNote.transform.localScale = new Vector3(25f, 25f, 1f);
+            newNote.transform.rotation = b.transform.rotation;
+
+            Note newNoteScript = newNote.GetComponent<Note>();
+            newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
+            newNoteScript.duration = 16f * (float)secondsPerBeat;
+            newNoteScript.delay = Mathf.Abs(duration * (float)secondsPerBeat) - 8f * (float)secondsPerBeat;
+            newNoteScript.realNote = (UnityEngine.Random.Range(0f,1f) < 0.5f);
+        }
     }
 
     public void GenerateNotes() {
