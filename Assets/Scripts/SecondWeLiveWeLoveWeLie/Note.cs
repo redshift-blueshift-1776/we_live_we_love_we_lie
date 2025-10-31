@@ -120,6 +120,8 @@ public class Note : MonoBehaviour
             int scoreToAdd = (int)(10 - 20 * diff);
             scoreToAdd = Mathf.Clamp(scoreToAdd, 1, 10);
 
+            scoreToAdd = (scoreToAdd > 8) ? 10 : scoreToAdd;
+
             gm.addScore(scoreToAdd);
         }
         else

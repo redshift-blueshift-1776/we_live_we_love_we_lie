@@ -67,20 +67,74 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         // secondsPerBeat = (float)beatManager.secondsPerBeat;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // secondsPerBeat = (float)beatManager.secondsPerBeat;
+    void Update() {
         if (gameActive) {
             if (!madeNotes) {
                 GenerateNotes();
             }
-            if (timer >= 169f) { 
-                Fail(); // Change when we have the actual scene
+
+            double currentDspTime = AudioSettings.dspTime;
+            double songTime = currentDspTime - beatManager.StartDspTime;
+
+            // The DSP-based note spawning code goes here
+            while (nextNoteIndex < notes.Count)
+            {
+                string n = notes[nextNoteIndex];
+                string[] parts = n.Split(',');
+                if (parts.Length < 3)
+                {
+                    nextNoteIndex++;
+                    continue;
+                }
+
+                if (float.TryParse(parts[0], out float beatTime))
+                {
+                    float.TryParse(parts[1], out float x_pos);
+                    float.TryParse(parts[2], out float y_pos);
+
+                    double noteTime = Mathf.Abs(beatTime) * secondsPerBeat; // when the note should hit
+
+                    // Spawn slightly before its play time
+                    if (noteTime - songTime <= SPAWN_LEAD_TIME)
+                    {
+                        SpawnNote(beatTime, x_pos, y_pos);
+                        nextNoteIndex++;
+                    }
+                    else
+                    {
+                        // Not yet time to spawn this note
+                        break;
+                    }
+                }
+                else
+                {
+                    nextNoteIndex++;
+                }
             }
+
+            // if (songTime >= 169f) {
+            //     Fail();
+            // }
+
             scoreGame.text = "Score: " + score;
-            timer += Time.deltaTime;
         }
+    }
+
+    private void SpawnNote(float beatTime, float x_pos, float y_pos)
+    {
+        GameObject newNote = Instantiate(note);
+        newNote.transform.localPosition = player.transform.localPosition +
+            new Vector3(3f * x_pos, 3f * y_pos, (Mathf.Abs(beatTime) - 64f) * 10f + 205f);
+        newNote.transform.localScale = new Vector3(3f, 3f, 1f);
+
+        Note newNoteScript = newNote.GetComponent<Note>();
+        newNoteScript.gm = this;
+
+        // Convert beat-based timings to seconds
+        newNoteScript.duration = 16f * secondsPerBeat;
+        newNoteScript.delay = Mathf.Abs(beatTime * secondsPerBeat) - 8f * secondsPerBeat;
+
+        newNoteScript.realNote = (beatTime > 0);
     }
 
     public string[] SonicBlasterPattern(int time_start, float x_start, float y_start, float z_start) {
@@ -462,8 +516,10 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     }
 
     public void GenerateNotes() {
+        if (madeNotes) return;
+        madeNotes = true;
         if (hard) {
-            string[] notes = {
+            this.notes = new List<string> {
             "64,2,0",
             "80,1,0",
             "-96,0,-1",
@@ -554,35 +610,47 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             "440,0,2,120",
             };
 
-            notes = notes.Concat(SonicBlasterPattern(448, 0f, 0f, 0f)).ToArray();
+            notes.AddRange(SonicBlasterPattern(448, 0f, 0f, 0f));
+            notes.AddRange(SonicBlasterPattern(480, 0f, 0f, 0f));
+            notes.AddRange(SpectrePattern(512, 0f, 0f, 0f));
+            notes.AddRange(SpectrePattern(544, 0f, 0f, 0f));
 
-            notes = notes.Concat(SonicBlasterPattern(480, 0f, 0f, 0f)).ToArray();
+            int[] times = {
+                576,
+                582,
+                584,
+                588,
+                590,
+                596,
+                598,
+                600,
+                604,
+            };
 
-            notes = notes.Concat(SpectrePattern(512, 0f, 0f, 0f)).ToArray();
+            // notes = notes.Concat(randomScatter(times,3)).ToArray();
+            solveMaze(times, maze);
 
-            notes = notes.Concat(SpectrePattern(544, 0f, 0f, 0f)).ToArray();
+            // foreach (string n in notes) {
+            //     string[] parts = n.Split(',');
+            //     if (parts.Length < 3) continue;
 
-            foreach (string n in notes) {
-                string[] parts = n.Split(',');
-                if (parts.Length < 3) continue;
-
-                if (float.TryParse(parts[0], out float duration)) {
-                    float.TryParse(parts[1], out float x_pos);
-                    float.TryParse(parts[2], out float y_pos);
-                    // float.TryParse(parts[3], out float z_pos);
-                    GameObject newNote = Instantiate(note);
-                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(x_pos, y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
-                    newNote.transform.localScale = new Vector3(1f, 1f, 1f);
-                    Note newNoteScript = newNote.GetComponent<Note>();
-                    newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
-                    newNoteScript.duration = 16f * (float) secondsPerBeat;
-                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
-                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
-                    newNoteScript.realNote = (duration > 0);
-                }
-            }
+            //     if (float.TryParse(parts[0], out float duration)) {
+            //         float.TryParse(parts[1], out float x_pos);
+            //         float.TryParse(parts[2], out float y_pos);
+            //         // float.TryParse(parts[3], out float z_pos);
+            //         GameObject newNote = Instantiate(note);
+            //         newNote.transform.localPosition = player.transform.localPosition + new Vector3(x_pos, y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
+            //         newNote.transform.localScale = new Vector3(1f, 1f, 1f);
+            //         Note newNoteScript = newNote.GetComponent<Note>();
+            //         newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
+            //         newNoteScript.duration = 16f * (float) secondsPerBeat;
+            //         newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
+            //         // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
+            //         newNoteScript.realNote = (duration > 0);
+            //     }
+            // }
         } else {
-            string[] notes = {
+            this.notes = new List<string> {
             "64,2,0",
             "80,1,0",
             "-96,0,-1",
@@ -666,11 +734,11 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             // "440,0,2,120",
             };
 
-            notes = notes.Concat(SonicBlasterPattern(448, 0f, 0f, 0f)).ToArray();
+            notes.AddRange(SonicBlasterPattern(448, 0f, 0f, 0f));
+            notes.AddRange(SonicBlasterPattern(480, 0f, 0f, 0f));
+            notes.AddRange(SpectrePattern(512, 0f, 0f, 0f));
 
-            notes = notes.Concat(SonicBlasterPattern(480, 0f, 0f, 0f)).ToArray();
-
-            notes = notes.Concat(SpectrePattern(512, 0f, 0f, 0f)).ToArray();
+            // this.notes = notes;
 
             // notes = notes.Concat(SpectrePattern(544, 0f, 0f, 0f)).ToArray();
 
@@ -700,25 +768,25 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             // notes = notes.Concat(randomScatter(times,3)).ToArray();
             solveMaze(times, maze);
 
-            foreach (string n in notes) {
-                string[] parts = n.Split(',');
-                if (parts.Length < 3) continue;
+            // foreach (string n in notes) {
+            //     string[] parts = n.Split(',');
+            //     if (parts.Length < 3) continue;
 
-                if (float.TryParse(parts[0], out float duration)) {
-                    float.TryParse(parts[1], out float x_pos);
-                    float.TryParse(parts[2], out float y_pos);
-                    // float.TryParse(parts[3], out float z_pos);
-                    GameObject newNote = Instantiate(note);
-                    newNote.transform.localPosition = player.transform.localPosition + new Vector3(3f * x_pos, 3f * y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
-                    newNote.transform.localScale = new Vector3(3f, 3f, 1f);
-                    Note newNoteScript = newNote.GetComponent<Note>();
-                    newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
-                    newNoteScript.duration = 16f * (float) secondsPerBeat;
-                    newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
-                    // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
-                    newNoteScript.realNote = (duration > 0);
-                }
-            }
+            //     if (float.TryParse(parts[0], out float duration)) {
+            //         float.TryParse(parts[1], out float x_pos);
+            //         float.TryParse(parts[2], out float y_pos);
+            //         // float.TryParse(parts[3], out float z_pos);
+            //         GameObject newNote = Instantiate(note);
+            //         newNote.transform.localPosition = player.transform.localPosition + new Vector3(3f * x_pos, 3f * y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
+            //         newNote.transform.localScale = new Vector3(3f, 3f, 1f);
+            //         Note newNoteScript = newNote.GetComponent<Note>();
+            //         newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
+            //         newNoteScript.duration = 16f * (float) secondsPerBeat;
+            //         newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
+            //         // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
+            //         newNoteScript.realNote = (duration > 0);
+            //     }
+            // }
         }
         madeNotes = true;
     }
