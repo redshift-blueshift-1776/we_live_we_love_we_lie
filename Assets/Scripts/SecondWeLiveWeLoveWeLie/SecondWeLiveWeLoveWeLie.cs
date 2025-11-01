@@ -23,6 +23,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] public GameObject[] briefcases;
     [SerializeField] public GameObject[] briefcasePivots;
 
+    [SerializeField] public int scoreThreshold;
+
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
     [SerializeField] private GameObject gameCanvas;
@@ -126,9 +128,14 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             }
 
 
-            // if (songTime >= 169f) {
-            //     Fail();
-            // }
+            if (timer >= 209f) {
+                gameActive = false;
+                if (score > scoreThreshold) {
+                    Win();
+                } else {
+                    Fail();
+                }
+            }
 
             scoreGame.text = "Score: " + score;
         }
@@ -1093,9 +1100,21 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     public void Fail() {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        PlayerPrefs.SetInt("PreviousLevel", 11);
+        if (hard) {
+            PlayerPrefs.SetInt("PreviousLevel", 11);
+        } else {
+            PlayerPrefs.SetInt("PreviousLevel", 11);
+        }
         gameActive = false;
         StartCoroutine(LoadFailScene());
+        // transitionScript.ToFail();
+    }
+
+    public void Win() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        gameActive = false;
+        SceneManager.LoadScene(0);
         // transitionScript.ToFail();
     }
 
