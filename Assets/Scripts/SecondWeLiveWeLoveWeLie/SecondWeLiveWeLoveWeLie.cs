@@ -16,6 +16,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     [SerializeField] public bool hard;
 
+    [SerializeField] public bool debug;
+
     [SerializeField] public GameObject maze;
 
     [SerializeField] public GameObject[] briefcases;
@@ -144,7 +146,12 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
         // Convert beat-based timings to seconds
         newNoteScript.duration = 16f * secondsPerBeat;
-        newNoteScript.delay = Mathf.Abs(beatTime * secondsPerBeat) - 8f * secondsPerBeat;
+        if (debug) {
+            newNoteScript.debug = true;
+            newNoteScript.delay = Mathf.Abs(beatTime * secondsPerBeat);
+        } else {
+            newNoteScript.delay = Mathf.Abs(beatTime * secondsPerBeat) - 8f * secondsPerBeat;
+        }
 
         newNoteScript.realNote = (beatTime > 0);
     }
@@ -322,7 +329,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     public string[] YellowClockPattern(int time_start, float x_start, float y_start, float z_start) {
         string[] ret = new string[12];
         if (hard) {
-            ret = new string[15];
+            ret = new string[29];
 
             ret[0] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
@@ -369,8 +376,52 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             x_start -= 2;
 
             ret[14] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1;
+            ret[15] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            ret[16] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[17] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[18] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            ret[19] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[20] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 4;
+            x_start += 2;
+
+            ret[21] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1;
+            ret[22] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            ret[23] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[24] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[25] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            ret[26] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[27] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start -= 2;
+            ret[28] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
         } else {
-            ret = new string[4];
+            ret = new string[20];
+
             ret[0] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             y_start += 1;
@@ -378,23 +429,76 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             time_start += 2;
             x_start -= 1;
             time_start += 2;
-            time_start += 4;
-            y_start += 0.2f;
-            time_start += 1;
-            y_start += 0.2f;
-            time_start += 1;
-            y_start += 0.2f;
-            time_start += 1;
-            y_start += 0.2f;
-            time_start += 1;
-            y_start += 0.2f;
-            time_start += 4;
-            x_start += 1;
             ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            y_start += 1f;
             time_start += 2;
             ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 4;
+            x_start += 2f;
+
+            ret[4] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1f;
+            time_start += 1;
+            x_start -= 0.5f;
+            time_start += 1;
+            x_start -= 0.5f;
+            ret[5] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[6] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            ret[7] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1;
+            time_start += 2;
+            y_start += 1;
+            ret[8] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 4;
+            x_start -= 2;
+
+            ret[9] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1;
+            time_start += 2;
+            x_start += 1;
+            ret[10] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            time_start += 2;
+            y_start -= 1;
+            ret[11] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            ret[12] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[13] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 4;
+            x_start += 1;
+
+            ret[14] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1;
+            time_start += 2;
+            x_start += 1;
+            ret[15] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            time_start += 2;
+            y_start -= 1;
+            ret[16] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start += 1;
+            ret[17] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[18] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start -= 2;
+            ret[19] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
         }
         return ret;
     }
@@ -502,7 +606,12 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             Note newNoteScript = newNote.GetComponent<Note>();
             newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
             newNoteScript.duration = 16f * (float)secondsPerBeat;
-            newNoteScript.delay = Mathf.Abs(duration * (float)secondsPerBeat) - 8f * (float)secondsPerBeat;
+            if (debug) {
+                newNoteScript.debug = true;
+                newNoteScript.delay = Mathf.Abs(duration * (float)secondsPerBeat);
+            } else {
+                newNoteScript.delay = Mathf.Abs(duration * (float)secondsPerBeat) - 8f * secondsPerBeat;
+            }
             newNoteScript.realNote = (duration > 0);
         }
         return;
@@ -550,7 +659,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
             newNoteScript.duration = 32f * (float)secondsPerBeat;
 
-            // 👇 key fix: set delay relative to current timer
+            // set delay relative to current timer
             newNoteScript.delay = (float)timer + 4f * (float)secondsPerBeat; 
             newNoteScript.realNote = isReal;
         }
@@ -719,6 +828,54 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             // notes = notes.Concat(randomScatter(times,3)).ToArray();
             solveMaze(times, maze);
 
+            times = new int[] {
+                704,
+                720,
+                736,
+                752,
+                768,
+                784,
+                792,
+                800,
+                816
+            };
+
+            notes.AddRange(randomScatter(times,1));
+
+            times = new int[] {
+                704 + 128,
+                712 + 128,
+                720+ 128,
+                728 + 128,
+                736+ 128,
+                744 + 128,
+                752+ 128,
+                760 + 128,
+                768+ 128,
+                776 + 128,
+                784+ 128,
+                792+ 128,
+                800+ 128,
+                808 + 128,
+                816+ 128
+            };
+
+            notes.AddRange(randomScatter(times,2));
+
+            notes.AddRange(YellowClockPattern(704 + 256, 0f, 0f, 0f));
+            notes.AddRange(YellowClockPattern(704 + 256 + 64, 0f, 0f, 0f));
+            notes.Add("1088,0,0");
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16, 0f, 0f, 0f));
+            notes.AddRange(SpectrePattern(704 + 256 + 64 + 64 + 16 + 32, 0f, 0f, 0f));
+            notes.AddRange(YellowClockPattern(704 + 256 + 64 + 64 + 16 + 64, 0f, 0f, 0f));
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128, 2f, 0f, 0f));
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128 + 32, 0f, -1f, 0f));
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128 + 64, 2f, 0f, 0f));
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128 + 32 + 64, 0f, -1f, 0f));
+            notes.AddRange(YellowClockPattern(1360, 0f, 0f, 0f));
+            notes.AddRange(YellowClockPattern(1360 + 64, 0f, -1f, 0f));
+            notes.Add("1488,0,0");
+
             // foreach (string n in notes) {
             //     string[] parts = n.Split(',');
             //     if (parts.Length < 3) continue;
@@ -869,7 +1026,35 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 816
             };
 
+            notes.AddRange(randomScatter(times,1));
+
+            times = new int[] {
+                704 + 128,
+                720+ 128,
+                736+ 128,
+                752+ 128,
+                768+ 128,
+                784+ 128,
+                792+ 128,
+                800+ 128,
+                816+ 128
+            };
+
             notes.AddRange(randomScatter(times,2));
+
+            notes.AddRange(YellowClockPattern(704 + 256, 0f, 0f, 0f));
+            notes.AddRange(YellowClockPattern(704 + 256 + 64, 0f, 0f, 0f));
+            notes.Add("1088,0,0");
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16, 0f, 0f, 0f));
+            notes.AddRange(SpectrePattern(704 + 256 + 64 + 64 + 16 + 32, 0f, 0f, 0f));
+            notes.AddRange(YellowClockPattern(704 + 256 + 64 + 64 + 16 + 64, 0f, 0f, 0f));
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128, 2f, 0f, 0f));
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128 + 32, 0f, -1f, 0f));
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128 + 64, 2f, 0f, 0f));
+            notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128 + 32 + 64, 0f, -1f, 0f));
+            notes.AddRange(YellowClockPattern(1360, 0f, 0f, 0f));
+            notes.AddRange(YellowClockPattern(1360 + 64, 0f, -1f, 0f));
+            notes.Add("1488,0,0");
 
             // foreach (string n in notes) {
             //     string[] parts = n.Split(',');

@@ -17,6 +17,9 @@ public class Note : MonoBehaviour
 
     public bool noteHit;
 
+    public bool debug;
+    [SerializeField] public GameObject debugSound;
+
     // Cached BeatManager reference for performance
     private BeatManager beatManager;
     private double noteStartTime; // absolute DSP time when note should begin
@@ -64,6 +67,7 @@ public class Note : MonoBehaviour
                 x.SetActive(false);
 
             bool isActive = (songTime > delay) && !noteHit;
+            debugSound.SetActive(debug && isActive);
 
             foreach (GameObject x in circles)
                 x.SetActive(isActive);
