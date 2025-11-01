@@ -1114,7 +1114,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         gameActive = false;
-        SceneManager.LoadScene(17);
+        SceneManager.LoadScene(18);
         // transitionScript.ToFail();
     }
 
