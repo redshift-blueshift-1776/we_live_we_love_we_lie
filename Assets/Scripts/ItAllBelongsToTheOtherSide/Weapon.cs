@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Runtime.CompilerServices;
 
 public class Weapon : MonoBehaviour
 {
@@ -75,11 +76,15 @@ public class Weapon : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Image primaryWeaponBorder;
     [SerializeField] private TMP_Text primaryWeaponText;
+    [SerializeField] private TMP_Text primaryAmmoText;
 
     [SerializeField] private Image secondaryWeaponBorder;
     [SerializeField] private TMP_Text secondaryWeaponText;
+    [SerializeField] private TMP_Text secondaryAmmoText;
 
     [SerializeField] private Image knifeWeaponBorder;
+
+    
     #endregion
     private int weaponIndex = 3;
     private string primaryWeapon = "";
@@ -94,6 +99,9 @@ public class Weapon : MonoBehaviour
         playDrawWeaponSound();
         knifeStats = weaponInfo.getWeaponStats("Knife", false);
         StartCoroutine(handleWeapon());
+
+        primaryAmmoText.text = "";
+        secondaryAmmoText.text = "";
     }
 
     // Update is called once per frame
@@ -106,6 +114,47 @@ public class Weapon : MonoBehaviour
             handleKnifeAttack();
         }
         timeSinceAttack += Time.deltaTime;
+
+        handleSwitchWeapon();
+
+        handleReloading();
+
+        updateAmmoDisplay();
+    }
+
+    private void handleReloading()
+    {
+        if (Input.GetKey(KeyCode.R))
+        {
+            if ((weaponIndex == 1 && !primaryReloading) || (weaponIndex == 2 && !secondaryReloading))
+            {
+                if ((weaponIndex == 1 && primaryRemainingAmmo == 0) || (weaponIndex == 2 && secondaryRemainingAmmo == 0))
+                {
+                    audioManager.playSound("reloadFail");
+                }
+                else
+                {
+                    StartCoroutine(reload());
+                }
+            }
+        }
+    }
+
+    private void updateAmmoDisplay()
+    {
+        //Debug.Log(currSecondaryMag + " " + secondaryTotalAmmo);
+        if (primaryWeapon != "")
+        {
+            primaryWeaponText.text = $"{currPrimaryMag}/{primaryRemainingAmmo}";
+        }
+        if (secondaryWeapon != "")
+        {
+            secondaryWeaponText.text = $"{currSecondaryMag}/{secondaryRemainingAmmo}";
+        }
+    }
+
+    private void handleSwitchWeapon()
+    {
         int prevWeaponIndex = weaponIndex;
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -113,13 +162,15 @@ public class Weapon : MonoBehaviour
             {
                 weaponIndex = 1;
             }
-        } else if (Input.GetKeyDown(KeyCode.Alpha2))
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            if (secondaryWeapon != "") 
+            if (secondaryWeapon != "")
             {
                 weaponIndex = 2;
             }
-        } else if (Input.GetKeyDown(KeyCode.Alpha3))
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             weaponIndex = 3;
         }
@@ -128,7 +179,6 @@ public class Weapon : MonoBehaviour
         {
             playDrawWeaponSound();
         }
-
     }
 
     private void displayWeaponModel()
@@ -168,30 +218,18 @@ public class Weapon : MonoBehaviour
 
     private Dictionary<string, float> primaryWeaponStats = new Dictionary<string, float>();
     private Dictionary<string, float> secondaryWeaponStats = new Dictionary<string, float>();
+    private float fireCooldown = Mathf.Infinity;
+    private float range = 0;
+    bool canHoldDown = false;
     private IEnumerator handleWeapon()
     {
         float t = 0;
-        float fireCooldown = Mathf.Infinity;
-        float range = 0;
-        bool canHoldDown = false;
+        
         while (true)
         {
             if (!player7.getIsInWeaponShop() && weaponIndex != 3)
             {
-                if (weaponIndex == 1)
-                {
-                    fireCooldown = primaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
-                    range = primaryWeaponStats.GetValueOrDefault("range", 0);
-                    movementMultiplier = primaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
-                    canHoldDown = primaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
-                }
-                else if (weaponIndex == 2)
-                {
-                    fireCooldown = secondaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
-                    range = secondaryWeaponStats.GetValueOrDefault("range", 0);
-                    movementMultiplier = secondaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
-                    canHoldDown = secondaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
-                }
+                updateWeaponStats();
                 if (t >= fireCooldown && 
                     (Input.GetMouseButtonDown(0) || (canHoldDown && Input.GetMouseButton(0)))
                    )
@@ -205,8 +243,51 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    private void updateWeaponStats()
+    {
+        if (weaponIndex == 1)
+        {
+            fireCooldown = primaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
+            range = primaryWeaponStats.GetValueOrDefault("range", 0);
+            movementMultiplier = primaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
+            canHoldDown = primaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
+        }
+        else if (weaponIndex == 2)
+        {
+            fireCooldown = secondaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
+            range = secondaryWeaponStats.GetValueOrDefault("range", 0);
+            movementMultiplier = secondaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
+            canHoldDown = secondaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
+        }
+    }
+
+    private int primaryMagSize = 0;
+    private int currPrimaryMag = 0;
+    private int primaryRemainingAmmo = 0;
+
+    private int secondaryMagSize = 0;
+    private int currSecondaryMag = 0;
+    private int secondaryRemainingAmmo = 0;
     private void shoot(float range)
     {
+        //do not allow shooting when out of ammo; automatically reload instead
+        if ((weaponIndex == 1 && currPrimaryMag == 0 && !primaryReloading) || (weaponIndex == 2 && currSecondaryMag == 0 && !primaryReloading))
+        {
+            if ((weaponIndex == 1 && primaryRemainingAmmo == 0) || (weaponIndex == 2 && secondaryRemainingAmmo == 0))
+            {
+                audioManager.playSound("reloadFail");
+            } else {
+                StartCoroutine(reload());
+            }
+            return;
+        }
+
+        //do not allow shooting when reloading
+        if ((weaponIndex == 1 && primaryReloading) 
+            || (weaponIndex == 2 && secondaryReloading))
+        {
+            return;
+        }
         RaycastHit hitData;
         playShootWeaponSound();
         if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, range))
@@ -219,6 +300,75 @@ public class Weapon : MonoBehaviour
             newBulletHole.transform.SetParent(objectHit.transform);
             StartCoroutine(fadeBulletHole(newBulletHole));
         }
+        if (weaponIndex == 1)
+        {
+            currPrimaryMag -= 1;
+        }
+        else if (weaponIndex == 2)
+        {
+            currSecondaryMag -= 1;
+        }
+    }
+
+    private bool primaryReloading;
+    private bool secondaryReloading;
+    private IEnumerator reload()
+    {
+        //do not allow reloading when already reloading (sanity check) at full magazine size (does not play the sound) or when out of all ammo
+        if (weaponIndex == 1)
+        {
+            if (primaryReloading || currPrimaryMag == primaryMagSize)
+            {
+                yield break;
+            }
+            primaryReloading = true;
+        } else if (weaponIndex == 2)
+        {
+            if (secondaryReloading || currSecondaryMag == secondaryMagSize)
+            {
+                yield break;
+            }
+
+            secondaryReloading = true;
+        }
+
+        float t1 = audioManager.getLength("reload1");
+        float t2 = audioManager.getLength("reload2");
+        float t3 = audioManager.getLength("reload3");
+
+        audioManager.playSound("reload1");
+        yield return new WaitForSeconds(t1);
+
+        audioManager.playSound("reload2");
+        yield return new WaitForSeconds(t2);
+
+        if (weaponIndex == 1)
+        {
+            int diff = Mathf.Min(primaryRemainingAmmo, primaryMagSize - currPrimaryMag);
+            currPrimaryMag += diff;
+            primaryRemainingAmmo -= diff;
+        }
+        else if (weaponIndex == 2)
+        {
+            int diff = Mathf.Min(secondaryRemainingAmmo, secondaryMagSize - currSecondaryMag);
+            currSecondaryMag += diff;
+            secondaryRemainingAmmo -= diff;
+        }
+
+        audioManager.playSound("reload3");
+        yield return new WaitForSeconds(t3);
+
+
+        if (weaponIndex == 1)
+        {
+            primaryReloading = false;
+        }
+        else if (weaponIndex == 2)
+        {
+            secondaryReloading = false;
+        }
+
+        yield return null;
     }
 
     private void playDrawWeaponSound()
@@ -420,6 +570,10 @@ public class Weapon : MonoBehaviour
         weaponIndex = 1;
         primaryWeaponText.text = primary;
         primaryWeaponStats = weaponInfo.getWeaponStats(primary, false);
+        primaryMagSize = (int) primaryWeaponStats.GetValueOrDefault("magazineSize", 0);
+        primaryRemainingAmmo = (int) primaryWeaponStats.GetValueOrDefault("totalAmmo", 0);
+
+        StartCoroutine(reload());
 
         disableAllPrimary();
         switch (primaryWeapon)
@@ -533,6 +687,11 @@ public class Weapon : MonoBehaviour
         weaponIndex = 2;
         secondaryWeaponText.text = secondary;
         secondaryWeaponStats = weaponInfo.getWeaponStats(secondary, false);
+
+        secondaryMagSize = (int) secondaryWeaponStats.GetValueOrDefault("magazineSize", 0);
+        secondaryRemainingAmmo = (int) secondaryWeaponStats.GetValueOrDefault("totalAmmo", 0);
+
+        StartCoroutine(reload());
 
         disableAllSecondary();
         switch (secondaryWeapon)
