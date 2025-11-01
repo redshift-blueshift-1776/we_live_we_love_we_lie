@@ -155,13 +155,13 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             ret = new string[18];
             ret[0] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start -= 1;
+            x_start -= 2;
             ret[1] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start -= 1;
+            x_start -= 2;
             ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            y_start += 1;
+            y_start -= 2;
             ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start += 1;
@@ -245,7 +245,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             time_start += 2;
             x_start -= 1;
             time_start += 2;
-            y_start += 1;
+            y_start -= 1;
             ret[9] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
         }
         return ret;
@@ -260,10 +260,10 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             y_start += 1;
             ret[1] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start -= 1;
+            x_start -= 2;
             ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start -= 1;
+            x_start -= 2;
             ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             y_start += 0.2f;
@@ -281,10 +281,10 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             y_start += 0.2f;
             ret[8] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
-            x_start += 1;
+            x_start += 2;
             ret[9] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            x_start += 2;
             ret[10] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start += 1;
@@ -582,41 +582,69 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         if (hard) {
             this.notes = new List<string> {
             "64,2,0",
+            "-72,1,1",
+            "-72,2,1",
+            "-72,3,1",
             "80,1,0",
+            "-80,1,1",
+            "-80,1,-1",
             "-96,0,-1",
+            "-100,-1,-1",
+            "-104,0,-1",
+            "-108,1,-1",
             "112,-1,0",
+            "-116,0,-1",
+            "-120,3,0",
+            "-124,1,-1",
             "128,-3,0",
+            "-128,-4,0",
+            "-132,-4,1",
+            "-132,-4,-1",
+            "-136,-3,-1",
+            "-136,-3,1",
+            "-140,-2,-1",
             "144,-2,1",
+            "-144,-2,0",
+            "-148,-2,3",
             "152,-1,1",
             "-160,0,-1",
             "168,2,1",
             "176,1,1",
 
             "200,0,0",
-            "-208,0,-1",
-            "216,0,-2",
-            "-220,0,-1",
+            "-208,0,3",
+            "216,0,-3",
+            "-220,0,3",
             "224,0,0",
-            "-228,0,1",
-            "232,0,2",
-            "-236,0,1",
+            "-228,0,-3",
+            "232,0,3",
+            "-236,0,-3",
             "240,0,0",
-            "-244,0,-1",
-            "248,0,-2",
+            "-244,0,3",
+            "248,0,-3",
 
             "256,1,0,120",
+            "-256,1,1,120",
+            "-256,1,-1,120",
+            "-256,2,-1,120",
             "272,0,0,120",
             "288,1,0,120",
+            "-289,1,2,120",
+            "-290,1,-2,120",
             "296,0,1,120",
             "304,1,1,120",
 
             // Drop
             "320,0,0,120",
+            "-320,-1,0,120",
+            "-320,1,0,120",
+            "-322,0,-3,120",
             "324,0,1,120",
             "326,-1,1,120",
             "328,-1,0,120",
             "330,0,0,120",
             "332,1,0,120",
+            "-334,-2,-2,120",
 
             "336,1,1,120",
             "338,1,0.8,120",
@@ -828,6 +856,20 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
             // notes = notes.Concat(randomScatter(times,3)).ToArray();
             solveMaze(times, maze);
+
+            times = new int[] {
+                704,
+                720,
+                736,
+                752,
+                768,
+                784,
+                792,
+                800,
+                816
+            };
+
+            notes.AddRange(randomScatter(times,2));
 
             // foreach (string n in notes) {
             //     string[] parts = n.Split(',');
