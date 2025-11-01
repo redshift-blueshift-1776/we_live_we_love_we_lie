@@ -128,7 +128,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             }
 
 
-            if (timer >= 209f) {
+            if (timer >= 192f) {
                 gameActive = false;
                 if (score > scoreThreshold) {
                     Win();
@@ -1114,7 +1114,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         gameActive = false;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(17);
         // transitionScript.ToFail();
     }
 

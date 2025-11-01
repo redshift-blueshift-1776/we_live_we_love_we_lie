@@ -126,7 +126,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(11);
     }
 
     public void GameLose() {
