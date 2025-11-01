@@ -50,7 +50,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     private int nextNoteIndex = 0;
 
     // How early (in seconds) to spawn a note before it should appear
-    private const double SPAWN_LEAD_TIME = 2.0;
+    private const double SPAWN_LEAD_TIME = 20.0;
 
     public bool madeNotes;
     public bool didBriefcases;
@@ -814,7 +814,6 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             notes.AddRange(SpectrePattern(544, 0f, 0f, 0f));
 
             int[] times = {
-                576,
                 582,
                 584,
                 588,
@@ -823,6 +822,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 598,
                 600,
                 604,
+                606
             };
 
             // notes = notes.Concat(randomScatter(times,3)).ToArray();
@@ -1000,7 +1000,6 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             //     604 + 8,
             // };
             int[] times = {
-                576,
                 582,
                 584,
                 588,
@@ -1009,6 +1008,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 598,
                 600,
                 604,
+                606
             };
 
             // notes = notes.Concat(randomScatter(times,3)).ToArray();

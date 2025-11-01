@@ -18,6 +18,13 @@ public class GenerateWorld : MonoBehaviour
     [SerializeField] public GameObject gameManager;
     [SerializeField] public SecondWeLiveWeLoveWeLie gm;
 
+    [SerializeField] public GameObject SquareRingsReference;
+    [SerializeField] public GameObject SquareRing;
+    [SerializeField] public float ringOffset;
+    [SerializeField] public float ringOffsetRotation;
+    [SerializeField] public int numRings;
+    [SerializeField] public int numRingsInRotation;
+
     private double secondsPerBeat;
 
     private double nextChangeTime;
@@ -40,6 +47,7 @@ public class GenerateWorld : MonoBehaviour
         doingStuff = false;
 
         GenerateLevel1();
+        GenerateSquareRings();
     }
 
     // Update is called once per frame
@@ -164,6 +172,17 @@ public class GenerateWorld : MonoBehaviour
                 newPillar.transform.localScale = new Vector3(1f, 1f, 1f);
                 newPillar.transform.localPosition = new Vector3(gap * x - 40, 0, zSoFar + gap * z);
             }
+        }
+    }
+
+    public void GenerateSquareRings() {
+        for (int i = 0; i < numRings; i++) {
+            GameObject newSquareRing = Instantiate(SquareRing);
+            newSquareRing.transform.SetParent(SquareRingsReference.transform);
+            newSquareRing.transform.localPosition = new Vector3(0, 0, i * ringOffset);
+            newSquareRing.transform.localRotation = Quaternion.Euler(0, 0, i * ringOffsetRotation);
+            SquareRing sr = newSquareRing.GetComponent<SquareRing>();
+            sr.H = ((float) i) / numRingsInRotation;
         }
     }
 }
