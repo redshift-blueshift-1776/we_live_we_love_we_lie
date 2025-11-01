@@ -27,7 +27,7 @@ public class Ending_Cutscene : MonoBehaviour
         quoteText.color = new Color(quoteText.color.r, quoteText.color.g, quoteText.color.b, 1f);
         yield return new WaitForSeconds(1f);
         float elapsed = 0f;
-        float duration = 2f;
+        float duration = Mathf.Max(2f, line.Length / 13f);
         while (elapsed < duration) {
             float t = elapsed / duration;
 
