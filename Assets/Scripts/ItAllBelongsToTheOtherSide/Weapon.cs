@@ -87,11 +87,13 @@ public class Weapon : MonoBehaviour
 
     private string primaryWeaponCategory = "";
 
+    private float movementMultiplier = 1f;
+
     void Start()
     {
         playDrawWeaponSound();
         knifeStats = weaponInfo.getWeaponStats("Knife", false);
-        StartCoroutine(handleShoot());
+        StartCoroutine(handleWeapon());
     }
 
     // Update is called once per frame
@@ -166,10 +168,11 @@ public class Weapon : MonoBehaviour
 
     private Dictionary<string, float> primaryWeaponStats = new Dictionary<string, float>();
     private Dictionary<string, float> secondaryWeaponStats = new Dictionary<string, float>();
-    private IEnumerator handleShoot()
+    private IEnumerator handleWeapon()
     {
         float t = 0;
         float fireCooldown = Mathf.Infinity;
+        float range = 0;
         bool canHoldDown = false;
         while (true)
         {
@@ -178,18 +181,22 @@ public class Weapon : MonoBehaviour
                 if (weaponIndex == 1)
                 {
                     fireCooldown = primaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
+                    range = primaryWeaponStats.GetValueOrDefault("range", 0);
+                    movementMultiplier = primaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
                     canHoldDown = primaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
                 }
                 else if (weaponIndex == 2)
                 {
                     fireCooldown = secondaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
+                    range = secondaryWeaponStats.GetValueOrDefault("range", 0);
+                    movementMultiplier = secondaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
                     canHoldDown = secondaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
                 }
                 if (t >= fireCooldown && 
                     (Input.GetMouseButtonDown(0) || (canHoldDown && Input.GetMouseButton(0)))
                    )
                 {
-                    shoot();
+                    shoot(range);
                     t = 0;
                 }
             }
@@ -198,11 +205,11 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    private void shoot()
+    private void shoot(float range)
     {
         RaycastHit hitData;
         playShootWeaponSound();
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, 1000f))
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, range))
         {
             GameObject objectHit = hitData.collider.gameObject;
             GameObject newBulletHole = Instantiate(bulletHolePrefab);
@@ -562,6 +569,11 @@ public class Weapon : MonoBehaviour
                 break;
         }
         playDrawWeaponSound();
+    }
+
+    public float getMovementMultiplier()
+    {
+        return movementMultiplier;
     }
 
 }

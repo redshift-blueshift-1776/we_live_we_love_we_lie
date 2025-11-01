@@ -11,6 +11,7 @@ public class PlayerMovement7 : MonoBehaviour
 
     [SerializeField] private GameSettings gameSettings;
     [SerializeField] private Player7 player7;
+    [SerializeField] private Weapon weaponScript;
 
     private const float m = 1.0f;   //mass
     private const float g = 9.8f;
@@ -173,10 +174,11 @@ public class PlayerMovement7 : MonoBehaviour
 
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
+        float maxSpeedMult = weaponScript.getMovementMultiplier();
         if (isGrounded)
         {
-            bool passingMaxSpeed = (isSprinting && horizontalVelocity.magnitude > maxRunSpeed)
-                                    || (!isSprinting && horizontalVelocity.magnitude > maxWalkSpeed);
+            bool passingMaxSpeed = (isSprinting && horizontalVelocity.magnitude > maxRunSpeed * maxSpeedMult)
+                                    || (!isSprinting && horizontalVelocity.magnitude > maxWalkSpeed * maxSpeedMult);
 
             if (!passingMaxSpeed)
             {
@@ -186,7 +188,7 @@ public class PlayerMovement7 : MonoBehaviour
             horizontalForce += getGroundFrictionForce();
         } else
         {
-            if (horizontalVelocity.magnitude < maxAirSpeed)
+            if (horizontalVelocity.magnitude < maxAirSpeed * maxSpeedMult)
             {
                 horizontalForce += getAirStrafeForce(externalForce, horizontalVelocity);
             }

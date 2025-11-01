@@ -36,7 +36,7 @@ public class Crosshair : MonoBehaviour
             updateCrosshair(0);
             return;
         }
-        speed = Mathf.Min(0.9f * playerMovement.getCurrentMaxSpeed(), speed);
+        speed = Mathf.Min(0.8f * playerMovement.getCurrentMaxSpeed(), speed);
         float displacement = speed * crosshairGapDistanceGrowth;
 
         updateCrosshair(displacement);
