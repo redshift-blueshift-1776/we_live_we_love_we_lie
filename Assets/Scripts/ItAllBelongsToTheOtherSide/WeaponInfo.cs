@@ -446,6 +446,11 @@ public class WeaponInfo : MonoBehaviour
 
         return stats;
     }
+    
+    public HashSet<string> getScopedWeapons()
+    {
+        return scopedWeapons;
+    }
 
     public bool isWeaponScoped(string weaponName)
     {

@@ -411,6 +411,12 @@ public class WeaponUI : MonoBehaviour
             case "SSG 08":
                 SSG08ButtonBorder.SetActive(true);
                 break;
+            case "M249":
+                M249ButtonBorder.SetActive(true);
+                break;
+            case "Negev":
+                NegevButtonBorder.SetActive(true);
+                break;
             default:
                 MAG7ButtonBorder.SetActive(true);
                 break;

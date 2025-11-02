@@ -106,6 +106,7 @@ public class Weapon : MonoBehaviour
 
         primaryAmmoText.text = "";
         secondaryAmmoText.text = "";
+        defaultFOV = Camera.main.fieldOfView;
     }
 
     // Update is called once per frame
@@ -122,6 +123,8 @@ public class Weapon : MonoBehaviour
         handleSwitchWeapon();
 
         handleReloading();
+
+        handleScope();
 
         updateAmmoDisplay();
     }
@@ -164,6 +167,7 @@ public class Weapon : MonoBehaviour
         {
             if (primaryWeapon != "")
             {
+                scoped = false;
                 weaponIndex = 1;
             }
         }
@@ -171,11 +175,13 @@ public class Weapon : MonoBehaviour
         {
             if (secondaryWeapon != "")
             {
+                scoped = false;
                 weaponIndex = 2;
             }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
+            scoped = false;
             weaponIndex = 3;
         }
 
@@ -183,6 +189,22 @@ public class Weapon : MonoBehaviour
         {
             playDrawWeaponSound();
         }
+    }
+    private float defaultFOV;
+    private const float zoomedFOV = 30f;
+    private bool scoped;
+    private void handleScope()
+    {
+        if (Input.GetMouseButtonDown(1) && weaponInfo.getScopedWeapons().Contains(primaryWeapon))
+        {
+            scoped = !scoped;
+            if (scoped)
+            {
+                audioManager.playSound("SSG08Zoom");
+            }
+        }
+
+        Camera.main.fieldOfView = scoped ? zoomedFOV : defaultFOV;
     }
 
     private void displayWeaponModel()
@@ -296,6 +318,14 @@ public class Weapon : MonoBehaviour
         }
 
         float maxBaseAngleDeviation = weaponIndex == 1 ? primaryBaseInaccuracy : secondaryBaseInaccuracy;
+        //if scoped
+        if (scoped && weaponIndex == 1)
+        {
+            maxBaseAngleDeviation = weaponInfo.getWeaponStats(primaryWeapon, true).GetValueOrDefault("baseInaccuracy", 0);
+        }
+
+
+
         float playerSpeed = movementScript.getVelocity().magnitude;
         float playerSpeedInaccuracyMult = 2.5f;
 
@@ -334,6 +364,13 @@ public class Weapon : MonoBehaviour
                 newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
                 newBulletHole.transform.SetParent(objectHit.transform);
                 StartCoroutine(fadeBulletHole(newBulletHole));
+
+
+                //unzoom if AWP or Scouter
+                if (primaryWeapon == "AWP" || primaryWeapon == "SSG 08")
+                {
+                    scoped = false;
+                }
             }
 
             GameObject tracer = Instantiate(bulletTracerPrefab);
@@ -373,6 +410,7 @@ public class Weapon : MonoBehaviour
 
             secondaryReloading = true;
         }
+        scoped = false;
 
         float t1 = audioManager.getLength("reload1");
         float t2 = audioManager.getLength("reload2");
