@@ -13,6 +13,9 @@ public class Weapon : MonoBehaviour
     [SerializeField] private PlayerMovement7 movementScript;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private AudioManager audioManager;
+    [SerializeField] private GameObject bulletTracerPrefab;
+    [SerializeField] private GameObject muzzlePosition;
+
     [SerializeField] private Animator knifeAnimator;
     [SerializeField] private AnimationClip knifeAttackAnimation;
     public WeaponInfo weaponInfo;
@@ -316,8 +319,14 @@ public class Weapon : MonoBehaviour
                 Random.value * 2 * maxAngleDeviation - maxAngleDeviation
             );
             RaycastHit hitData;
-            if (Physics.Raycast(playerCamera.transform.position, randomInaccuracy * playerCamera.transform.forward, out hitData, range))
+            Vector3 shootDirection = (randomInaccuracy * playerCamera.transform.forward).normalized;
+            Vector3 origin = playerCamera.transform.position;
+            Vector3 endPoint = origin + shootDirection * range;
+
+            if (Physics.Raycast(origin, shootDirection, out hitData, range))
             {
+                endPoint = hitData.point;
+
                 GameObject objectHit = hitData.collider.gameObject;
                 GameObject newBulletHole = Instantiate(bulletHolePrefab);
                 newBulletHole.transform.position = hitData.point;
@@ -326,6 +335,11 @@ public class Weapon : MonoBehaviour
                 newBulletHole.transform.SetParent(objectHit.transform);
                 StartCoroutine(fadeBulletHole(newBulletHole));
             }
+
+            GameObject tracer = Instantiate(bulletTracerPrefab);
+            BulletTracer tracerScript = tracer.GetComponent<BulletTracer>();
+            float tracerLife = 0.12f;
+            tracerScript.Initialize(muzzlePosition.transform.position, endPoint, tracerLife);
         }
 
         if (weaponIndex == 1)
