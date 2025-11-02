@@ -10,6 +10,7 @@ public class Weapon : MonoBehaviour
     private float timeSinceAttack = Mathf.Infinity;
 
     [SerializeField] private Player7 player7;
+    [SerializeField] private PlayerMovement7 movementScript;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private Animator knifeAnimator;
@@ -145,11 +146,11 @@ public class Weapon : MonoBehaviour
         //Debug.Log(currSecondaryMag + " " + secondaryTotalAmmo);
         if (primaryWeapon != "")
         {
-            primaryWeaponText.text = $"{currPrimaryMag}/{primaryRemainingAmmo}";
+            primaryAmmoText.text = $"{currPrimaryMag}/{primaryRemainingAmmo}";
         }
         if (secondaryWeapon != "")
         {
-            secondaryWeaponText.text = $"{currSecondaryMag}/{secondaryRemainingAmmo}";
+            secondaryAmmoText.text = $"{currSecondaryMag}/{secondaryRemainingAmmo}";
         }
     }
 
@@ -264,10 +265,12 @@ public class Weapon : MonoBehaviour
     private int primaryMagSize = 0;
     private int currPrimaryMag = 0;
     private int primaryRemainingAmmo = 0;
+    private float primaryBaseInaccuracy = 0;
 
     private int secondaryMagSize = 0;
     private int currSecondaryMag = 0;
     private int secondaryRemainingAmmo = 0;
+    private float secondaryBaseInaccuracy = 0;
     private void shoot(float range)
     {
         //do not allow shooting when out of ammo; automatically reload instead
@@ -288,18 +291,43 @@ public class Weapon : MonoBehaviour
         {
             return;
         }
-        RaycastHit hitData;
-        playShootWeaponSound();
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, range))
+
+        float maxBaseAngleDeviation = weaponIndex == 1 ? primaryBaseInaccuracy : secondaryBaseInaccuracy;
+        float playerSpeed = movementScript.getVelocity().magnitude;
+        float playerSpeedInaccuracyMult = 2.5f;
+
+        float maxAngleDeviation = maxBaseAngleDeviation + (playerSpeed > 0.25f ? playerSpeedInaccuracyMult * playerSpeed : 0);
+
+        int bullets = 1;
+        if (weaponIndex == 1)
         {
-            GameObject objectHit = hitData.collider.gameObject;
-            GameObject newBulletHole = Instantiate(bulletHolePrefab);
-            newBulletHole.transform.position = hitData.point;
-            newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
-            newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
-            newBulletHole.transform.SetParent(objectHit.transform);
-            StartCoroutine(fadeBulletHole(newBulletHole));
+            if (primaryWeaponCategory == "Shotgun")
+            {
+                bullets = 8;
+            }
         }
+
+        playShootWeaponSound();
+        for (int i = 0; i < bullets; i++)
+        {
+            Quaternion randomInaccuracy = Quaternion.Euler(
+                Random.value * 2 * maxAngleDeviation - maxAngleDeviation,
+                Random.value * 2 * maxAngleDeviation - maxAngleDeviation,
+                Random.value * 2 * maxAngleDeviation - maxAngleDeviation
+            );
+            RaycastHit hitData;
+            if (Physics.Raycast(playerCamera.transform.position, randomInaccuracy * playerCamera.transform.forward, out hitData, range))
+            {
+                GameObject objectHit = hitData.collider.gameObject;
+                GameObject newBulletHole = Instantiate(bulletHolePrefab);
+                newBulletHole.transform.position = hitData.point;
+                newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
+                newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                newBulletHole.transform.SetParent(objectHit.transform);
+                StartCoroutine(fadeBulletHole(newBulletHole));
+            }
+        }
+
         if (weaponIndex == 1)
         {
             currPrimaryMag -= 1;
@@ -570,15 +598,17 @@ public class Weapon : MonoBehaviour
         weaponIndex = 1;
         primaryWeaponText.text = primary;
         primaryWeaponStats = weaponInfo.getWeaponStats(primary, false);
+
         primaryMagSize = (int) primaryWeaponStats.GetValueOrDefault("magazineSize", 0);
         primaryRemainingAmmo = (int) primaryWeaponStats.GetValueOrDefault("totalAmmo", 0);
+        primaryBaseInaccuracy = primaryWeaponStats.GetValueOrDefault("baseInaccuracy", 0);
 
         StartCoroutine(reload());
 
         disableAllPrimary();
         switch (primaryWeapon)
         {
-            case "MAG7":
+            case "MAG-7":
                 MAG7.SetActive(true);
                 primaryWeaponCategory = "Shotgun";
                 break;
@@ -690,6 +720,7 @@ public class Weapon : MonoBehaviour
 
         secondaryMagSize = (int) secondaryWeaponStats.GetValueOrDefault("magazineSize", 0);
         secondaryRemainingAmmo = (int) secondaryWeaponStats.GetValueOrDefault("totalAmmo", 0);
+        secondaryBaseInaccuracy = secondaryWeaponStats.GetValueOrDefault("baseInaccuracy", 0);
 
         StartCoroutine(reload());
 
