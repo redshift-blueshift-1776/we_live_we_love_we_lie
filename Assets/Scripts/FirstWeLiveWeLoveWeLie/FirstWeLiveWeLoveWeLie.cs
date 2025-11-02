@@ -490,11 +490,6 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
             if (finalColor == CardColor.Red)
             {
-                if (bayesian) {
-                    PlayerPrefs.SetInt("PreviousLevel", 15);
-                } else {
-                    PlayerPrefs.SetInt("PreviousLevel", 4);
-                }
                 SceneManager.LoadScene(9);
             }
             else
@@ -509,9 +504,9 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         if (finalColor == CardColor.Red)
         {
             if (bayesian) {
-                PlayerPrefs.SetInt("PreviousLevel", 15);
-            } else {
                 PlayerPrefs.SetInt("PreviousLevel", 4);
+            } else {
+                PlayerPrefs.SetInt("PreviousLevel", 15);
             }
             SceneManager.LoadScene(9);
         }

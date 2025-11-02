@@ -1100,11 +1100,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     public void Fail() {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (hard) {
-            PlayerPrefs.SetInt("PreviousLevel", 11);
-        } else {
-            PlayerPrefs.SetInt("PreviousLevel", 11);
-        }
+        Scene currentScene = SceneManager.GetActiveScene();
+        PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
         gameActive = false;
         StartCoroutine(LoadFailScene());
         // transitionScript.ToFail();

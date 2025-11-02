@@ -77,7 +77,8 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     public void Fail() {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        PlayerPrefs.SetInt("PreviousLevel", 3);
+        Scene currentScene = SceneManager.GetActiveScene();
+        PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
         gameActive = false;
         foreach (GameObject g in mg.walls) {
             if (g.activeSelf) {

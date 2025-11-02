@@ -137,7 +137,8 @@ public class TheresAGhostInsideMe : MonoBehaviour
         failSound.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        PlayerPrefs.SetInt("PreviousLevel", 7);
+        Scene currentScene = SceneManager.GetActiveScene();
+        PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
         gameActive = false;
         // transitionScript.ToFail();
         StartCoroutine(LoadFailScene());
