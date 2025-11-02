@@ -4,21 +4,31 @@ public class AudioBlender : MonoBehaviour
 {
     [SerializeField] public AudioSource song1;
     [SerializeField] public AudioSource song2;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    [SerializeField] public bool backAndForth;
+
     void Start()
     {
-        
+        song1.Stop();
+        song2.Stop();
+
+        double startTime = AudioSettings.dspTime + 0.2;
+
+        song1.PlayScheduled(startTime);
+        song2.PlayScheduled(startTime);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (backAndForth) {
+            float r = Mathf.PingPong(Time.time * 0.2f, 1f);
+            SetRatio(r);
+        }
     }
 
-    public void SetRatio(float r) {
-
-        song1.volume = 2 * r - r * r;
-        song2.volume = 1 - r * r;
+    public void SetRatio(float r)
+    {
+        song1.volume = Mathf.Clamp01(2 * r - r * r);
+        song2.volume = Mathf.Clamp01(1 - r * r);
     }
 }

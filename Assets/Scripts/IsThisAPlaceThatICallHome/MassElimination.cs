@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 public class MassElimination : MonoBehaviour
 {
     [SerializeField] public bool menu;
+    [SerializeField] public bool audioBlend;
+    [SerializeField] public AudioBlender ab;
     [SerializeField] public float timeBetween = 0.1f;
     [SerializeField] public GameObject pillar;
     [SerializeField] public GameObject transition;
@@ -51,6 +53,9 @@ public class MassElimination : MonoBehaviour
             camera1.transform.position += new Vector3(0, -1.69f * Time.deltaTime, 201 * Time.deltaTime);
             camera1.transform.localRotation = Quaternion.Slerp(rotationStart, targetRotation, elapsed / duration);
             playersRemaining.text = $"Players Remaining:\n{(int) Mathf.Lerp(1000, 276, elapsed / duration)}";
+            if (audioBlend) {
+                ab.SetRatio(Mathf.Clamp01(elapsed / duration));
+            }
             elapsed += Time.deltaTime;
             yield return null;
         }
@@ -86,6 +91,7 @@ public class MassElimination : MonoBehaviour
                     ep.eliminate = false;
                     ep.drop = true;
                     ep.delay = 2f + (Mathf.Abs(x - 2) + z) / 10f;
+                    // ep.delay = 2f + (Mathf.Abs(x - 2) + z);
                 }
             }
         }
