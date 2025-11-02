@@ -96,8 +96,6 @@ public class Weapon : MonoBehaviour
 
     private string primaryWeaponCategory = "";
 
-    private float movementMultiplier = 1f;
-
     void Start()
     {
         playDrawWeaponSound();
@@ -167,7 +165,11 @@ public class Weapon : MonoBehaviour
         {
             if (primaryWeapon != "")
             {
-                scoped = false;
+                if (scoped)
+                {
+                    scoped = false;
+                    audioManager.playSound("SSG08Zoom");
+                }
                 weaponIndex = 1;
             }
         }
@@ -175,13 +177,21 @@ public class Weapon : MonoBehaviour
         {
             if (secondaryWeapon != "")
             {
-                scoped = false;
+                if (scoped)
+                {
+                    scoped = false;
+                    audioManager.playSound("SSG08Zoom");
+                }
                 weaponIndex = 2;
             }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            scoped = false;
+            if (scoped)
+            {
+                scoped = false;
+                audioManager.playSound("SSG08Zoom");
+            }
             weaponIndex = 3;
         }
 
@@ -198,10 +208,7 @@ public class Weapon : MonoBehaviour
         if (Input.GetMouseButtonDown(1) && weaponInfo.getScopedWeapons().Contains(primaryWeapon))
         {
             scoped = !scoped;
-            if (scoped)
-            {
-                audioManager.playSound("SSG08Zoom");
-            }
+            audioManager.playSound("SSG08Zoom");
         }
 
         Camera.main.fieldOfView = scoped ? zoomedFOV : defaultFOV;
@@ -275,14 +282,12 @@ public class Weapon : MonoBehaviour
         {
             fireCooldown = primaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
             range = primaryWeaponStats.GetValueOrDefault("range", 0);
-            movementMultiplier = primaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
             canHoldDown = primaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
         }
         else if (weaponIndex == 2)
         {
             fireCooldown = secondaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
             range = secondaryWeaponStats.GetValueOrDefault("range", 0);
-            movementMultiplier = secondaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
             canHoldDown = secondaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
         }
     }
@@ -369,7 +374,11 @@ public class Weapon : MonoBehaviour
                 //unzoom if AWP or Scouter
                 if (primaryWeapon == "AWP" || primaryWeapon == "SSG 08")
                 {
-                    scoped = false;
+                    if (scoped)
+                    {
+                        scoped = false;
+                        audioManager.playSound("SSG08Zoom");
+                    }
                 }
             }
 
@@ -815,6 +824,15 @@ public class Weapon : MonoBehaviour
 
     public float getMovementMultiplier()
     {
+        float movementMultiplier = 1f;
+        if (weaponIndex == 1)
+        {
+            movementMultiplier = weaponInfo.getWeaponStats(primaryWeapon, scoped).GetValueOrDefault("mobility", 250f) / 250f;
+        } else if (weaponIndex == 2)
+        {
+            movementMultiplier = weaponInfo.getWeaponStats(secondaryWeapon, false).GetValueOrDefault("mobility", 250f) / 250f;
+        }
+
         return movementMultiplier;
     }
 

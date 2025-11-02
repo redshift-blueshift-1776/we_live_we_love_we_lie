@@ -18,8 +18,8 @@ public class BulletTracer : MonoBehaviour
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, start);
         lineRenderer.SetPosition(1, end);
-        lineRenderer.startWidth = 0.04f;
-        lineRenderer.endWidth = 0.01f;
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.04f;
         lineRenderer.useWorldSpace = true;
 
         Gradient gradient = new Gradient();

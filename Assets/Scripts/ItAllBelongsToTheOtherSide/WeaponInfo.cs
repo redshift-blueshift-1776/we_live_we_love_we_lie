@@ -37,11 +37,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 35},
 
         //assault rifles
-        {"AK47", 36},
+        {"AK-47", 36},
         {"AUG", 28},
         {"FAMAS", 30},
         {"Galil AR", 30},
-        {"M4A1S", 38},
+        {"M4A1-S", 38},
         {"M4A4", 33},
         {"SG 553", 30},
 
@@ -88,11 +88,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 35},
 
         //assault rifles
-        {"AK47", 80},
+        {"AK-47", 80},
         {"AUG", 80},
         {"FAMAS", 80},
         {"Galil AR", 80},
-        {"M4A1S", 80},
+        {"M4A1-S", 80},
         {"M4A4", 80},
         {"SG 553", 80},
 
@@ -141,11 +141,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 666.67f},
 
         //assault rifles
-        {"AK47", 600},
+        {"AK-47", 600},
         {"AUG", 600},
         {"FAMAS", 666.67f},
         {"Galil AR", 666.67f},
-        {"M4A1S", 600},
+        {"M4A1-S", 600},
         {"M4A4", 666.67f},
         {"SG 553", 545.45f},
 
@@ -189,11 +189,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 25},
 
         //assault rifles
-        {"AK47", 30},
+        {"AK-47", 30},
         {"AUG", 30},
         {"FAMAS", 25},
         {"Galil AR", 35},
-        {"M4A1S", 20},
+        {"M4A1-S", 20},
         {"M4A4", 30},
         {"SG 553", 30},
 
@@ -237,11 +237,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 100},
 
         //assault rifles
-        {"AK47", 90},
+        {"AK-47", 90},
         {"AUG", 90},
         {"FAMAS", 90},
         {"Galil AR", 90},
-        {"M4A1S", 80},
+        {"M4A1-S", 80},
         {"M4A4", 90},
         {"SG 553", 90},
 
@@ -286,19 +286,19 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 230},
 
         //assault rifles
-        {"AK47", 215},
+        {"AK-47", 215},
         {"AUG", 220},
         {"AUG Scoped", 150},
         {"FAMAS", 220},
         {"Galil AR", 215},
-        {"M4A1S", 225},
+        {"M4A1-S", 225},
         {"M4A4", 225},
         {"SG 553", 210},
         {"SG 553 Scoped", 150},
 
         //snipers
         {"AWP", 200},
-        {"AWP Scoped", 100},
+        {"AWP Scoped", 120},
         {"G3SG1", 215},
         {"G3SG1 Scoped", 120},
         {"SCAR-20", 215},
@@ -342,11 +342,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 1},
 
         //assault rifles
-        {"AK47", 1},
+        {"AK-47", 1},
         {"AUG", 1},
         {"FAMAS", 1},
         {"Galil AR", 1},
-        {"M4A1S", 1},
+        {"M4A1-S", 1},
         {"M4A4", 1},
         {"SG 553", 1},
 
@@ -392,12 +392,12 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 2},
 
         //assault rifles
-        {"AK47", 0.5f},
+        {"AK-47", 0.5f},
         {"AUG", 3},
         {"AUG Scoped", 0.5f},
         {"FAMAS", 1},
         {"Galil AR", 1},
-        {"M4A1S", 0.5f},
+        {"M4A1-S", 0.5f},
         {"M4A4", 1.5f},
         {"SG 553", 3},
         {"SG 553 Scoped", 0.5f},
@@ -440,9 +440,9 @@ public class WeaponInfo : MonoBehaviour
         stats.Add("fireCooldown", convertRPMToPeriod(weaponFireRate.GetValueOrDefault(weaponName)));
         stats.Add("magazineSize", weaponMagazineSize.GetValueOrDefault(weaponName));
         stats.Add("totalAmmo", weaponTotalAmmo.GetValueOrDefault(weaponName));
-        stats.Add("mobility" + (scoped ? " Scoped" : ""), weaponMobility.GetValueOrDefault(weaponName));
+        stats.Add("mobility", weaponMobility.GetValueOrDefault(weaponName + (scoped ? " Scoped" : "")));
         stats.Add("holdToShoot", weaponHoldToShoot.GetValueOrDefault(weaponName));
-        stats.Add("baseInaccuracy" + (scoped ? " Scoped" : ""), weaponBaseInaccuracy.GetValueOrDefault(weaponName));
+        stats.Add("baseInaccuracy", weaponBaseInaccuracy.GetValueOrDefault(weaponName + (scoped ? " Scoped" : "")));
 
         return stats;
     }
