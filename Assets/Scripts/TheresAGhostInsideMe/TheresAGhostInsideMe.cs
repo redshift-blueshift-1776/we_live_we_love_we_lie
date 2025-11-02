@@ -27,7 +27,9 @@ public class TheresAGhostInsideMe : MonoBehaviour
     [Header("Audio")]
     [SerializeField] public GameObject loadingAudio;
     [SerializeField] public GameObject gameAudio;
+    [SerializeField] public GameObject gameAudio2;
     [SerializeField] public GameObject failSound;
+    [SerializeField] public AudioBlender ab;
 
     [Header("Cameras")]
     [SerializeField] public GameObject cam1;
@@ -60,6 +62,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
         winCanvas.SetActive(false);
         loadingAudio.SetActive(true);
         gameAudio.SetActive(false);
+        gameAudio2.SetActive(false);
         failSound.SetActive(false);
         System.Random rng = new System.Random();
         int n = boards.Length;
@@ -115,6 +118,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
                 StartCoroutine(GameWin());
             }
             timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
+            ab.SetRatio(timer / timeLimit);
             puzzles.text = $"Puzzle: {Mathf.Min(boardIndex + 1, 10)}/{boardsToBeat}";
             timer += Time.deltaTime;
         }
@@ -176,6 +180,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
         gameCanvas.SetActive(true);
         loadingAudio.SetActive(false);
         gameAudio.SetActive(true);
+        gameAudio2.SetActive(true);
         gameActive = true;
         timer = 0f;
     }
