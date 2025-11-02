@@ -89,7 +89,6 @@ public class PlayerMovement7 : MonoBehaviour
         {
             isSprinting = false;
         }
-        Debug.Log(weaponScript.getMovementMultiplier());
     }
 
     private void FixedUpdate()

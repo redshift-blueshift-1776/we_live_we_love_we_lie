@@ -147,7 +147,6 @@ public class Weapon : MonoBehaviour
 
     private void updateAmmoDisplay()
     {
-        //Debug.Log(currSecondaryMag + " " + secondaryTotalAmmo);
         if (primaryWeapon != "")
         {
             primaryAmmoText.text = $"{currPrimaryMag}/{primaryRemainingAmmo}";
