@@ -37,11 +37,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 35},
 
         //assault rifles
-        {"AK47", 36},
+        {"AK-47", 36},
         {"AUG", 28},
         {"FAMAS", 30},
         {"Galil AR", 30},
-        {"M4A1S", 38},
+        {"M4A1-S", 38},
         {"M4A4", 33},
         {"SG 553", 30},
 
@@ -62,44 +62,44 @@ public class WeaponInfo : MonoBehaviour
         {"Knife", 1},
 
         //pistols
-        {"USP-S", 25},
-        {"Glock-18", 25},
-        {"P250", 25},
-        {"P2000", 25},
-        {"Dual Berettas", 15},
-        {"Tec-9", 25},
-        {"CZ75-Auto", 10},
-        {"Desert Eagle", 50},
-        {"R8 Revolver", 75},
+        {"USP-S", 50},
+        {"Glock-18", 50},
+        {"P250", 50},
+        {"P2000", 50},
+        {"Dual Berettas", 35},
+        {"Tec-9", 50},
+        {"CZ75-Auto", 25},
+        {"Desert Eagle", 100},
+        {"R8 Revolver", 150},
 
         //shotguns
-        {"MAG-7", 5},
-        {"Nova", 10},
-        {"Sawed-Off", 6},
-        {"XM1014", 8},
+        {"MAG-7", 20},
+        {"Nova", 20},
+        {"Sawed-Off", 20},
+        {"XM1014", 20},
 
         //SMGs
-        {"MAC-10", 10},
-        {"MP5-SD", 15},
-        {"MP7", 15},
-        {"MP9", 15},
-        {"PP-Bizon", 15},
-        {"P90", 12},
-        {"UMP-45", 15},
+        {"MAC-10", 35},
+        {"MP5-SD", 35},
+        {"MP7", 35},
+        {"MP9", 35},
+        {"PP-Bizon", 35},
+        {"P90", 35},
+        {"UMP-45", 35},
 
         //assault rifles
-        {"AK47", 50},
-        {"AUG", 50},
-        {"FAMAS", 50},
-        {"Galil AR", 50},
-        {"M4A1S", 50},
-        {"M4A4", 50},
-        {"SG 553", 50},
+        {"AK-47", 80},
+        {"AUG", 80},
+        {"FAMAS", 80},
+        {"Galil AR", 80},
+        {"M4A1-S", 80},
+        {"M4A4", 80},
+        {"SG 553", 80},
 
         //snipers
         {"AWP", 200},
-        {"G3SG1", 30},
-        {"SCAR-20", 30},
+        {"G3SG1", 50},
+        {"SCAR-20", 50},
         {"SSG 08", 300},
 
         //machine guns
@@ -141,11 +141,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 666.67f},
 
         //assault rifles
-        {"AK47", 600},
+        {"AK-47", 600},
         {"AUG", 600},
         {"FAMAS", 666.67f},
         {"Galil AR", 666.67f},
-        {"M4A1S", 600},
+        {"M4A1-S", 600},
         {"M4A4", 666.67f},
         {"SG 553", 545.45f},
 
@@ -189,11 +189,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 25},
 
         //assault rifles
-        {"AK47", 30},
+        {"AK-47", 30},
         {"AUG", 30},
         {"FAMAS", 25},
         {"Galil AR", 35},
-        {"M4A1S", 20},
+        {"M4A1-S", 20},
         {"M4A4", 30},
         {"SG 553", 30},
 
@@ -237,11 +237,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 100},
 
         //assault rifles
-        {"AK47", 90},
+        {"AK-47", 90},
         {"AUG", 90},
         {"FAMAS", 90},
         {"Galil AR", 90},
-        {"M4A1S", 80},
+        {"M4A1-S", 80},
         {"M4A4", 90},
         {"SG 553", 90},
 
@@ -286,19 +286,19 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 230},
 
         //assault rifles
-        {"AK47", 215},
+        {"AK-47", 215},
         {"AUG", 220},
         {"AUG Scoped", 150},
         {"FAMAS", 220},
         {"Galil AR", 215},
-        {"M4A1S", 225},
+        {"M4A1-S", 225},
         {"M4A4", 225},
         {"SG 553", 210},
         {"SG 553 Scoped", 150},
 
         //snipers
         {"AWP", 200},
-        {"AWP Scoped", 100},
+        {"AWP Scoped", 120},
         {"G3SG1", 215},
         {"G3SG1 Scoped", 120},
         {"SCAR-20", 215},
@@ -342,11 +342,11 @@ public class WeaponInfo : MonoBehaviour
         {"UMP-45", 1},
 
         //assault rifles
-        {"AK47", 1},
+        {"AK-47", 1},
         {"AUG", 1},
         {"FAMAS", 1},
         {"Galil AR", 1},
-        {"M4A1S", 1},
+        {"M4A1-S", 1},
         {"M4A4", 1},
         {"SG 553", 1},
 
@@ -366,55 +366,55 @@ public class WeaponInfo : MonoBehaviour
     {
         {"Knife", 0},
         //pistols
-        {"USP-S", 3},
-        {"Glock-18", 3},
-        {"P250", 3},
-        {"P2000", 3},
-        {"Dual Berettas", 3},
-        {"Tec-9", 3},
-        {"CZ75-Auto", 15},
-        {"Desert Eagle", 2},
+        {"USP-S", 1},
+        {"Glock-18", 1},
+        {"P250", 1},
+        {"P2000", 1},
+        {"Dual Berettas", 1},
+        {"Tec-9", 1},
+        {"CZ75-Auto", 3},
+        {"Desert Eagle", 1},
         {"R8 Revolver", 1},
 
         //shotguns
-        {"MAG-7", 20},
-        {"Nova", 20},
-        {"Sawed-Off", 20},
-        {"XM1014", 20},
+        {"MAG-7", 5},
+        {"Nova", 3},
+        {"Sawed-Off", 4},
+        {"XM1014", 3},
 
         //SMGs
-        {"MAC-10", 10},
-        {"MP5-SD", 10},
-        {"MP7", 10},
-        {"MP9", 10},
-        {"PP-Bizon", 10},
-        {"P90", 10},
-        {"UMP-45", 10},
+        {"MAC-10", 2},
+        {"MP5-SD", 2},
+        {"MP7", 2},
+        {"MP9", 2},
+        {"PP-Bizon", 2},
+        {"P90", 2},
+        {"UMP-45", 2},
 
         //assault rifles
-        {"AK47", 5},
-        {"AUG", 5},
-        {"AUG Scoped", 2},
-        {"FAMAS", 5},
-        {"Galil AR", 5},
-        {"M4A1S", 5},
-        {"M4A4", 5},
-        {"SG 553", 5},
-        {"SG 553 Scoped", 1},
+        {"AK-47", 0.5f},
+        {"AUG", 3},
+        {"AUG Scoped", 0.5f},
+        {"FAMAS", 1},
+        {"Galil AR", 1},
+        {"M4A1-S", 0.5f},
+        {"M4A4", 1.5f},
+        {"SG 553", 3},
+        {"SG 553 Scoped", 0.5f},
 
         //snipers
-        {"AWP", 60},
-        {"AWP Scoped", 1},
-        {"G3SG1", 60},
-        {"G3SG1 Scoped", 1},
-        {"SCAR-20", 60},
-        {"SCAR-20 Scoped", 1},
-        {"SSG 08", 60},
+        {"AWP", 20},
+        {"AWP Scoped", 0},
+        {"G3SG1", 20},
+        {"G3SG1 Scoped", 0},
+        {"SCAR-20", 20},
+        {"SCAR-20 Scoped", 0},
+        {"SSG 08", 20},
         {"SSG 08 Scoped", 0},
 
         //machine guns
-        {"M249", 5},
-        {"Negev", 5},
+        {"M249", 2},
+        {"Negev", 2.5f},
     };
 
     private HashSet<string> scopedWeapons = new HashSet<string> {
@@ -440,11 +440,16 @@ public class WeaponInfo : MonoBehaviour
         stats.Add("fireCooldown", convertRPMToPeriod(weaponFireRate.GetValueOrDefault(weaponName)));
         stats.Add("magazineSize", weaponMagazineSize.GetValueOrDefault(weaponName));
         stats.Add("totalAmmo", weaponTotalAmmo.GetValueOrDefault(weaponName));
-        stats.Add("mobility" + (scoped ? " Scoped" : ""), weaponMobility.GetValueOrDefault(weaponName));
+        stats.Add("mobility", weaponMobility.GetValueOrDefault(weaponName + (scoped ? " Scoped" : "")));
         stats.Add("holdToShoot", weaponHoldToShoot.GetValueOrDefault(weaponName));
-        stats.Add("baseInaccuracy" + (scoped ? " Scoped" : ""), weaponBaseInaccuracy.GetValueOrDefault(weaponName));
+        stats.Add("baseInaccuracy", weaponBaseInaccuracy.GetValueOrDefault(weaponName + (scoped ? " Scoped" : "")));
 
         return stats;
+    }
+    
+    public HashSet<string> getScopedWeapons()
+    {
+        return scopedWeapons;
     }
 
     public bool isWeaponScoped(string weaponName)

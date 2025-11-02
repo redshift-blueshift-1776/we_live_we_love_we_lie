@@ -345,7 +345,7 @@ public class WeaponUI : MonoBehaviour
         disableAllPrimaryWeaponUI();
         switch (selectedPrimary)
         {
-            case "MAG7":
+            case "MAG-7":
                 MAG7ButtonBorder.SetActive(true);
                 break;
             case "Nova":
@@ -410,6 +410,12 @@ public class WeaponUI : MonoBehaviour
                 break;
             case "SSG 08":
                 SSG08ButtonBorder.SetActive(true);
+                break;
+            case "M249":
+                M249ButtonBorder.SetActive(true);
+                break;
+            case "Negev":
+                NegevButtonBorder.SetActive(true);
                 break;
             default:
                 MAG7ButtonBorder.SetActive(true);

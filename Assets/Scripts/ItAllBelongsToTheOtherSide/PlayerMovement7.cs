@@ -89,7 +89,7 @@ public class PlayerMovement7 : MonoBehaviour
         {
             isSprinting = false;
         }
-        
+        Debug.Log(weaponScript.getMovementMultiplier());
     }
 
     private void FixedUpdate()
@@ -177,6 +177,7 @@ public class PlayerMovement7 : MonoBehaviour
         float maxSpeedMult = weaponScript.getMovementMultiplier();
         if (isGrounded)
         {
+            
             bool passingMaxSpeed = (isSprinting && horizontalVelocity.magnitude > maxRunSpeed * maxSpeedMult)
                                     || (!isSprinting && horizontalVelocity.magnitude > maxWalkSpeed * maxSpeedMult);
 
@@ -204,7 +205,9 @@ public class PlayerMovement7 : MonoBehaviour
         bool isSprinting = Input.GetKey(KeyCode.LeftShift);
 
         Vector3 externalForce = Vector3.zero;
-        Vector3 inputDirection = getInputDirectionVector() * (isSprinting ? runForceMagnitude : walkForceMagnitude);
+
+        float multiplier = weaponScript.getMovementMultiplier();
+        Vector3 inputDirection = getInputDirectionVector() * (isSprinting ? runForceMagnitude : walkForceMagnitude) * multiplier;
         externalForce.x = inputDirection.x;
         externalForce.z = inputDirection.z;
 
@@ -284,6 +287,14 @@ public class PlayerMovement7 : MonoBehaviour
         {
             velocity.x = 0;
             velocity.z = 0;
+        }
+
+        float maxSpeed = (isSprinting ? maxRunSpeed : maxWalkSpeed) * weaponScript.getMovementMultiplier();
+        if (horizontalVelocity.magnitude > maxSpeed)
+        {
+            horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
+            velocity.x = horizontalVelocity.x;
+            velocity.z = horizontalVelocity.z;
         }
 
         if (Mathf.Abs(velocity.x) < minHorizontalComponentVelocityThreshold)

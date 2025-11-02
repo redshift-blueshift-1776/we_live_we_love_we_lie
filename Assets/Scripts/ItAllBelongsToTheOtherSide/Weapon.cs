@@ -10,8 +10,12 @@ public class Weapon : MonoBehaviour
     private float timeSinceAttack = Mathf.Infinity;
 
     [SerializeField] private Player7 player7;
+    [SerializeField] private PlayerMovement7 movementScript;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private AudioManager audioManager;
+    [SerializeField] private GameObject bulletTracerPrefab;
+    [SerializeField] private GameObject muzzlePosition;
+
     [SerializeField] private Animator knifeAnimator;
     [SerializeField] private AnimationClip knifeAttackAnimation;
     public WeaponInfo weaponInfo;
@@ -92,8 +96,6 @@ public class Weapon : MonoBehaviour
 
     private string primaryWeaponCategory = "";
 
-    private float movementMultiplier = 1f;
-
     void Start()
     {
         playDrawWeaponSound();
@@ -102,6 +104,7 @@ public class Weapon : MonoBehaviour
 
         primaryAmmoText.text = "";
         secondaryAmmoText.text = "";
+        defaultFOV = Camera.main.fieldOfView;
     }
 
     // Update is called once per frame
@@ -118,6 +121,8 @@ public class Weapon : MonoBehaviour
         handleSwitchWeapon();
 
         handleReloading();
+
+        handleScope();
 
         updateAmmoDisplay();
     }
@@ -145,11 +150,11 @@ public class Weapon : MonoBehaviour
         //Debug.Log(currSecondaryMag + " " + secondaryTotalAmmo);
         if (primaryWeapon != "")
         {
-            primaryWeaponText.text = $"{currPrimaryMag}/{primaryRemainingAmmo}";
+            primaryAmmoText.text = $"{currPrimaryMag}/{primaryRemainingAmmo}";
         }
         if (secondaryWeapon != "")
         {
-            secondaryWeaponText.text = $"{currSecondaryMag}/{secondaryRemainingAmmo}";
+            secondaryAmmoText.text = $"{currSecondaryMag}/{secondaryRemainingAmmo}";
         }
     }
 
@@ -160,6 +165,11 @@ public class Weapon : MonoBehaviour
         {
             if (primaryWeapon != "")
             {
+                if (scoped)
+                {
+                    scoped = false;
+                    audioManager.playSound("SSG08Zoom");
+                }
                 weaponIndex = 1;
             }
         }
@@ -167,11 +177,21 @@ public class Weapon : MonoBehaviour
         {
             if (secondaryWeapon != "")
             {
+                if (scoped)
+                {
+                    scoped = false;
+                    audioManager.playSound("SSG08Zoom");
+                }
                 weaponIndex = 2;
             }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
+            if (scoped)
+            {
+                scoped = false;
+                audioManager.playSound("SSG08Zoom");
+            }
             weaponIndex = 3;
         }
 
@@ -179,6 +199,19 @@ public class Weapon : MonoBehaviour
         {
             playDrawWeaponSound();
         }
+    }
+    private float defaultFOV;
+    private const float zoomedFOV = 30f;
+    private bool scoped;
+    private void handleScope()
+    {
+        if (Input.GetMouseButtonDown(1) && weaponInfo.getScopedWeapons().Contains(primaryWeapon))
+        {
+            scoped = !scoped;
+            audioManager.playSound("SSG08Zoom");
+        }
+
+        Camera.main.fieldOfView = scoped ? zoomedFOV : defaultFOV;
     }
 
     private void displayWeaponModel()
@@ -249,14 +282,12 @@ public class Weapon : MonoBehaviour
         {
             fireCooldown = primaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
             range = primaryWeaponStats.GetValueOrDefault("range", 0);
-            movementMultiplier = primaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
             canHoldDown = primaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
         }
         else if (weaponIndex == 2)
         {
             fireCooldown = secondaryWeaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
             range = secondaryWeaponStats.GetValueOrDefault("range", 0);
-            movementMultiplier = secondaryWeaponStats.GetValueOrDefault("mobility", 250f) / 250f;
             canHoldDown = secondaryWeaponStats.GetValueOrDefault("holdToShoot", 0) == 1 ? true : false;
         }
     }
@@ -264,10 +295,12 @@ public class Weapon : MonoBehaviour
     private int primaryMagSize = 0;
     private int currPrimaryMag = 0;
     private int primaryRemainingAmmo = 0;
+    private float primaryBaseInaccuracy = 0;
 
     private int secondaryMagSize = 0;
     private int currSecondaryMag = 0;
     private int secondaryRemainingAmmo = 0;
+    private float secondaryBaseInaccuracy = 0;
     private void shoot(float range)
     {
         //do not allow shooting when out of ammo; automatically reload instead
@@ -288,18 +321,73 @@ public class Weapon : MonoBehaviour
         {
             return;
         }
-        RaycastHit hitData;
-        playShootWeaponSound();
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hitData, range))
+
+        float maxBaseAngleDeviation = weaponIndex == 1 ? primaryBaseInaccuracy : secondaryBaseInaccuracy;
+        //if scoped
+        if (scoped && weaponIndex == 1)
         {
-            GameObject objectHit = hitData.collider.gameObject;
-            GameObject newBulletHole = Instantiate(bulletHolePrefab);
-            newBulletHole.transform.position = hitData.point;
-            newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
-            newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
-            newBulletHole.transform.SetParent(objectHit.transform);
-            StartCoroutine(fadeBulletHole(newBulletHole));
+            maxBaseAngleDeviation = weaponInfo.getWeaponStats(primaryWeapon, true).GetValueOrDefault("baseInaccuracy", 0);
         }
+
+
+
+        float playerSpeed = movementScript.getVelocity().magnitude;
+        float playerSpeedInaccuracyMult = 2.5f;
+
+        float maxAngleDeviation = maxBaseAngleDeviation + (playerSpeed > 0.25f ? playerSpeedInaccuracyMult * playerSpeed : 0);
+
+        int bullets = 1;
+        if (weaponIndex == 1)
+        {
+            if (primaryWeaponCategory == "Shotgun")
+            {
+                bullets = 8;
+            }
+        }
+
+        playShootWeaponSound();
+        for (int i = 0; i < bullets; i++)
+        {
+            Quaternion randomInaccuracy = Quaternion.Euler(
+                Random.value * 2 * maxAngleDeviation - maxAngleDeviation,
+                Random.value * 2 * maxAngleDeviation - maxAngleDeviation,
+                Random.value * 2 * maxAngleDeviation - maxAngleDeviation
+            );
+            RaycastHit hitData;
+            Vector3 shootDirection = (randomInaccuracy * playerCamera.transform.forward).normalized;
+            Vector3 origin = playerCamera.transform.position;
+            Vector3 endPoint = origin + shootDirection * range;
+
+            if (Physics.Raycast(origin, shootDirection, out hitData, range))
+            {
+                endPoint = hitData.point;
+
+                GameObject objectHit = hitData.collider.gameObject;
+                GameObject newBulletHole = Instantiate(bulletHolePrefab);
+                newBulletHole.transform.position = hitData.point;
+                newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
+                newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                newBulletHole.transform.SetParent(objectHit.transform);
+                StartCoroutine(fadeBulletHole(newBulletHole));
+
+
+                //unzoom if AWP or Scouter
+                if (primaryWeapon == "AWP" || primaryWeapon == "SSG 08")
+                {
+                    if (scoped)
+                    {
+                        scoped = false;
+                        audioManager.playSound("SSG08Zoom");
+                    }
+                }
+            }
+
+            GameObject tracer = Instantiate(bulletTracerPrefab);
+            BulletTracer tracerScript = tracer.GetComponent<BulletTracer>();
+            float tracerLife = 0.12f;
+            tracerScript.Initialize(muzzlePosition.transform.position, endPoint, tracerLife);
+        }
+
         if (weaponIndex == 1)
         {
             currPrimaryMag -= 1;
@@ -331,6 +419,7 @@ public class Weapon : MonoBehaviour
 
             secondaryReloading = true;
         }
+        scoped = false;
 
         float t1 = audioManager.getLength("reload1");
         float t2 = audioManager.getLength("reload2");
@@ -570,15 +659,17 @@ public class Weapon : MonoBehaviour
         weaponIndex = 1;
         primaryWeaponText.text = primary;
         primaryWeaponStats = weaponInfo.getWeaponStats(primary, false);
+
         primaryMagSize = (int) primaryWeaponStats.GetValueOrDefault("magazineSize", 0);
         primaryRemainingAmmo = (int) primaryWeaponStats.GetValueOrDefault("totalAmmo", 0);
+        primaryBaseInaccuracy = primaryWeaponStats.GetValueOrDefault("baseInaccuracy", 0);
 
         StartCoroutine(reload());
 
         disableAllPrimary();
         switch (primaryWeapon)
         {
-            case "MAG7":
+            case "MAG-7":
                 MAG7.SetActive(true);
                 primaryWeaponCategory = "Shotgun";
                 break;
@@ -690,6 +781,7 @@ public class Weapon : MonoBehaviour
 
         secondaryMagSize = (int) secondaryWeaponStats.GetValueOrDefault("magazineSize", 0);
         secondaryRemainingAmmo = (int) secondaryWeaponStats.GetValueOrDefault("totalAmmo", 0);
+        secondaryBaseInaccuracy = secondaryWeaponStats.GetValueOrDefault("baseInaccuracy", 0);
 
         StartCoroutine(reload());
 
@@ -732,6 +824,15 @@ public class Weapon : MonoBehaviour
 
     public float getMovementMultiplier()
     {
+        float movementMultiplier = 1f;
+        if (weaponIndex == 1)
+        {
+            movementMultiplier = weaponInfo.getWeaponStats(primaryWeapon, scoped).GetValueOrDefault("mobility", 250f) / 250f;
+        } else if (weaponIndex == 2)
+        {
+            movementMultiplier = weaponInfo.getWeaponStats(secondaryWeapon, false).GetValueOrDefault("mobility", 250f) / 250f;
+        }
+
         return movementMultiplier;
     }
 
