@@ -27,16 +27,16 @@ public class Player5Easy : MonoBehaviour
     private const float staticCoefficientOfFriction = 1.5f;
     private const float kineticCoefficientOfFriction = 1.4f;
 
-    private float airResistanceVerticalCoefficient = 0.25f;
-    private float airResistanceHorizontalCoefficient = 0.01f;
+    private float airResistanceVerticalCoefficient = 0.15f;
+    private float airResistanceHorizontalCoefficient = 0.1f;
 
     private float minHorizontalComponentVelocityThreshold = 0.0001f;
 
-    private const float walkForceMagnitude = 30f;
-    private const float runForceMagnitude = 60f;
+    private const float walkForceMagnitude = 50f;
+    private const float runForceMagnitude = 100f;
 
-    private const float airAccelerationMultiplier = 2f;
-    private const float airForceMagnitude = 80f;
+    private const float airAccelerationMultiplier = 0.5f;
+    private const float airForceMagnitude = 100f;
 
     private const float bhopSpeedRetention = 0.99f;
     private const float landingSpeedRetention = 0.9f;
@@ -45,8 +45,8 @@ public class Player5Easy : MonoBehaviour
     private bool wasGroundedLastFrame = false;
 
     private const float maxWalkSpeed = 4f;
-    private const float maxRunSpeed = 8f;
-    private const float maxAirSpeed = 15f;
+    private const float maxRunSpeed = 7f;
+    private const float maxAirSpeed = 7f;
 
     private Vector3 velocity = Vector3.zero;
     private bool isGrounded = false;
@@ -287,11 +287,11 @@ public class Player5Easy : MonoBehaviour
     {
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
-        if (Vector3.Dot(horizontalVelocity, frictionForce) > 0)
-        {
-            velocity.x = 0;
-            velocity.z = 0;
-        }
+        //if (Vector3.Dot(horizontalVelocity, frictionForce) > 0)
+        //{
+        //    velocity.x = 0;
+        //    velocity.z = 0;
+        //}
 
         float maxSpeed = isGrounded
         ? (isSprinting ? maxRunSpeed : maxWalkSpeed)
