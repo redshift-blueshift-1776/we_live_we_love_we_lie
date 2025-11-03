@@ -391,6 +391,11 @@ public class Player5Easy : MonoBehaviour
         return velocity;
     }
 
+    public void setVelocity(Vector3 velocity)
+    {
+        this.velocity = velocity;
+    }
+
     public float getCurrentMaxSpeed()
     {
         if (isGrounded)

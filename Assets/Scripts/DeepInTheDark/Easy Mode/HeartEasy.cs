@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Heart : MonoBehaviour
+public class HeartEasy : MonoBehaviour
 {
     private bool collected;
 
     public GameObject heart;
     public AudioManager audioManager;
-    public PlayerMovement playerMovement;
+    public Player5Easy playerMovement;
     public Canvas endScreenCanvas;
     public Image backgroundFilter;
     public TMP_Text endScreenText;
@@ -82,10 +82,10 @@ public class Heart : MonoBehaviour
             {
                 yield break;
             }
-            
+
             heart.transform.position = originalPosition + new Vector3(
-                0, 
-                verticalDisplacementAmplitude * Mathf.Sin(2 * Mathf.PI / verticalDisplacementPeriod * positionTime), 
+                0,
+                verticalDisplacementAmplitude * Mathf.Sin(2 * Mathf.PI / verticalDisplacementPeriod * positionTime),
                 0
             );
 
@@ -245,18 +245,23 @@ public class Heart : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            
+
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 StartCoroutine(collect());
             }
             else
             {
-                Vector3 currVelocity = playerMovement.getPlayerVelocity();
+                Vector3 currVelocity = playerMovement.getVelocity();
                 float vx = currVelocity.x;
                 float vy = currVelocity.y;
                 float vz = currVelocity.z;
-                playerMovement.setPlayerVelocity(new Vector3(-vx, vy, -vz));
+                playerMovement.setVelocity(new Vector3(-vx, vy, -vz));
+
+                Vector3 pushDirection = (collision.transform.position - heart.transform.position).normalized;
+                pushDirection.y = 0; // Keep push horizontal only
+                collision.transform.position += pushDirection * 0.5f;
+
                 audioManager.playSound($"bounce{Random.Range(1, 4)}");
             }
         }
