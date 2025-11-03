@@ -5,14 +5,16 @@ using UnityEngine.UI;
 public class Player7 : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private float health = 60f;
+    private float health = 100f;
 
     [SerializeField] private GameObject UICanvas;
     [SerializeField] private Slider healthBarSlider;
     [SerializeField] private TMP_Text healthNumberText;
     [SerializeField] private Image healthBarFill;
+    
 
     [SerializeField] private GameObject weaponShopCanvas;
+    [SerializeField] private GameSettings gameSettings;
 
     private bool isInWeaponShop = false;
 
@@ -34,7 +36,7 @@ public class Player7 : MonoBehaviour
             isInWeaponShop = !isInWeaponShop;
         }
         weaponShopCanvas.SetActive(isInWeaponShop);
-        if (isInWeaponShop)
+        if (isInWeaponShop || gameSettings.isInSettings())
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;

@@ -22,6 +22,7 @@ public class GameSettings : MonoBehaviour
 
         mouseSettingsButton.onClick.AddListener(() =>
         {
+            Debug.Log("mouse");
             settingStack.Push("Mouse");
         });
     }

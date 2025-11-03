@@ -1,45 +1,14 @@
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UI.Image;
 
-public class PlayerMovement7 : MonoBehaviour
+public class Player5Easy : MonoBehaviour
 {
     [SerializeField] private GameObject playerCamera;
     private CharacterController characterController;
     [SerializeField] private GameObject body;
+    [SerializeField] private GameObject UICanvas;
 
     [SerializeField] private GameSettings gameSettings;
-    [SerializeField] private Player7 player7;
-    [SerializeField] private Weapon weaponScript;
-
-    private const float m = 1.0f;   //mass
-    private const float g = 9.8f;
-
-    private const float staticCoefficientOfFriction = 1.5f;
-    private const float kineticCoefficientOfFriction = 1.4f;
-
-    private float airResistanceVerticalCoefficient = 0.25f;
-    private float airResistanceHorizontalCoefficient = 0.1f;
-
-    private float minHorizontalComponentVelocityThreshold = 0.0001f;
-
-    private const float walkForceMagnitude = 30f;
-    private const float runForceMagnitude = 60f;
-
-    private const float airAccelerationMultiplier = 0.6f;
-    private const float airForceMagnitude = 30f;
-
-    private const float bhopSpeedRetention = 0.95f;
-    private const float landingSpeedRetention = 0.7f;
-    private const float bhopTimingWindow = 0.1f;
-    private float timeSinceGrounded = 0f;
-    private bool wasGroundedLastFrame = false;
-
-    private const float maxWalkSpeed = 2f;
-    private const float maxRunSpeed = 4f;
-    private const float maxAirSpeed = 6f;
 
     private const float maxJumpHeight = 1.25f;
 
@@ -52,12 +21,36 @@ public class PlayerMovement7 : MonoBehaviour
     private float yaw;
     private float pitch;
 
+    private const float m = 1.0f;   //mass
+    private const float g = 9.8f;
+
+    private const float staticCoefficientOfFriction = 1.5f;
+    private const float kineticCoefficientOfFriction = 1.4f;
+
+    private float airResistanceVerticalCoefficient = 0.25f;
+    private float airResistanceHorizontalCoefficient = 0.01f;
+
+    private float minHorizontalComponentVelocityThreshold = 0.0001f;
+
+    private const float walkForceMagnitude = 30f;
+    private const float runForceMagnitude = 60f;
+
+    private const float airAccelerationMultiplier = 2f;
+    private const float airForceMagnitude = 80f;
+
+    private const float bhopSpeedRetention = 0.99f;
+    private const float landingSpeedRetention = 0.9f;
+    private const float bhopTimingWindow = 0.1f;
+    private float timeSinceGrounded = 0f;
+    private bool wasGroundedLastFrame = false;
+
+    private const float maxWalkSpeed = 4f;
+    private const float maxRunSpeed = 8f;
+    private const float maxAirSpeed = 15f;
+
     private Vector3 velocity = Vector3.zero;
     private bool isGrounded = false;
     private bool isSprinting = false;
-
-    private bool inUIMenu = false;
-    
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -79,11 +72,12 @@ public class PlayerMovement7 : MonoBehaviour
     void Update()
     {
         isGrounded = checkGrounded();
-        inUIMenu = gameSettings.isInSettings() || player7.getIsInWeaponShop();
-        if (!inUIMenu)
+
+        if (!gameSettings.isInSettings())
         {
             rotateCamera();
         }
+        handleSensitivityChange();
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -93,14 +87,12 @@ public class PlayerMovement7 : MonoBehaviour
         {
             isSprinting = false;
         }
-
-        handleSensitivityChange();
     }
 
     private void handleSensitivityChange()
     {
-        sensitivityX = sliderX.value;
-        sensitivityY = sliderY.value;
+       sensitivityX = sliderX.value;
+       sensitivityY = sliderY.value;
     }
 
     private void FixedUpdate()
@@ -108,7 +100,7 @@ public class PlayerMovement7 : MonoBehaviour
         if (isGrounded)
         {
             timeSinceGrounded = timeSinceGrounded + (!wasGroundedLastFrame ? 0f : Time.fixedDeltaTime);
-        } 
+        }
 
         Vector3 netForce = getNetForce();
 
@@ -117,7 +109,7 @@ public class PlayerMovement7 : MonoBehaviour
         Vector3 acceleration = getAcceleration(netForce);
 
         velocity += acceleration * Time.fixedDeltaTime;
-        
+
         handleHorizontalVelocityChanges(frictionForce);
 
         movePlayer();
@@ -141,7 +133,8 @@ public class PlayerMovement7 : MonoBehaviour
 
         Vector3 gravityForce = Vector3.zero;
 
-        if (!isGrounded) {
+        if (!isGrounded)
+        {
             gravityForce.y = -m * g;
         }
 
@@ -184,13 +177,11 @@ public class PlayerMovement7 : MonoBehaviour
         Vector3 externalForce = getExternalForce();
 
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
-
-        float maxSpeedMult = weaponScript.getMovementMultiplier();
         if (isGrounded)
         {
-            
-            bool passingMaxSpeed = (isSprinting && horizontalVelocity.magnitude > maxRunSpeed * maxSpeedMult)
-                                    || (!isSprinting && horizontalVelocity.magnitude > maxWalkSpeed * maxSpeedMult);
+
+            bool passingMaxSpeed = (isSprinting && horizontalVelocity.magnitude > maxRunSpeed)
+                                    || (!isSprinting && horizontalVelocity.magnitude > maxWalkSpeed);
 
             if (!passingMaxSpeed)
             {
@@ -198,9 +189,10 @@ public class PlayerMovement7 : MonoBehaviour
             }
 
             horizontalForce += getGroundFrictionForce();
-        } else
+        }
+        else
         {
-            if (horizontalVelocity.magnitude < maxAirSpeed * maxSpeedMult)
+            if (horizontalVelocity.magnitude < maxAirSpeed)
             {
                 horizontalForce += getAirStrafeForce(externalForce, horizontalVelocity);
             }
@@ -217,7 +209,7 @@ public class PlayerMovement7 : MonoBehaviour
 
         Vector3 externalForce = Vector3.zero;
 
-        float multiplier = weaponScript.getMovementMultiplier();
+        float multiplier = 1;
         Vector3 inputDirection = getInputDirectionVector() * (isSprinting ? runForceMagnitude : walkForceMagnitude) * multiplier;
         externalForce.x = inputDirection.x;
         externalForce.z = inputDirection.z;
@@ -277,7 +269,8 @@ public class PlayerMovement7 : MonoBehaviour
                 {
                     velocity.x *= bhopSpeedRetention;
                     velocity.z *= bhopSpeedRetention;
-                } else
+                }
+                else
                 {
                     velocity.x *= landingSpeedRetention;
                     velocity.z *= landingSpeedRetention;
@@ -300,9 +293,9 @@ public class PlayerMovement7 : MonoBehaviour
             velocity.z = 0;
         }
 
-        float maxSpeed = (isGrounded
+        float maxSpeed = isGrounded
         ? (isSprinting ? maxRunSpeed : maxWalkSpeed)
-        : maxAirSpeed) * weaponScript.getMovementMultiplier();
+        : maxAirSpeed; ;
         if (horizontalVelocity.magnitude > maxSpeed)
         {
             horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
@@ -405,11 +398,12 @@ public class PlayerMovement7 : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 return maxRunSpeed;
-            } else
+            }
+            else
             {
                 return maxWalkSpeed;
             }
-        } 
+        }
 
         return Mathf.Infinity;
     }
@@ -435,10 +429,5 @@ public class PlayerMovement7 : MonoBehaviour
             }
         }
         return false;
-    }
-
-    public void setInUIMenu(bool b)
-    {
-        inUIMenu = b;
     }
 }
