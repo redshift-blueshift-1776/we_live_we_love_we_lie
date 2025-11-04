@@ -336,96 +336,97 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     public string[] YellowClockPattern(int time_start, float x_start, float y_start, float z_start) {
         string[] ret = new string[12];
         if (hard) {
-            ret = new string[29];
+            ret = new string[30];
 
             ret[0] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            ret[1] = "" + (0 - time_start) + "," + x_start + "," + (y_start - 1) + "," + z_start;
             time_start += 4;
             y_start += 1;
-            ret[1] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
-            time_start += 2;
-            x_start -= 1;
             ret[2] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start -= 1;
             ret[3] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            y_start += 1f;
+            x_start -= 1;
             ret[4] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             y_start += 1f;
             ret[5] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1f;
+            ret[6] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             x_start += 2f;
 
-            ret[6] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            ret[7] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             y_start -= 1f;
-            ret[7] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
-            time_start += 1;
-            x_start -= 0.5f;
             ret[8] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 1;
             x_start -= 0.5f;
             ret[9] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
-            time_start += 2;
-            y_start -= 1;
+            time_start += 1;
+            x_start -= 0.5f;
             ret[10] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            y_start -= 1;
             ret[11] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            y_start += 1;
+            x_start += 1;
             ret[12] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             y_start += 1;
             ret[13] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start += 1;
+            ret[14] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             x_start -= 2;
 
-            ret[14] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
-            time_start += 2;
-            y_start += 1;
             ret[15] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            y_start += 1;
             ret[16] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            y_start -= 1;
+            x_start += 1;
             ret[17] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             y_start -= 1;
             ret[18] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            y_start -= 1;
             ret[19] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            y_start -= 1;
+            x_start += 1;
             ret[20] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            y_start -= 1;
+            ret[21] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             x_start += 2;
 
-            ret[21] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
-            time_start += 2;
-            y_start += 1;
             ret[22] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            y_start += 1;
             ret[23] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            y_start -= 1;
+            x_start += 1;
             ret[24] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             y_start -= 1;
             ret[25] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start += 1;
+            y_start -= 1;
             ret[26] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            y_start -= 1;
+            x_start += 1;
             ret[27] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start -= 2;
+            y_start -= 1;
             ret[28] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+            time_start += 2;
+            x_start -= 2;
+            ret[29] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
         } else {
             ret = new string[20];
 
@@ -461,7 +462,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             time_start += 2;
             y_start += 1;
             time_start += 2;
-            y_start += 1;
+            // y_start += 1;
             ret[8] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 4;
             x_start -= 2;
@@ -470,12 +471,12 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             time_start += 2;
             y_start += 1;
             time_start += 2;
-            x_start += 1;
+            // x_start += 1;
             ret[10] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             y_start -= 1;
             time_start += 2;
-            y_start -= 1;
+            // y_start -= 1;
             ret[11] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start += 1;
@@ -488,14 +489,14 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
             ret[14] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            y_start += 1;
+            // y_start += 1;
             time_start += 2;
             x_start += 1;
             ret[15] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             y_start -= 1;
             time_start += 2;
-            y_start -= 1;
+            // y_start -= 1;
             ret[16] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
             x_start += 1;
@@ -504,8 +505,48 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             y_start -= 1;
             ret[18] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
             time_start += 2;
-            x_start -= 2;
+            x_start -= 1;
             ret[19] = "" + time_start + "," + x_start + "," + y_start + "," + z_start;
+        }
+        return ret;
+    }
+
+    public string[] wallSeparatedPattern(int time_start, float x_start, float y_start, float z_start, int repeats) {
+        string[] ret = new string[8 * repeats];
+        
+        for (int i = 0; i < repeats; i++) {
+            if (hard) {
+                ret[8 * i] = "" + time_start + "," + (x_start - 2) + "," + y_start + "," + z_start;
+            } else {
+                ret[8 * i] = "" + time_start + "," + (x_start - 1) + "," + y_start + "," + z_start;
+            }
+            time_start += 4;
+            if (hard) {
+                ret[8 * i + 1] = "" + (0 - time_start) + "," + x_start + "," + (y_start - 1) + "," + z_start;
+                ret[8 * i + 2] = "" + (0 - time_start) + "," + x_start + "," + (y_start - 2) + "," + z_start;
+                ret[8 * i + 3] = "" + time_start + "," + x_start + "," + (y_start + 2) + "," + z_start;
+            } else {
+                ret[8 * i + 1] = "" + (0 - time_start) + "," + x_start + "," + y_start + "," + z_start;
+                ret[8 * i + 2] = "" + (0 - time_start) + "," + x_start + "," + (y_start + 1) + "," + z_start;
+                ret[8 * i + 3] = "" + (0 - time_start) + "," + x_start + "," + (y_start - 1) + "," + z_start;
+            }
+            time_start += 4;
+            if (hard) {
+                ret[8 * i + 4] = "" + time_start + "," + (x_start + 2) + "," + y_start + "," + z_start;
+            } else {
+                ret[8 * i + 4] = "" + time_start + "," + (x_start + 1) + "," + y_start + "," + z_start;
+            }
+            time_start += 4;
+            if (hard) {
+                ret[8 * i + 5] = "" + (0 - time_start) + "," + x_start + "," + (y_start + 1) + "," + z_start;
+                ret[8 * i + 6] = "" + (0 - time_start) + "," + x_start + "," + (y_start + 2) + "," + z_start;
+                ret[8 * i + 7] = "" + time_start + "," + x_start + "," + (y_start - 2) + "," + z_start;
+            } else {
+                ret[8 * i + 5] = "" + (0 - time_start) + "," + x_start + "," + y_start + "," + z_start;
+                ret[8 * i + 6] = "" + (0 - time_start) + "," + x_start + "," + (y_start + 1) + "," + z_start;
+                ret[8 * i + 7] = "" + (0 - time_start) + "," + x_start + "," + (y_start - 1) + "," + z_start;
+            }
+            time_start += 4;
         }
         return ret;
     }
@@ -763,6 +804,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             "-334,-2,-2,120",
 
             "336,1,1,120",
+            "-336,2,1,120",
+            "-336,0,1,120",
             "338,1,0.8,120",
             "339,1,0.6,120",
             "340,1,0.4,120",
@@ -789,6 +832,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             "382,0,1,120",
 
             "384,1,0,120",
+            "-384,1,1,120",
+            "-384,1,-1,120",
             "388,0,0,120",
             "390,-0.5,0,120",
             "392,-0.5,-1,120",
@@ -849,25 +894,26 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
             notes.AddRange(randomScatter(times,1));
 
-            times = new int[] {
-                704 + 128,
-                712 + 128,
-                720+ 128,
-                728 + 128,
-                736+ 128,
-                744 + 128,
-                752+ 128,
-                760 + 128,
-                768+ 128,
-                776 + 128,
-                784+ 128,
-                792+ 128,
-                800+ 128,
-                808 + 128,
-                816+ 128
-            };
+            // times = new int[] {
+            //     704 + 128,
+            //     712 + 128,
+            //     720+ 128,
+            //     728 + 128,
+            //     736+ 128,
+            //     744 + 128,
+            //     752+ 128,
+            //     760 + 128,
+            //     768+ 128,
+            //     776 + 128,
+            //     784+ 128,
+            //     792+ 128,
+            //     800+ 128,
+            //     808 + 128,
+            //     816+ 128
+            // };
 
-            notes.AddRange(randomScatter(times,2));
+            // notes.AddRange(randomScatter(times,2));
+            notes.AddRange(wallSeparatedPattern(704 + 128, 0f, 0f, 0f, 8));
 
             notes.AddRange(YellowClockPattern(704 + 256, 0f, 0f, 0f));
             notes.AddRange(YellowClockPattern(704 + 256 + 64, 0f, 0f, 0f));
@@ -1061,7 +1107,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128 + 32 + 64, 0f, -1f, 0f));
             notes.AddRange(YellowClockPattern(1360, 0f, 0f, 0f));
             notes.AddRange(YellowClockPattern(1360 + 64, 0f, -1f, 0f));
-            notes.Add("1488,0,0");
+            // notes.Add("1488,0,0");
+            notes.AddRange(wallSeparatedPattern(1488, 0f, -2f, 0f, 4));
 
             // foreach (string n in notes) {
             //     string[] parts = n.Split(',');
@@ -1100,11 +1147,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     public void Fail() {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (hard) {
-            PlayerPrefs.SetInt("PreviousLevel", 11);
-        } else {
-            PlayerPrefs.SetInt("PreviousLevel", 11);
-        }
+        Scene currentScene = SceneManager.GetActiveScene();
+        PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
         gameActive = false;
         StartCoroutine(LoadFailScene());
         // transitionScript.ToFail();

@@ -74,93 +74,64 @@ public class GenerateWorld : MonoBehaviour
                     doingStuff = true;
                 }
             }
-            // if (currentBeat - initialBeat == 192) {
-            //     if (!doingStuff) {
-            //         StartCoroutine(MoveThings());
-            //         doingStuff = true;
-            //     }
-            // }
-            // if (currentBeat - initialBeat == 320) {
-            //     if (!doingStuff) {
-            //         StartCoroutine(MoveThings());
-            //         doingStuff = true;
-            //     }
-            // }
-            // if (currentBeat - initialBeat == 512) {
-            //     if (!doingStuff) {
-            //         StartCoroutine(MoveThings());
-            //         doingStuff = true;
-            //     }
-            // }
         }
     }
 
-    public IEnumerator MoveThings() {
-        Debug.Log("Moving things" + phase);
-        if (phase == 0) {
-            double duration = 15 * secondsPerBeat;
-            double elapsed = 0;
-            Vector3 startPos = Building.transform.position;
-            Vector3 targetPos = Building.transform.position + new Vector3(0, -150, 0);
-            while (elapsed < duration) {
-                Building.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
+    public IEnumerator MoveThings()
+    {
+        Debug.Log("Moving things " + phase);
+
+        // Cache current beat-based duration in seconds
+        double startDSP = AudioSettings.dspTime;
+        double duration = 0;
+        Vector3 startPos, targetPos;
+
+        if (phase == 0)
+        {
+            // Move building downward for 15 beats
+            duration = 15 * secondsPerBeat;
+            startPos = Building.transform.position;
+            targetPos = startPos + new Vector3(0, -150f, 0);
+        }
+        else if (phase == 1)
+        {
+            // Move player forward for 2047 beats
+            duration = 2047 * secondsPerBeat;
+            startPos = player.transform.position;
+            targetPos = startPos + new Vector3(0, 0, 20470f);
+        }
+        else
+        {
+            // No more phases
+            yield break;
+        }
+
+        // Interpolate smoothly over DSP time
+        double endDSP = startDSP + duration;
+
+        while (AudioSettings.dspTime < endDSP)
+        {
+            double t = (AudioSettings.dspTime - startDSP) / duration;
+            float smoothT = Mathf.SmoothStep(0f, 1f, (float)t);
+
+            if (phase == 0)
+                Building.transform.position = Vector3.Lerp(startPos, targetPos, smoothT);
+            else if (phase == 1)
+                player.transform.position = Vector3.Lerp(startPos, targetPos, (float) t);
+
+            yield return null;
+        }
+
+        // Snap exactly to final position (no floating error)
+        if (phase == 0)
             Building.transform.position = targetPos;
-        }
-        if (phase == 1) {
-            double duration = 2047 * secondsPerBeat;
-            double elapsed = 0;
-            Vector3 startPos = player.transform.position;
-            Vector3 targetPos = player.transform.position + new Vector3(0, 0, 20470f / 1f);
-            while (elapsed < duration) {
-                player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
+        else if (phase == 1)
             player.transform.position = targetPos;
-        }
-        // if (phase == 2) {
-        //     double duration = 31 * secondsPerBeat;
-        //     double elapsed = 0;
-        //     Vector3 startPos = player.transform.position;
-        //     Vector3 targetPos = player.transform.position + new Vector3(100, 0, 100);
-        //     while (elapsed < duration) {
-        //         player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
-        //         elapsed += Time.deltaTime;
-        //         yield return null;
-        //     }
-        //     player.transform.position = targetPos;
-        // }
-        // if (phase == 3) {
-        //     double duration = 191 * secondsPerBeat;
-        //     double elapsed = 0;
-        //     Vector3 startPos = player.transform.position;
-        //     Vector3 targetPos = player.transform.position + new Vector3(0, 100, 0);
-        //     while (elapsed < duration) {
-        //         player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
-        //         elapsed += Time.deltaTime;
-        //         yield return null;
-        //     }
-        //     player.transform.position = targetPos;
-        // }
-        // if (phase == 4) {
-        //     double duration = 127 * secondsPerBeat;
-        //     double elapsed = 0;
-        //     Vector3 startPos = player.transform.position;
-        //     Vector3 targetPos = player.transform.position + new Vector3(-100, 0, 0);
-        //     while (elapsed < duration) {
-        //         player.transform.position = Vector3.Lerp(startPos, targetPos, (float) (elapsed / duration));
-        //         elapsed += Time.deltaTime;
-        //         yield return null;
-        //     }
-        //     player.transform.position = targetPos;
-        // }
+
         phase++;
         doingStuff = false;
-        yield return null;
     }
+
 
     public void GenerateLevel1() {
         float zSoFar = Level1Reference.transform.position.z;

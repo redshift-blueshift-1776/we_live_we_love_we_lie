@@ -79,6 +79,8 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
                 if ((timer > 120f) && bm.currentLayer < bm.numLayers) {
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
+                    Scene currentScene = SceneManager.GetActiveScene();
+                    PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
                     // SceneManager.LoadScene(0); // Change to loss scene once made.
                     transitionScript.ToFail();
                 }
