@@ -51,6 +51,8 @@ public class Player5Easy : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     private bool isGrounded = false;
     private bool isSprinting = false;
+
+    private bool dead = false;
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -101,19 +103,21 @@ public class Player5Easy : MonoBehaviour
         {
             timeSinceGrounded = timeSinceGrounded + (!wasGroundedLastFrame ? 0f : Time.fixedDeltaTime);
         }
+        if (!dead)
+        {
+            Vector3 netForce = getNetForce();
 
-        Vector3 netForce = getNetForce();
+            Vector3 frictionForce = getGroundFrictionForce();
 
-        Vector3 frictionForce = getGroundFrictionForce();
+            Vector3 acceleration = getAcceleration(netForce);
 
-        Vector3 acceleration = getAcceleration(netForce);
+            velocity += acceleration * Time.fixedDeltaTime;
 
-        velocity += acceleration * Time.fixedDeltaTime;
+            handleHorizontalVelocityChanges(frictionForce);
 
-        handleHorizontalVelocityChanges(frictionForce);
-
-        movePlayer();
-        handleVerticalVelocityChanges();
+            movePlayer();
+            handleVerticalVelocityChanges();
+        }
     }
 
     private Vector3 getNetForce()
@@ -287,11 +291,11 @@ public class Player5Easy : MonoBehaviour
     {
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
 
-        //if (Vector3.Dot(horizontalVelocity, frictionForce) > 0)
-        //{
-        //    velocity.x = 0;
-        //    velocity.z = 0;
-        //}
+        if (Vector3.Dot(horizontalVelocity, frictionForce) > 0)
+        {
+            velocity.x = 0;
+            velocity.z = 0;
+        }
 
         float maxSpeed = isGrounded
         ? (isSprinting ? maxRunSpeed : maxWalkSpeed)
@@ -434,5 +438,10 @@ public class Player5Easy : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void kill()
+    {
+        dead = true;
     }
 }
