@@ -494,7 +494,11 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadScene(6);
+                if (bayesian) {
+                    SceneManager.LoadScene(6);
+                } else {
+                    SceneManager.LoadScene(19);
+                }
             }
         }
     }
@@ -512,7 +516,11 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene(6);
+            if (bayesian) {
+                SceneManager.LoadScene(6);
+            } else {
+                SceneManager.LoadScene(19);
+            }
         }
     }
 
