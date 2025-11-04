@@ -37,9 +37,9 @@ public class PlayerMovement7 : MonoBehaviour
     private float timeSinceGrounded = 0f;
     private bool wasGroundedLastFrame = false;
 
-    private const float maxWalkSpeed = 2f;
-    private const float maxRunSpeed = 4f;
-    private const float maxAirSpeed = 6f;
+    private const float maxWalkSpeed = 4f;
+    private const float maxRunSpeed = 6f;
+    private const float maxAirSpeed = 10f;
 
     private const float maxJumpHeight = 1.25f;
 
