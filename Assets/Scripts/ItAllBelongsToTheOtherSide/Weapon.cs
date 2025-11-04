@@ -101,6 +101,7 @@ public class Weapon : MonoBehaviour
         playDrawWeaponSound();
         knifeStats = weaponInfo.getWeaponStats("Knife", false);
         StartCoroutine(handleWeapon());
+        StartCoroutine(reduceRecoil());
 
         primaryAmmoText.text = "";
         secondaryAmmoText.text = "";
@@ -291,6 +292,17 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    private float recoilInaccuracy = 0;
+    private IEnumerator reduceRecoil()
+    {
+        while (true)
+        {
+            recoilInaccuracy -= 0.25f * Time.deltaTime;
+            recoilInaccuracy = Mathf.Max(recoilInaccuracy, 0);
+            yield return null;
+        }
+    }
+
     private int primaryMagSize = 0;
     private int currPrimaryMag = 0;
     private int primaryRemainingAmmo = 0;
@@ -321,7 +333,7 @@ public class Weapon : MonoBehaviour
             return;
         }
 
-        float maxBaseAngleDeviation = weaponIndex == 1 ? primaryBaseInaccuracy : secondaryBaseInaccuracy;
+        float maxBaseAngleDeviation = (weaponIndex == 1 ? primaryBaseInaccuracy : secondaryBaseInaccuracy) + recoilInaccuracy;
         //if scoped
         if (scoped && weaponIndex == 1)
         {
@@ -344,6 +356,7 @@ public class Weapon : MonoBehaviour
             }
         }
 
+        recoilInaccuracy = Mathf.Max(0.25f, recoilInaccuracy + 0.05f);
         playShootWeaponSound();
         for (int i = 0; i < bullets; i++)
         {
