@@ -69,6 +69,8 @@ public class Transition : MonoBehaviour
         bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(1);
 
     }
@@ -104,6 +106,8 @@ public class Transition : MonoBehaviour
         leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(8);
 
     }
@@ -139,6 +143,8 @@ public class Transition : MonoBehaviour
         leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(0);
 
     }
@@ -189,6 +195,8 @@ public class Transition : MonoBehaviour
         bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(n);
 
     }
@@ -224,6 +232,8 @@ public class Transition : MonoBehaviour
         leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(5);
 
     }
@@ -276,6 +286,8 @@ public class Transition : MonoBehaviour
         bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(n);
 
     }
