@@ -517,9 +517,9 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         else
         {
             if (bayesian) {
-                SceneManager.LoadScene(6);
-            } else {
                 SceneManager.LoadScene(19);
+            } else {
+                SceneManager.LoadScene(20);
             }
         }
     }
