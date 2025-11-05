@@ -205,6 +205,9 @@ public class ToFindWhatIveBecome : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
+            SceneManager.LoadScene(0);
+        }
         if (gameActive) {
             if (timer >= 169f) { 
                 GameLose(); // Change when we have the actual scene

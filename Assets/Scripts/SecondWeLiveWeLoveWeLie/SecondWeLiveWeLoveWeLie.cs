@@ -75,6 +75,9 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     }
 
     void Update() {
+        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
+            SceneManager.LoadScene(0);
+        }
         if (gameActive) {
             if (!madeNotes) {
                 GenerateNotes();

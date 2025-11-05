@@ -61,6 +61,9 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
+            SceneManager.LoadScene(0);
+        }
         if (gameActive) {
             if (endless) {
                 timerText.text = $"Time: {Mathf.Floor(timer)}";

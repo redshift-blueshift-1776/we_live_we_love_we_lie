@@ -144,6 +144,9 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
+            SceneManager.LoadScene(0);
+        }
         if (UICanvas.activeSelf) {
             redLeft.text = $"Eliminates Left: {redsRemaining}";
             blackLeft.text = $"Safes Left: {blacksRemaining}";
