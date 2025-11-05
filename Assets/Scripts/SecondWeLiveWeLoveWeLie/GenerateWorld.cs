@@ -18,12 +18,23 @@ public class GenerateWorld : MonoBehaviour
     [SerializeField] public GameObject gameManager;
     [SerializeField] public SecondWeLiveWeLoveWeLie gm;
 
+    [Header("Square Rings")]
     [SerializeField] public GameObject SquareRingsReference;
     [SerializeField] public GameObject SquareRing;
     [SerializeField] public float ringOffset;
     [SerializeField] public float ringOffsetRotation;
     [SerializeField] public int numRings;
     [SerializeField] public int numRingsInRotation;
+
+    [Header("A Place Called Home")]
+    [SerializeField] public GameObject APlaceCalledHomeReference;
+    [SerializeField] public GameObject Fence;
+    [SerializeField] public float fenceOffset;
+    [SerializeField] public float fenceVariance;
+    [SerializeField] public int numFences;
+    [SerializeField] public GameObject FadeBuilding;
+    [SerializeField] public float fadeBuildingOffset;
+    [SerializeField] public int numFadeBuildings;
 
     private double secondsPerBeat;
 
@@ -48,6 +59,7 @@ public class GenerateWorld : MonoBehaviour
 
         GenerateLevel1();
         GenerateSquareRings();
+        GenerateAPlaceCalledHome();
     }
 
     // Update is called once per frame
@@ -154,6 +166,25 @@ public class GenerateWorld : MonoBehaviour
             newSquareRing.transform.localRotation = Quaternion.Euler(0, 0, i * ringOffsetRotation);
             SquareRing sr = newSquareRing.GetComponent<SquareRing>();
             sr.H = ((float) i) / numRingsInRotation;
+        }
+    }
+
+    public void GenerateAPlaceCalledHome() {
+        for (int i = 0; i < numFences; i++) {
+            GameObject newFence = Instantiate(Fence);
+            newFence.transform.SetParent(APlaceCalledHomeReference.transform);
+            newFence.transform.localPosition = new Vector3(0f - (5f + UnityEngine.Random.Range(0f, fenceVariance)), 0, i * fenceOffset);
+            newFence = Instantiate(Fence);
+            newFence.transform.SetParent(APlaceCalledHomeReference.transform);
+            newFence.transform.localPosition = new Vector3(0f + (5f + UnityEngine.Random.Range(0f, fenceVariance)), 0, i * fenceOffset);
+        }
+        for (int i = 0; i < numFadeBuildings; i++) {
+            GameObject newFadeBuilding = Instantiate(FadeBuilding);
+            newFadeBuilding.transform.SetParent(APlaceCalledHomeReference.transform);
+            newFadeBuilding.transform.localPosition = new Vector3(-100, 0, (i + 0.5f) * fadeBuildingOffset);
+            newFadeBuilding = Instantiate(newFadeBuilding);
+            newFadeBuilding.transform.SetParent(APlaceCalledHomeReference.transform);
+            newFadeBuilding.transform.localPosition = new Vector3(100, 0, (i + 0.5f) * fadeBuildingOffset);
         }
     }
 }
