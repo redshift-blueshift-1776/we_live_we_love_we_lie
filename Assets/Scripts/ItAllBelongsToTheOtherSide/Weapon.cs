@@ -388,7 +388,8 @@ public class Weapon : MonoBehaviour
                     Enemy enemyScript = objectHit.GetComponentInParent<Enemy>();
 
                     float damage = weaponInfo.getWeaponStats(weaponIndex == 1 ? primaryWeapon : secondaryWeapon, true).GetValueOrDefault("damage", 0);
-                    enemyScript.takeDamage(damage);
+                    float headshotMult = weaponInfo.getWeaponStats(weaponIndex == 1 ? primaryWeapon : secondaryWeapon, true).GetValueOrDefault("headshotMultiplier", 0);
+                    enemyScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
                 }
                 //unzoom if AWP or Scouter
                 if (primaryWeapon == "AWP" || primaryWeapon == "SSG 08")
