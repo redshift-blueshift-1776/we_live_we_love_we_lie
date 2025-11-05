@@ -559,6 +559,14 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         return ret;
     }
 
+    public string[] randomScatterYOffset(int[] times, int spread, int yOffset) {
+        string[] ret = new string[times.Length];
+        for (int i = 0; i < times.Length; i++) {
+            ret[i] = "" + times[i] + "," + UnityEngine.Random.Range(-1 * spread, spread + 1) + "," + (yOffset + UnityEngine.Random.Range(-1 * spread, spread + 1));
+        }
+        return ret;
+    }
+
     public void solveMaze(int[] times, GameObject maze) {
         string[] newNotes = new string[9];
         Maze_Generator_Level_8 mg = maze.GetComponent<Maze_Generator_Level_8>();
@@ -913,7 +921,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             // };
 
             // notes.AddRange(randomScatter(times,2));
-            notes.AddRange(wallSeparatedPattern(704 + 128, 0f, 0f, 0f, 8));
+            notes.AddRange(wallSeparatedPattern(704 + 128, 0f, -2f, 0f, 8));
 
             notes.AddRange(YellowClockPattern(704 + 256, 0f, 0f, 0f));
             notes.AddRange(YellowClockPattern(704 + 256 + 64, 0f, 0f, 0f));
@@ -927,7 +935,14 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             notes.AddRange(SonicBlasterPattern(704 + 256 + 64 + 64 + 16 + 128 + 32 + 64, 0f, -1f, 0f));
             notes.AddRange(YellowClockPattern(1360, 0f, 0f, 0f));
             notes.AddRange(YellowClockPattern(1360 + 64, 0f, -1f, 0f));
-            notes.Add("1488,0,0");
+            // notes.Add("1488,0,0");
+            notes.AddRange(wallSeparatedPattern(1488, 0f, -2f, 0f, 4));
+
+            times = new int[33];
+            for (int i = 0; i < 33; i++) {
+                times[i] = 1488 + 64 + 8 * i;
+            }
+            notes.AddRange(randomScatterYOffset(times, 2, 3));
 
             // foreach (string n in notes) {
             //     string[] parts = n.Split(',');
@@ -1109,6 +1124,12 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             notes.AddRange(YellowClockPattern(1360 + 64, 0f, -1f, 0f));
             // notes.Add("1488,0,0");
             notes.AddRange(wallSeparatedPattern(1488, 0f, -2f, 0f, 4));
+
+            times = new int[17];
+            for (int i = 0; i < 17; i++) {
+                times[i] = 1488 + 64 + 16 * i;
+            }
+            notes.AddRange(randomScatterYOffset(times, 1, 3));
 
             // foreach (string n in notes) {
             //     string[] parts = n.Split(',');
