@@ -33,6 +33,7 @@ public class GenerateWorld : MonoBehaviour
     [SerializeField] public float fenceVariance;
     [SerializeField] public int numFences;
     [SerializeField] public GameObject FadeBuilding;
+    [SerializeField] public GameObject FadeLightpole;
     [SerializeField] public float fadeBuildingOffset;
     [SerializeField] public int numFadeBuildings;
 
@@ -185,6 +186,12 @@ public class GenerateWorld : MonoBehaviour
             newFadeBuilding = Instantiate(newFadeBuilding);
             newFadeBuilding.transform.SetParent(APlaceCalledHomeReference.transform);
             newFadeBuilding.transform.localPosition = new Vector3(100, 0, (i + 0.5f) * fadeBuildingOffset);
+            GameObject newFadeLightpole = Instantiate(FadeLightpole);
+            newFadeLightpole.transform.SetParent(APlaceCalledHomeReference.transform);
+            newFadeLightpole.transform.localPosition = new Vector3(25, 0, i * fadeBuildingOffset);
+            newFadeLightpole = Instantiate(FadeLightpole);
+            newFadeLightpole.transform.SetParent(APlaceCalledHomeReference.transform);
+            newFadeLightpole.transform.localPosition = new Vector3(-25, 0, i * fadeBuildingOffset);
         }
     }
 }
