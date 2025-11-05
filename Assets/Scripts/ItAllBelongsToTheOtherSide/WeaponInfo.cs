@@ -434,7 +434,7 @@ public class WeaponInfo : MonoBehaviour
         }
 
         Dictionary<string, float> stats = new Dictionary<string, float>();
-        stats.Add("attack", weaponAttackDamage.GetValueOrDefault(weaponName));
+        stats.Add("damage", weaponAttackDamage.GetValueOrDefault(weaponName));
         stats.Add("range", weaponRange.GetValueOrDefault(weaponName));
         stats.Add("headshotMultiplier", weaponHeadshotMultiplier);
         stats.Add("fireCooldown", convertRPMToPeriod(weaponFireRate.GetValueOrDefault(weaponName)));

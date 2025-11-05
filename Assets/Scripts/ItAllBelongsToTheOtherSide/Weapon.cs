@@ -382,7 +382,14 @@ public class Weapon : MonoBehaviour
                 newBulletHole.transform.SetParent(objectHit.transform);
                 StartCoroutine(fadeBulletHole(newBulletHole));
 
+                if (objectHit.CompareTag("Enemy"))
+                {
+                    //Debug.Log(objectHit.name);
+                    Enemy enemyScript = objectHit.GetComponentInParent<Enemy>();
 
+                    float damage = weaponInfo.getWeaponStats(weaponIndex == 1 ? primaryWeapon : secondaryWeapon, true).GetValueOrDefault("damage", 0);
+                    enemyScript.takeDamage(damage);
+                }
                 //unzoom if AWP or Scouter
                 if (primaryWeapon == "AWP" || primaryWeapon == "SSG 08")
                 {
@@ -580,13 +587,27 @@ public class Weapon : MonoBehaviour
     private const float bulletDecayTime = 5f;
     private IEnumerator fadeBulletHole(GameObject bulletHole)
     {
+        if (bulletHole == null)
+        {
+            yield break;
+        }
         float t = 0;
-        Color color = bulletHole.GetComponent<MeshRenderer>().material.color;
+        MeshRenderer renderer = bulletHole.GetComponent<MeshRenderer>();
+        if (renderer == null)
+        {
+            yield break;
+        }
+
+        Color color = renderer.material.color;
         while (t < bulletDecayTime)
         {
+            if (bulletHole == null || renderer == null)
+            {
+                yield break;
+            }
             float normalizedT = t / bulletDecayTime;
 
-            bulletHole.GetComponent<MeshRenderer>().material.color = new Color(color.r, color.g, color.b, 1 - normalizedT);
+            renderer.material.color = new Color(color.r, color.g, color.b, 1 - normalizedT);
 
             t += Time.deltaTime;
             yield return null;
