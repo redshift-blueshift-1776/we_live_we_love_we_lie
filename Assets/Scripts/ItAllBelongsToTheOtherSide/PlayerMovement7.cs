@@ -17,19 +17,19 @@ public class PlayerMovement7 : MonoBehaviour
     private const float m = 1.0f;   //mass
     private const float g = 9.8f;
 
-    private const float staticCoefficientOfFriction = 1.5f;
-    private const float kineticCoefficientOfFriction = 1.4f;
+    private const float staticCoefficientOfFriction = 2.5f;
+    private const float kineticCoefficientOfFriction = 2.4f;
 
     private float airResistanceVerticalCoefficient = 0.25f;
     private float airResistanceHorizontalCoefficient = 0.1f;
 
     private float minHorizontalComponentVelocityThreshold = 0.0001f;
 
-    private const float walkForceMagnitude = 30f;
-    private const float runForceMagnitude = 60f;
+    private const float walkForceMagnitude = 50f;
+    private const float runForceMagnitude = 100f;
 
     private const float airAccelerationMultiplier = 0.6f;
-    private const float airForceMagnitude = 30f;
+    private const float airForceMagnitude = 60f;
 
     private const float bhopSpeedRetention = 0.95f;
     private const float landingSpeedRetention = 0.7f;
@@ -37,11 +37,11 @@ public class PlayerMovement7 : MonoBehaviour
     private float timeSinceGrounded = 0f;
     private bool wasGroundedLastFrame = false;
 
-    private const float maxWalkSpeed = 4f;
-    private const float maxRunSpeed = 6f;
-    private const float maxAirSpeed = 10f;
+    private const float maxWalkSpeed = 5f;
+    private const float maxRunSpeed = 7f;
+    private const float maxAirSpeed = 15f;
 
-    private const float maxJumpHeight = 1.25f;
+    private const float maxJumpHeight = 1.6f;
 
     private float sensitivityX = 2.5f;
     private float sensitivityY = 2f;
