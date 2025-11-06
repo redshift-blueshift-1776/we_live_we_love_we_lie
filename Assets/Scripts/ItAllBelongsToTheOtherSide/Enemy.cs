@@ -112,9 +112,7 @@ public class Enemy : MonoBehaviour
     HashSet<Vector3> wanderLocations = new HashSet<Vector3>();
     void Start()
     {
-        //Initialize();
-
-        
+        currentState = EnemyState.None;
     }
 
     private void Initialize()
@@ -125,7 +123,6 @@ public class Enemy : MonoBehaviour
             wanderLocations.Add(child.position);
         }
         enemy.autoTraverseOffMeshLink = false;
-        currentState = EnemyState.None;
 
         if (currWeapon.Equals(""))
         {
@@ -140,7 +137,9 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentState == EnemyState.Dead) return;
+        if (currentState == EnemyState.None || currentState == EnemyState.Dead) {
+            return;
+        }
 
         stateTimer += Time.deltaTime;
 

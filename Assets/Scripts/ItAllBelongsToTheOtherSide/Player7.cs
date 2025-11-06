@@ -23,6 +23,10 @@ public class Player7 : MonoBehaviour
 
     void Start()
     {
+    }
+
+    public void Initialize()
+    {
         UICanvas.SetActive(true);
         weaponShopCanvas.SetActive(false);
     }
