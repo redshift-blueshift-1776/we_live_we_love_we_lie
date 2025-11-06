@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 public class Enemy : MonoBehaviour
@@ -67,11 +70,18 @@ public class Enemy : MonoBehaviour
 
     [Header("Weapon Info")]
     [SerializeField] private WeaponInfo weaponInfo;
-    private string currWeapon = "";
+    [SerializeField] private GameObject muzzlePosition;
+    [SerializeField] private GameObject bulletHolePrefab;
+    [SerializeField] private string currWeapon = "";
     private string weaponCategory = "";
     private Dictionary<string, float> weaponStats = new Dictionary<string, float>();
-    private float primaryBaseInaccuracy;
+    private float baseInaccuracy;
+    private float range;
+    private float damage;
 
+    //[Header("Bot Stats")]
+    private const float reactionTime = 0.25f;
+    private const float acceptableChanceOfHitting = 0.4f;
     public enum EnemyState
     {
         None,
@@ -94,18 +104,26 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         activateNodes();
+        makeNodesInvisible();
         foreach (Transform child in wanderNodes.transform)
         {
             wanderLocations.Add(child.position);
         }
-
         enemy.autoTraverseOffMeshLink = false;
         currentState = EnemyState.None;
+
+        if (currWeapon.Equals(""))
+        {
+            currWeapon = weaponInfo.getRandomWeapon();
+        }
+        updateWeapon(currWeapon);
+
+
         TransitionToState(EnemyState.Wander);
         
         //enemy.SetDestination(player.transform.position);
 
-        makeNodesInvisible();
+        
     }
 
     // Update is called once per frame
@@ -238,7 +256,7 @@ public class Enemy : MonoBehaviour
         health -= damage;
         if (health < 0)
         {
-            Destroy(gameObject);
+            TransitionToState(EnemyState.Dead);
         }
     }
 
@@ -275,6 +293,24 @@ public class Enemy : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private float chanceOfHitting(float distance)
+    {
+        if (range < distance)
+        {
+            return 0;
+        }
+
+        if (baseInaccuracy == 0)
+        {
+            return 1;
+        }
+
+        //area that bullet could potentially hit
+        float largeArea = Mathf.PI * Mathf.Pow(distance * Mathf.Tan(baseInaccuracy * Mathf.Deg2Rad), 2);
+        float headArea = Mathf.PI * Mathf.Pow(0.3f, 2);
+        return Mathf.Min(1, headArea / largeArea);
     }
 
     private void disableAllWeapons()
@@ -326,7 +362,9 @@ public class Enemy : MonoBehaviour
     {
         currWeapon = weapon;
         weaponStats = weaponInfo.getWeaponStats(weapon, false);
-        primaryBaseInaccuracy = weaponStats.GetValueOrDefault("baseInaccuracy", 0);
+        baseInaccuracy = weaponInfo.getWeaponStats(weapon, weaponInfo.isWeaponScoped(weapon)).GetValueOrDefault("baseInaccuracy", 0);
+        range = weaponStats.GetValueOrDefault("range", 0);
+        damage = weaponStats.GetValueOrDefault("damage", 0);
 
         disableAllWeapons();
         switch (weapon)
@@ -465,8 +503,78 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void shoot()
+    {
+        float bullets = weaponCategory.Equals("Shotgun") ? 8 : 1;
+
+        for (int i = 0; i < bullets; i++)
+        {
+            Quaternion randomInaccuracy = Quaternion.Euler(
+                Random.value * 2 * baseInaccuracy - baseInaccuracy,
+                Random.value * 2 * baseInaccuracy - baseInaccuracy,
+                Random.value * 2 * baseInaccuracy - baseInaccuracy
+            );
+            RaycastHit hitData;
+            Vector3 shootDirection = (randomInaccuracy * transform.forward).normalized;
+            Vector3 origin = transform.position;
+            Vector3 endPoint = origin + shootDirection * range;
+
+            if (Physics.Raycast(origin, shootDirection, out hitData, range))
+            {
+                endPoint = hitData.point;
+
+                GameObject objectHit = hitData.collider.gameObject;
+                GameObject newBulletHole = Instantiate(bulletHolePrefab);
+                newBulletHole.transform.position = hitData.point;
+                newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
+                newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                newBulletHole.transform.SetParent(objectHit.transform);
+                StartCoroutine(fadeBulletHole(newBulletHole));
+
+                if (objectHit.CompareTag("Enemy"))
+                {
+                    Player7 playerScript = objectHit.GetComponentInParent<Player7>();
+                    float headshotMult = weaponInfo.getWeaponStats(currWeapon, false).GetValueOrDefault("headshotMultiplier", 0);
+                    playerScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
+                }
+            }
+        }
+    }
+
+    private const float bulletDecayTime = 5f;
+    private IEnumerator fadeBulletHole(GameObject bulletHole)
+    {
+        if (bulletHole == null)
+        {
+            yield break;
+        }
+        float t = 0;
+        MeshRenderer renderer = bulletHole.GetComponent<MeshRenderer>();
+        if (renderer == null)
+        {
+            yield break;
+        }
+
+        Color color = renderer.material.color;
+        while (t < bulletDecayTime)
+        {
+            if (bulletHole == null || renderer == null)
+            {
+                yield break;
+            }
+            float normalizedT = t / bulletDecayTime;
+
+            renderer.material.color = new Color(color.r, color.g, color.b, 1 - normalizedT);
+
+            t += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(bulletHole);
+        yield return null;
+    }
+
     Vector3 currTarget;
-    private const float minDistanceThreshold = 5.0f;
+    private const float minDistanceToWanderNodeThreshold = 5.0f;
     private void HandleWanderState()
     {
         if (currWanderLocations.Count == 0)
@@ -475,17 +583,22 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        if (Vector3.Distance(transform.position, currTarget) < minDistanceThreshold)
+        if (Vector3.Distance(transform.position, currTarget) < minDistanceToWanderNodeThreshold)
         {
             currTarget = currWanderLocations.Pop();
         }
-
+        Debug.Log(currTarget);
         enemy.SetDestination(currTarget);
 
-        //if (canSeePlayer())
-        //{
-        //    TransitionToState(EnemyState.Chase);
-        //}
+        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        if (canSeePlayer() && chanceOfHitting(distanceToPlayer) >= acceptableChanceOfHitting)
+        {
+            TransitionToState(EnemyState.Attack);
+        }
+        else
+        {
+            TransitionToState(EnemyState.Chase);
+        }
     }
 
     private void HandlePatrolState()
@@ -495,7 +608,29 @@ public class Enemy : MonoBehaviour
 
     private void HandleChaseState()
     {
+        float minDistanceToPlayerThreshold = range * 0.75f;
+        float maxChaseTime = 20f;
 
+        if (stateTimer > maxChaseTime)
+        {
+            TransitionToState(EnemyState.Wander);
+        }
+
+        //always chase the player while it can see the player
+        if (canSeePlayer())
+        {
+            stateTimer = 0;
+        }
+
+        float distance = Vector3.Distance(player.transform.position, transform.position);
+        if (distance > minDistanceToPlayerThreshold || !canSeePlayer()) {
+            enemy.SetDestination(player.transform.position);
+        }
+
+        if (chanceOfHitting(distance) > acceptableChanceOfHitting)
+        {
+            TransitionToState(EnemyState.Attack);
+        }
     }
 
     private void HandleAttackState()
@@ -523,6 +658,15 @@ public class Enemy : MonoBehaviour
             case EnemyState.Wander:
                 initializeWanderLocations();
                 break;
+            case EnemyState.Chase:
+                Debug.Log("entering chase");
+                break;
+            case EnemyState.Attack:
+                Debug.Log("entering attack");
+                break;
+            case EnemyState.Dead:
+                Destroy(gameObject);
+                break;
             default:
                 break;
         }
@@ -530,6 +674,18 @@ public class Enemy : MonoBehaviour
 
     private void OnStateExit(EnemyState state)
     {
-        // Cleanup when leaving a state
+        switch (state) {
+            case EnemyState.Wander:
+                enemy.SetDestination(enemy.transform.position);
+                break;
+            case EnemyState.Chase:
+                break;
+            case EnemyState.Attack:
+                break;
+            case EnemyState.Dead:
+                break;
+            default:
+                break;
+        }
     }
 }
