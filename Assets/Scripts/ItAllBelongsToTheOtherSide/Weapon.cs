@@ -96,6 +96,7 @@ public class Weapon : MonoBehaviour
 
     private string primaryWeaponCategory = "";
 
+    Dictionary<string, float> knifeStats;
     void Start()
     {
         playDrawWeaponSound();
@@ -618,7 +619,6 @@ public class Weapon : MonoBehaviour
     }
 
 
-    private Dictionary<string, float> knifeStats = new Dictionary<string, float>();
     private void handleKnifeAttack()
     {
         if (weaponIndex != 3)
@@ -633,6 +633,36 @@ public class Weapon : MonoBehaviour
                 knifeAnimator.Play("KnifeAttack", 0, 0f);
                 playShootWeaponSound();
                 timeSinceAttack = 0f;
+
+                float knifeAttackAngle = 90f;
+                int numRays = 10;
+                Vector3 forward = playerCamera.transform.forward;
+                Vector3 origin = playerCamera.transform.position;
+
+                float range = knifeStats.GetValueOrDefault("range", 0f);
+
+                for (int i = 0; i < numRays; i++)
+                {
+                    float angle = -knifeAttackAngle / 2f + (knifeAttackAngle / (numRays - 1)) * i;
+
+                    Quaternion rotation = Quaternion.AngleAxis(angle, playerCamera.transform.up);
+                    Vector3 rayDirection = rotation * forward;
+                    RaycastHit hit;
+                    if (Physics.Raycast(origin, rayDirection, out hit, range))
+                    {
+                        if (hit.collider.CompareTag("Enemy"))
+                        {
+                            audioManager.playSound("KnifeStab");
+                            GameObject objectHit = hit.collider.gameObject;
+                            Enemy enemyScript = objectHit.GetComponentInParent<Enemy>();
+
+                            float damage = knifeStats.GetValueOrDefault("damage", 0);
+                            float headshotMult = knifeStats.GetValueOrDefault("headshotMultiplier", 0);
+                            enemyScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
+                            break;
+                        }
+                    }
+                }
             }
         }
         else if (Input.GetMouseButtonDown(1))

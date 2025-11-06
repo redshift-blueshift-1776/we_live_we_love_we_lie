@@ -137,7 +137,7 @@ public class WeaponInfo : MonoBehaviour
     //range in unity units
     private Dictionary<string, float> weaponRange = new Dictionary<string, float>()
     {
-        {"Knife", 1},
+        {"Knife", 1.5f},
 
         //pistols
         {"USP-S", 50},

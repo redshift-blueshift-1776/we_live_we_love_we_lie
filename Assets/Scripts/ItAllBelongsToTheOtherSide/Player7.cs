@@ -7,6 +7,8 @@ public class Player7 : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private float health = 100f;
 
+    [SerializeField] private Level7 levelScript;
+
     [SerializeField] private GameObject UICanvas;
     [SerializeField] private Slider healthBarSlider;
     [SerializeField] private TMP_Text healthNumberText;
@@ -18,6 +20,7 @@ public class Player7 : MonoBehaviour
 
     private bool isInWeaponShop = false;
 
+
     void Start()
     {
         UICanvas.SetActive(true);
@@ -27,6 +30,15 @@ public class Player7 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!levelScript.getGameStarted())
+        {
+            UICanvas.SetActive(false);
+            return;
+        } else
+        {
+            UICanvas.SetActive(true);
+        }
+
         updateHealthDisplay();
 
         if (Input.GetKeyDown(KeyCode.B))

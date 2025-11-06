@@ -112,8 +112,13 @@ public class Enemy : MonoBehaviour
     HashSet<Vector3> wanderLocations = new HashSet<Vector3>();
     void Start()
     {
-        activateNodes();
-        makeNodesInvisible();
+        //Initialize();
+
+        
+    }
+
+    private void Initialize()
+    {
         shootSounds.setAll3D(200);
         foreach (Transform child in wanderNodes.transform)
         {
@@ -130,10 +135,6 @@ public class Enemy : MonoBehaviour
 
 
         TransitionToState(EnemyState.Wander);
-        
-        //enemy.SetDestination(player.transform.position);
-
-        
     }
 
     // Update is called once per frame
@@ -161,37 +162,6 @@ public class Enemy : MonoBehaviour
         }
 
         handleMeshLink();
-    }
-
-    private void activateNodes()
-    {
-        wanderNodes.SetActive(true);
-        navMeshJumps.SetActive(true);
-        playerRaycastNodes.SetActive(true);
-    }
-
-    private void makeNodesInvisible()
-    {
-        foreach (Transform child in wanderNodes.transform)
-        {
-            child.gameObject.GetComponent<MeshRenderer>().enabled = false;
-        }
-
-        foreach(MeshRenderer meshRenderer in navMeshJumps.GetComponentsInChildren<MeshRenderer>())
-        {
-            if (meshRenderer != null)
-            {
-                meshRenderer.enabled = false;
-            }
-        }
-
-        foreach (MeshRenderer meshRenderer in playerRaycastNodes.GetComponentsInChildren<MeshRenderer>())
-        {
-            if (meshRenderer != null)
-            {
-                meshRenderer.enabled = false;
-            }
-        }
     }
 
     private void handleMeshLink()
