@@ -5,6 +5,84 @@ using Unity.VisualScripting;
 
 public class WeaponInfo : MonoBehaviour
 {
+    private HashSet<string> weaponNames = new HashSet<string>()
+    {
+        "USP-S",
+        "Glock-18",
+        "P250",
+        "P2000",
+        "Dual Berettas",
+        "Tec-9",
+        "CZ75-Auto",
+        "Desert Eagle",
+        "R8 Revolver",
+
+        "MAG-7",
+        "Nova",
+        "Sawed-Off",
+        "XM1014",
+        "MAC-10",
+        "MP5-SD",
+        "MP7",
+        "MP9",
+        "PP-Bizon",
+        "P90",
+        "UMP-45",
+        "AK-47",
+        "AUG",
+        "FAMAS",
+        "Galil AR",
+        "M4A1-S",
+        "M4A4",
+        "SG 553",
+        "AWP",
+        "G3SG1",
+        "SCAR-20",
+        "SSG 08",
+        "M249",
+        "Negev"
+    };
+
+    private HashSet<string> primaryWeaponNames = new HashSet<string>()
+    {
+        "MAG-7",
+        "Nova",
+        "Sawed-Off",
+        "XM1014",
+        "MAC-10",
+        "MP5-SD",
+        "MP7",
+        "MP9",
+        "PP-Bizon",
+        "P90",
+        "UMP-45",
+        "AK-47",
+        "AUG",
+        "FAMAS",
+        "Galil AR",
+        "M4A1-S",
+        "M4A4",
+        "SG 553",
+        "AWP",
+        "G3SG1",
+        "SCAR-20",
+        "SSG 08",
+        "M249",
+        "Negev"
+    };
+
+    private HashSet<string> secondaryWeaponNames = new HashSet<string>()
+    {
+        "USP-S",
+        "Glock-18",
+        "P250",
+        "P2000",
+        "Dual Berettas",
+        "Tec-9",
+        "CZ75-Auto",
+        "Desert Eagle",
+        "R8 Revolver"
+    };
 
     private Dictionary<string, float> weaponAttackDamage = new Dictionary<string, float>()
     {
@@ -455,6 +533,21 @@ public class WeaponInfo : MonoBehaviour
     public bool isWeaponScoped(string weaponName)
     {
         return scopedWeapons.Contains(weaponName);
+    }
+
+    public HashSet<string> getWeaponNames()
+    {
+        return weaponNames;
+    }
+
+    public HashSet<string> getPrimaryWeaponNames()
+    {
+        return primaryWeaponNames;
+    }
+    
+    public HashSet<string> getSecondaryWeaponNames()
+    {
+        return secondaryWeaponNames;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
