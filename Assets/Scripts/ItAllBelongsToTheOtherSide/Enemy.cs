@@ -15,7 +15,59 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject wanderNodes;
     [SerializeField] private GameObject navMeshJumps;
     [SerializeField] private GameObject playerRaycastNodes;
-    HashSet<Vector3> wanderLocations = new HashSet<Vector3>();
+
+    #region Weapons
+    [Header("Knife")]
+    [SerializeField] private GameObject knife;
+
+    [Header("Pistols")]
+    [SerializeField] private GameObject USPS;
+    [SerializeField] private GameObject Glock18;
+    [SerializeField] private GameObject P250;
+    [SerializeField] private GameObject P2000;
+    [SerializeField] private GameObject DualBerettas;
+    [SerializeField] private GameObject FiveSeveN;
+    [SerializeField] private GameObject Tec9;
+    [SerializeField] private GameObject CZ75Auto;
+    [SerializeField] private GameObject DesertEagle;
+    [SerializeField] private GameObject R8Revolver;
+
+    [Header("Shotguns")]
+    [SerializeField] private GameObject MAG7;
+    [SerializeField] private GameObject Nova;
+    [SerializeField] private GameObject SawedOff;
+    [SerializeField] private GameObject XM1014;
+
+    [Header("SMGs")]
+    [SerializeField] private GameObject MAC10;
+    [SerializeField] private GameObject MP5SD;
+    [SerializeField] private GameObject MP7;
+    [SerializeField] private GameObject MP9;
+    [SerializeField] private GameObject PPBizon;
+    [SerializeField] private GameObject P90;
+    [SerializeField] private GameObject UMP45;
+
+    [Header("Assault Rifles")]
+    [SerializeField] private GameObject AK47;
+    [SerializeField] private GameObject AUG;
+    [SerializeField] private GameObject FAMAS;
+    [SerializeField] private GameObject GalilAR;
+    [SerializeField] private GameObject M4A1S;
+    [SerializeField] private GameObject M4A4;
+    [SerializeField] private GameObject SG553;
+
+    [Header("Sniper Rifles")]
+    [SerializeField] private GameObject AWP;
+    [SerializeField] private GameObject G3SG1;
+    [SerializeField] private GameObject SCAR20;
+    [SerializeField] private GameObject SSG08;
+
+    [Header("Machine Guns")]
+    [SerializeField] private GameObject M249;
+    [SerializeField] private GameObject Negev;
+    #endregion
+
+    
     public enum EnemyState
     {
         None,
@@ -32,6 +84,9 @@ public class Enemy : MonoBehaviour
 
     private bool isJumping = false;
     private const float defaultJumpHeight = 2.0f;
+
+
+    HashSet<Vector3> wanderLocations = new HashSet<Vector3>();
     void Start()
     {
         activateNodes();
