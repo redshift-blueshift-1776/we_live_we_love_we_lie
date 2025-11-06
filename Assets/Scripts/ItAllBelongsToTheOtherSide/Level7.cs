@@ -9,15 +9,37 @@ public class Level7 : MonoBehaviour
     [SerializeField] private GameObject wanderNodes;
     [SerializeField] private GameObject navMeshJumps;
     [SerializeField] private GameObject playerRaycastNodes;
+    [SerializeField] private GameObject deathmatchSpawnNodes;
 
     private bool gameStarted = false;
+    private string gamemode = "";
     void Start()
     {
         titleScreenCanvas.SetActive(true);
         activateNodes();
-        makeNodesInvisible();
+        makeAllNodesInvisible();
 
         //Instantiate(localEnemyPrefab);
+    }
+
+    private void Update()
+    {
+        handleGame();
+    }
+
+    private void handleGame()
+    {
+        switch (gamemode)
+        {
+            case "Deathmatch":
+                break;
+            case "Defusal":
+                break;
+            case "Zombie Apocalypse":
+                break;
+            default:
+                break;
+        }
     }
 
     private void activateNodes()
@@ -25,28 +47,27 @@ public class Level7 : MonoBehaviour
         wanderNodes.SetActive(true);
         navMeshJumps.SetActive(true);
         playerRaycastNodes.SetActive(true);
+        playerRaycastNodes.SetActive(true);
     }
 
-    private void makeNodesInvisible()
+    private void makeAllNodesInvisible()
     {
         foreach (Transform child in wanderNodes.transform)
         {
             child.gameObject.GetComponent<MeshRenderer>().enabled = false;
         }
+        makeNodesInvisible(navMeshJumps);
+        makeNodesInvisible(playerRaycastNodes);
+        makeNodesInvisible(deathmatchSpawnNodes);
+    }
 
-        foreach (MeshRenderer meshRenderer in navMeshJumps.GetComponentsInChildren<MeshRenderer>())
+    private void makeNodesInvisible(GameObject nodes)
+    {
+        foreach (MeshRenderer node in nodes.GetComponentsInChildren<MeshRenderer>())
         {
-            if (meshRenderer != null)
+            if (node != null)
             {
-                meshRenderer.enabled = false;
-            }
-        }
-
-        foreach (MeshRenderer meshRenderer in playerRaycastNodes.GetComponentsInChildren<MeshRenderer>())
-        {
-            if (meshRenderer != null)
-            {
-                meshRenderer.enabled = false;
+                node.enabled = false;
             }
         }
     }
@@ -57,6 +78,7 @@ public class Level7 : MonoBehaviour
     }
     public void setGamemode(string gamemode)
     {
+        this.gamemode = gamemode;
         switch (gamemode)
         {
             case "Deathmatch":
@@ -74,7 +96,6 @@ public class Level7 : MonoBehaviour
             default:
                 break;
         }
-
         gameStarted = true;
         playerScript.Initialize();
         titleScreenCanvas.SetActive(false);
