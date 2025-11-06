@@ -10,9 +10,11 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private NavMeshAgent enemy;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject eye;
 
     [SerializeField] private GameObject wanderNodes;
     [SerializeField] private GameObject navMeshJumps;
+    [SerializeField] private GameObject playerRaycastNodes;
     HashSet<Vector3> wanderLocations = new HashSet<Vector3>();
     public enum EnemyState
     {
@@ -29,18 +31,20 @@ public class Enemy : MonoBehaviour
     private float stateTimer = 0f;
 
     private bool isJumping = false;
-    [SerializeField] private float jumpHeight = 2.0f;
+    private const float defaultJumpHeight = 2.0f;
     void Start()
     {
+        activateNodes();
         foreach (Transform child in wanderNodes.transform)
         {
             wanderLocations.Add(child.position);
         }
 
-        currentState = EnemyState.None;
-        //TransitionToState(EnemyState.Wander);
         enemy.autoTraverseOffMeshLink = false;
-        enemy.SetDestination(player.transform.position);
+        currentState = EnemyState.None;
+        TransitionToState(EnemyState.Wander);
+        
+        //enemy.SetDestination(player.transform.position);
 
         makeNodesInvisible();
     }
@@ -71,6 +75,13 @@ public class Enemy : MonoBehaviour
         handleMeshLink();
     }
 
+    private void activateNodes()
+    {
+        wanderNodes.SetActive(true);
+        navMeshJumps.SetActive(true);
+        playerRaycastNodes.SetActive(true);
+    }
+
     private void makeNodesInvisible()
     {
         foreach (Transform child in wanderNodes.transform)
@@ -79,6 +90,14 @@ public class Enemy : MonoBehaviour
         }
 
         foreach(MeshRenderer meshRenderer in navMeshJumps.GetComponentsInChildren<MeshRenderer>())
+        {
+            if (meshRenderer != null)
+            {
+                meshRenderer.enabled = false;
+            }
+        }
+
+        foreach (MeshRenderer meshRenderer in playerRaycastNodes.GetComponentsInChildren<MeshRenderer>())
         {
             if (meshRenderer != null)
             {
@@ -94,14 +113,19 @@ public class Enemy : MonoBehaviour
             OffMeshLinkData linkData = enemy.currentOffMeshLinkData;
             Vector3 startPos = enemy.transform.position;
             Vector3 endPos = linkData.endPos;
+
+            if (Vector3.Distance(startPos, enemy.transform.position) > 2.5f || endPos.y - startPos.y > defaultJumpHeight)
+            {
+                enemy.CompleteOffMeshLink();
+                return;
+            }
             StartCoroutine(PerformJump(startPos, endPos, true));
         }
     }
 
-    private IEnumerator PerformJump(Vector3 startPos, Vector3 endPos, bool meshLinkJump)
+    private IEnumerator PerformJump(Vector3 startPos, Vector3 endPos, bool meshLinkJump, float jumpHeight = defaultJumpHeight)
     {
         isJumping = true;
-        Debug.Log("start jumping!");
         // Get link data
 
 
@@ -113,11 +137,11 @@ public class Enemy : MonoBehaviour
 
         Vector3 velocity = new Vector3(0, Mathf.Sqrt(-2 * g * jumpHeight), 0);
         Vector3 acceleration = new Vector3(0, g, 0);
-        float dy = endPos.y - startPos.y;
         float t1 = velocity.y / -g; //time until peak of jump
-        float t2 = Mathf.Sqrt(2 * dy / g);
+        float dy = endPos.y - (startPos.y + jumpHeight);
+        float t2 = Mathf.Sqrt(2 * Mathf.Abs(dy / g));
         float jumpDuration = t1 + t2;
-
+        Debug.Log(t1 + " " + t2 + " " + jumpDuration);
         float vx = (endPos.x - startPos.x) / jumpDuration;
         float vz = (endPos.z - startPos.z) / jumpDuration;
         velocity.x = vx;
@@ -148,8 +172,6 @@ public class Enemy : MonoBehaviour
         }
 
         isJumping = false;
-
-        Debug.Log("Jump completed!");
     }
 
     public void takeDamage(float damage)
@@ -176,6 +198,26 @@ public class Enemy : MonoBehaviour
         currTarget = currWanderLocations.Pop();
     }
 
+    private bool canSeePlayer()
+    {
+        foreach (Transform transform in playerRaycastNodes.GetComponentsInChildren<Transform>())
+        {
+            Vector3 eyePos = eye.transform.position;
+            Vector3 nodePos = transform.position;
+            Vector3 direction = nodePos - eyePos;
+
+            RaycastHit hitData;
+            if (Physics.Raycast(eyePos, direction, out hitData, Mathf.Infinity))
+            {
+                if (hitData.collider.gameObject.CompareTag("Player") || hitData.collider.gameObject.CompareTag("PlayerRaycastNode"))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     Vector3 currTarget;
     private const float minDistanceThreshold = 5.0f;
     private void HandleWanderState()
@@ -192,6 +234,11 @@ public class Enemy : MonoBehaviour
         }
 
         enemy.SetDestination(currTarget);
+
+        //if (canSeePlayer())
+        //{
+        //    TransitionToState(EnemyState.Chase);
+        //}
     }
 
     private void HandlePatrolState()
