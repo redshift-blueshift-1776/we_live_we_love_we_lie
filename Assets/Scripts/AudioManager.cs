@@ -248,4 +248,17 @@ public class AudioManager : MonoBehaviour
     {
         getSound(name).setMaxDistance(t);
     }
+
+    public void setAll3D(float maxDistance = 50f)
+    {
+        for (int i = 0; i < sounds.Count(); i++)
+        {
+            setSpatialBlend(sounds[i].name, 1);
+            setDopplerLevel(sounds[i].name, 0);
+            setVolumeRolloffMode(sounds[i].name, "Linear");
+            setMinDistance(sounds[i].name, 0);
+            setMaxDistance(sounds[i].name, maxDistance);
+        }
+        
+    }
 }
