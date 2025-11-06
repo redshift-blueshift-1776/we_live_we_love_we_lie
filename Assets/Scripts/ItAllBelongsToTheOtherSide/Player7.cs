@@ -27,9 +27,7 @@ public class Player7 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        healthNumberText.text = (Mathf.Ceil(health)).ToString();
-        healthBarSlider.value = Mathf.Clamp(health, 0, 100);
-        healthBarFill.color = Color.Lerp(Color.white, Color.red, 1 - health / 100);
+        updateHealthDisplay();
 
         if (Input.GetKeyDown(KeyCode.B))
         {
@@ -55,5 +53,21 @@ public class Player7 : MonoBehaviour
     public void setIsInWeaponShop(bool b)
     {
         isInWeaponShop = b;
+    }
+    private void updateHealthDisplay()
+    {
+        healthNumberText.text = (Mathf.Max(0, Mathf.Ceil(health))).ToString();
+        healthBarSlider.value = Mathf.Clamp(health, 0, 100);
+        healthBarFill.color = Color.Lerp(Color.white, Color.red, 1 - Mathf.Max(0, health) / 100);
+    }
+
+    public void takeDamage(float damage)
+    {
+        health -= damage;
+        updateHealthDisplay();
+        if (health <= 0)
+        {
+            Debug.Log("DEAD!");
+        }
     }
 }

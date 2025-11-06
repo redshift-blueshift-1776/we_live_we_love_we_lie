@@ -550,6 +550,21 @@ public class WeaponInfo : MonoBehaviour
         return secondaryWeaponNames;
     }
 
+    public string getRandomWeapon()
+    {
+        return new List<string>(weaponNames)[Random.Range(0, weaponNames.Count)];
+    }
+
+    public string getRandomPrimaryWeapon()
+    {
+        return new List<string>(primaryWeaponNames)[Random.Range(0, primaryWeaponNames.Count)];
+    }
+
+    public string getRandomSecondaryWeapon()
+    {
+        return new List<string>(secondaryWeaponNames)[Random.Range(0, secondaryWeaponNames.Count)];
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
