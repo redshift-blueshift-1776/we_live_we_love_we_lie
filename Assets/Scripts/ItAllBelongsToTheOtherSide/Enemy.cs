@@ -11,11 +11,16 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private NavMeshAgent enemy;
     [SerializeField] private GameObject player;
+    [SerializeField] private Player7 playerScript;
+    [SerializeField] private GameObject playerHead;
+    [SerializeField] private GameObject playerBody;
     [SerializeField] private GameObject eye;
 
     [SerializeField] private GameObject wanderNodes;
     [SerializeField] private GameObject navMeshJumps;
     [SerializeField] private GameObject playerRaycastNodes;
+
+    [SerializeField] private AudioManager shootSounds;
 
     #region Weapons
     [Header("Knife")]
@@ -72,15 +77,19 @@ public class Enemy : MonoBehaviour
     [SerializeField] private WeaponInfo weaponInfo;
     [SerializeField] private GameObject muzzlePosition;
     [SerializeField] private GameObject bulletHolePrefab;
+    [SerializeField] private GameObject bulletTracerPrefab;
     [SerializeField] private string currWeapon = "";
     private string weaponCategory = "";
     private Dictionary<string, float> weaponStats = new Dictionary<string, float>();
     private float baseInaccuracy;
     private float range;
     private float damage;
+    private float fireCooldown = Mathf.Infinity;
 
     //[Header("Bot Stats")]
     private const float reactionTime = 0.25f;
+    private const float fireCooldownMult = 1.25f;
+    private const float chanceOfAimingForHead = 0.5f;
     private const float acceptableChanceOfHitting = 0.4f;
     public enum EnemyState
     {
@@ -105,6 +114,7 @@ public class Enemy : MonoBehaviour
     {
         activateNodes();
         makeNodesInvisible();
+        shootSounds.setAll3D(200);
         foreach (Transform child in wanderNodes.transform)
         {
             wanderLocations.Add(child.position);
@@ -149,6 +159,7 @@ public class Enemy : MonoBehaviour
                 HandleAttackState();
                 break;
         }
+
         handleMeshLink();
     }
 
@@ -218,7 +229,7 @@ public class Enemy : MonoBehaviour
         float dy = endPos.y - (startPos.y + jumpHeight);
         float t2 = Mathf.Sqrt(2 * Mathf.Abs(dy / g));
         float jumpDuration = t1 + t2;
-        Debug.Log(t1 + " " + t2 + " " + jumpDuration);
+
         float vx = (endPos.x - startPos.x) / jumpDuration;
         float vz = (endPos.z - startPos.z) / jumpDuration;
         velocity.x = vx;
@@ -295,6 +306,46 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
+    private Vector3 canSeeHead()
+    {
+        foreach (Transform transform in playerRaycastNodes.GetComponentsInChildren<Transform>())
+        {
+            Vector3 eyePos = eye.transform.position;
+            Vector3 nodePos = transform.position;
+            Vector3 direction = nodePos - eyePos;
+
+            RaycastHit hitData;
+            if (Physics.Raycast(eyePos, direction, out hitData, Mathf.Infinity))
+            {
+                if (hitData.collider.gameObject.name.Equals("Head"))
+                {
+                    return direction;
+                }
+            }
+        }
+        return Vector3.zero;
+    }
+
+    private Vector3 canSeeTorso()
+    {
+        foreach (Transform transform in playerRaycastNodes.GetComponentsInChildren<Transform>())
+        {
+            Vector3 eyePos = eye.transform.position;
+            Vector3 nodePos = transform.position;
+            Vector3 direction = nodePos - eyePos;
+
+            RaycastHit hitData;
+            if (Physics.Raycast(eyePos, direction, out hitData, Mathf.Infinity))
+            {
+                if (hitData.collider.gameObject.name.Equals("Torso"))
+                {
+                    return direction;
+                }
+            }
+        }
+        return Vector3.zero;
+    }
+
     private float chanceOfHitting(float distance)
     {
         if (range < distance)
@@ -365,6 +416,7 @@ public class Enemy : MonoBehaviour
         baseInaccuracy = weaponInfo.getWeaponStats(weapon, weaponInfo.isWeaponScoped(weapon)).GetValueOrDefault("baseInaccuracy", 0);
         range = weaponStats.GetValueOrDefault("range", 0);
         damage = weaponStats.GetValueOrDefault("damage", 0);
+        fireCooldown = weaponStats.GetValueOrDefault("fireCooldown", Mathf.Infinity);
 
         disableAllWeapons();
         switch (weapon)
@@ -469,44 +521,56 @@ public class Enemy : MonoBehaviour
 
             case "USP-S":
                 USPS.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "Glock-18":
                 Glock18.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "P250":
                 P250.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "P2000":
                 P2000.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "Dual Berettas":
                 DualBerettas.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "Five-SeveN":
                 FiveSeveN.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "Tec-9":
                 Tec9.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "CZ75-Auto":
                 CZ75Auto.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "Desert Eagle":
                 DesertEagle.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             case "R8 Revolver":
                 R8Revolver.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
             default:
                 R8Revolver.SetActive(true);
+                weaponCategory = "Pistol";
                 break;
         }
     }
 
-    private void shoot()
+    private void shoot(Vector3 direction)
     {
         float bullets = weaponCategory.Equals("Shotgun") ? 8 : 1;
 
+        playShootWeaponSound();
         for (int i = 0; i < bullets; i++)
         {
             Quaternion randomInaccuracy = Quaternion.Euler(
@@ -515,30 +579,89 @@ public class Enemy : MonoBehaviour
                 Random.value * 2 * baseInaccuracy - baseInaccuracy
             );
             RaycastHit hitData;
-            Vector3 shootDirection = (randomInaccuracy * transform.forward).normalized;
-            Vector3 origin = transform.position;
+            Vector3 shootDirection = (randomInaccuracy * direction).normalized;
+            Vector3 origin = eye.transform.position;
             Vector3 endPoint = origin + shootDirection * range;
-
             if (Physics.Raycast(origin, shootDirection, out hitData, range))
             {
                 endPoint = hitData.point;
 
                 GameObject objectHit = hitData.collider.gameObject;
-                GameObject newBulletHole = Instantiate(bulletHolePrefab);
-                newBulletHole.transform.position = hitData.point;
-                newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
-                newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
-                newBulletHole.transform.SetParent(objectHit.transform);
-                StartCoroutine(fadeBulletHole(newBulletHole));
 
-                if (objectHit.CompareTag("Enemy"))
+                if (objectHit.CompareTag("Player"))
                 {
-                    Player7 playerScript = objectHit.GetComponentInParent<Player7>();
                     float headshotMult = weaponInfo.getWeaponStats(currWeapon, false).GetValueOrDefault("headshotMultiplier", 0);
                     playerScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
+                } else
+                {
+                    GameObject newBulletHole = Instantiate(bulletHolePrefab);
+                    newBulletHole.transform.position = hitData.point;
+                    newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
+                    newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                    newBulletHole.transform.SetParent(objectHit.transform);
+                    StartCoroutine(fadeBulletHole(newBulletHole));
                 }
             }
+
+            GameObject tracer = Instantiate(bulletTracerPrefab);
+            BulletTracer tracerScript = tracer.GetComponent<BulletTracer>();
+            float tracerLife = 0.12f;
+            tracerScript.Initialize(muzzlePosition.transform.position, endPoint, tracerLife);
         }
+    }
+
+    private void playShootWeaponSound()
+    {
+            if (currWeapon == "USP-S")
+            {
+                shootSounds.playSound("USPSShoot");
+            } else if (currWeapon == "AWP")
+            {
+                shootSounds.playSound("AWPShoot");
+            }
+            else if (currWeapon == "SSG 08")
+            {
+                shootSounds.playSound("SSG08Shoot");
+            }
+            else
+            {
+                switch (weaponCategory)
+                {
+                    case "Shotgun":
+                        shootSounds.playSound("DefaultShotgunShoot");
+                        break;
+                    case "SMG":
+                        shootSounds.playSound("DefaultSMGShoot");
+                        break;
+                    case "AssaultRifle":
+                        shootSounds.playSound("DefaultARShoot");
+                        break;
+                    case "SniperRifle":
+                        shootSounds.playSound("SCAR20Shoot");
+                        break;
+                    case "MachineGun":
+                        shootSounds.playSound("DefaultMGShoot");
+                        break;
+                    case "Pistol":
+                        shootSounds.playSound("DefaultPistolShoot");
+                        break;
+                }
+            }
+    }
+
+    private Vector3 GetGroundedPlayerPosition()
+    {
+        RaycastHit hit;
+        Vector3 playerPos = player.transform.position;
+
+        // Raycast down from player position
+        if (Physics.Raycast(playerPos, Vector3.down, out hit, 10f))
+        {
+            return hit.point;
+        }
+
+        // Fallback to player position if raycast fails
+        return playerPos;
     }
 
     private const float bulletDecayTime = 5f;
@@ -583,22 +706,25 @@ public class Enemy : MonoBehaviour
             return;
         }
 
+        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        if (canSeePlayer())
+        {
+            if (chanceOfHitting(distanceToPlayer) >= acceptableChanceOfHitting)
+            {
+                TransitionToState(EnemyState.Attack);
+            } else
+            {
+                TransitionToState(EnemyState.Chase);
+            }
+            return;
+        }
+
         if (Vector3.Distance(transform.position, currTarget) < minDistanceToWanderNodeThreshold)
         {
             currTarget = currWanderLocations.Pop();
         }
-        Debug.Log(currTarget);
-        enemy.SetDestination(currTarget);
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-        if (canSeePlayer() && chanceOfHitting(distanceToPlayer) >= acceptableChanceOfHitting)
-        {
-            TransitionToState(EnemyState.Attack);
-        }
-        else
-        {
-            TransitionToState(EnemyState.Chase);
-        }
+        enemy.SetDestination(currTarget);
     }
 
     private void HandlePatrolState()
@@ -609,7 +735,7 @@ public class Enemy : MonoBehaviour
     private void HandleChaseState()
     {
         float minDistanceToPlayerThreshold = range * 0.75f;
-        float maxChaseTime = 20f;
+        float maxChaseTime = 10f;
 
         if (stateTimer > maxChaseTime)
         {
@@ -623,19 +749,49 @@ public class Enemy : MonoBehaviour
         }
 
         float distance = Vector3.Distance(player.transform.position, transform.position);
-        if (distance > minDistanceToPlayerThreshold || !canSeePlayer()) {
-            enemy.SetDestination(player.transform.position);
-        }
 
-        if (chanceOfHitting(distance) > acceptableChanceOfHitting)
+        if (canSeePlayer() && chanceOfHitting(distance) > acceptableChanceOfHitting)
         {
             TransitionToState(EnemyState.Attack);
+            return;
         }
+        enemy.SetDestination(GetGroundedPlayerPosition());
     }
 
     private void HandleAttackState()
     {
+        float minDistanceToPlayerThreshold = range * 0.7f;
+        float distance = Vector3.Distance(player.transform.position, transform.position);
 
+        if (!canSeePlayer() || chanceOfHitting(distance) < acceptableChanceOfHitting * 0.6f)
+        {
+            TransitionToState(EnemyState.Chase);
+            return;
+        }
+
+        if (distance > minDistanceToPlayerThreshold)
+        {
+            enemy.SetDestination(GetGroundedPlayerPosition());
+        } else
+        {
+            enemy.SetDestination(transform.position);
+        }
+
+        //shoot
+        if (stateTimer >= fireCooldown * fireCooldownMult)
+        {
+            Vector3 headDirection = canSeeHead();
+            Vector3 torsoDirection = canSeeTorso();
+            if (Random.Range(0f, 1f) < chanceOfAimingForHead && headDirection != Vector3.zero)
+            {
+                shoot(Vector3.Lerp(headDirection, playerHead.transform.position - eye.transform.position, 0.1f));
+            }
+            else if (torsoDirection != Vector3.zero)
+            {
+                shoot(Vector3.Lerp(torsoDirection, playerBody.transform.position - eye.transform.position, 0.1f));
+            }
+            stateTimer = 0;
+        }
     }
 
     private void HandleDeadState()
@@ -659,10 +815,10 @@ public class Enemy : MonoBehaviour
                 initializeWanderLocations();
                 break;
             case EnemyState.Chase:
-                Debug.Log("entering chase");
+                enemy.SetDestination(GetGroundedPlayerPosition());
                 break;
             case EnemyState.Attack:
-                Debug.Log("entering attack");
+                enemy.SetDestination(transform.position);
                 break;
             case EnemyState.Dead:
                 Destroy(gameObject);
@@ -674,13 +830,17 @@ public class Enemy : MonoBehaviour
 
     private void OnStateExit(EnemyState state)
     {
+        enemy.isStopped = true;
+        enemy.ResetPath();
+        enemy.SetDestination(enemy.transform.position);
+        enemy.isStopped = false;
         switch (state) {
             case EnemyState.Wander:
-                enemy.SetDestination(enemy.transform.position);
                 break;
             case EnemyState.Chase:
                 break;
             case EnemyState.Attack:
+                Debug.Log("Current destination: " + enemy.destination);
                 break;
             case EnemyState.Dead:
                 break;
