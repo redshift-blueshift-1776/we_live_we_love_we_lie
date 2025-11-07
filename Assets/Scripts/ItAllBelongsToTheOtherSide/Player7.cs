@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Player7 : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private float health = 100f;
+    private float health = 100000f;
 
     [SerializeField] private Level7 levelScript;
 

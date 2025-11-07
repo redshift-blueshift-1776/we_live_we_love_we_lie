@@ -39,8 +39,10 @@ public class Level7 : MonoBehaviour
 
 
     private float timerSeconds = 0;
-    private float buyPeriod = 3f;
-    private float roundTime = 5f;
+    private float buyPeriod = 15f;
+    private float roundTime = 180f;
+
+    private bool timerActive = true;
 
     private Coroutine currFadeoutCoroutine = null;
     [SerializeField] private TMP_Text timerText;
@@ -103,7 +105,10 @@ public class Level7 : MonoBehaviour
                 case "Deathmatch":
                     if (gameStarted && currEnemies == 0)
                     {
-                        Debug.Log("YOU WON!");
+                        if (currFadeoutCoroutine == null)
+                        {
+                            StartCoroutine(fadeoutCoroutine(true, 5f));
+                        }
                         yield break;
                     }
                     break;
@@ -152,7 +157,7 @@ public class Level7 : MonoBehaviour
 
         timerText.text = convertSecondsToText(timerSeconds);
 
-        if (gameStarted && !playerDead)
+        if (timerActive && gameStarted && !playerDead)
         {
             timerSeconds -= Time.unscaledDeltaTime;
         }
@@ -230,7 +235,7 @@ public class Level7 : MonoBehaviour
                 player.transform.position = currDeathmatchSpawnLocations.Pop() + Vector3.up;
                 characterController.enabled = true;
 
-                const int deathmatchBots = 5;
+                const int deathmatchBots = 1;
                 for (int i = 0; i < deathmatchBots; i++)
                 {
                     GameObject enemy = Instantiate(localEnemyPrefab);
@@ -332,7 +337,17 @@ public class Level7 : MonoBehaviour
         }
 
         Time.timeScale = 1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        currFadeoutCoroutine = null;
+
+        if (wonGame)
+        {
+            timerActive = false;
+            SceneManager.LoadScene("SecondWeLiveWeLoveWeLie");
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
         yield return null;
     }
 }
