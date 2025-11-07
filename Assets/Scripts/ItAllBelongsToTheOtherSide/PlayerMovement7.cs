@@ -6,6 +6,8 @@ using static UnityEngine.UI.Image;
 
 public class PlayerMovement7 : MonoBehaviour
 {
+    [SerializeField] private Level7 levelScript;
+
     [SerializeField] private GameObject playerCamera;
     private CharacterController characterController;
     [SerializeField] private GameObject body;
@@ -80,7 +82,7 @@ public class PlayerMovement7 : MonoBehaviour
     {
         isGrounded = checkGrounded();
         inUIMenu = gameSettings.isInSettings() || player7.getIsInWeaponShop();
-        if (!inUIMenu)
+        if (!inUIMenu && !levelScript.getPlayerDead())
         {
             rotateCamera();
         }
@@ -105,6 +107,10 @@ public class PlayerMovement7 : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (levelScript.getPlayerDead())
+        {
+            return;
+        }
         if (isGrounded)
         {
             timeSinceGrounded = timeSinceGrounded + (!wasGroundedLastFrame ? 0f : Time.fixedDeltaTime);

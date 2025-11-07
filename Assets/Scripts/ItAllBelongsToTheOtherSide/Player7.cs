@@ -41,16 +41,21 @@ public class Player7 : MonoBehaviour
             UICanvas.SetActive(false);
             return;
         }
-        else
+        else if (!levelScript.getPlayerDead())
         {
             UICanvas.SetActive(true);
         }
 
-        if (Input.GetKeyDown(KeyCode.B))
+        if (levelScript.getInBuyPeriod() && Input.GetKeyDown(KeyCode.B))
         {
             isInWeaponShop = !isInWeaponShop;
+            weaponShopCanvas.SetActive(isInWeaponShop);
         }
-        weaponShopCanvas.SetActive(isInWeaponShop);
+        if (!levelScript.getInBuyPeriod())
+        {
+            weaponShopCanvas.SetActive(false);
+        }
+
         if (isInWeaponShop || gameSettings.isInSettings())
         {
             Cursor.lockState = CursorLockMode.None;
@@ -79,13 +84,13 @@ public class Player7 : MonoBehaviour
         healthBarFill.color = Color.Lerp(Color.white, Color.red, 1 - Mathf.Max(0, health) / 100);
     }
 
-    public void takeDamage(float damage)
+    public void takeDamage(GameObject enemy, float damage)
     {
         health -= damage;
         updateHealthDisplay();
         if (health <= 0)
         {
-            Debug.Log("DEAD!");
+            levelScript.startDeathScene(enemy);
         }
     }
 }

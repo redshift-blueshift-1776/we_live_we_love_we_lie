@@ -89,7 +89,7 @@ public class Enemy : MonoBehaviour
     private float fireCooldown = Mathf.Infinity;
 
     //[Header("Bot Stats")]
-    private const float fov = 90f;
+    private const float fov = 200f;
     private const float reactionTime = 0.5f;
     private const float fireCooldownMult = 1.25f;
     private const float chanceOfAimingForHead = 0.5f;
@@ -242,6 +242,9 @@ public class Enemy : MonoBehaviour
         if (health < 0)
         {
             TransitionToState(EnemyState.Dead);
+        } else if (currentState == EnemyState.Wander)
+        {
+            TransitionToState(EnemyState.Chase);
         }
     }
 
@@ -268,11 +271,11 @@ public class Enemy : MonoBehaviour
             Vector3 nodePos = transform.position;
             Vector3 direction = nodePos - eyePos;
 
-            //float angleToTarget = Vector3.Angle(eye.transform.forward, direction);
-            //if (angleToTarget > fov / 2f)
-            //{
-            //    continue;
-            //}
+            float angleToTarget = Vector3.Angle(eye.transform.forward, direction);
+            if (angleToTarget > fov / 2f)
+            {
+                continue;
+            }
 
             RaycastHit hitData;
             if (Physics.Raycast(eyePos, direction, out hitData, Mathf.Infinity))
@@ -571,7 +574,7 @@ public class Enemy : MonoBehaviour
                 if (objectHit.CompareTag("Player"))
                 {
                     float headshotMult = weaponInfo.getWeaponStats(currWeapon, false).GetValueOrDefault("headshotMultiplier", 0);
-                    playerScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
+                    playerScript.takeDamage(gameObject, damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
                 } else
                 {
                     GameObject newBulletHole = Instantiate(bulletHolePrefab);

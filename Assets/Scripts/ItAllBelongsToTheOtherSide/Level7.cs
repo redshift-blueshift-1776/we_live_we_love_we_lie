@@ -1,15 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 
 public class Level7 : MonoBehaviour
 {
     [SerializeField] private GameObject titleScreenCanvas;
     [SerializeField] private GameObject settingsCanvas;
+    [SerializeField] private GameObject timer;
+    [SerializeField] private Image whiteScreen;
+    [SerializeField] private GameObject buyPeriodScreen;
+    [SerializeField] private GameObject buyWeaponTooltip;
+
     [SerializeField] private GameObject player;
     CharacterController characterController;
+    [SerializeField] private GameObject weapons;
+    [SerializeField] private GameObject UICanvas;
+
     [SerializeField] private Player7 playerScript;
     [SerializeField] private GameObject localEnemyPrefab;
 
@@ -18,15 +30,26 @@ public class Level7 : MonoBehaviour
     [SerializeField] private GameObject playerRaycastNodes;
     [SerializeField] private GameObject deathmatchSpawnNodes;
 
+    
     private bool gameStarted = false;
     private string gamemode = "";
     private int currEnemies = 0;
+    private bool playerDead = false;
+    private bool inBuyPeriod = false;
+
+
+    private float timerSeconds = 0;
+    private float buyPeriod = 3f;
+    private float roundTime = 5f;
+
+    private Coroutine currFadeoutCoroutine = null;
+    [SerializeField] private TMP_Text timerText;
     void Start()
     {
         settingsCanvas.GetComponent<GameSettings>().setOverrideCursor(true);
         settingsCanvas.SetActive(false);
+        timer.SetActive(false);
         titleScreenCanvas.SetActive(true);
-
         obtainSpawnLocations();
         characterController = player.GetComponent<CharacterController>();
         
@@ -41,6 +64,24 @@ public class Level7 : MonoBehaviour
 
     private void Update()
     {
+        handleTime();
+
+        if (inBuyPeriod || !gameStarted || playerDead)
+        {
+            Time.timeScale = 0f;
+        } else
+        {
+            Time.timeScale = 1f;
+        }
+
+        if (inBuyPeriod)
+        {
+            buyWeaponTooltip.SetActive(true);
+        } else
+        {
+            buyWeaponTooltip.SetActive(false);
+
+        }
     }
 
     HashSet<Vector3> deathmatchSpawnLocations = new HashSet<Vector3>();
@@ -75,6 +116,54 @@ public class Level7 : MonoBehaviour
             }
             yield return null;
         }
+    }
+
+    //automatically handles timer and buy period
+
+    private void handleTime()
+    {
+        if (timerSeconds < 0)
+        {
+            if (inBuyPeriod)
+            {
+                if (!Application.isFocused)
+                {
+                    UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+                }
+
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                buyPeriodScreen.SetActive(false);
+                inBuyPeriod = false;
+                timerSeconds = roundTime;
+
+            } else
+            {
+                timer.transform.localScale = new Vector3(2, 2, 1);
+                timerText.color = Color.red;
+                Time.timeScale = 0;
+                playerDead = true;
+                if (currFadeoutCoroutine == null)
+                {
+                    currFadeoutCoroutine = StartCoroutine(fadeoutCoroutine(false, 5.0f));
+                }
+            }
+        }
+
+        timerText.text = convertSecondsToText(timerSeconds);
+
+        if (gameStarted && !playerDead)
+        {
+            timerSeconds -= Time.unscaledDeltaTime;
+        }
+    }
+
+    private string convertSecondsToText(float totalSeconds)
+    {
+        totalSeconds = Mathf.Max(0, totalSeconds);
+        int minutes = (int)(totalSeconds / 60);
+        int seconds = (int)(totalSeconds % 60);
+        return $"{minutes:D2}:{seconds:D2}";
     }
 
     private void activateNodes()
@@ -112,6 +201,16 @@ public class Level7 : MonoBehaviour
         return gameStarted;
     }
 
+    public bool getPlayerDead()
+    {
+        return playerDead;
+    }
+
+    public bool getInBuyPeriod()
+    {
+        return inBuyPeriod;
+    }
+
     public void updateEnemyCount(int amount)
     {
         currEnemies += amount;
@@ -124,12 +223,6 @@ public class Level7 : MonoBehaviour
         switch (gamemode)
         {
             case "Deathmatch":
-                //TO-DO
-                // add nodes for spawn locations of player and bots
-                // put normal enemy out of bounds
-                // clone enemy
-                // update positions accordingly
-                // make sure to call instantiate for both player and each enemy clone
                 initializeDeathmatchSpawnLocations();
                 playerScript.Initialize();
 
@@ -149,6 +242,10 @@ public class Level7 : MonoBehaviour
                     enemyScript.Initialize();
                     currEnemies++;
                 }
+
+                timer.SetActive(true);
+                inBuyPeriod = true;
+                timerSeconds = buyPeriod;
                 break;
             case "Defusal":
                 break;
@@ -176,4 +273,66 @@ public class Level7 : MonoBehaviour
         }
     }
 
+    public void startDeathScene(GameObject enemy)
+    {
+        StartCoroutine(startDeathSceneCoroutine(enemy));
+    }
+
+    private const float fadeoutTime = 3f;
+    private IEnumerator startDeathSceneCoroutine(GameObject enemy)
+    {
+        Debug.Log("start death coroutine");
+        playerDead = true;
+        Time.timeScale = 0;
+        weapons.SetActive(false);
+        UICanvas.SetActive(false);
+        yield return new WaitForSecondsRealtime(1f);
+
+        float t = 0f;
+        Quaternion startRotation = player.transform.rotation;
+        Vector3 directionToEnemy = (enemy.transform.Find("Head").position - player.transform.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(directionToEnemy);
+
+        float angle = Quaternion.Angle(player.transform.rotation, targetRotation);
+        float rotationSpeed = 45f; 
+        float turningTime = angle / rotationSpeed;
+
+        while (t < turningTime)
+        {
+            t += Time.unscaledDeltaTime; 
+            float fraction = Mathf.Clamp01(t / turningTime);
+
+            float easedFraction = Mathf.SmoothStep(0f, 1f, fraction);
+
+            player.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, easedFraction);
+
+            yield return null;
+        }
+        player.transform.rotation = targetRotation;
+
+        yield return new WaitForSecondsRealtime(1f);
+        StartCoroutine(fadeoutCoroutine(false, 3.0f));
+        yield return null;
+    }
+
+    private IEnumerator fadeoutCoroutine(bool wonGame, float time)
+    {
+        Color color = whiteScreen.color;
+        float r = color.r;
+        float g = color.g;
+        float b = color.b;
+
+        float t = 0f;
+        while (t < time)
+        {
+            t += Time.unscaledDeltaTime;
+            float fraction = Mathf.Clamp01(t / time);
+            whiteScreen.color = Color.Lerp(color, new Color(r, g, b, fraction), fraction);
+            yield return null;
+        }
+
+        Time.timeScale = 1;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        yield return null;
+    }
 }

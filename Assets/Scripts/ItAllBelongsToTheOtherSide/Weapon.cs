@@ -113,7 +113,7 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!levelScript.getGameStarted())
+        if (!levelScript.getGameStarted() || levelScript.getPlayerDead())
         {
             return;
         }
@@ -272,13 +272,14 @@ public class Weapon : MonoBehaviour
                 updateWeaponStats();
                 if (t >= fireCooldown && 
                     (Input.GetMouseButtonDown(0) || (canHoldDown && Input.GetMouseButton(0)))
+                    && !levelScript.getInBuyPeriod()
                    )
                 {
                     shoot(range);
                     t = 0;
                 }
             }
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             yield return null;
         }
     }
@@ -455,10 +456,10 @@ public class Weapon : MonoBehaviour
         float t3 = audioManager.getLength("reload3");
 
         audioManager.playSound("reload1");
-        yield return new WaitForSeconds(t1);
+        yield return new WaitForSecondsRealtime(t1);
 
         audioManager.playSound("reload2");
-        yield return new WaitForSeconds(t2);
+        yield return new WaitForSecondsRealtime(t2);
 
         if (weaponIndex == 1)
         {
@@ -474,7 +475,7 @@ public class Weapon : MonoBehaviour
         }
 
         audioManager.playSound("reload3");
-        yield return new WaitForSeconds(t3);
+        yield return new WaitForSecondsRealtime(t3);
 
 
         if (weaponIndex == 1)
