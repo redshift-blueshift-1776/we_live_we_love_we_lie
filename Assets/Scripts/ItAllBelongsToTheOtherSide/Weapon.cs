@@ -320,6 +320,7 @@ public class Weapon : MonoBehaviour
     private int currSecondaryMag = 0;
     private int secondaryRemainingAmmo = 0;
     private float secondaryBaseInaccuracy = 0;
+
     private void shoot(float range)
     {
         //do not allow shooting when out of ammo; automatically reload instead
@@ -366,6 +367,11 @@ public class Weapon : MonoBehaviour
 
         recoilInaccuracy = Mathf.Max(0.25f, recoilInaccuracy + 0.05f);
         playShootWeaponSound();
+        if (currShootingNoiseCoroutine != null)
+        {
+            StopCoroutine(currShootingNoiseCoroutine);
+            StartCoroutine(shootingNoise());
+        }
         for (int i = 0; i < bullets; i++)
         {
             Quaternion randomInaccuracy = Quaternion.Euler(
@@ -399,7 +405,7 @@ public class Weapon : MonoBehaviour
 
                     float damage = weaponInfo.getWeaponStats(weaponIndex == 1 ? primaryWeapon : secondaryWeapon, true).GetValueOrDefault("damage", 0);
                     float headshotMult = weaponInfo.getWeaponStats(weaponIndex == 1 ? primaryWeapon : secondaryWeapon, true).GetValueOrDefault("headshotMultiplier", 0);
-                    enemyScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
+                    enemyScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1), objectHit.name.Equals("Head"));
                 }
                 //unzoom if AWP or Scouter
                 if (primaryWeapon == "AWP" || primaryWeapon == "SSG 08")
@@ -426,6 +432,31 @@ public class Weapon : MonoBehaviour
         {
             currSecondaryMag -= 1;
         }
+    }
+    private Coroutine currShootingNoiseCoroutine = null;
+    private bool isMakingNoise = false;
+    private IEnumerator shootingNoise()
+    {
+        isMakingNoise = true;
+        yield return new WaitForSeconds(1);
+        isMakingNoise = false;
+        currShootingNoiseCoroutine = null;
+        yield return null;
+    }
+
+    public bool getIsMakingNoise()
+    {
+        return isMakingNoise;
+    }
+
+    public string getPrimaryWeapon()
+    {
+        return primaryWeapon;
+    }
+
+    public string getSecondaryWeapon()
+    {
+        return secondaryWeapon;
     }
 
     private bool primaryReloading;
@@ -667,7 +698,7 @@ public class Weapon : MonoBehaviour
 
                             float damage = knifeStats.GetValueOrDefault("damage", 0);
                             float headshotMult = knifeStats.GetValueOrDefault("headshotMultiplier", 0);
-                            enemyScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
+                            enemyScript.takeDamage(damage * (objectHit.name.Equals("Head") ? headshotMult : 1), objectHit.name.Equals("Head"));
                             break;
                         }
                     }

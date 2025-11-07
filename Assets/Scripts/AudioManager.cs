@@ -261,4 +261,10 @@ public class AudioManager : MonoBehaviour
         }
         
     }
+
+    public AudioClip getClip(string name)
+    {
+        Sound s = getSound(name);
+        return s != null ? s.clip : null;
+    }
 }

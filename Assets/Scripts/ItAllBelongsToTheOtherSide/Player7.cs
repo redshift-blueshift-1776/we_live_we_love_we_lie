@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Player7 : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private float health = 100000f;
+    
 
     [SerializeField] private Level7 levelScript;
 
@@ -18,8 +18,10 @@ public class Player7 : MonoBehaviour
     [SerializeField] private GameObject weaponShopCanvas;
     [SerializeField] private GameSettings gameSettings;
 
-    private bool isInWeaponShop = false;
+    [SerializeField] private AudioManager audioManager;
 
+    private bool isInWeaponShop = false;
+    private float health = 100f;
 
     void Start()
     {
@@ -84,13 +86,22 @@ public class Player7 : MonoBehaviour
         healthBarFill.color = Color.Lerp(Color.white, Color.red, 1 - Mathf.Max(0, health) / 100);
     }
 
-    public void takeDamage(GameObject enemy, float damage)
+    public void takeDamage(GameObject enemy, float damage, bool head)
     {
         health -= damage;
         updateHealthDisplay();
         if (health <= 0)
         {
+            audioManager.playSound("death");
             levelScript.startDeathScene(enemy);
+        }
+
+        if (head)
+        {
+            audioManager.playSound("headshot");
+        } else
+        {
+            audioManager.playSound("bodyshot");
         }
     }
 }

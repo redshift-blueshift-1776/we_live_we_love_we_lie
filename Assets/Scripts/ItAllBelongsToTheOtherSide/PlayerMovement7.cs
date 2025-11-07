@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,6 +8,7 @@ using static UnityEngine.UI.Image;
 public class PlayerMovement7 : MonoBehaviour
 {
     [SerializeField] private Level7 levelScript;
+    [SerializeField] private AudioManager audioManager;
 
     [SerializeField] private GameObject playerCamera;
     private CharacterController characterController;
@@ -75,6 +77,8 @@ public class PlayerMovement7 : MonoBehaviour
         {
             yaw -= Mathf.Sign(yaw) * 360f;
         }
+
+        StartCoroutine(handleFootstepSounds());
     }
 
     // Update is called once per frame
@@ -397,6 +401,34 @@ public class PlayerMovement7 : MonoBehaviour
         {
             return 0;
         }
+    }
+
+    private bool isMakingNoise = false;
+    private IEnumerator handleFootstepSounds()
+    {
+        float t = 0;
+        audioManager.setVolume("footsteps", 0.25f);
+        while (true)
+        {
+            if (velocity.magnitude > 0.1f && isGrounded && isSprinting)
+            {
+                if (t > 0.75f)
+                {
+                    audioManager.playSound("footsteps");
+                    t = 0;
+                }
+                isMakingNoise = true;
+            } else
+            {
+                isMakingNoise = false;
+            }
+            t += Time.deltaTime;
+            yield return null;
+        }
+    }
+    public bool getIsMakingSprintingNoise()
+    {
+        return isMakingNoise;
     }
 
     public Vector3 getVelocity()

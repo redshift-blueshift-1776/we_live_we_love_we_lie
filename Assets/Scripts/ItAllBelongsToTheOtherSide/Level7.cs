@@ -10,21 +10,31 @@ using UnityEngine.UI;
 
 public class Level7 : MonoBehaviour
 {
+    [Header("UI Elements")]
     [SerializeField] private GameObject titleScreenCanvas;
     [SerializeField] private GameObject settingsCanvas;
+    [SerializeField] private GameObject UICanvas;
     [SerializeField] private GameObject timer;
     [SerializeField] private Image whiteScreen;
     [SerializeField] private GameObject buyPeriodScreen;
     [SerializeField] private GameObject buyWeaponTooltip;
 
+    [SerializeField] private GameObject primaryWeaponName;
+    [SerializeField] private GameObject secondaryWeaponName;
+    [SerializeField] private GameObject primaryWeaponAmmoText;
+    [SerializeField] private GameObject secondaryWeaponAmmoText;
+
+    [Header("Game Objects")]
     [SerializeField] private GameObject player;
     CharacterController characterController;
     [SerializeField] private GameObject weapons;
-    [SerializeField] private GameObject UICanvas;
 
     [SerializeField] private Player7 playerScript;
+    [SerializeField] private Weapon weaponScript;
+
     [SerializeField] private GameObject localEnemyPrefab;
 
+    [Header("Nodes")]
     [SerializeField] private GameObject wanderNodes;
     [SerializeField] private GameObject navMeshJumps;
     [SerializeField] private GameObject playerRaycastNodes;
@@ -105,6 +115,7 @@ public class Level7 : MonoBehaviour
                 case "Deathmatch":
                     if (gameStarted && currEnemies == 0)
                     {
+                        timerActive = false;
                         if (currFadeoutCoroutine == null)
                         {
                             StartCoroutine(fadeoutCoroutine(true, 5f));
@@ -123,7 +134,48 @@ public class Level7 : MonoBehaviour
         }
     }
 
-    //automatically handles timer and buy period
+
+    public void setGamemode(string gamemode)
+    {
+        this.gamemode = gamemode;
+        switch (gamemode)
+        {
+            case "Deathmatch":
+                initializeDeathmatchSpawnLocations();
+                playerScript.Initialize();
+
+                characterController.enabled = false;
+                player.transform.position = currDeathmatchSpawnLocations.Pop() + Vector3.up;
+                characterController.enabled = true;
+
+                const int deathmatchBots = 5;
+                for (int i = 0; i < deathmatchBots; i++)
+                {
+                    GameObject enemy = Instantiate(localEnemyPrefab);
+                    Enemy enemyScript = enemy.GetComponent<Enemy>();
+
+                    NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
+                    agent.Warp(currDeathmatchSpawnLocations.Pop() + Vector3.up);
+
+                    enemyScript.Initialize();
+                    currEnemies++;
+                }
+
+                timer.SetActive(true);
+                inBuyPeriod = true;
+                timerSeconds = buyPeriod;
+                break;
+            case "Defusal":
+                break;
+            case "Zombie Apocalypse":
+                break;
+            default:
+                break;
+        }
+        gameStarted = true;
+        titleScreenCanvas.SetActive(false);
+        settingsCanvas.SetActive(true);
+    }
 
     private void handleTime()
     {
@@ -141,7 +193,18 @@ public class Level7 : MonoBehaviour
                 buyPeriodScreen.SetActive(false);
                 inBuyPeriod = false;
                 timerSeconds = roundTime;
+                
+                if (weaponScript.getPrimaryWeapon().Equals(""))
+                {
+                    primaryWeaponName.SetActive(false);
+                    primaryWeaponAmmoText.SetActive(false);
+                }
 
+                if (weaponScript.getSecondaryWeapon().Equals(""))
+                {
+                    secondaryWeaponName.SetActive(false);
+                    secondaryWeaponAmmoText.SetActive(false);
+                }
             } else
             {
                 timer.transform.localScale = new Vector3(2, 2, 1);
@@ -221,48 +284,7 @@ public class Level7 : MonoBehaviour
         currEnemies += amount;
     }
 
-    public void setGamemode(string gamemode)
-    {
-        Debug.Log("set gamemode!");
-        this.gamemode = gamemode;
-        switch (gamemode)
-        {
-            case "Deathmatch":
-                initializeDeathmatchSpawnLocations();
-                playerScript.Initialize();
-
-                characterController.enabled = false;
-                player.transform.position = currDeathmatchSpawnLocations.Pop() + Vector3.up;
-                characterController.enabled = true;
-
-                const int deathmatchBots = 1;
-                for (int i = 0; i < deathmatchBots; i++)
-                {
-                    GameObject enemy = Instantiate(localEnemyPrefab);
-                    Enemy enemyScript = enemy.GetComponent<Enemy>();
-
-                    NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
-                    agent.Warp(currDeathmatchSpawnLocations.Pop() + Vector3.up);
-
-                    enemyScript.Initialize();
-                    currEnemies++;
-                }
-
-                timer.SetActive(true);
-                inBuyPeriod = true;
-                timerSeconds = buyPeriod;
-                break;
-            case "Defusal":
-                break;
-            case "Zombie Apocalypse":
-                break;
-            default:
-                break;
-        }
-        gameStarted = true;
-        titleScreenCanvas.SetActive(false);
-        settingsCanvas.SetActive(true);
-    }
+    
 
     
     Stack<Vector3> currDeathmatchSpawnLocations = new Stack<Vector3>();
@@ -282,11 +304,9 @@ public class Level7 : MonoBehaviour
     {
         StartCoroutine(startDeathSceneCoroutine(enemy));
     }
-
-    private const float fadeoutTime = 3f;
     private IEnumerator startDeathSceneCoroutine(GameObject enemy)
     {
-        Debug.Log("start death coroutine");
+        timerActive = false;
         playerDead = true;
         Time.timeScale = 0;
         weapons.SetActive(false);
@@ -322,6 +342,7 @@ public class Level7 : MonoBehaviour
 
     private IEnumerator fadeoutCoroutine(bool wonGame, float time)
     {
+
         Color color = whiteScreen.color;
         float r = color.r;
         float g = color.g;
@@ -341,7 +362,6 @@ public class Level7 : MonoBehaviour
 
         if (wonGame)
         {
-            timerActive = false;
             SceneManager.LoadScene("SecondWeLiveWeLoveWeLie");
         }
         else

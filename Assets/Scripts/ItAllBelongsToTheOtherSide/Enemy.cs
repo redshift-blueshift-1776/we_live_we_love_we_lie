@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TMPro;
@@ -14,6 +15,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private NavMeshAgent enemy;
     [SerializeField] private GameObject player;
     [SerializeField] private Player7 playerScript;
+    [SerializeField] private PlayerMovement7 playerMovementScript;
+    [SerializeField] private Weapon weaponScript;
     [SerializeField] private GameObject playerHead;
     [SerializeField] private GameObject playerBody;
     [SerializeField] private GameObject eye;
@@ -22,6 +25,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject navMeshJumps;
     [SerializeField] private GameObject playerRaycastNodes;
 
+    [SerializeField] private AudioManager bodySounds;
     [SerializeField] private AudioManager shootSounds;
 
     #region Weapons
@@ -119,7 +123,7 @@ public class Enemy : MonoBehaviour
 
     public void Initialize()
     {
-
+        bodySounds.setAll3D(50);
         shootSounds.setAll3D(200);
         foreach (Transform child in wanderNodes.transform)
         {
@@ -133,7 +137,7 @@ public class Enemy : MonoBehaviour
         }
         updateWeapon(currWeapon);
 
-
+        StartCoroutine(handleFootstepSounds());
         TransitionToState(EnemyState.Wander);
     }
 
@@ -160,6 +164,8 @@ public class Enemy : MonoBehaviour
                 break;
             case EnemyState.Attack:
                 HandleAttackState();
+                break;
+            case EnemyState.Dead:
                 break;
             default:
                 break;
@@ -236,7 +242,7 @@ public class Enemy : MonoBehaviour
         isJumping = false;
     }
 
-    public void takeDamage(float damage)
+    public void takeDamage(float damage, bool head)
     {
         health -= damage;
         if (health < 0)
@@ -245,6 +251,14 @@ public class Enemy : MonoBehaviour
         } else if (currentState == EnemyState.Wander)
         {
             TransitionToState(EnemyState.Chase);
+        }
+
+        if (head)
+        {
+            bodySounds.playSound("headshot");
+        } else
+        {
+            bodySounds.playSound("bodyshot");
         }
     }
 
@@ -574,7 +588,7 @@ public class Enemy : MonoBehaviour
                 if (objectHit.CompareTag("Player"))
                 {
                     float headshotMult = weaponInfo.getWeaponStats(currWeapon, false).GetValueOrDefault("headshotMultiplier", 0);
-                    playerScript.takeDamage(gameObject, damage * (objectHit.name.Equals("Head") ? headshotMult : 1));
+                    playerScript.takeDamage(gameObject, damage * (objectHit.name.Equals("Head") ? headshotMult : 1), objectHit.name.Equals("Head"));
                 } else
                 {
                     GameObject newBulletHole = Instantiate(bulletHolePrefab);
@@ -681,6 +695,7 @@ public class Enemy : MonoBehaviour
 
     Vector3 currTarget;
     private const float minDistanceToWanderNodeThreshold = 5.0f;
+    private const float hearingDistance = 15f;
     private void HandleWanderState()
     {
         if (currWanderLocations.Count == 0)
@@ -689,7 +704,10 @@ public class Enemy : MonoBehaviour
         }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-        if (canSeePlayer())
+        if (canSeePlayer() || 
+            ((playerMovementScript.getIsMakingSprintingNoise() || weaponScript.getIsMakingNoise()) 
+                && distanceToPlayer <= hearingDistance)
+            )
         {
             if (chanceOfHitting(distanceToPlayer) >= acceptableChanceOfHitting)
             {
@@ -787,7 +805,7 @@ public class Enemy : MonoBehaviour
 
     private void HandleDeadState()
     {
-
+        
     }
 
     private void TransitionToState(EnemyState newState)
@@ -817,9 +835,7 @@ public class Enemy : MonoBehaviour
                 enemy.SetDestination(transform.position);
                 break;
             case EnemyState.Dead:
-                levelScript.updateEnemyCount(-1);
-                Debug.Log("KILLED");
-                Destroy(gameObject);
+                StartCoroutine(handleDeath());
                 break;
             default:
                 break;
@@ -849,5 +865,50 @@ public class Enemy : MonoBehaviour
             default:
                 break;
         }
+    }
+
+
+    private IEnumerator handleFootstepSounds()
+    {
+        float t = 0;
+        while (true)
+        {
+            if (t > 0.75f && enemy.velocity.magnitude > 0.1f && !isJumping)
+            {
+                bodySounds.playSound("footsteps");
+                t = 0;
+            }
+            t += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+
+    private const float dyingTime = 1f;
+    private IEnumerator handleDeath()
+    {
+        levelScript.updateEnemyCount(-1);
+        bodySounds.playSound("death");
+        MeshRenderer[] childRenderers = GetComponentsInChildren<MeshRenderer>();
+        Color originalColor = childRenderers[0].material.color;
+        float r = originalColor.r;
+        float g = originalColor.g;
+        float b = originalColor.b;
+
+        float t = 0;
+        float endTime = Mathf.Max(dyingTime, bodySounds.getLength("death"));
+        while (t < endTime)
+        {
+            t += Time.deltaTime;
+
+            float fraction = t / endTime;
+            foreach (MeshRenderer rend in childRenderers)
+            {
+                rend.material.color = new Color(r, g, b, 1 - fraction);
+            }
+            yield return null;
+        }
+        Destroy(gameObject);
+        yield return null;
     }
 }
