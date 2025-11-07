@@ -9,6 +9,7 @@ public class Weapon : MonoBehaviour
 {
     private float timeSinceAttack = Mathf.Infinity;
 
+    [SerializeField] private Level7 levelScript;
     [SerializeField] private Player7 player7;
     [SerializeField] private PlayerMovement7 movementScript;
     [SerializeField] private GameObject playerCamera;
@@ -112,6 +113,11 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!levelScript.getGameStarted())
+        {
+            return;
+        }
+
         displayWeaponModel();
 
         if (!player7.getIsInWeaponShop())
@@ -376,12 +382,14 @@ public class Weapon : MonoBehaviour
                 endPoint = hitData.point;
 
                 GameObject objectHit = hitData.collider.gameObject;
-                GameObject newBulletHole = Instantiate(bulletHolePrefab);
-                newBulletHole.transform.position = hitData.point;
-                newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
-                newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
-                newBulletHole.transform.SetParent(objectHit.transform);
-                StartCoroutine(fadeBulletHole(newBulletHole));
+                if (!objectHit.CompareTag("Player")) {
+                    GameObject newBulletHole = Instantiate(bulletHolePrefab);
+                    newBulletHole.transform.position = hitData.point;
+                    newBulletHole.transform.rotation = Quaternion.LookRotation(hitData.normal);
+                    newBulletHole.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                    newBulletHole.transform.SetParent(objectHit.transform);
+                    StartCoroutine(fadeBulletHole(newBulletHole));
+                }
 
                 if (objectHit.CompareTag("Enemy"))
                 {

@@ -34,16 +34,17 @@ public class Player7 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        updateHealthDisplay();
+
         if (!levelScript.getGameStarted())
         {
             UICanvas.SetActive(false);
             return;
-        } else
+        }
+        else
         {
             UICanvas.SetActive(true);
         }
-
-        updateHealthDisplay();
 
         if (Input.GetKeyDown(KeyCode.B))
         {
@@ -54,7 +55,8 @@ public class Player7 : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-        } else
+        }
+        else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

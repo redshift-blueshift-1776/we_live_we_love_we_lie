@@ -9,6 +9,8 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private Level7 levelScript;
+
     [SerializeField] private NavMeshAgent enemy;
     [SerializeField] private GameObject player;
     [SerializeField] private Player7 playerScript;
@@ -87,7 +89,8 @@ public class Enemy : MonoBehaviour
     private float fireCooldown = Mathf.Infinity;
 
     //[Header("Bot Stats")]
-    private const float reactionTime = 0.25f;
+    private const float fov = 90f;
+    private const float reactionTime = 0.5f;
     private const float fireCooldownMult = 1.25f;
     private const float chanceOfAimingForHead = 0.5f;
     private const float acceptableChanceOfHitting = 0.4f;
@@ -102,7 +105,7 @@ public class Enemy : MonoBehaviour
     }
 
     float health = 100;
-    private EnemyState currentState;
+    private EnemyState currentState = EnemyState.None;
     private float stateTimer = 0f;
 
     private bool isJumping = false;
@@ -112,11 +115,11 @@ public class Enemy : MonoBehaviour
     HashSet<Vector3> wanderLocations = new HashSet<Vector3>();
     void Start()
     {
-        currentState = EnemyState.None;
     }
 
-    private void Initialize()
+    public void Initialize()
     {
+
         shootSounds.setAll3D(200);
         foreach (Transform child in wanderNodes.transform)
         {
@@ -137,7 +140,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentState == EnemyState.None || currentState == EnemyState.Dead) {
+        if (currentState == EnemyState.Dead) {
             return;
         }
 
@@ -157,6 +160,8 @@ public class Enemy : MonoBehaviour
                 break;
             case EnemyState.Attack:
                 HandleAttackState();
+                break;
+            default:
                 break;
         }
 
@@ -262,6 +267,12 @@ public class Enemy : MonoBehaviour
             Vector3 eyePos = eye.transform.position;
             Vector3 nodePos = transform.position;
             Vector3 direction = nodePos - eyePos;
+
+            //float angleToTarget = Vector3.Angle(eye.transform.forward, direction);
+            //if (angleToTarget > fov / 2f)
+            //{
+            //    continue;
+            //}
 
             RaycastHit hitData;
             if (Physics.Raycast(eyePos, direction, out hitData, Mathf.Infinity))
@@ -672,7 +683,6 @@ public class Enemy : MonoBehaviour
         if (currWanderLocations.Count == 0)
         {
             initializeWanderLocations();
-            return;
         }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
@@ -746,6 +756,15 @@ public class Enemy : MonoBehaviour
             enemy.SetDestination(transform.position);
         }
 
+        //rotate bot to face player
+        Vector3 directionToPlayer = player.transform.position - transform.position;
+        directionToPlayer.y = 0; // Keep rotation on horizontal plane only
+        if (directionToPlayer != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+            transform.rotation = targetRotation;
+        }
+
         //shoot
         if (stateTimer >= fireCooldown * fireCooldownMult)
         {
@@ -781,15 +800,22 @@ public class Enemy : MonoBehaviour
         switch (state)
         {
             case EnemyState.Wander:
+                enemy.updateRotation = true;
                 initializeWanderLocations();
+                enemy.SetDestination(currTarget);
                 break;
             case EnemyState.Chase:
+                enemy.updateRotation = true;
                 enemy.SetDestination(GetGroundedPlayerPosition());
                 break;
             case EnemyState.Attack:
+                enemy.updateRotation = false;
+                stateTimer = -reactionTime;
                 enemy.SetDestination(transform.position);
                 break;
             case EnemyState.Dead:
+                levelScript.updateEnemyCount(-1);
+                Debug.Log("KILLED");
                 Destroy(gameObject);
                 break;
             default:
@@ -799,6 +825,11 @@ public class Enemy : MonoBehaviour
 
     private void OnStateExit(EnemyState state)
     {
+        if (state == EnemyState.None)
+        {
+            return;
+        }
+
         enemy.isStopped = true;
         enemy.ResetPath();
         enemy.SetDestination(enemy.transform.position);
@@ -809,7 +840,6 @@ public class Enemy : MonoBehaviour
             case EnemyState.Chase:
                 break;
             case EnemyState.Attack:
-                Debug.Log("Current destination: " + enemy.destination);
                 break;
             case EnemyState.Dead:
                 break;

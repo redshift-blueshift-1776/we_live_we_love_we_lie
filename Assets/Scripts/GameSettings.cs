@@ -12,6 +12,7 @@ public class GameSettings : MonoBehaviour
 
     private bool inSettings;
     private bool gameEnded;
+    private bool overrideCursor = false;
     private Stack<string> settingStack;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -73,15 +74,21 @@ public class GameSettings : MonoBehaviour
         if (settingStack.Count == 0)
         {
             inSettings = false;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            if (!overrideCursor)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
             AudioListener.pause = false;
         } else
         {
             inSettings = true;
             AudioListener.pause = true;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            if (!overrideCursor)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
             string page = settingStack.Peek();
             switch (page)
             {
@@ -96,6 +103,11 @@ public class GameSettings : MonoBehaviour
             }
         }
         settings.SetActive(inSettings);
+    }
+
+    public void setOverrideCursor(bool b)
+    {
+        overrideCursor = b;
     }
 
     public bool isInSettings()

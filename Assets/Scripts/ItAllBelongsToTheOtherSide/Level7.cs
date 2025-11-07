@@ -1,8 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Level7 : MonoBehaviour
 {
     [SerializeField] private GameObject titleScreenCanvas;
+    [SerializeField] private GameObject settingsCanvas;
+    [SerializeField] private GameObject player;
+    CharacterController characterController;
     [SerializeField] private Player7 playerScript;
     [SerializeField] private GameObject localEnemyPrefab;
 
@@ -13,32 +20,60 @@ public class Level7 : MonoBehaviour
 
     private bool gameStarted = false;
     private string gamemode = "";
+    private int currEnemies = 0;
     void Start()
     {
+        settingsCanvas.GetComponent<GameSettings>().setOverrideCursor(true);
+        settingsCanvas.SetActive(false);
         titleScreenCanvas.SetActive(true);
+
+        obtainSpawnLocations();
+        characterController = player.GetComponent<CharacterController>();
+        
         activateNodes();
         makeAllNodesInvisible();
 
+        StartCoroutine(handleGame());
         //Instantiate(localEnemyPrefab);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void Update()
     {
-        handleGame();
     }
 
-    private void handleGame()
+    HashSet<Vector3> deathmatchSpawnLocations = new HashSet<Vector3>();
+    private void obtainSpawnLocations()
     {
-        switch (gamemode)
+        foreach (Transform child in deathmatchSpawnNodes.transform)
         {
-            case "Deathmatch":
-                break;
-            case "Defusal":
-                break;
-            case "Zombie Apocalypse":
-                break;
-            default:
-                break;
+            deathmatchSpawnLocations.Add(child.position);
+        }
+       
+    }
+
+    private IEnumerator handleGame()
+    {
+        while (true)
+        {
+            switch (gamemode)
+            {
+                case "Deathmatch":
+                    if (gameStarted && currEnemies == 0)
+                    {
+                        Debug.Log("YOU WON!");
+                        yield break;
+                    }
+                    break;
+                case "Defusal":
+                    break;
+                case "Zombie Apocalypse":
+                    break;
+                default:
+                    break;
+            }
+            yield return null;
         }
     }
 
@@ -76,8 +111,15 @@ public class Level7 : MonoBehaviour
     {
         return gameStarted;
     }
+
+    public void updateEnemyCount(int amount)
+    {
+        currEnemies += amount;
+    }
+
     public void setGamemode(string gamemode)
     {
+        Debug.Log("set gamemode!");
         this.gamemode = gamemode;
         switch (gamemode)
         {
@@ -88,6 +130,25 @@ public class Level7 : MonoBehaviour
                 // clone enemy
                 // update positions accordingly
                 // make sure to call instantiate for both player and each enemy clone
+                initializeDeathmatchSpawnLocations();
+                playerScript.Initialize();
+
+                characterController.enabled = false;
+                player.transform.position = currDeathmatchSpawnLocations.Pop() + Vector3.up;
+                characterController.enabled = true;
+
+                const int deathmatchBots = 5;
+                for (int i = 0; i < deathmatchBots; i++)
+                {
+                    GameObject enemy = Instantiate(localEnemyPrefab);
+                    Enemy enemyScript = enemy.GetComponent<Enemy>();
+
+                    NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
+                    agent.Warp(currDeathmatchSpawnLocations.Pop() + Vector3.up);
+
+                    enemyScript.Initialize();
+                    currEnemies++;
+                }
                 break;
             case "Defusal":
                 break;
@@ -97,7 +158,22 @@ public class Level7 : MonoBehaviour
                 break;
         }
         gameStarted = true;
-        playerScript.Initialize();
         titleScreenCanvas.SetActive(false);
+        settingsCanvas.SetActive(true);
     }
+
+    
+    Stack<Vector3> currDeathmatchSpawnLocations = new Stack<Vector3>();
+    private void initializeDeathmatchSpawnLocations()
+    {
+        currDeathmatchSpawnLocations.Clear();
+
+        List<Vector3> shuffled = deathmatchSpawnLocations.OrderBy(x => Random.value).ToList();
+
+        foreach (Vector3 location in shuffled)
+        {
+            currDeathmatchSpawnLocations.Push(location);
+        }
+    }
+
 }
