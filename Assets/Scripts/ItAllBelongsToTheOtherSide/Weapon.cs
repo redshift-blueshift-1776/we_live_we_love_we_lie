@@ -220,7 +220,11 @@ public class Weapon : MonoBehaviour
 
         Camera.main.fieldOfView = scoped ? zoomedFOV : defaultFOV;
     }
-
+    public bool getScoped()
+    {
+        return scoped;
+    }
+    
     private void displayWeaponModel()
     {
         if (weaponIndex == 1)

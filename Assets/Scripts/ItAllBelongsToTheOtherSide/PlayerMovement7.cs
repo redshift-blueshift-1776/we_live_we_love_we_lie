@@ -374,10 +374,12 @@ public class PlayerMovement7 : MonoBehaviour
         characterController.Move(velocity * Time.deltaTime);
     }
 
+    
     private void rotateCamera()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivityX;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivityY;
+        float zoomSlowdownFactor = weaponScript.getScoped() ? 0.33f : 1;
+        float mouseX = Input.GetAxis("Mouse X") * sensitivityX * zoomSlowdownFactor;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivityY * zoomSlowdownFactor;
 
         yaw += mouseX;
         pitch -= mouseY; //inverted
