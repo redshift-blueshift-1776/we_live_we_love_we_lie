@@ -10,6 +10,8 @@ using UnityEngine.UI;
 
 public class Level7 : MonoBehaviour
 {
+    [SerializeField] private GameSettings gameSettings;
+
     [Header("UI Elements")]
     [SerializeField] private GameObject titleScreenCanvas;
     [SerializeField] private GameObject settingsCanvas;
@@ -179,6 +181,14 @@ public class Level7 : MonoBehaviour
 
     private void handleTime()
     {
+        if (gameSettings.isInSettings())
+        {
+            Time.timeScale = 0;
+        } else
+        {
+            Time.timeScale = 1;
+        }
+
         if (timerSeconds < 0)
         {
             if (inBuyPeriod)
@@ -193,7 +203,7 @@ public class Level7 : MonoBehaviour
                 buyPeriodScreen.SetActive(false);
                 inBuyPeriod = false;
                 timerSeconds = roundTime;
-                
+
                 if (weaponScript.getPrimaryWeapon().Equals(""))
                 {
                     primaryWeaponName.SetActive(false);
@@ -205,7 +215,8 @@ public class Level7 : MonoBehaviour
                     secondaryWeaponName.SetActive(false);
                     secondaryWeaponAmmoText.SetActive(false);
                 }
-            } else
+            }
+            else
             {
                 timer.transform.localScale = new Vector3(2, 2, 1);
                 timerText.color = Color.red;
@@ -220,7 +231,7 @@ public class Level7 : MonoBehaviour
 
         timerText.text = convertSecondsToText(timerSeconds);
 
-        if (timerActive && gameStarted && !playerDead)
+        if (timerActive && gameStarted && !playerDead && !gameSettings.isInSettings())
         {
             timerSeconds -= Time.unscaledDeltaTime;
         }

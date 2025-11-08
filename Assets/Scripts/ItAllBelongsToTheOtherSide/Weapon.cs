@@ -218,7 +218,7 @@ public class Weapon : MonoBehaviour
             audioManager.playSound("SSG08Zoom");
         }
 
-        Camera.main.fieldOfView = scoped ? zoomedFOV : defaultFOV;
+        Camera.main.fieldOfView = (scoped && !levelScript.getPlayerDead()) ? zoomedFOV : defaultFOV;
     }
     public bool getScoped()
     {
