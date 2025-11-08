@@ -59,6 +59,9 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         madeNotes = false;
         didBriefcases = false;
         secondsPerBeat = 60.0f / 145.0f / 4.0f;

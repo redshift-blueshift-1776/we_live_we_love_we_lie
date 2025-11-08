@@ -26,6 +26,9 @@ public class LevelSelect : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         // currentPage = 0;
 
         // // Safety checks — prevent null/short arrays

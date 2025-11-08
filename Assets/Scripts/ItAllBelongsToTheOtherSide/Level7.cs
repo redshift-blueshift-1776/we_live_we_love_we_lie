@@ -374,6 +374,8 @@ public class Level7 : MonoBehaviour
 
         if (wonGame)
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             SceneManager.LoadScene("SecondWeLiveWeLoveWeLie");
         }
         else
