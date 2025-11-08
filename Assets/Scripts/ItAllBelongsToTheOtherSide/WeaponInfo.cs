@@ -346,7 +346,7 @@ public class WeaponInfo : MonoBehaviour
         {"Tec-9", 240},
         {"CZ75-Auto", 240},
         {"Desert Eagle", 230},
-        {"R8 Revolver", 180},
+        {"R8 Revolver", 210},
 
         //shotguns
         {"MAG-7", 225},

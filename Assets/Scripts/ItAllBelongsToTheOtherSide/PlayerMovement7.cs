@@ -328,8 +328,7 @@ public class PlayerMovement7 : MonoBehaviour
 
         if (Vector3.Dot(horizontalVelocity, frictionForce) > 0)
         {
-            velocity.x = 0;
-            velocity.z = 0;
+            horizontalVelocity = Vector3.zero;
         }
 
         float maxSpeed = (isGrounded
@@ -342,14 +341,9 @@ public class PlayerMovement7 : MonoBehaviour
             velocity.z = horizontalVelocity.z;
         }
 
-        if (Mathf.Abs(velocity.x) < minHorizontalComponentVelocityThreshold)
+        if (horizontalVelocity.magnitude < minHorizontalComponentVelocityThreshold)
         {
-            velocity.x = 0;
-        }
-
-        if (Mathf.Abs(velocity.z) < minHorizontalComponentVelocityThreshold)
-        {
-            velocity.z = 0;
+            horizontalVelocity = Vector3.zero;
         }
     }
 
