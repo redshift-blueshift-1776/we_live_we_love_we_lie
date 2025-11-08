@@ -114,6 +114,8 @@ public class Enemy : MonoBehaviour
 
 
     HashSet<Vector3> wanderLocations = new HashSet<Vector3>();
+
+    private bool dead = false;
     void Start()
     {
     }
@@ -832,7 +834,11 @@ public class Enemy : MonoBehaviour
                 enemy.SetDestination(transform.position);
                 break;
             case EnemyState.Dead:
-                StartCoroutine(handleDeath());
+                if (!dead)
+                {
+                    dead = true;
+                    StartCoroutine(handleDeath());
+                }
                 break;
             default:
                 break;
