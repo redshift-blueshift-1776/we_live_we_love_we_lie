@@ -317,6 +317,7 @@ public class Level7 : MonoBehaviour
     }
     private IEnumerator startDeathSceneCoroutine(GameObject enemy)
     {
+        Camera.main.fieldOfView = 90f;
         timerActive = false;
         playerDead = true;
         Time.timeScale = 0;
