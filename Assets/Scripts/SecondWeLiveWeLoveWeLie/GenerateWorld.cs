@@ -74,15 +74,16 @@ public class GenerateWorld : MonoBehaviour
             }
 
             int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
-
             if (currentBeat - initialBeat == 32) {
                 if (!doingStuff) {
+                    Debug.Log("calling coroutine MoveThings() on currentBeat - initialBeat == 32");
                     StartCoroutine(MoveThings());
                     doingStuff = true;
                 }
             }
             if (currentBeat - initialBeat == 48) {
                 if (!doingStuff) {
+                    Debug.Log("calling coroutine MoveThings() on currentBeat - initialBeat == 48");
                     StartCoroutine(MoveThings());
                     doingStuff = true;
                 }

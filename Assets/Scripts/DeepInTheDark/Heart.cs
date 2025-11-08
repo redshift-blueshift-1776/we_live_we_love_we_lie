@@ -236,6 +236,7 @@ public class Heart : MonoBehaviour
         blackScreen.color = Color.black;
 
         yield return new WaitForSecondsRealtime(1f);
+        Time.timeScale = 1f;
         sceneChanger.LoadSceneByNumber(nextSceneIndex);
 
         yield return null;

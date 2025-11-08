@@ -20,6 +20,8 @@ public class BeatManager : MonoBehaviour {
         // Sync when audio starts
         StartDspTime = AudioSettings.dspTime;
         secondsPerBeat = 60f / tempo;
+
+        Debug.Log("Beat Manager start");
     }
 
     public double GetNextBeatTime() {
@@ -29,6 +31,10 @@ public class BeatManager : MonoBehaviour {
     }
 
     public int GetCurrentBeatNumber() {
-        return Mathf.FloorToInt((float)((AudioSettings.dspTime - StartDspTime) / secondsPerBeat));
+        //return Mathf.FloorToInt((float)((AudioSettings.dspTime - StartDspTime) / secondsPerBeat));
+
+        double elapsed = AudioSettings.dspTime - StartDspTime;
+        if (elapsed <= 0) return 0; // Audio hasn¡¯t started yet
+        return (int) Mathf.Clamp(Mathf.FloorToInt((float)(elapsed / secondsPerBeat)), 0f, Mathf.Infinity);
     }
 }

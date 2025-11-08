@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Linq;
+using System.Globalization;
 
 public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 {
@@ -59,6 +60,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -101,10 +103,10 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     continue;
                 }
 
-                if (float.TryParse(parts[0], out float beatTime))
+                if (float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float beatTime))
                 {
-                    float.TryParse(parts[1], out float x_pos);
-                    float.TryParse(parts[2], out float y_pos);
+                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float x_pos);
+                    float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float y_pos);
 
                     double noteTime = Mathf.Abs(beatTime) * secondsPerBeat; // when the note should hit
 

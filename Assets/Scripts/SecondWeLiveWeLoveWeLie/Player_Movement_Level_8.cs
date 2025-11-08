@@ -84,7 +84,7 @@ public class Player_Movement_Level_8 : MonoBehaviour
     }
 
     void interactRaycast() {
-        if (Input.GetKey(mainKey)) {
+        if (Input.GetKey(mainKey) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) {
             // Raycast and see if we hit a note block
             // If so, change the size of the laser to be enough to hit the note block, but not
             // too large so that it hits another one.
