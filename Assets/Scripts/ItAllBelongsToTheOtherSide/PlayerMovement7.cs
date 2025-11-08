@@ -61,10 +61,31 @@ public class PlayerMovement7 : MonoBehaviour
     private bool isSprinting = false;
 
     private bool inUIMenu = false;
-    
+
+
+    private float standHeight;
+    private float crouchHeight;
+    private float crouchSpeed = 5f;
+    private float standCameraY;
+    private float crouchCameraY;
+
+    private Vector3 originalBodyScale;
+    private Vector3 crouchBodyScale;
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+
+        originalBodyScale = body.transform.localScale;
+        crouchBodyScale = new Vector3(originalBodyScale.x, originalBodyScale.y * 0.6f, originalBodyScale.z);
+
+        standCameraY = playerCamera.transform.localPosition.y;
+        crouchCameraY = standCameraY * 0.5f; // or whatever feels right
+
+        // Ensure starting values are correct
+        body.transform.localScale = originalBodyScale;
+        Vector3 camPos = playerCamera.transform.localPosition;
+        camPos.y = standCameraY;
+        playerCamera.transform.localPosition = camPos;
     }
     void Start()
     {
@@ -88,6 +109,7 @@ public class PlayerMovement7 : MonoBehaviour
         inUIMenu = gameSettings.isInSettings() || player7.getIsInWeaponShop();
         if (!inUIMenu && !levelScript.getPlayerDead())
         {
+            HandleCrouch();
             rotateCamera();
         }
 
@@ -367,6 +389,30 @@ public class PlayerMovement7 : MonoBehaviour
             velocity.y = getInitialJumpVelocity();
             timeSinceGrounded = 0f;
         }
+    }
+
+    KeyCode crouchKey = KeyCode.CapsLock;
+
+    private bool isCrouching = false;
+    private void HandleCrouch()
+    {
+        if (Input.GetKeyDown(crouchKey))
+        {
+            isCrouching = true;
+        }
+        else if (Input.GetKeyUp(crouchKey))
+        {
+            isCrouching = false;
+        }
+
+        Vector3 camPos = playerCamera.transform.localPosition;
+        float targetCameraY = isCrouching ? crouchCameraY : standCameraY;
+        camPos.y = Mathf.Lerp(camPos.y, targetCameraY, Time.deltaTime * crouchSpeed);
+        playerCamera.transform.localPosition = camPos;
+
+        // Smoothly scale the body
+        Vector3 targetScale = isCrouching ? crouchBodyScale : originalBodyScale;
+        body.transform.localScale = Vector3.Lerp(body.transform.localScale, targetScale, Time.deltaTime * crouchSpeed);
     }
 
     private void movePlayer()
