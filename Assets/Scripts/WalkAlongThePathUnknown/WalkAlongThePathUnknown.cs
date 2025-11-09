@@ -8,9 +8,14 @@ using UnityEngine.SceneManagement;
 
 public class WalkAlongThePathUnknown : MonoBehaviour
 {
+    [SerializeField] public bool hard;
     [SerializeField] public bool endless;
     [SerializeField] private GameObject player;
+    [SerializeField] public GameObject police;
     [SerializeField] private GameObject maze;
+    [SerializeField] private float wallMoveTime;
+    [SerializeField] private float timeLimit = 90f;
+    [SerializeField] private float timeToMemorize = 10f;
 
     [SerializeField] public Material cutsceneMaterial;
 
@@ -38,6 +43,7 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     public bool hitRealWall;
 
     public Maze_Generator mg;
+    public Maze_Generator_Improved mg_improved;
 
     [SerializeField] private GameObject transition;
     [SerializeField] private Transition transitionScript;
@@ -59,7 +65,15 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         timer = 0f;
         hitRealWall = false;
 
-        mg = maze.GetComponent<Maze_Generator>();
+        if (hard) {
+            mg_improved = maze.GetComponent<Maze_Generator_Improved>();
+            Vector2Int startCell = new Vector2Int(0, mg_improved.height - 1);
+            Vector3 startPos = police.GetComponent<Police>().GridToWorld(startCell);
+            // player.transform.position = startPos;
+            // police.transform.position = startPos;
+        } else {
+            mg = maze.GetComponent<Maze_Generator>();
+        }
     }
 
     // Update is called once per frame
@@ -69,10 +83,10 @@ public class WalkAlongThePathUnknown : MonoBehaviour
             SceneManager.LoadScene(0);
         }
         if (gameActive) {
-            if (timer >= 90f) {
+            if (timer >= timeLimit) {
                 Fail();
             }
-            timerGame.text = $"Time Remaining: {90f - Mathf.Floor(timer)}";
+            timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
             timer += Time.deltaTime;
         }
     }
@@ -83,16 +97,31 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
         gameActive = false;
-        foreach (GameObject g in mg.walls) {
-            if (g.activeSelf) {
-                Renderer rend = g.GetComponent<MeshRenderer>();
-                rend.material = cutsceneMaterial;
+        if (hard) {
+            foreach (GameObject g in mg_improved.walls) {
+                if (g.activeSelf) {
+                    Renderer rend = g.GetComponent<MeshRenderer>();
+                    rend.material = cutsceneMaterial;
+                }
             }
-        }
-        foreach (GameObject g in mg.removedWalls) {
-            if (g.activeSelf) {
-                Renderer rend = g.GetComponent<MeshRenderer>();
-                rend.material = cutsceneMaterial;
+            foreach (GameObject g in mg_improved.removedWalls) {
+                if (g.activeSelf) {
+                    Renderer rend = g.GetComponent<MeshRenderer>();
+                    rend.material = cutsceneMaterial;
+                }
+            }
+        } else {
+            foreach (GameObject g in mg.walls) {
+                if (g.activeSelf) {
+                    Renderer rend = g.GetComponent<MeshRenderer>();
+                    rend.material = cutsceneMaterial;
+                }
+            }
+            foreach (GameObject g in mg.removedWalls) {
+                if (g.activeSelf) {
+                    Renderer rend = g.GetComponent<MeshRenderer>();
+                    rend.material = cutsceneMaterial;
+                }
             }
         }
         StartCoroutine(LoadFailScene());
@@ -111,15 +140,19 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     }
 
     public IEnumerator startGame() {
-        mg.VisualizeMapGeneration();
+        if (hard) {
+            mg_improved.VisualizeMapGeneration();
+        } else {
+            mg.VisualizeMapGeneration();
+        }
         startCanvas.SetActive(false);
         mazeCanvas.SetActive(true);
-        float duration = 10f;
+        float duration = timeToMemorize;
         float elapsed = 0f;
         while (elapsed < duration) {
             float t = elapsed / duration;
 
-            timerMaze.text = $"Time to Start: {10f - Mathf.Floor(elapsed)}";
+            timerMaze.text = $"Time to Start: {timeToMemorize - Mathf.Floor(elapsed)}";
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -128,11 +161,20 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         cam1.SetActive(true);
         cam2.SetActive(false);
-        foreach (GameObject g in mg.removedWalls) {
-            g.SetActive(true);
-            Wall w = g.GetComponent<Wall>();
-            w.breakable = true;
+        if (hard) {
+            foreach (GameObject g in mg_improved.removedWalls) {
+                g.SetActive(true);
+                Wall w = g.GetComponent<Wall>();
+                w.breakable = true;
+            }
+        } else {
+            foreach (GameObject g in mg.removedWalls) {
+                g.SetActive(true);
+                Wall w = g.GetComponent<Wall>();
+                w.breakable = true;
+            }
         }
+        
         mazeCanvas.SetActive(false);
         gameCanvas.SetActive(true);
         loadingAudio.SetActive(false);
