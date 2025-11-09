@@ -67,8 +67,9 @@ public class WalkAlongThePathUnknown : MonoBehaviour
 
         if (hard) {
             mg_improved = maze.GetComponent<Maze_Generator_Improved>();
-            Vector2Int startCell = new Vector2Int(0, mg_improved.height - 1);
-            Vector3 startPos = police.GetComponent<Police>().GridToWorld(startCell);
+            police.SetActive(false);
+            // Vector2Int startCell = new Vector2Int(0, mg_improved.height - 1);
+            // Vector3 startPos = police.GetComponent<Police>().GridToWorld(startCell);
             // player.transform.position = startPos;
             // police.transform.position = startPos;
         } else {

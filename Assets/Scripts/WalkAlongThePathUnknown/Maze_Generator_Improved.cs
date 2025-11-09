@@ -8,6 +8,7 @@ public class Maze_Generator_Improved : MonoBehaviour
     [Header("Maze Dimensions")]
     [SerializeField] public int width = 5;
     [SerializeField] public int height = 5;
+    [SerializeField] public float borderWallHeight = 2f;
 
     [Header("Cell Dimensions")]
     [SerializeField] public float cellWidth = 2f;    // X direction
@@ -23,6 +24,7 @@ public class Maze_Generator_Improved : MonoBehaviour
     [Header("References")]
     [SerializeField] public GameObject wallPrefab;
     [SerializeField] public GameObject outerWallPrefab;
+    [SerializeField] public GameObject stick;
     [SerializeField] public GameObject gameManager;
     [SerializeField] public GameObject cam1;
     [SerializeField] public GameObject cam2;
@@ -70,7 +72,16 @@ public class Maze_Generator_Improved : MonoBehaviour
         wallLookup = new Dictionary<(int, int), GameObject>();
         walls.Clear();
 
-        Vector3 origin = transform.position - new Vector3((width * cellWidth) / 2f - cellWidth / 2f, 0, (height * cellHeight) / 2f - cellHeight / 2f);
+        // --- CONFIGURABLE SHRINK OFFSET ---
+        // How much to shrink walls inward to make room for the stick lights
+        float inset = stick != null ? wallThickness * 0.5f : 0f;  
+
+        // Calculate maze origin so it’s centered and top-left aligned
+        Vector3 origin = transform.position - new Vector3(
+            (width * cellWidth) / 2f - cellWidth / 2f,
+            0,
+            (height * cellHeight) / 2f - cellHeight / 2f
+        );
 
         for (int y = 0; y < height; y++)
         {
@@ -79,6 +90,7 @@ public class Maze_Generator_Improved : MonoBehaviour
                 int cellIndex = y * width + x;
                 Vector3 cellCenter = origin + new Vector3(x * cellWidth, 0, y * cellHeight);
 
+                // 🔶 HORIZONTAL WALL (right side of this cell)
                 if (x < width - 1)
                 {
                     Vector3 pos = cellCenter + new Vector3(cellWidth / 2f, wallHeight / 2f, 0);
@@ -86,14 +98,14 @@ public class Maze_Generator_Improved : MonoBehaviour
                     GameObject wall = Instantiate(wallPrefab, pos, rot, transform);
                     Wall w = wall.GetComponent<Wall>();
                     w.gameManager = gameManager;
-                    wall.transform.localScale = new Vector3(wallThickness, wallHeight, cellHeight);
+                    wall.transform.localScale = new Vector3(wallThickness, wallHeight, cellHeight - inset * 2f);
                     wall.name = $"Wall_{cellIndex}_{cellIndex + 1}";
                     walls.Add(wall);
                     wallLookup[(cellIndex, cellIndex + 1)] = wall;
                     wallLookup[(cellIndex + 1, cellIndex)] = wall;
                 }
 
-                // Bottom wall (between (x, y) and (x, y+1))
+                // 🔶 VERTICAL WALL (bottom side of this cell)
                 if (y < height - 1)
                 {
                     Vector3 pos = cellCenter + new Vector3(0, wallHeight / 2f, cellHeight / 2f);
@@ -101,59 +113,74 @@ public class Maze_Generator_Improved : MonoBehaviour
                     GameObject wall = Instantiate(wallPrefab, pos, rot, transform);
                     Wall w = wall.GetComponent<Wall>();
                     w.gameManager = gameManager;
-                    wall.transform.localScale = new Vector3(wallThickness, wallHeight, cellWidth);
+                    wall.transform.localScale = new Vector3(wallThickness, wallHeight, cellWidth - inset * 2f);
                     wall.name = $"Wall_{cellIndex}_{cellIndex + width}";
                     walls.Add(wall);
                     wallLookup[(cellIndex, cellIndex + width)] = wall;
                     wallLookup[(cellIndex + width, cellIndex)] = wall;
                 }
 
-                // Outer perimeter walls
+                // OUTER PERIMETER WALLS
                 if (includePerimeterWalls)
                 {
-                    // Left boundary
+                    // LEFT boundary
                     if (x == 0)
                     {
                         Vector3 pos = cellCenter - new Vector3(cellWidth / 2f, -wallHeight / 2f, 0);
                         Quaternion rot = Quaternion.identity;
                         GameObject wall = Instantiate(outerWallPrefab, pos, rot, transform);
-                        wall.transform.localScale = new Vector3(wallThickness, wallHeight, cellHeight);
+                        wall.transform.localScale = new Vector3(wallThickness, borderWallHeight, cellHeight - inset * 2f);
                         wall.name = $"Boundary_Left_{cellIndex}";
                         walls.Add(wall);
                     }
 
-                    // Top boundary
+                    // TOP boundary
                     if (y == 0)
                     {
                         Vector3 pos = cellCenter - new Vector3(0, -wallHeight / 2f, cellHeight / 2f);
                         Quaternion rot = Quaternion.Euler(0, 90, 0);
                         GameObject wall = Instantiate(outerWallPrefab, pos, rot, transform);
-                        wall.transform.localScale = new Vector3(wallThickness, wallHeight, cellWidth);
+                        wall.transform.localScale = new Vector3(wallThickness, borderWallHeight, cellWidth - inset * 2f);
                         wall.name = $"Boundary_Top_{cellIndex}";
                         walls.Add(wall);
                     }
 
-                    // Right boundary (for last column)
+                    // RIGHT boundary
                     if (x == width - 1)
                     {
                         Vector3 pos = cellCenter + new Vector3(cellWidth / 2f, wallHeight / 2f, 0);
                         Quaternion rot = Quaternion.identity;
                         GameObject wall = Instantiate(outerWallPrefab, pos, rot, transform);
-                        wall.transform.localScale = new Vector3(wallThickness, wallHeight, cellHeight);
+                        wall.transform.localScale = new Vector3(wallThickness, borderWallHeight, cellHeight - inset * 2f);
                         wall.name = $"Boundary_Right_{cellIndex}";
                         walls.Add(wall);
                     }
 
-                    // Bottom boundary (for last row)
+                    // BOTTOM boundary
                     if (y == height - 1)
                     {
                         Vector3 pos = cellCenter + new Vector3(0, wallHeight / 2f, cellHeight / 2f);
                         Quaternion rot = Quaternion.Euler(0, 90, 0);
                         GameObject wall = Instantiate(outerWallPrefab, pos, rot, transform);
-                        wall.transform.localScale = new Vector3(wallThickness, wallHeight, cellWidth);
+                        wall.transform.localScale = new Vector3(wallThickness, borderWallHeight, cellWidth - inset * 2f);
                         wall.name = $"Boundary_Bottom_{cellIndex}";
                         walls.Add(wall);
                     }
+                }
+            }
+        }
+
+        // Sticks
+        if (stick != null)
+        {
+            for (int y = -1; y < height; y++)
+            {
+                for (int x = -1; x < width; x++)
+                {
+                    Vector3 pos = origin + new Vector3((x + 0.5f) * cellWidth, wallHeight / 2f, (y + 0.5f) * cellHeight);
+                    GameObject s = Instantiate(stick, pos, Quaternion.identity, transform);
+                    s.transform.localScale = new Vector3(wallThickness, wallHeight, wallThickness);
+                    s.name = $"Stick_{x}_{y}";
                 }
             }
         }
