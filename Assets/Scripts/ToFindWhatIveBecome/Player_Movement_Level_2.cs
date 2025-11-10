@@ -65,6 +65,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
     [Header("Rotation Settings")]
     public float rotationSpeed = 360f;   // degrees per second
+    public float manualRotationSpeed = 30f;   // degrees per second
 
     [Header("Smoothing")]
     public float normalLerpSpeed = 10f;  // how quickly ground normal smooths
@@ -228,7 +229,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
         // Apply movement
         Vector3 movement = transform.forward * currentSpeed * Time.deltaTime;
-
+        // velocity = movement;
         controller.Move(movement);
 
         // Velocity check
@@ -258,6 +259,22 @@ public class Player_Movement_Level_2 : MonoBehaviour
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
+
+        if (Input.GetKey(KeyCode.A)) {
+            if (Input.GetKey(KeyCode.S)) {
+                rotX = manualRotationSpeed * Time.deltaTime;
+            } else {
+                rotX = -manualRotationSpeed * Time.deltaTime;
+            }
+        }
+        if (Input.GetKey(KeyCode.D)) {
+            if (Input.GetKey(KeyCode.S)) {
+                rotX = -manualRotationSpeed * Time.deltaTime;
+            } else {
+                rotX = manualRotationSpeed * Time.deltaTime;
+            }
+        }
+
         gameObject.transform.Rotate(0, rotX, 0);
         Camera.main.transform.Rotate(rotY, 0, 0);
         if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {
