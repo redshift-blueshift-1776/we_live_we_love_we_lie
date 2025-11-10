@@ -44,7 +44,7 @@ public class MassElimination : MonoBehaviour
     }
 
     public IEnumerator MoveCamera() {
-        yield return new WaitForSeconds(3.67f);
+        yield return new WaitForSeconds(3.37f);
         float duration = 13f;
         float elapsed = 0f;
         Quaternion rotationStart = camera1.transform.localRotation;

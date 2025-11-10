@@ -1252,7 +1252,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 45
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1279,7 +1279,7 @@ Transform:
   m_GameObject: {fileID: 1254372692}
   serializedVersion: 2
   m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 50, z: -30}
+  m_LocalPosition: {x: 0, y: 45, z: -32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1575,6 +1575,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu: 0
+  audioBlend: 0
+  ab: {fileID: 0}
   timeBetween: 0.1
   pillar: {fileID: 2817967349436448471, guid: 552b059fcd21a4f67be0ac0942d07a7b, type: 3}
   transition: {fileID: 750148775}
