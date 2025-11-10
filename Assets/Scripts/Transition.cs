@@ -71,7 +71,7 @@ public class Transition : MonoBehaviour
         topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(23);
 
     }
 
