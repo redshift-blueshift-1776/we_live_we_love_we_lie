@@ -51,7 +51,7 @@ public class Level7 : MonoBehaviour
 
 
     private float timerSeconds = 0;
-    private float buyPeriod = 15f;
+    private float buyPeriod = 2f;
     private float roundTime = 180f;
 
     private bool timerActive = true;
@@ -327,7 +327,7 @@ public class Level7 : MonoBehaviour
 
         float t = 0f;
         Quaternion startRotation = player.transform.rotation;
-        Vector3 directionToEnemy = (enemy.transform.Find("Head").position - player.transform.position).normalized;
+        Vector3 directionToEnemy = (enemy.transform.Find("Head").position - player.transform.Find("Head").position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(directionToEnemy);
 
         float angle = Quaternion.Angle(player.transform.rotation, targetRotation);

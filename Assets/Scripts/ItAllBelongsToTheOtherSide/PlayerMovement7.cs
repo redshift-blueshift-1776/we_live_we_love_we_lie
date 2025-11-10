@@ -259,24 +259,19 @@ public class PlayerMovement7 : MonoBehaviour
 
     private Vector3 getGroundFrictionForce()
     {
-        Vector3 frictionForce = new Vector3(-sign(velocity.x), 0, -sign(velocity.z));
         bool isEffectivelyMoving = Mathf.Abs(velocity.x) >= minHorizontalComponentVelocityThreshold
-            && Mathf.Abs(velocity.z) >= minHorizontalComponentVelocityThreshold;
+            || Mathf.Abs(velocity.z) >= minHorizontalComponentVelocityThreshold;
+        
         float frictionForceComponent = (isEffectivelyMoving ? kineticCoefficientOfFriction : staticCoefficientOfFriction) * m * g;
-        frictionForce.x *= frictionForceComponent;
-        frictionForce.z *= frictionForceComponent;
 
-        return frictionForce;
+        Vector3 horizontalVelocityDirection = new Vector3(velocity.x, 0, velocity.z).normalized;
+        return -horizontalVelocityDirection * frictionForceComponent;
     }
 
     private Vector3 getAirResistanceForce()
     {
-        Vector3 frictionForce = new Vector3(-sign(velocity.x), 0, -sign(velocity.z));
-        float frictionForceComponent = airResistanceHorizontalCoefficient * new Vector3(velocity.x, 0, velocity.z).magnitude;
-        frictionForce.x *= frictionForceComponent;
-        frictionForce.z *= frictionForceComponent;
-
-        return frictionForce;
+        Vector3 horizontalVelocityDirection = new Vector3(velocity.x, 0, velocity.z).normalized;
+        return -horizontalVelocityDirection * airResistanceHorizontalCoefficient;
     }
 
     private Vector3 getAirStrafeForce(Vector3 inputForce, Vector3 currentVelocity)
@@ -329,6 +324,8 @@ public class PlayerMovement7 : MonoBehaviour
         if (Vector3.Dot(horizontalVelocity, frictionForce) > 0)
         {
             horizontalVelocity = Vector3.zero;
+            velocity.x = horizontalVelocity.x;
+            velocity.z = horizontalVelocity.z;
         }
 
         float maxSpeed = (isGrounded
@@ -344,6 +341,8 @@ public class PlayerMovement7 : MonoBehaviour
         if (horizontalVelocity.magnitude < minHorizontalComponentVelocityThreshold)
         {
             horizontalVelocity = Vector3.zero;
+            velocity.x = horizontalVelocity.x;
+            velocity.z = horizontalVelocity.z;
         }
     }
 
