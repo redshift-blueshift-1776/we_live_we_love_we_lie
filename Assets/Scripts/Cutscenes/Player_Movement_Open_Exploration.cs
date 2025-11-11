@@ -32,7 +32,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     public static float mouseSensitivity = 1;
 
 
-    // private float interactDistance = 5f;
+    private float interactDistance = 5f;
 
 
     private float maxSpeed;
@@ -44,11 +44,11 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     private readonly KeyCode runKey = KeyCode.LeftShift;
     private readonly KeyCode failKey = KeyCode.M;
-    // private readonly KeyCode pushKey = KeyCode.Mouse0;
-    // private readonly KeyCode pullKey = KeyCode.Mouse1;
+    private readonly KeyCode pushKey = KeyCode.Mouse0;
+    private readonly KeyCode pullKey = KeyCode.Mouse1;
 
-    // [SerializeField] private GameObject crosshair;
-    // [SerializeField] private GameObject bigCrosshair;
+    [SerializeField] private GameObject crosshair;
+    [SerializeField] private GameObject bigCrosshair;
 
 
     private void Start()
@@ -63,8 +63,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        // crosshair.SetActive(true);
-        // bigCrosshair.SetActive(false);
+        crosshair.SetActive(true);
+        bigCrosshair.SetActive(false);
         mainCamera.SetActive(true);
     }
 
@@ -154,31 +154,51 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         gameObject.transform.Rotate(0, rotX, 0);
     }
 
-    void interactRaycast() {
-        // RaycastHit hit;
-        // Vector3 origin = Camera.main.transform.position;
-        // Vector3 dir = Camera.main.transform.forward;
-        // if (Physics.Raycast(origin, dir, out hit, interactDistance)) {
-        //     Wall interactableObject = hit.collider.gameObject.GetComponent<Wall>();
-            
-        //     if (interactableObject != null) {
-        //         // TODO: ADD PUSH/PULL INDICATOR TO HUD!!!!!
-        //         crosshair.SetActive(false);
-        //         bigCrosshair.SetActive(true);
-        //         Debug.Log("Raycase");
-        //         if (Input.GetKeyDown(pushKey)) {
-        //             interactableObject.Interact();
-        //         } else if (Input.GetKeyDown(pullKey)) {
-        //             interactableObject.Interact();
-        //         }
-        //     } else {
-        //         crosshair.SetActive(true);
-        //         bigCrosshair.SetActive(false);
-        //     }
-        // } else {
-        //     crosshair.SetActive(true);
-        //     bigCrosshair.SetActive(false);
-        // }
+    private Door currentDoor = null;
+
+    void interactRaycast()
+    {
+        RaycastHit hit;
+        Vector3 origin = Camera.main.transform.position;
+        Vector3 dir = Camera.main.transform.forward;
+        Door newDoor = null;
+
+        float radius = 0.05f;
+        if (Physics.SphereCast(origin, radius, dir, out hit, interactDistance))
+        {
+            newDoor = hit.collider.GetComponent<Door>();
+        }
+
+
+        // Only update state if changed
+        if (newDoor != currentDoor)
+        {
+            currentDoor = newDoor;
+
+            if (currentDoor != null)
+            {
+                crosshair.SetActive(false);
+                bigCrosshair.SetActive(true);
+            }
+            else
+            {
+                crosshair.SetActive(true);
+                bigCrosshair.SetActive(false);
+            }
+        }
+
+        // Only interact if we currently have a valid target
+        if (currentDoor != null)
+        {
+            if (Input.GetKeyDown(pushKey))
+            {
+                currentDoor.Interact(); // or InteractPush()
+            }
+            else if (Input.GetKeyDown(pullKey))
+            {
+                currentDoor.Interact(); // or InteractPull()
+            }
+        }
     }
 
     // void OnTriggerEnter(Collider hit) {
