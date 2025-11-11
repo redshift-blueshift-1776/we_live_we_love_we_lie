@@ -302,26 +302,25 @@ public class Player_Movement_Level_2 : MonoBehaviour
     }
 
     void interactRaycast() {
+        RaycastHit hit;
         Vector3 origin = Camera.main.transform.position;
         Vector3 dir = Camera.main.transform.forward;
-        RaycastHit[] hits = Physics.RaycastAll(origin, dir, interactDistance);
-        if (hits.Length > 0) {
+        float radius = 0.05f;
+        if (Physics.SphereCast(origin, radius, dir, out hit, interactDistance)) {
             bool foundSomething = false;
-            foreach (RaycastHit hit in hits) {
-                Collectible interactableObject = hit.collider.gameObject.GetComponent<Collectible>();
-                if (interactableObject != null) {
-                    foundSomething = true;
-                    if (Input.GetKeyDown(pushKey)) {
-                        interactableObject.Interact();
-                    } else if (Input.GetKeyDown(pullKey)) {
-                        interactableObject.Interact();
-                    }
+            Collectible interactableObject = hit.collider.gameObject.GetComponent<Collectible>();
+            if (interactableObject != null) {
+                foundSomething = true;
+                Debug.Log("Raycase");
+                if (Input.GetKeyDown(pushKey)) {
+                    interactableObject.Interact();
+                } else if (Input.GetKeyDown(pullKey)) {
+                    interactableObject.Interact();
                 }
             }
             if (foundSomething) {
                 crosshair.SetActive(false);
                 bigCrosshair.SetActive(true);
-                Debug.Log("Raycase");
             } else {
                 crosshair.SetActive(true);
                 bigCrosshair.SetActive(false);

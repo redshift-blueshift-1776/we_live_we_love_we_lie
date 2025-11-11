@@ -166,7 +166,8 @@ public class Player_Movement : MonoBehaviour
         RaycastHit hit;
         Vector3 origin = Camera.main.transform.position;
         Vector3 dir = Camera.main.transform.forward;
-        if (Physics.Raycast(origin, dir, out hit, interactDistance)) {
+        float radius = 0.05f;
+        if (Physics.SphereCast(origin, radius, dir, out hit, interactDistance)) {
             Wall interactableObject = hit.collider.gameObject.GetComponent<Wall>();
             
             if (interactableObject != null) {
