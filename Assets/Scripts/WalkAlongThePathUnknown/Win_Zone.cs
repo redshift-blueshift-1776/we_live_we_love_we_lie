@@ -23,6 +23,7 @@ public class Win_Zone : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider col) {
+        Debug.Log("collided");
         if(col.gameObject == player) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -31,6 +32,8 @@ public class Win_Zone : MonoBehaviour
                 SceneManager.LoadScene(15);
             } else if (sceneID == 16) {
                 SceneManager.LoadScene(4);
+            } else if (sceneID == 24) {
+                SceneManager.LoadScene(1);
             } else {
                 SceneManager.LoadScene(0);
             }
