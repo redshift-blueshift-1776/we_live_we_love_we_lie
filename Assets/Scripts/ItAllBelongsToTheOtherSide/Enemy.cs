@@ -90,12 +90,14 @@ public class Enemy : MonoBehaviour
     private float fireCooldown = Mathf.Infinity;
 
     //[Header("Bot Stats")]
-    private const float fov = 200f;
-    private const float reactionTime = 0.5f;
-    private const float fireCooldownMult = 1.25f;
-    private const float chanceOfAimingForHead = 0.0f;
-    private const float chanceOfAimingForBody = 0.0f;
-    private const float acceptableChanceOfHitting = 0.4f;
+    private float fov = 200f;
+    private float hearingDistance = 15f;
+    private float reactionTime = 0.5f;
+    private float fireCooldownMult = 1.25f;
+    private float chanceOfAimingForHead = 0.0f;
+    private float chanceOfAimingForBody = 0.0f;
+    private float acceptableChanceOfHitting = 0.4f;
+    private float defaultMoveSpeed = 6.0f;
     public enum EnemyState
     {
         None,
@@ -121,7 +123,7 @@ public class Enemy : MonoBehaviour
     {
     }
 
-    public void Initialize()
+    public void Initialize(int difficulty)
     {
         bodySounds.setAll3D(50);
         shootSounds.setAll3D(200);
@@ -136,6 +138,7 @@ public class Enemy : MonoBehaviour
             currWeapon = weaponInfo.getRandomWeapon();
         }
         updateWeapon(currWeapon);
+        setDifficulty(difficulty);
 
         StartCoroutine(handleFootstepSounds());
         TransitionToState(EnemyState.Wander);
@@ -695,7 +698,7 @@ public class Enemy : MonoBehaviour
 
     Vector3 currTarget;
     private const float minDistanceToWanderNodeThreshold = 5.0f;
-    private const float hearingDistance = 15f;
+    
     private void HandleWanderState()
     {
         if (currWanderLocations.Count == 0)
@@ -703,7 +706,7 @@ public class Enemy : MonoBehaviour
             initializeWanderLocations();
         }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position); 
         if (canSeePlayer() || 
             ((playerMovementScript.getIsMakingSprintingNoise() || weaponScript.getIsMakingNoise()) 
                 && distanceToPlayer <= hearingDistance)
@@ -779,7 +782,7 @@ public class Enemy : MonoBehaviour
 
         //rotate bot to face player
         Vector3 directionToPlayer = player.transform.position - transform.position;
-        directionToPlayer.y = 0; // Keep rotation on horizontal plane only
+        directionToPlayer.y = 0; // keep rotation on horizontal plane only
         if (directionToPlayer != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
@@ -802,7 +805,7 @@ public class Enemy : MonoBehaviour
             } else
             {
                 int randomDirection = chance < 0.5f ? 1 : -1;
-                shoot(torsoDirection + Random.Range(0f, 0.4f) * randomDirection * Vector3.Cross(torsoDirection, Vector3.up));
+                shoot((randomDirection == 1 ? torsoDirection : headDirection) + Random.Range(0f, 0.4f) * randomDirection * Vector3.Cross(torsoDirection, Vector3.up));
             }
                 stateTimer = 0;
         }
@@ -829,15 +832,18 @@ public class Enemy : MonoBehaviour
                 enemy.updateRotation = true;
                 initializeWanderLocations();
                 enemy.SetDestination(currTarget);
+                enemy.speed = defaultMoveSpeed;
                 break;
             case EnemyState.Chase:
                 enemy.updateRotation = true;
                 enemy.SetDestination(GetGroundedPlayerPosition());
+                enemy.speed = 2.0f * defaultMoveSpeed;
                 break;
             case EnemyState.Attack:
                 enemy.updateRotation = false;
                 stateTimer = -reactionTime;
                 enemy.SetDestination(transform.position);
+                enemy.speed = 1.5f * defaultMoveSpeed;
                 break;
             case EnemyState.Dead:
                 if (!dead)
@@ -920,4 +926,109 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
         yield return null;
     }
+
+    //0 is the easiest
+    private void setDifficulty(int difficulty)
+    {
+        switch (difficulty)
+        {
+            //story
+            //Bots move like snails. They are fully deaf and have extreme tunnel vision. Their reaction time and attack speed is slower than a sloth's, and they always miss.
+            case 0:
+                fov = 60f;
+                hearingDistance = 0f;
+                reactionTime = 2.0f;
+                fireCooldownMult = 3f;
+                chanceOfAimingForHead = 0.0f;
+                chanceOfAimingForBody = 0.0f;
+                acceptableChanceOfHitting = 0.4f;
+                defaultMoveSpeed = 4.0f;
+                break;
+            //baby
+            //These bots move like babies. They are moderately deaf and have tunnel vision. Their reaction time and attack speed is like a newborn's, and we'd be able to travel to other stars before they could land a hit on you.
+            case 1:
+                fov = 90f;
+                hearingDistance = 5f;
+                reactionTime = 1.0f;
+                fireCooldownMult = 2f;
+                chanceOfAimingForHead = 0.05f;
+                chanceOfAimingForBody = 0.1f;
+                acceptableChanceOfHitting = 0.4f;
+                defaultMoveSpeed = 6.0f;
+                break;
+            //easy
+            //The bots are obese. They have slight hearing issues and have slight tunnel vision. Their reaction time and attack speed is sluggish and that of a casual gamer with casual aim.
+            case 2:
+                fov = 150f;
+                hearingDistance = 10f;
+                reactionTime = 0.75f;
+                fireCooldownMult = 1.5f;
+                chanceOfAimingForHead = 0.1f;
+                chanceOfAimingForBody = 0.2f;
+                acceptableChanceOfHitting = 0.4f;
+                defaultMoveSpeed = 7.0f;
+                break;
+            //normal
+            //These bots are your average well-rounded teenager with a slow 100-meter dash of 20 seconds, average hearing, sub-par field of vision, slightly slow reaction time, normal-speed clicking, and bad aim.
+            case 3:
+                fov = 180f;
+                hearingDistance = 15f;
+                reactionTime = 0.50f;
+                fireCooldownMult = 1.5f;
+                chanceOfAimingForHead = 0.3f;
+                chanceOfAimingForBody = 0.3f;
+                acceptableChanceOfHitting = 0.4f;
+                defaultMoveSpeed = 8.0f;
+                break;
+            //hard
+            //Tryhard bots that run fast. They have a field of vision akin to a human's with great hearing, average reaction time, fast clicking, and okay aim.
+            case 4:
+                fov = 210f;
+                hearingDistance = 25f;
+                reactionTime = 0.40f;
+                fireCooldownMult = 1.25f;
+                chanceOfAimingForHead = 0.5f;
+                chanceOfAimingForBody = 0.3f;
+                acceptableChanceOfHitting = 0.4f;
+                defaultMoveSpeed = 10.0f;
+                break;
+            //expert
+            //Be careful because these bots are olympic sprinters that can see up to 45 degrees behind them. Their hearing is comparable to a bat's, and they have a gamer's reaction time. They shoot almost as fast as possible, and their aim is so good they will always hit you.
+            case 5:
+                fov = 270f;
+                hearingDistance = 35f;
+                reactionTime = 0.25f;
+                fireCooldownMult = 1.1f;
+                chanceOfAimingForHead = 0.5f;
+                chanceOfAimingForBody = 0.5f;
+                acceptableChanceOfHitting = 0.4f;
+                defaultMoveSpeed = 15.0f;
+                break;
+            //pro
+            //You'd better give up because these bots play at the level of professional e-sports. They can run at the speed that an olympic biker cycles. Their only blind spot is directly behind them, and they have hearing comparable to a sonar, and they have a superhuman reaction time. They shoot as fast as the weapon is physically able to, and their aim is so great you'd flip 4 heads in a row before they hit your body instead of your head.
+            case 6:
+                fov = 330f;
+                hearingDistance = 100f;
+                reactionTime = 0.1f;
+                fireCooldownMult = 1.0f;
+                chanceOfAimingForHead = 0.9f;
+                chanceOfAimingForBody = 0.1f;
+                acceptableChanceOfHitting = 0.4f;
+                defaultMoveSpeed = 20.0f;
+                break;
+            //aimbot
+            //These bots come from a superintelligent alien species that can see with a 360-degree field of vision. They break special relativity by moving at the speed of light. They can hear you from the other edge of the observable universe. Their reaction time is instantaneous (faster than light). They felt the mechanical restrictions of weapons were too much, so they physically throw bullets at you with a frequency comparable to a woodpecker pecking wood. They are cruel beings, so they will always headshot you.
+            case 7:
+                fov = 359.99f;
+                hearingDistance = 1000f;
+                reactionTime = 0f;
+                fireCooldownMult = 0.01f;
+                chanceOfAimingForHead = 1f;
+                chanceOfAimingForBody = 0f;
+                acceptableChanceOfHitting = 0.6f;
+                defaultMoveSpeed = 10000.0f;
+                break;
+        }
+    }
 }
+
