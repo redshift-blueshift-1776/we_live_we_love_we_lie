@@ -16,7 +16,7 @@ public class Open_Exploration_1 : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             GameObject newFadeLightpole = Instantiate(FadeLightpole);
             newFadeLightpole.transform.SetParent(FadeLightpoleReference.transform);
             newFadeLightpole.transform.localPosition = new Vector3(10, -0.01f, -i * offset);

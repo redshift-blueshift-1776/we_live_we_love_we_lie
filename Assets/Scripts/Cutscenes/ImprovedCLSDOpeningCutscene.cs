@@ -41,6 +41,7 @@ public class ImprovedCLSDOpeningCutscene : MonoBehaviour
     [SerializeField] private float fadeInDuration = 0.3f;
     [SerializeField] private float fadeOutDuration = 0.3f;
     [SerializeField] private float minLineDuration = 1.0f;
+    [SerializeField] private float holdDuration = 0.5f;
 
     [SerializeField] public int nextSceneIndex;
 
@@ -66,7 +67,11 @@ public class ImprovedCLSDOpeningCutscene : MonoBehaviour
             "r:It's to fill the last spot in the game dev program...",
             "l:Oh wow...",
             "r:This is your chance, Wade...",
-            "l:I guess it's time for me to pick it up...",
+            "l:I guess it's time for me to Pick It Up...",
+            "l:How do I sign up?",
+            "r:After class, you should be able to find Donald James in the Meetinghouse...",
+            "r:Just cross the street from the library. He should be there.",
+            "l:Thanks... you know how much this means to me...",
             "r:"
         };
         secondsPerBeat = 60f / beatsPerMinute;
@@ -251,7 +256,7 @@ public class ImprovedCLSDOpeningCutscene : MonoBehaviour
         target.text = line.text;
 
         // Hold
-        yield return new WaitForSecondsRealtime(0.25f);
+        yield return new WaitForSecondsRealtime(holdDuration);
 
         // Fade
         float ft = 0f;
