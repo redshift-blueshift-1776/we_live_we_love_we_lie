@@ -62,7 +62,7 @@ public class Level7 : MonoBehaviour
 
 
     private float timerSeconds = 0;
-    private float buyPeriod = 2f;
+    private float buyPeriod = 15f;
     private float roundTime = 180f;
 
     private int botDifficulty = 0;
