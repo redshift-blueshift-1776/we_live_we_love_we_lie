@@ -327,7 +327,7 @@ public class Level7 : MonoBehaviour
 
         float t = 0f;
         Quaternion startRotation = player.transform.rotation;
-        Vector3 directionToEnemy = (enemy.transform.Find("Head").position - player.transform.Find("Head").position).normalized;
+        Vector3 directionToEnemy = (enemy.transform.Find("Head").position - player.transform.Find("Body").Find("Head").position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(directionToEnemy);
 
         float angle = Quaternion.Angle(player.transform.rotation, targetRotation);
