@@ -140,6 +140,8 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         cm.mainCamera.SetActive(true);
         cardInBriefcaseEliminate.SetActive(false);
         cardInBriefcaseSafe.SetActive(false);
+        probTruthIfEliminate = PlayerPrefs.GetFloat("probTruthIfEliminate", 0.2f);
+        probTruthIfSafe = PlayerPrefs.GetFloat("probTruthIfSafe", 0.6f);
     }
 
     void Update()
@@ -262,9 +264,11 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                         if (defenseCard.Color == CardColor.Red) {
                             // Told the truth
                             probTruthIfEliminate = (probTruthIfEliminate + 1f) / 2f;
+                            PlayerPrefs.SetFloat("probTruthIfEliminate", probTruthIfEliminate);
                         } else {
                             // Lied
                             probTruthIfSafe = (probTruthIfSafe + 0f) / 2f;
+                            PlayerPrefs.SetFloat("probTruthIfSafe", probTruthIfSafe);
                         }
                     } else {
                         // Player says safe
@@ -290,9 +294,11 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                         if (defenseCard.Color == CardColor.Red) {
                             // Lied
                             probTruthIfEliminate = (probTruthIfEliminate + 0f) / 2f;
+                            PlayerPrefs.SetFloat("probTruthIfEliminate", probTruthIfEliminate);
                         } else {
                             // Told the truth
                             probTruthIfSafe = (probTruthIfSafe + 1f) / 2f;
+                            PlayerPrefs.SetFloat("probTruthIfSafe", probTruthIfSafe);
                         }
                     }
                 } else {
