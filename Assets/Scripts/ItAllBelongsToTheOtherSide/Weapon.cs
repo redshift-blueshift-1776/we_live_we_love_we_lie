@@ -212,7 +212,7 @@ public class Weapon : MonoBehaviour
     private bool scoped;
     private void handleScope()
     {
-        if (Input.GetMouseButtonDown(1) && weaponInfo.getScopedWeapons().Contains(primaryWeapon))
+        if (Input.GetMouseButtonDown(1) && weaponInfo.getScopedWeapons().Contains(primaryWeapon) && weaponIndex == 1)
         {
             scoped = !scoped;
             audioManager.playSound("SSG08Zoom");
