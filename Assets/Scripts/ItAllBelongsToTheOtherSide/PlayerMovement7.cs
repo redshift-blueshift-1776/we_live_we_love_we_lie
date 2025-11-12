@@ -202,7 +202,7 @@ public class PlayerMovement7 : MonoBehaviour
         for (int i = 0; i < iterations; i++)
         {
             float f = v0 - (m * g / k) * Mathf.Log(1 + k * v0 / (m * g)) - k * h / m;
-            float fPrime = 1 - m * g / (m * g + k * v0);
+            float fPrime = 1 - k * v0 / (m * g + k * v0);
             v0 = v0 - f / fPrime;
         }
 

@@ -93,7 +93,8 @@ public class Enemy : MonoBehaviour
     private const float fov = 200f;
     private const float reactionTime = 0.5f;
     private const float fireCooldownMult = 1.25f;
-    private const float chanceOfAimingForHead = 0.5f;
+    private const float chanceOfAimingForHead = 0.0f;
+    private const float chanceOfAimingForBody = 0.0f;
     private const float acceptableChanceOfHitting = 0.4f;
     public enum EnemyState
     {
@@ -790,15 +791,20 @@ public class Enemy : MonoBehaviour
         {
             Vector3 headDirection = canSeeHead();
             Vector3 torsoDirection = canSeeTorso();
-            if (Random.Range(0f, 1f) < chanceOfAimingForHead && headDirection != Vector3.zero)
+            float chance = Random.Range(0f, 1f);
+            if (chance < chanceOfAimingForHead && headDirection != Vector3.zero)
             {
                 shoot(Vector3.Lerp(headDirection, playerHead.transform.position - eye.transform.position, 0.1f));
             }
-            else if (torsoDirection != Vector3.zero)
+            else if (chance - chanceOfAimingForHead < chanceOfAimingForBody && torsoDirection != Vector3.zero)
             {
                 shoot(Vector3.Lerp(torsoDirection, playerBody.transform.position - eye.transform.position, 0.1f));
+            } else
+            {
+                int randomDirection = chance < 0.5f ? 1 : -1;
+                shoot(torsoDirection + Random.Range(0f, 0.4f) * randomDirection * Vector3.Cross(torsoDirection, Vector3.up));
             }
-            stateTimer = 0;
+                stateTimer = 0;
         }
     }
 
