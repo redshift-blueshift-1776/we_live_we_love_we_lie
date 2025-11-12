@@ -133,6 +133,11 @@ public class Enemy : MonoBehaviour
         }
         enemy.autoTraverseOffMeshLink = false;
 
+        if (difficulty == 7)
+        {
+            currWeapon = "SSG 08";
+        }
+
         if (currWeapon.Equals(""))
         {
             currWeapon = weaponInfo.getRandomWeapon();
@@ -1017,7 +1022,7 @@ public class Enemy : MonoBehaviour
                 defaultMoveSpeed = 20.0f;
                 break;
             //aimbot
-            //These bots come from a superintelligent alien species that can see with a 360-degree field of vision. They break special relativity by moving at the speed of light. They can hear you from the other edge of the observable universe. Their reaction time is instantaneous (faster than light). They felt the mechanical restrictions of weapons were too much, so they physically throw bullets at you with a frequency comparable to a woodpecker pecking wood. They are cruel beings, so they will always headshot you.
+            //These bots come from a superintelligent alien species that can see with a 360-degree field of vision. They break special relativity by moving at the speed of light. They can hear you from the other edge of the unobservable universe. Their reaction time is instantaneous (faster than light). They felt the mechanical restrictions of weapons were too much, so they physically throw bullets at you with a frequency comparable to vibration of atoms. They are cruel beings, so they will always headshot you.
             case 7:
                 fov = 359.99f;
                 hearingDistance = 1000f;
@@ -1026,7 +1031,7 @@ public class Enemy : MonoBehaviour
                 chanceOfAimingForHead = 1f;
                 chanceOfAimingForBody = 0f;
                 acceptableChanceOfHitting = 0.6f;
-                defaultMoveSpeed = 10000.0f;
+                defaultMoveSpeed = 100.0f;
                 break;
         }
     }
