@@ -22,7 +22,6 @@ public class Player7 : MonoBehaviour
 
     private bool isInWeaponShop = false;
     private float health = 100f;
-
     void Start()
     {
     }

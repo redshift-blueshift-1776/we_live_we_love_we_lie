@@ -26,6 +26,17 @@ public class Level7 : MonoBehaviour
     [SerializeField] private GameObject primaryWeaponAmmoText;
     [SerializeField] private GameObject secondaryWeaponAmmoText;
 
+    [Header("Bot Difficulty Borders")]
+    [SerializeField] private GameObject storyDifficultyBorder;
+    [SerializeField] private GameObject babyDifficultyBorder;
+    [SerializeField] private GameObject easyDifficultyBorder;
+    [SerializeField] private GameObject normalDifficultyBorder;
+    [SerializeField] private GameObject hardDifficultyBorder;
+    [SerializeField] private GameObject expertDifficultyBorder;
+    [SerializeField] private GameObject proDifficultyBorder;
+    [SerializeField] private GameObject aimbotDifficultyBorder;
+
+
     [Header("Game Objects")]
     [SerializeField] private GameObject player;
     CharacterController characterController;
@@ -54,6 +65,8 @@ public class Level7 : MonoBehaviour
     private float buyPeriod = 2f;
     private float roundTime = 180f;
 
+    private int botDifficulty = 0;
+
     private bool timerActive = true;
 
     private Coroutine currFadeoutCoroutine = null;
@@ -71,7 +84,7 @@ public class Level7 : MonoBehaviour
         makeAllNodesInvisible();
 
         StartCoroutine(handleGame());
-        //Instantiate(localEnemyPrefab);
+        setBotDifficulty(0);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -159,7 +172,7 @@ public class Level7 : MonoBehaviour
                     NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
                     agent.Warp(currDeathmatchSpawnLocations.Pop() + Vector3.up);
 
-                    enemyScript.Initialize();
+                    enemyScript.Initialize(botDifficulty);
                     currEnemies++;
                 }
 
@@ -383,5 +396,52 @@ public class Level7 : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         yield return null;
+    }
+
+    public void setBotDifficulty(int difficulty)
+    {
+        botDifficulty = Mathf.Clamp(difficulty, 0, 7);
+        updateBotDifficultyBorders(botDifficulty);
+    }
+
+    private void updateBotDifficultyBorders(int difficulty)
+    {
+        storyDifficultyBorder.SetActive(false);
+        babyDifficultyBorder.SetActive(false);
+        easyDifficultyBorder.SetActive(false);
+        normalDifficultyBorder.SetActive(false);
+        hardDifficultyBorder.SetActive(false);
+        expertDifficultyBorder.SetActive(false);
+        proDifficultyBorder.SetActive(false);
+        aimbotDifficultyBorder.SetActive(false);
+
+        switch (difficulty)
+        {
+            case 0:
+                storyDifficultyBorder.SetActive(true);
+                break;
+            case 1:
+                babyDifficultyBorder.SetActive(true);
+                break;
+            case 2:
+                easyDifficultyBorder.SetActive(true);
+                break;
+            case 3:
+                normalDifficultyBorder.SetActive(true);
+                break;
+            case 4:
+                hardDifficultyBorder.SetActive(true);
+                break;
+            case 5:
+                expertDifficultyBorder.SetActive(true);
+                break;
+            case 6:
+                proDifficultyBorder.SetActive(true);
+                break;
+            case 7:
+                aimbotDifficultyBorder.SetActive(true);
+                break;
+        }
+
     }
 }
