@@ -17,7 +17,6 @@ public class TrapLossZone : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider col) {
-        Debug.Log(col.gameObject.name);
         if(col.gameObject.name.Contains("Trap")) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;

@@ -2,20 +2,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
-using System;
 using TMPro;
 using UnityEngine.SceneManagement;
 
 public class TheresAGhostInsideMe : MonoBehaviour
 {
-    [SerializeField] public bool endless;
-    [SerializeField] public int boardsToBeat;
-    [SerializeField] public float timeLimit;
-    [SerializeField] public GameObject board;
+    private bool endless = false;
+    private int boardsToBeat = 1;
+    private float timeLimit = 120;
+    [SerializeField] public GameObject titleScreenBoard;
     [SerializeField] public GameObject trap;
     [SerializeField] public GameObject key;
 
-    [SerializeField] public GameObject[] boards;
+    [SerializeField] private GameObject easyBoards;
 
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
@@ -43,17 +42,22 @@ public class TheresAGhostInsideMe : MonoBehaviour
     public bool rotateUp;
     public bool rotateDown;
 
-    public int boardIndex;
+    private int boardsSolved;
 
     [SerializeField] private GameObject transition;
     [SerializeField] private Transition transitionScript;
+
+    //gameobject containing all boards as children
+    private GameObject currBoards;
+    private List<GameObject> boardList = new List<GameObject>();
+    private GameObject currBoard;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 1f;
-        boardIndex = 0;
+        boardsSolved = 0;
         transitionScript = transition.GetComponent<Transition>();
         gameActive = false;
         timer = 0f;
@@ -64,20 +68,12 @@ public class TheresAGhostInsideMe : MonoBehaviour
         gameAudio.SetActive(false);
         gameAudio2.SetActive(false);
         failSound.SetActive(false);
-        System.Random rng = new System.Random();
-        int n = boards.Length;
-        while (n > 1)
+
+        currBoards = easyBoards;
+        foreach (Transform child in currBoards.transform)
         {
-            n--;
-            int k = rng.Next(n + 1);
-            GameObject value = boards[k];
-            boards[k] = boards[n];
-            boards[n] = value;
-        }
-        board = boards[0];
-        board.SetActive(true);
-        for (int i = 1; i < boards.Length; i++) {
-            boards[i].SetActive(false);
+            child.gameObject.SetActive(false);
+            boardList.Add(child.gameObject);
         }
     }
 
@@ -117,12 +113,12 @@ public class TheresAGhostInsideMe : MonoBehaviour
                 rotateRight = false;
             }
             rotateBoard();
-            if (boardIndex >= boardsToBeat) {
+            if (boardsSolved > boardsToBeat) {
                 StartCoroutine(GameWin());
             }
             timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
             ab.SetRatio(timer / timeLimit);
-            puzzles.text = $"Puzzle: {Mathf.Min(boardIndex + 1, 10)}/{boardsToBeat}";
+            puzzles.text = $"Puzzle: {Mathf.Min(boardsSolved - 1, 10)}/{boardsToBeat}";
             timer += Time.deltaTime;
         }
     }
@@ -153,7 +149,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
     }
 
     public void rotateBoard() {
-        Quaternion boardStart = board.transform.localRotation;
+        Quaternion boardStart = currBoard.transform.localRotation;
 
         float targetXrot = 0f;
         float targetZrot = 0f;
@@ -172,7 +168,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.Euler(targetXrot, 0, targetZrot);
 
-        board.transform.localRotation = Quaternion.Slerp(boardStart, targetRotation, 0.01f);
+        currBoard.transform.localRotation = Quaternion.Slerp(boardStart, targetRotation, 0.01f);
     }
 
     public void startGameButton() {
@@ -186,22 +182,25 @@ public class TheresAGhostInsideMe : MonoBehaviour
         gameAudio.SetActive(true);
         gameAudio2.SetActive(true);
         gameActive = true;
+        titleScreenBoard.SetActive(false);
         timer = 0f;
+
+        nextBoard();
     }
 
     public void nextBoard() {
-        Debug.Log("Next Board");
-        boardIndex++;
-        if (boardIndex >= boards.Length) {
+        if (boardsSolved == boardsToBeat)
+        {
             return;
         }
-        GameObject newBoard = boards[boardIndex];
-        board = newBoard;
-        for (int i = 0; i < boards.Length; i++) {
-            boards[i].SetActive(false);
-            if (i == boardIndex) {
-                boards[i].SetActive(true);
-            }
+
+        if (currBoard != null)
+        {
+            Destroy(currBoard);
         }
+        currBoard = Instantiate(boardList[Random.Range(0, boardList.Count)]);
+        currBoard.transform.position = new Vector3(0, 1.7f, 0);
+        currBoard.SetActive(true);
+        boardsSolved++;
     }
 }
