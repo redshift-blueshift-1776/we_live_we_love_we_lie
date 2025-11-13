@@ -191,7 +191,6 @@ public class Player_Movement : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider hit) {
-        Debug.Log(hit.gameObject.name);
         if (hit.gameObject.name.Contains("Bullet")) {
             MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
             if (meshRenderer != null)

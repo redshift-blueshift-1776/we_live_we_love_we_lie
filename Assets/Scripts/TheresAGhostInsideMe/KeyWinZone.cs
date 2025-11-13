@@ -17,8 +17,8 @@ public class KeyWinZone : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider col) {
-        if(col.gameObject.name == "Key") {
-            gm.nextBoard();
+        if(col.gameObject.CompareTag("Level6Key")) {
+            gm.collectKey();
         }
     }
 }
