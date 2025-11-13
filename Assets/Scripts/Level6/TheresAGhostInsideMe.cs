@@ -1,9 +1,10 @@
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TheresAGhostInsideMe : MonoBehaviour
 {
@@ -56,9 +57,12 @@ public class TheresAGhostInsideMe : MonoBehaviour
     private int boardsToBeat = 10;
     private float timeLimit = 120;
     private int currKeysLeft = 1000;
+
+    private int difficulty = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        setDifficulty();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -71,11 +75,31 @@ public class TheresAGhostInsideMe : MonoBehaviour
         initializeAudio();
 
         //change based on difficulty
-        currBoards = easyBoards;
+        switch (difficulty)
+        {
+            case 0:
+                currBoards = easyBoards;
+                break;
+            case 1:
+                currBoards = testBoards;
+                break;
+            default:
+                currBoards = easyBoards;
+                break;
+        }
         foreach (Transform child in currBoards.transform)
         {
             child.gameObject.SetActive(false);
             boardList.Add(child.gameObject);
+        }
+    }
+
+    private void setDifficulty()
+    {
+        GameObject difficultyInfo = GameObject.FindGameObjectWithTag("DifficultyInfo");
+        if (difficultyInfo != null)
+        {
+            difficulty = (int)char.GetNumericValue(difficultyInfo.name[difficultyInfo.name.Length - 1]);
         }
     }
 
@@ -235,6 +259,5 @@ public class TheresAGhostInsideMe : MonoBehaviour
         }
         currBoard.transform.position = new Vector3(0, 1.7f, 0);
         currBoard.SetActive(true);
-        Debug.Log(currKeysLeft);
     }
 }
