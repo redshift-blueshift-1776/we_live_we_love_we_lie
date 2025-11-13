@@ -11,6 +11,7 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     [SerializeField] public bool hard;
     [SerializeField] public bool endless;
     [SerializeField] private GameObject player;
+    [SerializeField] public GameObject goal;
     [SerializeField] public GameObject police;
     [SerializeField] private GameObject maze;
     [SerializeField] private float wallMoveTime;
@@ -75,6 +76,12 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         } else {
             mg = maze.GetComponent<Maze_Generator>();
         }
+
+        if (endless) {
+            goal.SetActive(true);
+            timeToMemorize = 15f;
+            timeLimit = 120f;
+        }
     }
 
     // Update is called once per frame
@@ -86,6 +93,11 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         if (gameActive) {
             if (timer >= timeLimit) {
                 Fail();
+            }
+            if (endless) {
+                if (Vector3.Distance(player.transform.position, goal.transform.position) < 10f) {
+                    StartCoroutine(startGame());
+                }
             }
             timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
             timer += Time.deltaTime;
@@ -137,10 +149,23 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     public void soundAlarm() {
         hitRealWall = true;
         alarmAudio.SetActive(true);
-        gameAudio.SetActive(false);
+        if (endless) {
+            loadingAudio.SetActive(false);
+        } else {
+            gameAudio.SetActive(false);
+        }
     }
 
     public IEnumerator startGame() {
+        gameActive = false;
+        alarmAudio.SetActive(false);
+        if (endless) {
+            loadingAudio.SetActive(true);
+            // Set mg.startingSquare to the current square
+            mg.GenerateGraph();
+            mg.GenerateMaze();
+            // Use BFS to find the furthest square and put the goal there.
+        }
         if (hard) {
             mg_improved.VisualizeMapGeneration();
         } else {
@@ -178,12 +203,53 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         
         mazeCanvas.SetActive(false);
         gameCanvas.SetActive(true);
-        loadingAudio.SetActive(false);
-        gameAudio.SetActive(true);
+        if (!endless) {
+            loadingAudio.SetActive(false);
+            gameAudio.SetActive(true);
+        }
         alarmAudio.SetActive(false);
         gameActive = true;
         timer = 0f;
         hitRealWall = false;
+    }
+
+    private int GridToIndex(Vector2Int cell)
+    {
+        if (!IsValidCell(cell))
+        {
+            Debug.LogError($"Invalid cell coordinates: {cell}");
+            return -1; // Return invalid index
+        }
+        return cell.y * mazeWidth + cell.x;
+    }
+
+    private Vector2Int IndexToGrid(int index)
+    {
+        if (index < 0 || index >= mazeWidth * mazeHeight)
+        {
+            Debug.LogError($"Invalid index: {index}");
+            return new Vector2Int(-1, -1); // Return invalid coordinates
+        }
+        return new Vector2Int(index % mazeWidth, index / mazeWidth);
+    }
+
+    private Vector2Int WorldToGrid(Vector3 worldPos)
+    {
+        int gridX = Mathf.RoundToInt((worldPos.x - topLeftX) / cellSize);
+        int gridY = Mathf.RoundToInt((topLeftZ - worldPos.z) / cellSize);
+        return new Vector2Int(gridX, gridY);
+    }
+
+    private Vector3 GridToWorld(Vector2Int gridPos)
+    {
+        float worldX = gridPos.x * cellSize + topLeftX;
+        float worldZ = topLeftZ - gridPos.y * cellSize;
+        return new Vector3(worldX, 0, worldZ);
+    }
+
+    private bool IsValidCell(Vector2Int cell)
+    {
+        return cell.x >= 0 && cell.x < mazeWidth && cell.y >= 0 && cell.y < mazeHeight;
     }
 
     public void startGameButton() {
