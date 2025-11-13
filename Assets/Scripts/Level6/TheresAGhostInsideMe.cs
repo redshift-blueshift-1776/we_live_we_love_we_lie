@@ -54,12 +54,12 @@ public class TheresAGhostInsideMe : MonoBehaviour
     private GameObject currBoard;
 
 
-    private bool endless = false;
     private int boardsToBeat = 10;
     private float timeLimit = 120;
     private int currKeysLeft = 1000;
 
-    private int difficulty = 1;
+    //difficulty 2 would be endless
+    private int difficulty = 0;
 
     public bool testingMode;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -90,6 +90,12 @@ public class TheresAGhostInsideMe : MonoBehaviour
                 currBoards = easyBoards;
                 break;
         }
+
+        if (difficulty == 2)
+        {
+            boardsToBeat = 100000;
+        }
+
         foreach (Transform child in currBoards.transform)
         {
             boardList.Add(child.gameObject);
@@ -127,8 +133,15 @@ public class TheresAGhostInsideMe : MonoBehaviour
             SceneManager.LoadScene(0);
         }
         if (gameActive) {
-            if (timer >= timeLimit) { 
-                GameLose(); // Change when we have the actual scene
+            if (timer >= timeLimit) {
+                if (difficulty == 2)
+                {
+                    GameWin();
+                }
+                else
+                {
+                    GameLose();
+                }
             }
             if (Input.GetKeyDown(KeyCode.C)) {
                 cam1.SetActive(!cam1.activeSelf);
@@ -161,7 +174,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
             }
             timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
             ab.SetRatio(timer / timeLimit);
-            puzzles.text = $"Puzzle: {Mathf.Min(boardsSolved, 10)}/{boardsToBeat}";
+            puzzles.text = $"Puzzle: {Mathf.Min(boardsSolved, 10)}{(difficulty == 2 ? "" : $"/{boardsToBeat}")}";
             timer += Time.deltaTime;
         }
     }

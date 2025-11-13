@@ -658,7 +658,15 @@ PrefabInstance:
       value: EndlessButton
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
@@ -666,12 +674,36 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1545799021}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1545799021}
+    - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: setDifficulty
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: ToSpecified
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Transition, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 13
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3025958292237740916, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_Pivot.x
@@ -7497,7 +7529,7 @@ MonoBehaviour:
   nextButton: {fileID: 280225345}
   unlockedEasy: 0101010101010101
   unlockedHard: 0101010101010001
-  unlockedEndless: 0101010001000000
+  unlockedEndless: 0101010001010000
 --- !u!1 &1813332278
 GameObject:
   m_ObjectHideFlags: 0
