@@ -292,8 +292,22 @@ public class Transition : MonoBehaviour
 
     }
 
+    private int difficulty = 0;
+    public void setDifficulty(int difficulty)
+    {
+        this.difficulty = difficulty;
+    }
+
     public void ToSpecified(int sceneNum) {
         if (currentCoroutine == null) {
+
+            //level 6 difficulties
+            if (sceneNum == 7)
+            {
+                GameObject level6difficulty = new GameObject($"Level6Difficulty{difficulty}");
+                level6difficulty.tag = "DifficultyInfo";
+                DontDestroyOnLoad(level6difficulty);
+            }
             currentCoroutine = StartCoroutine(LoadSpecified(sceneNum));
         }
     }
