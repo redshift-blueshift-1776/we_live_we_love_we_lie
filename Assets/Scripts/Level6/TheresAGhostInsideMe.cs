@@ -62,6 +62,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
     private int difficulty = 0;
 
     public bool testingMode;
+    public bool shuffled;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -99,6 +100,11 @@ public class TheresAGhostInsideMe : MonoBehaviour
         foreach (Transform child in currBoards.transform)
         {
             boardList.Add(child.gameObject);
+        }
+        if (shuffled)
+        {
+            System.Random rng = new System.Random();
+            boardList = boardList.OrderBy(x => rng.Next()).ToList();
         }
     }
 
@@ -263,7 +269,16 @@ public class TheresAGhostInsideMe : MonoBehaviour
         {
             Destroy(currBoard);
         }
-        GameObject originalBoard = boardList[testingMode ? 0 : Random.Range(0, boardList.Count)];
+        GameObject originalBoard;
+
+        if (shuffled && boardsToBeat <= boardList.Count)
+        {
+            originalBoard = boardList[boardsSolved];
+        }
+        else
+        {
+            originalBoard = boardList[testingMode ? 0 : Random.Range(0, boardList.Count)];
+        }
 
         currBoard = Instantiate(originalBoard);
         currKeysLeft = 0;
