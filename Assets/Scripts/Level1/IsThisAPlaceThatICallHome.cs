@@ -170,7 +170,18 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(10); // Change to 2 once To Find What I've Become is made.
+        GameObject foundObject = GameObject.Find("StoryMode");
+
+        // Check if the foundObject is not null
+        if (foundObject != null)
+        {
+            Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
+            SceneManager.LoadScene(10); // Change to 2 once To Find What I've Become is made.
+        }
+        else
+        {
+            SceneManager.LoadScene(0); // Not in story mode, goes back to the menu page
+        } 
     }
 
 

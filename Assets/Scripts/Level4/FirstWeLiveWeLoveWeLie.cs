@@ -499,15 +499,32 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
             if (finalColor == CardColor.Red)
             {
+                if (bayesian) {
+                    PlayerPrefs.SetInt("PreviousLevel", 4);
+                } else {
+                    PlayerPrefs.SetInt("PreviousLevel", 15);
+                }
                 SceneManager.LoadScene(9);
             }
             else
             {
-                if (bayesian) {
-                    SceneManager.LoadScene(6);
-                } else {
-                    SceneManager.LoadScene(19);
+                // if (bayesian) {
+                //     SceneManager.LoadScene(6);
+                // } else {
+                //     SceneManager.LoadScene(19);
+                // }
+                GameObject foundObject = GameObject.Find("StoryMode");
+
+                // Check if the foundObject is not null
+                if (foundObject != null)
+                {
+                    Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
+                    SceneManager.LoadScene(20);
                 }
+                else
+                {
+                    SceneManager.LoadScene(0); // Not in story mode, goes back to the menu page
+                } 
             }
         }
     }
@@ -525,11 +542,18 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         }
         else
         {
-            if (bayesian) {
-                SceneManager.LoadScene(19);
-            } else {
+            GameObject foundObject = GameObject.Find("StoryMode");
+
+            // Check if the foundObject is not null
+            if (foundObject != null)
+            {
+                Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
                 SceneManager.LoadScene(20);
             }
+            else
+            {
+                SceneManager.LoadScene(0); // Not in story mode, goes back to the menu page
+            } 
         }
     }
 
