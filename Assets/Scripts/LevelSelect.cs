@@ -11,7 +11,7 @@ public class LevelSelect : MonoBehaviour
     [Header("Page Setup")]
     [SerializeField] public GameObject[] pages; // 8 pages, each with its own buttons and background
     [SerializeField] public RectTransform pageContainer; // parent holding all pages
-    [SerializeField] public float slideDuration = 0.5f;
+    [SerializeField] public float slideDuration = 0.25f;
     [SerializeField] public float pageWidth = 1920f;
     [SerializeField] public GameObject previousButton;
     [SerializeField] public GameObject nextButton;
