@@ -39,6 +39,8 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     [SerializeField] private TMP_Text timerMaze;
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private TMP_Text timerGame;
+    [SerializeField] private GameObject iterationBackground;
+    [SerializeField] private TMP_Text iterationText;
 
     [Header("Audio")]
     [SerializeField] public GameObject loadingAudio;
@@ -98,6 +100,8 @@ public class WalkAlongThePathUnknown : MonoBehaviour
 
         if (endless) {
             goal.SetActive(true);
+            iterationBackground.SetActive(true);
+            iterationText.text = "Iteration: " + iteration;
             timeToMemorize = 15f;
             timeLimit = 120f;
         }
@@ -114,6 +118,9 @@ public class WalkAlongThePathUnknown : MonoBehaviour
                 Fail();
             }
             if (endless) {
+                if (gameCanvas.activeSelf) {
+                    iterationText.text = "Iteration: " + iteration;
+                }
                 if (Vector3.Distance(player.transform.position, goal.transform.position) < 10f) {
                     iteration++;
                     StartCoroutine(startGame());
