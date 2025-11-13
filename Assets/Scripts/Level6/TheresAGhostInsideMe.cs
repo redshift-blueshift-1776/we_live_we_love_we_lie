@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TheresAGhostInsideMe : MonoBehaviour
 {
-    [SerializeField] public GameObject titleScreenBoard;
-    [SerializeField] public GameObject trap;
-    [SerializeField] public GameObject key;
+    [SerializeField] private GameObject titleScreenBoard;
 
     [Header("Boards")]
     [SerializeField] private GameObject easyBoards;
+    [SerializeField] private GameObject hardBoards;
     [SerializeField] private GameObject testBoards;
+    
 
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
@@ -24,23 +25,23 @@ public class TheresAGhostInsideMe : MonoBehaviour
     [SerializeField] private TMP_Text puzzles;
 
     [Header("Audio")]
-    [SerializeField] public GameObject loadingAudio;
-    [SerializeField] public GameObject gameAudio;
-    [SerializeField] public GameObject gameAudio2;
-    [SerializeField] public GameObject failSound;
-    [SerializeField] public AudioBlender ab;
+    [SerializeField] private GameObject loadingAudio;
+    [SerializeField] private GameObject gameAudio;
+    [SerializeField] private GameObject gameAudio2;
+    [SerializeField] private GameObject failSound;
+    [SerializeField] private AudioBlender ab;
 
     [Header("Cameras")]
-    [SerializeField] public GameObject cam1;
-    [SerializeField] public GameObject cam2;
+    [SerializeField] private GameObject cam1;
+    [SerializeField] private GameObject cam2;
 
-    public bool gameActive;
-    public float timer;
+    private bool gameActive;
+    private float timer;
 
-    public bool rotateLeft;
-    public bool rotateRight;
-    public bool rotateUp;
-    public bool rotateDown;
+    private bool rotateLeft;
+    private bool rotateRight;
+    private bool rotateUp;
+    private bool rotateDown;
 
     private int boardsSolved;
 
@@ -58,7 +59,9 @@ public class TheresAGhostInsideMe : MonoBehaviour
     private float timeLimit = 120;
     private int currKeysLeft = 1000;
 
-    private int difficulty = 0;
+    private int difficulty = 1;
+
+    public bool testingMode;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -81,7 +84,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
                 currBoards = easyBoards;
                 break;
             case 1:
-                currBoards = testBoards;
+                currBoards = hardBoards;
                 break;
             default:
                 currBoards = easyBoards;
@@ -89,7 +92,6 @@ public class TheresAGhostInsideMe : MonoBehaviour
         }
         foreach (Transform child in currBoards.transform)
         {
-            child.gameObject.SetActive(false);
             boardList.Add(child.gameObject);
         }
     }
@@ -239,7 +241,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
 
     private void nextBoard() {
         boardsSolved++;
-        if (boardsSolved == boardsToBeat)
+        if (!gameActive || boardsSolved == boardsToBeat)
         {
             return;
         }
@@ -248,7 +250,9 @@ public class TheresAGhostInsideMe : MonoBehaviour
         {
             Destroy(currBoard);
         }
-        currBoard = Instantiate(boardList[Random.Range(0, boardList.Count)]);
+        GameObject originalBoard = boardList[testingMode ? 0 : Random.Range(0, boardList.Count)];
+
+        currBoard = Instantiate(originalBoard);
         currKeysLeft = 0;
         foreach (Transform child in currBoard.transform)
         {
@@ -259,5 +263,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
         }
         currBoard.transform.position = new Vector3(0, 1.7f, 0);
         currBoard.SetActive(true);
+        
+
     }
 }
