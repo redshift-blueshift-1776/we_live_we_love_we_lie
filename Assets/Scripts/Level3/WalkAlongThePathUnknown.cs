@@ -17,6 +17,18 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     [SerializeField] private float wallMoveTime;
     [SerializeField] private float timeLimit = 90f;
     [SerializeField] private float timeToMemorize = 10f;
+    [SerializeField] public float policeSpeed = 10f;
+
+    [Header("Maze Configuration")]
+    [SerializeField] public GameObject mazeGeneratorObject;
+    [SerializeField] public Maze_Generator mazeGenerator;  // Reference to the maze
+    [SerializeField] public int mazeWidth = 5;  // X-axis size
+    [SerializeField] public int mazeHeight = 5; // Y-axis size
+
+    [Header("Grid Settings")]
+    [SerializeField] public float cellSize = 50f;  // Distance between grid points in Unity world units
+    [SerializeField] public float topLeftX = -100f;  // Distance between grid points in Unity world units
+    [SerializeField] public float topLeftZ = 100f;  // Distance between grid points in Unity world units
 
     [SerializeField] public Material cutsceneMaterial;
 

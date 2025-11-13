@@ -31,9 +31,9 @@ public class Police : MonoBehaviour
     public int xBound;
     bool direction;
 
-    [SerializeField] GameObject bullet;
-    [SerializeField] float speed;
-    [SerializeField] GameObject bulletSpawn;
+    [SerializeField] public GameObject bullet;
+    [SerializeField] public float speed;
+    [SerializeField] public GameObject bulletSpawn;
 
     [Header("Maze Configuration")]
     [SerializeField] public GameObject mazeGeneratorObject;
