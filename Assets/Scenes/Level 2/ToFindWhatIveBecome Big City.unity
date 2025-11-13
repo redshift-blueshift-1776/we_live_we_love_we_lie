@@ -390,7 +390,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: c2551ce4266344f7d80b8bc2b87e208c, type: 3}
+  m_Resource: {fileID: 8300000, guid: bf736023b58c04507965e64548d6e9d6, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -3863,7 +3863,7 @@ MonoBehaviour:
   gameCanvas: {fileID: 1908451715}
   winCanvas: {fileID: 1966796976}
   timerGame: {fileID: 1847015302}
-  winText: {fileID: 0}
+  winText: {fileID: 1071902639}
   images:
   - {fileID: 1943612134}
   - {fileID: 9452303}
@@ -3885,6 +3885,7 @@ MonoBehaviour:
   cam2: {fileID: 980084578}
   gameActive: 0
   timer: 0
+  timeLimit: 232
   collected: 000000000000
   transition: {fileID: 705278724}
   transitionScript: {fileID: 0}
@@ -3948,7 +3949,7 @@ Transform:
   m_GameObject: {fileID: 1749316988}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -90, y: -146, z: -420}
+  m_LocalPosition: {x: -17027, y: 305, z: -17405}
   m_LocalScale: {x: 10, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4393,7 +4394,7 @@ Transform:
   m_GameObject: {fileID: 1860210304}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 275, y: 305, z: 675}
+  m_LocalPosition: {x: -1414.8, y: 305, z: 15753.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4424,7 +4425,7 @@ Transform:
   m_GameObject: {fileID: 1866118911}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -55, y: 305, z: 0}
+  m_LocalPosition: {x: 2819, y: 305, z: -5625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4455,7 +4456,7 @@ Transform:
   m_GameObject: {fileID: 1897178224}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 600, y: 305, z: -250}
+  m_LocalPosition: {x: -25160, y: 305, z: -3556}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5046,7 +5047,7 @@ Transform:
   m_GameObject: {fileID: 2047920924}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1000, y: 305, z: -500}
+  m_LocalPosition: {x: -15782, y: 305, z: -282}
   m_LocalScale: {x: 10, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5341,6 +5342,14 @@ PrefabInstance:
     - target: {fileID: 5164025378748391706, guid: 1424cc41826124405b63804bfb742fb8, type: 3}
       propertyPath: m_Name
       value: Trail Maker
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164025378748391706, guid: 1424cc41826124405b63804bfb742fb8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6910207638139517291, guid: 1424cc41826124405b63804bfb742fb8, type: 3}
+      propertyPath: scale
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6910207638139517291, guid: 1424cc41826124405b63804bfb742fb8, type: 3}
       propertyPath: player

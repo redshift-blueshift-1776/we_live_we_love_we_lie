@@ -37,6 +37,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
 
     public bool gameActive;
     public float timer;
+    [SerializeField] public float timeLimit = 169f;
 
     public bool[] collected = new bool[6];
 
@@ -209,7 +210,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
             SceneManager.LoadScene(0);
         }
         if (gameActive) {
-            if (timer >= 169f) { 
+            if (timer >= timeLimit) { 
                 GameLose(); // Change when we have the actual scene
             }
             UpdateUI();
@@ -289,9 +290,9 @@ public class ToFindWhatIveBecome : MonoBehaviour
 
     public void UpdateUI() {
         if (endless) {
-            timerGame.text = $"Time Remaining: {169f - Mathf.Floor(timer)}";
+            timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
         } else {
-            timerGame.text = $"Time Remaining: {169f - Mathf.Floor(timer)}";
+            timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
         }
         for (int i = 0; i < 6; i++) {
             images[i].texture = collected[i] ? fills[i] : blank;
