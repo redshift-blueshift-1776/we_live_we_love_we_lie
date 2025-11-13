@@ -22,10 +22,10 @@ public class Wall : MonoBehaviour
     }
 
     public IEnumerator moveDown() {
-        float duration = 2f;
+        float duration = 1f;
         float elapsed = 0f;
         Vector3 oldPosition = transform.position + new Vector3(0,0,0);
-        Vector3 targetPosition = transform.position + new Vector3(0,-100,0);
+        Vector3 targetPosition = transform.position + new Vector3(0,-50,0);
         while (elapsed < duration) {
             float t = elapsed / duration;
 

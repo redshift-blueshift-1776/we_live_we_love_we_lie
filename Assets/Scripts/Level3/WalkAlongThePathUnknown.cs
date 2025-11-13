@@ -241,6 +241,7 @@ public class WalkAlongThePathUnknown : MonoBehaviour
 
                 // Move the goal GameObject in world space
                 goal.transform.position = GridToWorld(goalSquare);
+                police.transform.position = GridToWorld(startingSquare);
             }
         }
 
@@ -341,6 +342,9 @@ public class WalkAlongThePathUnknown : MonoBehaviour
             g.SetActive(true);
             Renderer rend = g.GetComponent<MeshRenderer>();
             rend.material.color = newColor;
+            Wall w = g.GetComponent<Wall>();
+            w.breakable = false;
+            g.transform.localPosition = new Vector3(g.transform.position.x, 5f, g.transform.position.z);
         }
         yield return null;
     }

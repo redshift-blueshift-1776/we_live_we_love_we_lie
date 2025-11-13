@@ -177,6 +177,7 @@ public class Maze_Generator : MonoBehaviour
 
     public IEnumerator DeleteWallsOneByOne()
     {
+        removedWalls.Clear();
         foreach (var edge in mstEdges)
         {
             string wallName = GetWallName(edge.from, edge.to);
