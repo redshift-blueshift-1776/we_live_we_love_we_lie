@@ -26341,7 +26341,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7227463645034079724}
   - component: {fileID: 6140584115098546597}
-  - component: {fileID: 7445375542785413127}
   m_Layer: 0
   m_Name: The Ghost Higher
   m_TagString: Untagged
@@ -30532,21 +30531,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5760755156270202083}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1847034468978823466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3546251611262449864}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8a5c8f60a94643488d6cd79322cd547, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 8546814350295816162}
-  secondsPerBeat: 0
-  tempo: 120
 --- !u!65 &1849378182296541836
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -36090,7 +36074,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5657079919959766870}
   - component: {fileID: 8546814350295816162}
-  - component: {fileID: 1847034468978823466}
   m_Layer: 0
   m_Name: Dance Time
   m_TagString: Untagged
@@ -38012,21 +37995,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &4101645481611178206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6885268494874269107}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8a5c8f60a94643488d6cd79322cd547, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 6200278662564847799}
-  secondsPerBeat: 0
-  tempo: 120
 --- !u!23 &4104490558515990636
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -44025,7 +43993,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2182395895119246653}
   - component: {fileID: 6181558024751051361}
-  - component: {fileID: 8982186666162647941}
   m_Layer: 0
   m_Name: Fail Sound
   m_TagString: Untagged
@@ -45543,7 +45510,7 @@ AudioSource:
   m_Volume: 0.41
   m_Pitch: 1
   Loop: 1
-  Mute: 1
+  Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -48422,7 +48389,7 @@ GameObject:
   m_Component:
   - component: {fileID: 107293290528542646}
   - component: {fileID: 6200278662564847799}
-  - component: {fileID: 4101645481611178206}
+  - component: {fileID: 6885268494874269108}
   m_Layer: 0
   m_Name: The Ghost
   m_TagString: Untagged
@@ -48430,6 +48397,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &6885268494874269108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6885268494874269107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a5c8f60a94643488d6cd79322cd547, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 6200278662564847799}
+  secondsPerBeat: 0
+  tempo: 120
 --- !u!4 &6885993394657316901
 Transform:
   m_ObjectHideFlags: 0
@@ -50613,21 +50595,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8369079408620491445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7445375542785413127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 618624530085083801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8a5c8f60a94643488d6cd79322cd547, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 6140584115098546597}
-  secondsPerBeat: 0
-  tempo: 120
 --- !u!23 &7465828614864031800
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -56093,21 +56060,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8982186666162647941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5795721297162493287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8a5c8f60a94643488d6cd79322cd547, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 6181558024751051361}
-  secondsPerBeat: 0
-  tempo: 120
 --- !u!4 &8986966769687784302
 Transform:
   m_ObjectHideFlags: 0

@@ -57,6 +57,7 @@ public class Love_Truck_Passenger : MonoBehaviour
     [SerializeField] private GameObject gameAudio;
 
     public AudioSource audioSource;
+    private BeatManager beatManager;
 
     public char type; // char for which building they go to
 
@@ -104,21 +105,22 @@ public class Love_Truck_Passenger : MonoBehaviour
 
     private Coroutine currentPoseCoroutine;
 
-
+    
     void Start()
     {
         // game = GameObject.Find("Game");
         // gameScript = game.GetComponent<Game>();
         // gameAudio = gameScript.gameAudio;
         audioSource = gameAudio.GetComponent<AudioSource>();
+        beatManager = gameAudio.GetComponent<BeatManager>();
         // tempo = gameScript.tempo;
         secondsPerBeat = 60f / tempo;
 
-        nextChangeTime = BeatManager.Instance.GetNextBeatTime();
+        nextChangeTime = beatManager.GetNextBeatTime();
         currentPose = Pose.Default;
 
         // Immediately start dancing if active
-        if (dance != Dance.Default && BeatManager.Instance.audioSource.isPlaying)
+        if (dance != Dance.Default && beatManager.audioSource.isPlaying)
         {
             NextPose();
         }
@@ -127,10 +129,12 @@ public class Love_Truck_Passenger : MonoBehaviour
 
     void Update()
     {
-        if (!BeatManager.Instance.audioSource.isPlaying) return;
+        if (!beatManager.audioSource.isPlaying)
+        {
+            return;
+        }
 
-        int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
-
+        int currentBeat = beatManager.GetCurrentBeatNumber();
         if (currentBeat != lastPoseBeat)
         {
             lastPoseBeat = currentBeat;
@@ -557,7 +561,6 @@ public class Love_Truck_Passenger : MonoBehaviour
 
 
     void NextPose() {
-        //Debug.Log($"Starting new pose coroutine at dspTime: {AudioSettings.dspTime}");
         if (currentPoseCoroutine != null) {
             StopCoroutine(currentPoseCoroutine);
         }
