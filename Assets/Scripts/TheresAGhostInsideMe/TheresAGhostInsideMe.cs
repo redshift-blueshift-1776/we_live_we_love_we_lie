@@ -71,7 +71,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
         initializeAudio();
 
         //change based on difficulty
-        currBoards = testBoards;
+        currBoards = easyBoards;
         foreach (Transform child in currBoards.transform)
         {
             child.gameObject.SetActive(false);
@@ -190,8 +190,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
 
     public void startGameButton() {
         startCanvas.SetActive(false);
-        // Cursor.visible = false;
-        // Cursor.lockState = CursorLockMode.Locked;
+
         cam1.SetActive(true);
         cam2.SetActive(false);
         gameCanvas.SetActive(true);
