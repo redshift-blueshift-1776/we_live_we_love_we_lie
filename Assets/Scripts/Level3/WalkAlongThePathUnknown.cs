@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 using TMPro;
+using System.Linq;
 using UnityEngine.SceneManagement;
 
 public class WalkAlongThePathUnknown : MonoBehaviour
@@ -53,6 +54,8 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     public bool gameActive;
     public float timer;
 
+    public int iteration;
+
     public bool hitRealWall;
 
     public Maze_Generator mg;
@@ -60,6 +63,9 @@ public class WalkAlongThePathUnknown : MonoBehaviour
 
     [SerializeField] private GameObject transition;
     [SerializeField] private Transition transitionScript;
+
+    public Vector2Int startingSquare;
+    public Vector2Int goalSquare;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -76,6 +82,7 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         cam2.SetActive(false);
         gameActive = false;
         timer = 0f;
+        iteration = 1;
         hitRealWall = false;
 
         if (hard) {
@@ -108,6 +115,7 @@ public class WalkAlongThePathUnknown : MonoBehaviour
             }
             if (endless) {
                 if (Vector3.Distance(player.transform.position, goal.transform.position) < 10f) {
+                    iteration++;
                     StartCoroutine(startGame());
                 }
             }
@@ -168,16 +176,74 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         }
     }
 
+    private Vector2Int FindFurthestCellFromStart()
+    {
+        var edges = mg.getMST();
+        Dictionary<int, List<int>> adj = new Dictionary<int, List<int>>();
+        foreach (var (from, to) in edges)
+        {
+            if (!adj.ContainsKey(from)) adj[from] = new List<int>();
+            if (!adj.ContainsKey(to)) adj[to] = new List<int>();
+            adj[from].Add(to);
+            adj[to].Add(from);
+        }
+
+        Queue<int> queue = new Queue<int>();
+        HashSet<int> visited = new HashSet<int>();
+        queue.Enqueue(GridToIndex(startingSquare));
+        visited.Add(GridToIndex(startingSquare));
+        int last = GridToIndex(startingSquare);
+
+        while (queue.Count > 0)
+        {
+            last = queue.Dequeue();
+            foreach (int neighbor in adj[last])
+            {
+                if (!visited.Contains(neighbor))
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+
+        return IndexToGrid(last);
+    }
+
     public IEnumerator startGame() {
         gameActive = false;
+        gameCanvas.SetActive(false);
         alarmAudio.SetActive(false);
-        if (endless) {
-            loadingAudio.SetActive(true);
-            // Set mg.startingSquare to the current square
-            mg.GenerateGraph();
-            mg.GenerateMaze();
-            // Use BFS to find the furthest square and put the goal there.
+        loadingAudio.SetActive(true);
+        if (endless)
+        {
+            timeToMemorize = Mathf.Max(3f, timeToMemorize * 0.9f); 
         }
+
+        if (endless) {
+            // Visual transition effect
+            StartCoroutine(EndlessTransitionEffect());
+            yield return new WaitForSeconds(1f);
+            // Find the furthest cell from the current start
+            if (iteration == 1) {
+                mg.GenerateGraph();
+                mg.GenerateMaze();
+                goalSquare = new Vector2Int(4,4);
+            } else {
+                // Start from previous goal or origin
+                startingSquare = goalSquare;  
+                mg.startingSquare = GridToIndex(startingSquare);
+                mg.GenerateGraph();
+                mg.GenerateMaze();
+
+                // Find the new goal
+                goalSquare = FindFurthestCellFromStart();
+
+                // Move the goal GameObject in world space
+                goal.transform.position = GridToWorld(goalSquare);
+            }
+        }
+
         if (hard) {
             mg_improved.VisualizeMapGeneration();
         } else {
@@ -189,8 +255,11 @@ public class WalkAlongThePathUnknown : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration) {
             float t = elapsed / duration;
-
-            timerMaze.text = $"Time to Start: {timeToMemorize - Mathf.Floor(elapsed)}";
+            if (endless) {
+                timerMaze.text = $"Time to Start: {Mathf.Floor(10f * (timeToMemorize - elapsed)) / 10f}";
+            } else {
+                timerMaze.text = $"Time to Start: {timeToMemorize - Mathf.Floor(elapsed)}";
+            }
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -263,6 +332,19 @@ public class WalkAlongThePathUnknown : MonoBehaviour
     {
         return cell.x >= 0 && cell.x < mazeWidth && cell.y >= 0 && cell.y < mazeHeight;
     }
+
+    private IEnumerator EndlessTransitionEffect()
+    {
+        Color newColor = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+        foreach (GameObject g in mg.walls.Concat(mg.removedWalls).ToList())
+        {
+            g.SetActive(true);
+            Renderer rend = g.GetComponent<MeshRenderer>();
+            rend.material.color = newColor;
+        }
+        yield return null;
+    }
+
 
     public void startGameButton() {
         StartCoroutine(startGame());
