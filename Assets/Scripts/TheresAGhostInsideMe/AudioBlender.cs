@@ -7,6 +7,9 @@ public class AudioBlender : MonoBehaviour
 
     [SerializeField] public bool backAndForth;
 
+    [SerializeField] private float minVolume = 0.2f;
+    [SerializeField] private float maxVolume = 1.0f;
+
     void Start()
     {
         song1.Stop();
@@ -21,14 +24,14 @@ public class AudioBlender : MonoBehaviour
     void Update()
     {
         if (backAndForth) {
-            float r = Mathf.PingPong(Time.time * 0.2f, 1f);
+            float r = Mathf.PingPong(Time.time * minVolume, maxVolume);
             SetRatio(r);
         }
     }
 
     public void SetRatio(float r)
     {
-        song1.volume = Mathf.Clamp01(2 * r - r * r);
-        song2.volume = Mathf.Clamp01(1 - r * r);
+        song1.volume = Mathf.Clamp01(maxVolume * (2 * r - r * r));
+        song2.volume = Mathf.Clamp01(maxVolume * (1f - r * r));
     }
 }

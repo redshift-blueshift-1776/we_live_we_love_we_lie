@@ -20,8 +20,6 @@ public class BeatManager : MonoBehaviour {
         // Sync when audio starts
         StartDspTime = AudioSettings.dspTime;
         secondsPerBeat = 60f / tempo;
-
-        Debug.Log("Beat Manager start");
     }
 
     public double GetNextBeatTime() {
