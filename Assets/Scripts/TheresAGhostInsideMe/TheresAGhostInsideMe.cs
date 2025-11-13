@@ -7,14 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class TheresAGhostInsideMe : MonoBehaviour
 {
-    private bool endless = false;
-    private int boardsToBeat = 1;
-    private float timeLimit = 120;
     [SerializeField] public GameObject titleScreenBoard;
     [SerializeField] public GameObject trap;
     [SerializeField] public GameObject key;
 
+    [Header("Boards")]
     [SerializeField] private GameObject easyBoards;
+    [SerializeField] private GameObject testBoards;
 
     [Header("Canvasses")]
     [SerializeField] private GameObject startCanvas;
@@ -51,30 +50,48 @@ public class TheresAGhostInsideMe : MonoBehaviour
     private GameObject currBoards;
     private List<GameObject> boardList = new List<GameObject>();
     private GameObject currBoard;
+
+
+    private bool endless = false;
+    private int boardsToBeat = 10;
+    private float timeLimit = 120;
+    private int currKeysLeft = 1000;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
         Time.timeScale = 1f;
-        boardsSolved = 0;
+        boardsSolved = -1;
         transitionScript = transition.GetComponent<Transition>();
         gameActive = false;
         timer = 0f;
-        startCanvas.SetActive(true);
-        gameCanvas.SetActive(false);
-        winCanvas.SetActive(false);
-        loadingAudio.SetActive(true);
-        gameAudio.SetActive(false);
-        gameAudio2.SetActive(false);
-        failSound.SetActive(false);
+        initializeUI();
+        initializeAudio();
 
-        currBoards = easyBoards;
+        //change based on difficulty
+        currBoards = testBoards;
         foreach (Transform child in currBoards.transform)
         {
             child.gameObject.SetActive(false);
             boardList.Add(child.gameObject);
         }
+    }
+
+    private void initializeUI()
+    {
+        startCanvas.SetActive(true);
+        gameCanvas.SetActive(false);
+        winCanvas.SetActive(false);
+    }
+
+    private void initializeAudio()
+    {
+        loadingAudio.SetActive(true);
+        gameAudio.SetActive(false);
+        gameAudio2.SetActive(false);
+        failSound.SetActive(false);
     }
 
     // Update is called once per frame
@@ -113,12 +130,12 @@ public class TheresAGhostInsideMe : MonoBehaviour
                 rotateRight = false;
             }
             rotateBoard();
-            if (boardsSolved > boardsToBeat) {
+            if (boardsSolved == boardsToBeat) {
                 StartCoroutine(GameWin());
             }
             timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
             ab.SetRatio(timer / timeLimit);
-            puzzles.text = $"Puzzle: {Mathf.Min(boardsSolved - 1, 10)}/{boardsToBeat}";
+            puzzles.text = $"Puzzle: {Mathf.Min(boardsSolved, 10)}/{boardsToBeat}";
             timer += Time.deltaTime;
         }
     }
@@ -188,7 +205,17 @@ public class TheresAGhostInsideMe : MonoBehaviour
         nextBoard();
     }
 
-    public void nextBoard() {
+    public void collectKey()
+    {
+        currKeysLeft--;
+        if (currKeysLeft == 0)
+        {
+            nextBoard();
+        }
+    }
+
+    private void nextBoard() {
+        boardsSolved++;
         if (boardsSolved == boardsToBeat)
         {
             return;
@@ -199,8 +226,16 @@ public class TheresAGhostInsideMe : MonoBehaviour
             Destroy(currBoard);
         }
         currBoard = Instantiate(boardList[Random.Range(0, boardList.Count)]);
+        currKeysLeft = 0;
+        foreach (Transform child in currBoard.transform)
+        {
+            if (child.CompareTag("Level6Key"))
+            {
+                currKeysLeft++;
+            }
+        }
         currBoard.transform.position = new Vector3(0, 1.7f, 0);
         currBoard.SetActive(true);
-        boardsSolved++;
+        Debug.Log(currKeysLeft);
     }
 }
