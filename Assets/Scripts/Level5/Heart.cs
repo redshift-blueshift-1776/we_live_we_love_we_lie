@@ -10,7 +10,7 @@ public class Heart : MonoBehaviour
 
     public GameObject heart;
     public AudioManager audioManager;
-    public PlayerMovement playerMovement;
+    public PlayerMovement5 playerMovement;
     public Canvas endScreenCanvas;
     public Image backgroundFilter;
     public TMP_Text endScreenText;

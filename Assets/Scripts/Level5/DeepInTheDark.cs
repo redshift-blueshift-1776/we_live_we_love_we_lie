@@ -23,7 +23,7 @@ public class DeepInTheDark : MonoBehaviour
     private bool powerOff;
 
 
-    public PlayerMovement playerMovement;
+    public PlayerMovement5 playerMovement;
 
     private Vector3 initialPlayerPosition;
     private float deathZoneY;
