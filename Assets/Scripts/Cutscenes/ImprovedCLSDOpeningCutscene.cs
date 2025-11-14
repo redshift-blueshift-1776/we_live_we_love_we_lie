@@ -72,7 +72,19 @@ public class ImprovedCLSDOpeningCutscene : MonoBehaviour
             "r:After class, you should be able to find Donald James in the Meetinghouse...",
             "r:Just cross the street from the library. He should be there.",
             "l:Thanks... you know how much this means to me...",
-            "r:"
+            "r:I know... this is what you've truly wanted...",
+            "l:Any tips?",
+            "r:Yes...",
+            "r:You just have to play well...",
+            "r:Think about what strategies each challenge will have...",
+            "l:Sounds good, can you help me prepare?",
+            "r:I...",
+            "r:Hello? Hello?",
+            "r:Do you need me?",
+            "r:I think the service is fa-",
+            "r:(Disconnected)",
+            "l:Allen, you better get a new phone...",
+            "l:"
         };
         secondsPerBeat = 60f / beatsPerMinute;
         ParseLyrics();
