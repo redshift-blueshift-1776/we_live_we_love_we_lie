@@ -180,12 +180,16 @@ public class TheresAGhostInsideMe : MonoBehaviour
             }
             timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
             ab.SetRatio(timer / timeLimit);
-            puzzles.text = $"Puzzle: {Mathf.Min(boardsSolved, 10)}{(difficulty == 2 ? "" : $"/{boardsToBeat}")}";
+            puzzles.text = $"Puzzles Beaten: {Mathf.Min(boardsSolved, 10)}{(difficulty == 2 ? "" : $"/{boardsToBeat}")}";
             timer += Time.deltaTime;
         }
     }
 
     public IEnumerator GameWin() {
+        if (!gameActive)
+        {
+            yield break;
+        }
         winCanvas.SetActive(true);
         gameActive = false;
         yield return new WaitForSeconds(3f);
@@ -195,6 +199,10 @@ public class TheresAGhostInsideMe : MonoBehaviour
     }
 
     public void GameLose() {
+        if (!gameActive)
+        {
+            return;
+        }
         failSound.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
