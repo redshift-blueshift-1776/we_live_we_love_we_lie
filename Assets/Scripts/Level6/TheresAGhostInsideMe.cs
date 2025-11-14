@@ -54,7 +54,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
     private GameObject currBoard;
 
 
-    private int boardsToBeat = 10;
+    private int boardsToBeat = 1;
     private float timeLimit = 120;
     private int currKeysLeft = 1000;
 
@@ -195,7 +195,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(16);
+        SceneManager.LoadScene("Level6To7");
     }
 
     public void GameLose() {
