@@ -60,7 +60,7 @@ public class MassElimination : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(31);
     }
 
     public void MakeGrid() {
