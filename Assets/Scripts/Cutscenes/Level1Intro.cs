@@ -8,9 +8,13 @@ using UnityEngine.SceneManagement;
 
 public class Level1Intro : MonoBehaviour
 {
-
+    [Header("Cutscene Objects")]
+    [SerializeField] public GameObject cam1;
+    [SerializeField] public GameObject cam2;
     [SerializeField] public GameObject pillar;
     [SerializeField] public GameObject transition;
+
+    [Header("Cutscene Text")]
 
     public List<String> lyrics;
 
@@ -43,6 +47,8 @@ public class Level1Intro : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        cam1.SetActive(true);
+        cam2.SetActive(false);
         MakeGrid();
 
         lyrics = new List<string> {
@@ -81,6 +87,14 @@ public class Level1Intro : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        if (currentLine == 12) {
+            cam1.SetActive(false);
+            cam2.SetActive(true);
+        }
+        if (currentLine == 15) {
+            cam1.SetActive(true);
+            cam2.SetActive(false);
+        }
     }
 
     public void MakeGrid() {
