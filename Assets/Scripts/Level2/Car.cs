@@ -10,6 +10,7 @@ public class Car : MonoBehaviour
     void Start()
     {
         transform.position = startPosition;
+        // transform.localScale = new Vector3(2f, 2f, 2f);
         transform.LookAt(targetPosition);
     }
 

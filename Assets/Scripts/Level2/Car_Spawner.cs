@@ -38,7 +38,7 @@ public class Car_Spawner : MonoBehaviour
                 newCarScript.targetPosition = targetPosition;
                 newCarScript.startPosition = startPosition;  
             }
-            float waitTime = Random.Range(0.5f, 5f);
+            float waitTime = Random.Range(2.5f, 5f);
             yield return new WaitForSeconds(waitTime);
         }
     }
