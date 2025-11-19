@@ -79,6 +79,19 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
                 timerText.text = $"Time: {Mathf.Floor(timer)}";
                 timer += Time.deltaTime;
                 layerText.text = $"Layer: {bm.currentLayer}";
+
+                if (bm.currentLayer >= 20) {
+                    GameObject foundObject = GameObject.Find("Universal_Manager");
+                    // Check if the foundObject is not null
+                    if (foundObject != null) {
+                        Debug.Log("Found Universal_Manager");
+                        Universal_Manager um = foundObject.GetComponent<Universal_Manager>();
+                        um.level1Layer20 = true;
+                        PlayerPrefs.SetInt("level1Layer20", 1);
+                    } else {
+                        Debug.Log("No Universal_Manager");
+                    }
+                }
             } else {
                 timerText.text = $"Time Remaining: {120 - Mathf.Floor(timer)}";
                 timer += Time.deltaTime;

@@ -28,6 +28,18 @@ public class LevelSelect : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        GameObject foundObject = GameObject.Find("Universal_Manager");
+
+        // Check if the foundObject is not null
+        if (foundObject != null) {
+            Debug.Log("Found Universal_Manager");
+            Universal_Manager um = foundObject.GetComponent<Universal_Manager>();
+            unlockedEasy = um.unlockedEasy;
+            unlockedHard = um.unlockedHard;
+            unlockedEndless = um.unlockedEndless;
+        } else {
+            Debug.Log("No Universal_Manager");
+        }
 
         // currentPage = 0;
 
