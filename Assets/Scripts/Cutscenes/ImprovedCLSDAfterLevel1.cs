@@ -54,6 +54,7 @@ public class ImprovedCLSDAfterLevel1 : MonoBehaviour
             "l:Yeah, that was tough...",
             "r:Yeah, eliminating more than 70% on the first challenge is tough...",
             "r:But that's just the first challenge... and things will get harder...",
+            "r:Meet me near the bushes, and I'll tell you what I know...",
             "l:I'm determined, Allen...",
             "l:The game dev program is what I've always dreamed of.",
             "l:And I'm going to get back in.",
