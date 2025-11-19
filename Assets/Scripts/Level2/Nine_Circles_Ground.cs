@@ -28,18 +28,24 @@ public class Nine_Circles_Ground : MonoBehaviour
     [SerializeField] public Color white;
     [SerializeField] public Color blue;
     [SerializeField] public Color black;
+
+    private int useEffect;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         nextChangeTime = BeatManager.Instance.GetNextBeatTime();
         MakeGrid();
         ClassifyGrid();
+
+        useEffect = PlayerPrefs.GetInt("useVisualEffects", 0);
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!BeatManager.Instance.audioSource.isPlaying) return;
+
+        if (useEffect == 0) return;
 
         int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
 

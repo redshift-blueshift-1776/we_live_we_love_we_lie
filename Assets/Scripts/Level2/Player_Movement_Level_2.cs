@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 public class Player_Movement_Level_2 : MonoBehaviour
 {
@@ -88,6 +89,11 @@ public class Player_Movement_Level_2 : MonoBehaviour
         crosshair.SetActive(true);
         bigCrosshair.SetActive(false);
         defaultFieldOfView = Camera.main.fieldOfView;
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+        if (usePostProcessing == 0) {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = false;
+        }
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         //rb = GetComponent<Rigidbody>();
         //rb.freezeRotation = true; // Prevent the ambulance from tipping over

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 public class IsThisAPlaceThatICallHome : MonoBehaviour
 {
@@ -56,6 +57,12 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         gameAudio.SetActive(false);
         gameActive = false;
         gameDone = false;
+
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+        if (usePostProcessing == 0) {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = false;
+        }
     }
 
     // Update is called once per frame
