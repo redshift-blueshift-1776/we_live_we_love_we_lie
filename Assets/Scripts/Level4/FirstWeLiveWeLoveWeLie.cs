@@ -5,6 +5,7 @@ using System.Collections;
 using System;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 public class Player
 {
@@ -142,6 +143,14 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         cardInBriefcaseSafe.SetActive(false);
         probTruthIfEliminate = PlayerPrefs.GetFloat("probTruthIfEliminate", 0.2f);
         probTruthIfSafe = PlayerPrefs.GetFloat("probTruthIfSafe", 0.6f);
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+        if (usePostProcessing == 0) {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = false;
+        } else {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = true;
+        }
     }
 
     void Update()

@@ -93,6 +93,9 @@ public class Player_Movement_Level_2 : MonoBehaviour
         if (usePostProcessing == 0) {
             UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
             cameraData.renderPostProcessing = false;
+        } else {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = true;
         }
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         //rb = GetComponent<Rigidbody>();

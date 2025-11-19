@@ -62,6 +62,9 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         if (usePostProcessing == 0) {
             UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
             cameraData.renderPostProcessing = false;
+        } else {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = true;
         }
     }
 

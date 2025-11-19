@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 public class Player_Movement : MonoBehaviour
 {
@@ -72,6 +73,14 @@ public class Player_Movement : MonoBehaviour
         mainCamera.SetActive(true);
         altCamera.SetActive(false);
         fakeBody.SetActive(false);
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+        if (usePostProcessing == 0) {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = false;
+        } else {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = true;
+        }
     }
 
     void Update()

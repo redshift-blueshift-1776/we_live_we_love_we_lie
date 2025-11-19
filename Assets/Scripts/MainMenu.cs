@@ -5,6 +5,7 @@ using System.Collections;
 using System;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 public class MainMenu : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class MainMenu : MonoBehaviour
         startAnchoredPos3 = textRectTransform3.anchoredPosition;
         StartCoroutine(MenuLoop());
         StartCoroutine(DoTextStuff());
+        
     }
 
     // Update is called once per frame
@@ -45,6 +47,22 @@ public class MainMenu : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+        if (usePostProcessing == 0) {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = false;
+        } else {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = true;
+        }
+        if (Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.P)) {
+            Debug.Log("Enabling Post Processing");
+            PlayerPrefs.SetInt("useVisualEffects", 1);
+        }
+        if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.P)) {
+            Debug.Log("Disabling Post Processing");
+            PlayerPrefs.SetInt("useVisualEffects", 0);
+        }
     }
 
     public IEnumerator DoTextStuff() {
