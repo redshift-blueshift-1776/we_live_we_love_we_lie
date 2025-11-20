@@ -41,9 +41,18 @@ public class Universal_Manager : MonoBehaviour
     public bool level1Layer100;
 
     [Header("Level 2 Achievements")]
-    public bool level2fiveSecondsAirtime;
     public bool level2iteration5;
     public bool level2iteration10;
+
+    [Header("Level 3 Achievements")]
+    public bool level3iteration5;
+
+    [Header("Level 4 Achievements")]
+    public bool level4GetBetrayed;
+
+    [Header("Level 8 Achievements")]
+    public bool level8Get1500;
+    public bool level8Get2000;
 
     public static Universal_Manager Instance { get; private set; }
 
