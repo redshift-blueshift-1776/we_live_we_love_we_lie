@@ -335,8 +335,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 894649267}
-        m_TargetAssemblyTypeName: ImprovedCLSDAfterLevel1, Assembly-CSharp
+      - m_Target: {fileID: 894649269}
+        m_TargetAssemblyTypeName: ImprovedCLSDPreLevel2, Assembly-CSharp
         m_MethodName: OnSkipPressed
         m_Mode: 1
         m_Arguments:
@@ -1232,7 +1232,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 894649268}
-  - component: {fileID: 894649267}
+  - component: {fileID: 894649269}
   m_Layer: 0
   m_Name: Improved CLSD Dual
   m_TagString: Untagged
@@ -1240,7 +1240,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &894649267
+--- !u!4 &894649268
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894649266}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 588016434}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &894649269
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1249,7 +1265,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 894649266}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd71e057467fa46ca8568796896cb4e8, type: 3}
+  m_Script: {fileID: 11500000, guid: ea512102780ee4b64867a17562dc651e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lyricsText: []
@@ -1269,22 +1285,6 @@ MonoBehaviour:
   minLineDuration: 2
   holdDuration: 0.5
   nextSceneIndex: 2
---- !u!4 &894649268
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 894649266}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 588016434}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1178077615
 GameObject:
   m_ObjectHideFlags: 0
@@ -1401,7 +1401,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 69d81fa2d623746128d026ad335cce84, type: 3}
+  m_Resource: {fileID: 8300000, guid: f3d8b85899be34755ba223099e7dd764, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.8
   m_Pitch: 1
