@@ -528,7 +528,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                 if (foundObject != null)
                 {
                     Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
-                    SceneManager.LoadScene(20);
+                    SceneManager.LoadScene(40);
                 }
                 else
                 {
@@ -557,7 +557,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             if (foundObject != null)
             {
                 Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
-                SceneManager.LoadScene(20);
+                SceneManager.LoadScene(40);
             }
             else
             {
