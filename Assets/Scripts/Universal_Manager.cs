@@ -72,6 +72,7 @@ public class Universal_Manager : MonoBehaviour
         beatNonInfiniteLevels = new bool[numNonInfiniteLevels];
 
         level1Layer20 = (PlayerPrefs.GetInt("level1Layer20", 0) == 1);
+        beatStoryMode = (PlayerPrefs.GetInt("beatStoryMode", 0) == 1);
     }
 
     // Update is called once per frame

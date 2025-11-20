@@ -275,6 +275,17 @@ public class ToFindWhatIveBecome : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        GameObject foundObject2 = GameObject.Find("Universal_Manager");
+        if (foundObject2 != null) {
+            Debug.Log("Found Universal_Manager");
+            Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+            um.beatStoryModeLevels[1] = true;
+            um.unlockedHard[1] = true;
+            PlayerPrefs.SetInt("beatStoryModeLevels2", 1);
+            PlayerPrefs.SetInt("unlockedHard2", 1);
+        } else {
+            Debug.Log("No Universal_Manager");
+        }
         GameObject foundObject = GameObject.Find("StoryMode");
 
         // Check if the foundObject is not null

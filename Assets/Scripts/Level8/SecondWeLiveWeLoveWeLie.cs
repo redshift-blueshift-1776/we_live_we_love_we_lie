@@ -1187,8 +1187,17 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         gameActive = false;
-        SceneManager.LoadScene(18);
-        // transitionScript.ToFail();
+        GameObject foundObject = GameObject.Find("StoryMode");
+        // Check if the foundObject is not null
+        if (foundObject != null)
+        {
+            Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
+            SceneManager.LoadScene(18);
+        }
+        else
+        {
+            SceneManager.LoadScene(0); // Not in story mode, goes back to the menu page
+        } 
     }
 
     public void addScore(int scoreToAdd) {
