@@ -29,15 +29,17 @@ public class Win_Zone : MonoBehaviour
             Cursor.visible = true;
             int sceneID = SceneManager.GetActiveScene().buildIndex;
             if (sceneID == 3) {
-                SceneManager.LoadScene(15);
+                SceneManager.LoadScene(36);
             } else if (sceneID == 16) {
-                SceneManager.LoadScene(4);
+                SceneManager.LoadScene(0);
             } else if (sceneID == 24) {
                 SceneManager.LoadScene(25);
             } else if (sceneID == 27) {
                 SceneManager.LoadScene(29);
             } else if (sceneID == 32) {
                 SceneManager.LoadScene(33);
+            } else if (sceneID == 36) {
+                SceneManager.LoadScene(15);
             } else {
                 SceneManager.LoadScene(0);
             }
