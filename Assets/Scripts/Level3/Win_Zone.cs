@@ -37,7 +37,7 @@ public class Win_Zone : MonoBehaviour
             } else if (sceneID == 27) {
                 SceneManager.LoadScene(29);
             } else if (sceneID == 32) {
-                SceneManager.LoadScene(2);
+                SceneManager.LoadScene(33);
             } else {
                 SceneManager.LoadScene(0);
             }
