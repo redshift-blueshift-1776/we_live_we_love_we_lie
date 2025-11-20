@@ -27,22 +27,39 @@ public class Win_Zone : MonoBehaviour
         if(col.gameObject == player) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            int nextSceneIndex = 0;
             int sceneID = SceneManager.GetActiveScene().buildIndex;
             if (sceneID == 3) {
-                SceneManager.LoadScene(36);
+                nextSceneIndex = 36;
+                // SceneManager.LoadScene(36);
             } else if (sceneID == 16) {
-                SceneManager.LoadScene(0);
+                nextSceneIndex = 0;
+                // SceneManager.LoadScene(0);
             } else if (sceneID == 24) {
-                SceneManager.LoadScene(25);
+                nextSceneIndex = 25;
+                // SceneManager.LoadScene(25);
             } else if (sceneID == 27) {
-                SceneManager.LoadScene(29);
+                nextSceneIndex = 29;
+                // SceneManager.LoadScene(29);
             } else if (sceneID == 32) {
-                SceneManager.LoadScene(33);
+                nextSceneIndex = 33;
+                // SceneManager.LoadScene(33);
             } else if (sceneID == 36) {
-                SceneManager.LoadScene(15);
+                nextSceneIndex = 15;
+                // SceneManager.LoadScene(15);
             } else {
-                SceneManager.LoadScene(0);
+                nextSceneIndex = 0;
+                // SceneManager.LoadScene(0);
             }
+            GameObject foundObject = GameObject.Find("TransitionCanvas");
+            // Check if the foundObject is not null
+            if (foundObject != null) {
+                Transition t = foundObject.GetComponent<Transition>();
+                t.ToSpecified(nextSceneIndex);
+            } else {
+                SceneManager.LoadScene(nextSceneIndex);
+            }
+            
         }
     }
 }
