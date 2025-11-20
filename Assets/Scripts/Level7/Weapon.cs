@@ -155,13 +155,14 @@ public class Weapon : MonoBehaviour
 
     private void updateAmmoDisplay()
     {
+        string infinity = "¡Þ";
         if (primaryWeapon != "")
         {
-            primaryAmmoText.text = $"{currPrimaryMag}/{primaryRemainingAmmo}";
+            primaryAmmoText.text = $"{currPrimaryMag}/{(primaryRemainingAmmo >= 0 ? primaryRemainingAmmo : infinity)}";
         }
         if (secondaryWeapon != "")
         {
-            secondaryAmmoText.text = $"{currSecondaryMag}/{secondaryRemainingAmmo}";
+            secondaryAmmoText.text = $"{currSecondaryMag}/{(secondaryRemainingAmmo >= 0 ? secondaryRemainingAmmo : infinity)}";
         }
     }
 
@@ -328,7 +329,7 @@ public class Weapon : MonoBehaviour
     private void shoot(float range)
     {
         //do not allow shooting when out of ammo; automatically reload instead
-        if ((weaponIndex == 1 && currPrimaryMag == 0 && !primaryReloading) || (weaponIndex == 2 && currSecondaryMag == 0 && !primaryReloading))
+        if ((weaponIndex == 1 && currPrimaryMag == 0 && !primaryReloading) || (weaponIndex == 2 && currSecondaryMag == 0 && !secondaryReloading))
         {
             if ((weaponIndex == 1 && primaryRemainingAmmo == 0) || (weaponIndex == 2 && secondaryRemainingAmmo == 0))
             {
@@ -498,13 +499,13 @@ public class Weapon : MonoBehaviour
 
         if (weaponIndex == 1)
         {
-            int diff = Mathf.Min(primaryRemainingAmmo, primaryMagSize - currPrimaryMag);
+            int diff = Mathf.Min(primaryRemainingAmmo >= 0 ? primaryRemainingAmmo : 9999, primaryMagSize - currPrimaryMag);
             currPrimaryMag += diff;
             primaryRemainingAmmo -= diff;
         }
         else if (weaponIndex == 2)
         {
-            int diff = Mathf.Min(secondaryRemainingAmmo, secondaryMagSize - currSecondaryMag);
+            int diff = Mathf.Min(secondaryRemainingAmmo >= 0 ? secondaryRemainingAmmo : 9999, secondaryMagSize - currSecondaryMag);
             currSecondaryMag += diff;
             secondaryRemainingAmmo -= diff;
         }
@@ -770,6 +771,10 @@ public class Weapon : MonoBehaviour
 
         primaryMagSize = (int) primaryWeaponStats.GetValueOrDefault("magazineSize", 0);
         primaryRemainingAmmo = (int) primaryWeaponStats.GetValueOrDefault("totalAmmo", 0);
+        if (levelScript.isEndless())
+        {
+            primaryRemainingAmmo = -1;
+        }
         primaryBaseInaccuracy = primaryWeaponStats.GetValueOrDefault("baseInaccuracy", 0);
 
         StartCoroutine(reload());
@@ -889,6 +894,10 @@ public class Weapon : MonoBehaviour
 
         secondaryMagSize = (int) secondaryWeaponStats.GetValueOrDefault("magazineSize", 0);
         secondaryRemainingAmmo = (int) secondaryWeaponStats.GetValueOrDefault("totalAmmo", 0);
+        if (levelScript.isEndless())
+        {
+            secondaryRemainingAmmo = -1;
+        }
         secondaryBaseInaccuracy = secondaryWeaponStats.GetValueOrDefault("baseInaccuracy", 0);
 
         StartCoroutine(reload());

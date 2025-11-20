@@ -26,6 +26,8 @@ public class Level7 : MonoBehaviour
     [SerializeField] private GameObject primaryWeaponAmmoText;
     [SerializeField] private GameObject secondaryWeaponAmmoText;
 
+    [SerializeField] private TMP_Text killCountText;
+
     [Header("Bot Difficulty Borders")]
     [SerializeField] private GameObject storyDifficultyBorder;
     [SerializeField] private GameObject babyDifficultyBorder;
@@ -57,6 +59,7 @@ public class Level7 : MonoBehaviour
     private bool gameStarted = false;
     private string gamemode = "";
     private int currEnemies = 0;
+    private int killCount = 0;
     private bool playerDead = false;
     private bool inBuyPeriod = false;
 
@@ -68,6 +71,8 @@ public class Level7 : MonoBehaviour
     private int botDifficulty = 0;
 
     private bool timerActive = true;
+    private bool endlessMode = false;
+
 
     private Coroutine currFadeoutCoroutine = null;
     [SerializeField] private TMP_Text timerText;
@@ -87,6 +92,8 @@ public class Level7 : MonoBehaviour
         setBotDifficulty(0);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        killCountText.text = $"Kills: {killCount}";
     }
 
     private void Update()
@@ -121,6 +128,7 @@ public class Level7 : MonoBehaviour
        
     }
 
+    const int deathmatchBots = 5;
     private IEnumerator handleGame()
     {
         while (true)
@@ -138,6 +146,45 @@ public class Level7 : MonoBehaviour
                         yield break;
                     }
                     break;
+                case "Deathmatch Endless":
+                    //respawn enemies
+                    while (currEnemies < deathmatchBots + (killCount / 2))
+                    {
+                        List<Vector3> locations = deathmatchSpawnLocations.ToList();
+                        Vector3 randomLocation = locations[Random.Range(0, locations.Count)];
+
+                        Vector3 directionToSpawn = randomLocation - player.transform.position;
+                        RaycastHit hit;
+                        //make sure new bot spawns somewhere where player can not see
+                        while (Physics.Raycast(player.transform.position, directionToSpawn.normalized, out hit, directionToSpawn.magnitude))
+                        {
+                            if (hit.distance >= directionToSpawn.magnitude - 0.5f)
+                            {
+                                randomLocation = locations[Random.Range(0, locations.Count)];
+                                directionToSpawn = randomLocation - player.transform.position;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        GameObject enemy = Instantiate(localEnemyPrefab);
+                        Enemy enemyScript = enemy.GetComponent<Enemy>();
+
+                        NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
+                        agent.Warp(randomLocation + Vector3.up);
+
+                        int newDifficulty = botDifficulty + Mathf.Clamp(killCount / 5, 0, 6 - botDifficulty);
+                        if (killCount > 50)
+                        {
+                            newDifficulty = 7;
+                        }
+
+                        enemyScript.Initialize(newDifficulty);
+                        currEnemies++;
+                    }
+                    break;
                 case "Defusal":
                     break;
                 case "Zombie Apocalypse":
@@ -153,9 +200,14 @@ public class Level7 : MonoBehaviour
     public void setGamemode(string gamemode)
     {
         this.gamemode = gamemode;
+        
         switch (gamemode)
         {
             case "Deathmatch":
+                buyPeriod = 15f;
+                roundTime = 180f;
+                endlessMode = false;
+
                 initializeDeathmatchSpawnLocations();
                 playerScript.Initialize();
 
@@ -163,7 +215,7 @@ public class Level7 : MonoBehaviour
                 player.transform.position = currDeathmatchSpawnLocations.Pop() + Vector3.up;
                 characterController.enabled = true;
 
-                const int deathmatchBots = 5;
+                
                 for (int i = 0; i < deathmatchBots; i++)
                 {
                     GameObject enemy = Instantiate(localEnemyPrefab);
@@ -179,6 +231,37 @@ public class Level7 : MonoBehaviour
                 timer.SetActive(true);
                 inBuyPeriod = true;
                 timerSeconds = buyPeriod;
+                break;
+            case "Deathmatch Endless":
+                buyPeriod = 15f;
+                roundTime = Mathf.Infinity;
+                endlessMode = true;
+
+                initializeDeathmatchSpawnLocations();
+                playerScript.Initialize();
+
+                characterController.enabled = false;
+                player.transform.position = currDeathmatchSpawnLocations.Pop() + Vector3.up;
+                characterController.enabled = true;
+
+                for (int i = 0; i < deathmatchBots; i++)
+                {
+                    GameObject enemy = Instantiate(localEnemyPrefab);
+                    Enemy enemyScript = enemy.GetComponent<Enemy>();
+
+                    NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
+                    agent.Warp(currDeathmatchSpawnLocations.Pop() + Vector3.up);
+
+                    enemyScript.Initialize(botDifficulty);
+                    currEnemies++;
+                }
+
+                timer.SetActive(true);
+                inBuyPeriod = true;
+                timerSeconds = buyPeriod;
+
+                //reset list
+                initializeDeathmatchSpawnLocations();
                 break;
             case "Defusal":
                 break;
@@ -243,6 +326,10 @@ public class Level7 : MonoBehaviour
         }
 
         timerText.text = convertSecondsToText(timerSeconds);
+        if (!inBuyPeriod && endlessMode)
+        {
+            timerText.text = "";
+        }
 
         if (timerActive && gameStarted && !playerDead && !gameSettings.isInSettings())
         {
@@ -305,7 +392,13 @@ public class Level7 : MonoBehaviour
 
     public void updateEnemyCount(int amount)
     {
+        if (amount < 0)
+        {
+            killCount -= amount;
+        }
         currEnemies += amount;
+
+        killCountText.text = $"Kills: {killCount}";
     }
 
     
@@ -464,5 +557,10 @@ public class Level7 : MonoBehaviour
                 break;
         }
 
+    }
+
+    public bool isEndless()
+    {
+        return endlessMode;
     }
 }
