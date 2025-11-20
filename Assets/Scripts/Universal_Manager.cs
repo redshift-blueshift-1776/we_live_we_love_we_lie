@@ -81,6 +81,16 @@ public class Universal_Manager : MonoBehaviour
         beatNonInfiniteLevels = new bool[numNonInfiniteLevels];
 
         level1Layer20 = (PlayerPrefs.GetInt("level1Layer20", 0) == 1);
+        level1Layer50 = (PlayerPrefs.GetInt("level1Layer50", 0) == 1);
+        level1Layer100 = (PlayerPrefs.GetInt("level1Layer100", 0) == 1);
+
+        level2iteration5 = (PlayerPrefs.GetInt("level2iteration5", 0) == 1);
+        level2iteration10 = (PlayerPrefs.GetInt("level2iteration10", 0) == 1);
+
+        level3iteration5 = (PlayerPrefs.GetInt("level3iteration5", 0) == 1);
+
+        level4GetBetrayed = (PlayerPrefs.GetInt("level4GetBetrayed", 0) == 1);
+
         beatStoryMode = (PlayerPrefs.GetInt("beatStoryMode", 0) == 1);
     }
 
