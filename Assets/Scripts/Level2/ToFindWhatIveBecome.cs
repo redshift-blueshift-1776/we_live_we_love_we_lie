@@ -217,6 +217,32 @@ public class ToFindWhatIveBecome : MonoBehaviour
             CheckEndConditions();
             timer += Time.deltaTime;
         }
+        if (endless) {
+            if (iteration >= 5) {
+                GameObject foundObject = GameObject.Find("Universal_Manager");
+                // Check if the foundObject is not null
+                if (foundObject != null) {
+                    Debug.Log("Found Universal_Manager");
+                    Universal_Manager um = foundObject.GetComponent<Universal_Manager>();
+                    um.level2iteration5 = true;
+                    PlayerPrefs.SetInt("level2iteration5", 1);
+                } else {
+                    Debug.Log("No Universal_Manager");
+                }
+            }
+            if (iteration >= 10) {
+                GameObject foundObject = GameObject.Find("Universal_Manager");
+                // Check if the foundObject is not null
+                if (foundObject != null) {
+                    Debug.Log("Found Universal_Manager");
+                    Universal_Manager um = foundObject.GetComponent<Universal_Manager>();
+                    um.level2iteration10 = true;
+                    PlayerPrefs.SetInt("level2iteration10", 1);
+                } else {
+                    Debug.Log("No Universal_Manager");
+                }
+            }
+        }
     }
 
     public void startGameButton() {
