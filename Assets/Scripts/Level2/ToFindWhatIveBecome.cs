@@ -292,7 +292,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
         if (foundObject != null)
         {
             Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
-            SceneManager.LoadScene(3);
+            SceneManager.LoadScene(35);
         }
         else
         {
