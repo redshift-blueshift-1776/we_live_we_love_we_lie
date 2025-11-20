@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Universal_Manager : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Universal_Manager : MonoBehaviour
     
 
     [Header("Overall Achievements")]
+    public bool[] beatStoryModeLevels;
     public bool beatStoryMode;
     public bool beatStoryModeWithoutFailing;
     public bool[] beatHardLevels;
@@ -65,6 +67,9 @@ public class Universal_Manager : MonoBehaviour
         };
         unlockedHard = new bool[8];
         unlockedEndless = new bool[8];
+        beatStoryModeLevels = new bool[numLevels];
+        beatHardLevels = new bool[numHardLevels];
+        beatNonInfiniteLevels = new bool[numNonInfiniteLevels];
 
         level1Layer20 = (PlayerPrefs.GetInt("level1Layer20", 0) == 1);
     }
@@ -72,6 +77,22 @@ public class Universal_Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+        if (usePostProcessing == 0) {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = false;
+        } else {
+            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = true;
+        }
+        if (Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.P)) {
+            Debug.Log("Enabling Post Processing");
+            PlayerPrefs.SetInt("useVisualEffects", 1);
+        }
+        if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.P)) {
+            Debug.Log("Disabling Post Processing");
+            PlayerPrefs.SetInt("useVisualEffects", 0);
+        }
         if (debug) {
             unlockedHard = new bool[8] {
                 true, true, true, true, true, true, true, true
@@ -81,6 +102,7 @@ public class Universal_Manager : MonoBehaviour
             };
         } else {
             for (int i = 1; i <= numLevels; i++) {
+                beatStoryModeLevels[i - 1] = (PlayerPrefs.GetInt("beatStoryModeLevels" + i, 0) == 1);
                 unlockedHard[i - 1] = (PlayerPrefs.GetInt("unlockedHard" + i, 0) == 1);
                 unlockedEndless[i - 1] = (PlayerPrefs.GetInt("unlockedEndless" + i, 0) == 1);
             }

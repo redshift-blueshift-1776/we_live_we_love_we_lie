@@ -5,6 +5,7 @@ using System.Collections;
 using System;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 public class MassElimination : MonoBehaviour
 {
@@ -24,6 +25,14 @@ public class MassElimination : MonoBehaviour
         if (menu) {
             StartCoroutine(MenuLoop());
         } else {
+            int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+            if (usePostProcessing == 0) {
+                UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+                cameraData.renderPostProcessing = false;
+            } else {
+                UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
+                cameraData.renderPostProcessing = true;
+            }
             playersRemaining.text = "Players Remaining:\n1000";
             MakeGrid();
             StartCoroutine(MoveCamera());
