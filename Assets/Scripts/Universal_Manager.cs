@@ -1,5 +1,11 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Universal_Manager : MonoBehaviour
 {
@@ -112,6 +118,9 @@ public class Universal_Manager : MonoBehaviour
         if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.P)) {
             Debug.Log("Disabling Post Processing");
             PlayerPrefs.SetInt("useVisualEffects", 0);
+        }
+        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
+            SceneManager.LoadScene(0);
         }
         if (debug) {
             unlockedHard = new bool[8] {

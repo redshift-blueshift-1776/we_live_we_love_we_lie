@@ -62,6 +62,16 @@ public class CutsceneManager : MonoBehaviour
         blackScreen.SetActive(true);
         quoteText.text = "";
         if (gm.aiLied && gm.defenseCard.Color == CardColor.Red) {
+            GameObject foundObject = GameObject.Find("Universal_Manager");
+            // Check if the foundObject is not null
+            if (foundObject != null) {
+                Debug.Log("Found Universal_Manager");
+                Universal_Manager um = foundObject.GetComponent<Universal_Manager>();
+                um.level4GetBetrayed = true;
+                PlayerPrefs.SetInt("level4GetBetrayed", 1);
+            } else {
+                Debug.Log("No Universal_Manager");
+            }
             yield return new WaitForSeconds(3f);
             float duration = 3f;
             float elapsed = 0f;
