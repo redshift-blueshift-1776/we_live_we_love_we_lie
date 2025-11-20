@@ -389,11 +389,32 @@ public class Level7 : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            SceneManager.LoadScene("SecondWeLiveWeLoveWeLie");
+            GameObject universalManagerObject = GameObject.Find("Universal_Manager");
+            if (universalManagerObject != null)
+            {
+                Universal_Manager um = universalManagerObject.GetComponent<Universal_Manager>();
+                um.beatStoryModeLevels[6] = true;
+                um.unlockedHard[6] = true;
+                PlayerPrefs.SetInt("beatStoryModeLevels7", 1);
+                PlayerPrefs.SetInt("unlockedHard7", 1);
+            }
+
+            GameObject storyModeObject = GameObject.Find("StoryMode");
+
+            if (storyModeObject != null)
+            {
+                SceneManager.LoadScene("SecondWeLiveWeLoveWeLie");
+            }
+            else
+            {
+                SceneManager.LoadScene("Menu");
+            }
         }
         else
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Scene currentScene = SceneManager.GetActiveScene();
+            PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
+            SceneManager.LoadScene(9);
         }
         yield return null;
     }
