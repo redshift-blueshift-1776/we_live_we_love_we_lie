@@ -63,4 +63,8 @@ public class EliminationPillar : MonoBehaviour
             transitionScript.ToFail();
         }
     }
+
+    public void CallOpenTrapDoor() {
+        StartCoroutine(OpenTrapDoor());
+    }
 }

@@ -56,16 +56,14 @@ public class Level8Intro : MonoBehaviour
         GenerateSquareRings();
 
         lyrics = new List<string> {
-            "Welcome to the SIXTH challenge!",
-            "The last challenge was pretty long and difficult...",
-            "And while this challenge is much shorter, it is still very difficult.",
-            "As a game developer, it is important to know what parts need modifying and which parts to leave put...",
-            "This challenge will test that...",
-            "In this challenge, you will have to solve ten puzzles in two minutes.",
-            "Each puzzle has two blocks inside, one red trap and one yellow key.",
-            "You must tilt the board on the table to get the yellow key out without letting the red trap escape.",
-            "Many of these will require you to use the walls inside of the puzzle or use some clever tricks.",
-            "Good luck, contestants. There are only a few challenges left."
+            "Welcome to the FINAL challenge!",
+            "After seven BRUTAL challenges, it all comes down to this...",
+            "One FINAL challenge!",
+            "Every action you've taken so far in these games has led to this moment...",
+            "And you two are now one step away from getting the vacant spot in the game dev program.",
+            "And for this final challenge... you will be playing Lan Attis's newest rhythm game.",
+            "Good luck, contestants. This is the last step before getting into the game dev program.",
+            "May the best player win."
         };
         secondsPerBeat = 60f / beatsPerMinute;
         // lyrics = lyricsText;
@@ -84,7 +82,8 @@ public class Level8Intro : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SquareRingsReference.transform.position += new Vector3(0, 0, -20) * Time.deltaTime;
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+        SquareRingsReference.transform.position += new Vector3(0, 0, -20) * Time.deltaTime * usePostProcessing;
     }
 
     public void OnSkipPressed() {
