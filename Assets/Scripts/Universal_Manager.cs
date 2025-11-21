@@ -97,6 +97,9 @@ public class Universal_Manager : MonoBehaviour
 
         level4GetBetrayed = (PlayerPrefs.GetInt("level4GetBetrayed", 0) == 1);
 
+        level8Get1500 = (PlayerPrefs.GetInt("level8Get1500", 0) == 1);
+        level8Get2000 = (PlayerPrefs.GetInt("level8Get2000", 0) == 1);
+
         beatStoryMode = (PlayerPrefs.GetInt("beatStoryMode", 0) == 1);
     }
 

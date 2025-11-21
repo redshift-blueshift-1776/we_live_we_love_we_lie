@@ -527,6 +527,17 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                 // Check if the foundObject is not null
                 if (foundObject != null)
                 {
+                    GameObject foundObject2 = GameObject.Find("Universal_Manager");
+                    if (foundObject2 != null) {
+                        Debug.Log("Found Universal_Manager");
+                        Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+                        um.beatStoryModeLevels[3] = true;
+                        um.unlockedHard[3] = true;
+                        PlayerPrefs.SetInt("beatStoryModeLevels4", 1);
+                        PlayerPrefs.SetInt("unlockedHard4", 1);
+                    } else {
+                        Debug.Log("No Universal_Manager");
+                    }
                     Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
                     SceneManager.LoadScene(40);
                 }
@@ -556,6 +567,17 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             // Check if the foundObject is not null
             if (foundObject != null)
             {
+                GameObject foundObject2 = GameObject.Find("Universal_Manager");
+                if (foundObject2 != null) {
+                    Debug.Log("Found Universal_Manager");
+                    Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+                    um.beatStoryModeLevels[3] = true;
+                    um.unlockedHard[3] = true;
+                    PlayerPrefs.SetInt("beatStoryModeLevels4", 1);
+                    PlayerPrefs.SetInt("unlockedHard4", 1);
+                } else {
+                    Debug.Log("No Universal_Manager");
+                }
                 Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
                 SceneManager.LoadScene(40);
             }

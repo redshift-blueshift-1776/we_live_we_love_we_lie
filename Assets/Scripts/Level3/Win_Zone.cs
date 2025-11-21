@@ -30,6 +30,27 @@ public class Win_Zone : MonoBehaviour
             int nextSceneIndex = 0;
             int sceneID = SceneManager.GetActiveScene().buildIndex;
             if (sceneID == 3) {
+                GameObject foundObject2 = GameObject.Find("Universal_Manager");
+                if (foundObject2 != null) {
+                    Debug.Log("Found Universal_Manager");
+                    Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+                    um.beatStoryModeLevels[2] = true;
+                    um.unlockedHard[2] = true;
+                    PlayerPrefs.SetInt("beatStoryModeLevels3", 1);
+                    PlayerPrefs.SetInt("unlockedHard3", 1);
+                } else {
+                    Debug.Log("No Universal_Manager");
+                }
+                GameObject foundObject3 = GameObject.Find("StoryMode");
+                // Check if the foundObject is not null
+                if (foundObject3 != null)
+                {
+                    Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
+                }
+                else
+                {
+                    SceneManager.LoadScene(0); // Not in story mode, goes back to the menu page
+                } 
                 nextSceneIndex = 41;
                 // SceneManager.LoadScene(36);
             } else if (sceneID == 16) {

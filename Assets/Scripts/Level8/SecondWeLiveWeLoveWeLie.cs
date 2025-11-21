@@ -1187,6 +1187,25 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         gameActive = false;
+        GameObject foundObject2 = GameObject.Find("Universal_Manager");
+        if (foundObject2 != null) {
+            Debug.Log("Found Universal_Manager");
+            Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+            um.beatStoryModeLevels[7] = true;
+            um.unlockedHard[7] = true;
+            PlayerPrefs.SetInt("beatStoryModeLevels8", 1);
+            PlayerPrefs.SetInt("unlockedHard8", 1);
+            if (score >= 1500) {
+                um.level8Get1500 = true;
+                PlayerPrefs.SetInt("level8Get1500", 1);
+            }
+            if (score >= 2000) {
+                um.level8Get2000 = true;
+                PlayerPrefs.SetInt("level8Get2000", 1);
+            }
+        } else {
+            Debug.Log("No Universal_Manager");
+        }
         GameObject foundObject = GameObject.Find("StoryMode");
         // Check if the foundObject is not null
         if (foundObject != null)
