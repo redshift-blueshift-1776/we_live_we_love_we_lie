@@ -66,6 +66,7 @@ public class ImprovedCLSDPreLevel1Cutscene : MonoBehaviour
             "l:And I believe I can do it...",
             "r:It's eight tough challenges, and a thousand people in total. Are you sure you're up to the task?",
             "l:I'm sure of it... As Lan and Lana said, it's time for me to Pick It Up...",
+            "r:Ok... go drive your truck to the filming location. We'll start at 9.",
             "r:"
         };
         secondsPerBeat = 60f / beatsPerMinute;
