@@ -30,7 +30,7 @@ public class Win_Zone : MonoBehaviour
             int nextSceneIndex = 0;
             int sceneID = SceneManager.GetActiveScene().buildIndex;
             if (sceneID == 3) {
-                nextSceneIndex = 36;
+                nextSceneIndex = 41;
                 // SceneManager.LoadScene(36);
             } else if (sceneID == 16) {
                 nextSceneIndex = 0;
