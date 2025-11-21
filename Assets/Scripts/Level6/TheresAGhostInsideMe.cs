@@ -54,7 +54,7 @@ public class TheresAGhostInsideMe : MonoBehaviour
     private GameObject currBoard;
 
 
-    private int boardsToBeat = 1;
+    private int boardsToBeat = 10;
     private float timeLimit = 120;
     private int currKeysLeft = 1000;
 
