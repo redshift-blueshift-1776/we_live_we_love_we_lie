@@ -12,6 +12,7 @@ public class FinalElimination : MonoBehaviour
     [SerializeField] public GameObject cam1;
     [SerializeField] public GameObject wadePillar;
     [SerializeField] public GameObject opponentPillar;
+    [SerializeField] public GameObject[] opponents;
 
     [Header("Cutscene Text")]
 
@@ -41,13 +42,14 @@ public class FinalElimination : MonoBehaviour
     [SerializeField] private float minLineDuration = 2.0f;
     [SerializeField] private float holdDuration = 0.5f;
 
-    [SerializeField] public int nextSceneIndex = 3;
+    [SerializeField] public int nextSceneIndex = 18;
 
     public bool toWin;
         
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        PlayerPrefs.SetInt("PreviousLevel", 11);
         GameObject foundObject2 = GameObject.Find("Universal_Manager");
         if (foundObject2 != null) {
             Debug.Log("Found Universal_Manager");
@@ -80,6 +82,11 @@ public class FinalElimination : MonoBehaviour
             opponentName = "Luba Novikova";
         } else if (rngNumber == 9) {
             opponentName = "IY-zak Wiyt";
+        }
+
+        for (int i = 0; i < 10; i++) {
+            GameObject g = opponents[i];
+            g.SetActive(i == rngNumber);
         }
 
         lyrics = new List<string> {
@@ -155,8 +162,9 @@ public class FinalElimination : MonoBehaviour
         lyricsDisplay.text = "";
         canvas.SetActive(false);
 
-        if (nextSceneIndex >= 0)
-            SceneManager.LoadScene(nextSceneIndex);
+        // if (nextSceneIndex >= 0)
+        //     SceneManager.LoadScene(nextSceneIndex);
+        ClearLyrics();
 
         doLyricsCoroutine = null;
     }
@@ -250,6 +258,20 @@ public class FinalElimination : MonoBehaviour
         lyricsDisplay.text = "";
         lyricsBackground.SetActive(false);
         canvas.SetActive(false);
-        SceneManager.LoadScene(nextSceneIndex);
+        StartCoroutine(DropLoser());
+    }
+
+    public IEnumerator DropLoser() {
+        if (toWin) {
+            EliminationPillar ep = opponentPillar.GetComponent<EliminationPillar>();
+            ep.CallOpenTrapDoor();
+            yield return new WaitForSeconds(5f);
+            SceneManager.LoadScene(nextSceneIndex);
+        } else {
+            EliminationPillar ep = wadePillar.GetComponent<EliminationPillar>();
+            ep.CallOpenTrapDoor();
+            yield return new WaitForSeconds(5f);
+        }
+        yield return null;
     }
 }
