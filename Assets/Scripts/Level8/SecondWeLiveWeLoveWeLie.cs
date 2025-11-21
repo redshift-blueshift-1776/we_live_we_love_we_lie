@@ -1203,6 +1203,10 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 um.level8Get2000 = true;
                 PlayerPrefs.SetInt("level8Get2000", 1);
             }
+            if (hard) {
+                um.beatHardLevels[7] = true;
+                PlayerPrefs.SetInt("beatHardLevels8", 1);
+            }
         } else {
             Debug.Log("No Universal_Manager");
         }

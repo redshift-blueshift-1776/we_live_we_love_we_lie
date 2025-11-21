@@ -309,6 +309,12 @@ public class ToFindWhatIveBecome : MonoBehaviour
             um.unlockedHard[1] = true;
             PlayerPrefs.SetInt("beatStoryModeLevels2", 1);
             PlayerPrefs.SetInt("unlockedHard2", 1);
+
+            int sceneID = SceneManager.GetActiveScene().buildIndex;
+            if (sceneID != 2) {
+                um.beatHardLevels[1] = true;
+                PlayerPrefs.SetInt("beatHardLevels2", 1);
+            }
         } else {
             Debug.Log("No Universal_Manager");
         }

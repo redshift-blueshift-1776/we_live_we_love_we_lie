@@ -535,6 +535,10 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                         um.unlockedHard[3] = true;
                         PlayerPrefs.SetInt("beatStoryModeLevels4", 1);
                         PlayerPrefs.SetInt("unlockedHard4", 1);
+                        if (bayesian) {
+                            um.beatHardLevels[3] = true;
+                            PlayerPrefs.SetInt("beatHardLevels4", 1);
+                        }
                     } else {
                         Debug.Log("No Universal_Manager");
                     }
@@ -575,6 +579,10 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
                     um.unlockedHard[3] = true;
                     PlayerPrefs.SetInt("beatStoryModeLevels4", 1);
                     PlayerPrefs.SetInt("unlockedHard4", 1);
+                    if (bayesian) {
+                        um.beatHardLevels[3] = true;
+                        PlayerPrefs.SetInt("beatHardLevels4", 1);
+                    }
                 } else {
                     Debug.Log("No Universal_Manager");
                 }

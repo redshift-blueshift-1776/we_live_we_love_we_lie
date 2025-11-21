@@ -201,6 +201,12 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
             um.unlockedHard[0] = true;
             PlayerPrefs.SetInt("beatStoryModeLevels1", 1);
             PlayerPrefs.SetInt("unlockedHard1", 1);
+
+            int sceneID = SceneManager.GetActiveScene().buildIndex;
+            if (sceneID != 1) {
+                um.beatHardLevels[0] = true;
+                PlayerPrefs.SetInt("beatHardLevels1", 1);
+            }
         } else {
             Debug.Log("No Universal_Manager");
         }

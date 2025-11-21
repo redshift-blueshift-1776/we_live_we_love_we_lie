@@ -56,6 +56,18 @@ public class Win_Zone : MonoBehaviour
             } else if (sceneID == 16) {
                 nextSceneIndex = 0;
                 // SceneManager.LoadScene(0);
+            } else if (sceneID == 22) {
+                GameObject foundObject2 = GameObject.Find("Universal_Manager");
+                if (foundObject2 != null) {
+                    Debug.Log("Found Universal_Manager");
+                    Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+                    um.beatHardLevels[2] = true;
+                    PlayerPrefs.SetInt("beatHardLevels3", 1);
+                } else {
+                    Debug.Log("No Universal_Manager");
+                }
+                nextSceneIndex = 0;
+                // SceneManager.LoadScene(0);
             } else if (sceneID == 24) {
                 nextSceneIndex = 25;
                 // SceneManager.LoadScene(25);
