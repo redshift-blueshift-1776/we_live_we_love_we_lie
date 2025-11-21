@@ -45,9 +45,14 @@ public class ImprovedCLSDOpeningCutscene : MonoBehaviour
 
     [SerializeField] public int nextSceneIndex;
 
+    [SerializeField] public GameObject wadeStanding;
+    [SerializeField] public GameObject wadeSleeping;
+
     private bool? lastSideRight = null;
 
     void Start() {
+        wadeStanding.SetActive(false);
+        wadeSleeping.SetActive(true);
         lyricsText = new string[] {
             "l:",
             "l:...",
@@ -99,6 +104,13 @@ public class ImprovedCLSDOpeningCutscene : MonoBehaviour
         originalLyricsBarWidth = lyricsProgressBarFill.sizeDelta.x;
 
         if (autoStart) showLyrics();
+    }
+
+    void Update() {
+        if (currentLine == 6) {
+            wadeStanding.SetActive(true);
+            wadeSleeping.SetActive(false);
+        }
     }
 
     void ParseLyrics() {
