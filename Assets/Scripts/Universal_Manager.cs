@@ -121,7 +121,7 @@ public class Universal_Manager : MonoBehaviour
             Debug.Log("Enabling Post Processing");
             PlayerPrefs.SetInt("useVisualEffects", 1);
         }
-        if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.P)) {
+        if (Input.GetKey(KeyCode.N) && Input.GetKey(KeyCode.P)) {
             Debug.Log("Disabling Post Processing");
             PlayerPrefs.SetInt("useVisualEffects", 0);
         }

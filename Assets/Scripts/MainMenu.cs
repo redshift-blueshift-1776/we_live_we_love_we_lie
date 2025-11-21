@@ -55,14 +55,6 @@ public class MainMenu : MonoBehaviour
             UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
             cameraData.renderPostProcessing = true;
         }
-        // if (Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.P)) {
-        //     Debug.Log("Enabling Post Processing");
-        //     PlayerPrefs.SetInt("useVisualEffects", 1);
-        // }
-        // if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.P)) {
-        //     Debug.Log("Disabling Post Processing");
-        //     PlayerPrefs.SetInt("useVisualEffects", 0);
-        // }
     }
 
     public IEnumerator DoTextStuff() {
