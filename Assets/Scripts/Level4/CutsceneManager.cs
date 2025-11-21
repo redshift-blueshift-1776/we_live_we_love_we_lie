@@ -25,10 +25,16 @@ public class CutsceneManager : MonoBehaviour
     [SerializeField] public GameObject briefcase;
     [SerializeField] public GameObject briefcasePivot;
 
+    [Header("Audio")]
+    [SerializeField] public GameObject mainAudio;
+    [SerializeField] public GameObject betrayedAudio;
+
     private Action onComplete;
 
     void Start() {
         gm = gameManager.GetComponent<FirstWeLiveWeLoveWeLie>();
+        mainAudio.SetActive(true);
+        betrayedAudio.SetActive(false);
         blackScreen.SetActive(false);
         quoteText.text = "";
     }
@@ -62,6 +68,16 @@ public class CutsceneManager : MonoBehaviour
         blackScreen.SetActive(true);
         quoteText.text = "";
         if (gm.aiLied && gm.defenseCard.Color == CardColor.Red) {
+            AudioSource a = mainAudio.GetComponent<AudioSource>();
+            float duration = 1f;
+            float elapsed = 0f;
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+
+                a.volume = 1f - t;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
             GameObject foundObject = GameObject.Find("Universal_Manager");
             // Check if the foundObject is not null
             if (foundObject != null) {
@@ -73,8 +89,9 @@ public class CutsceneManager : MonoBehaviour
                 Debug.Log("No Universal_Manager");
             }
             yield return new WaitForSeconds(3f);
-            float duration = 3f;
-            float elapsed = 0f;
+            betrayedAudio.SetActive(true);
+            duration = 3f;
+            elapsed = 0f;
             while (elapsed < duration) {
                 float t = elapsed / duration;
 

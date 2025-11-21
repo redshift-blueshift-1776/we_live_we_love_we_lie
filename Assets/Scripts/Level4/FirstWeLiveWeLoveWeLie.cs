@@ -334,7 +334,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         // UICanvas.SetActive(false);
         ChoiceCanvas.SetActive(true);
         if (defenseCard.Color == CardColor.Red) {
-            bool aiLies = UnityEngine.Random.value < 0.25f; // placeholder strategy
+            bool aiLies = UnityEngine.Random.value < 0.5f; // placeholder strategy
             if (aiLies) {
                 opponentText.text = "It's safe.";
             } else {
@@ -342,7 +342,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             }
             aiLied = aiLies;
         } else {
-            bool aiLies = UnityEngine.Random.value < 0.25f; // placeholder strategy
+            bool aiLies = UnityEngine.Random.value < 0.5f; // placeholder strategy
             if (aiLies) {
                 opponentText.text = "It's not safe.";
             } else {
