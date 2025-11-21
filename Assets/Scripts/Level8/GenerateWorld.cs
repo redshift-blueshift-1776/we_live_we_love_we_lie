@@ -184,9 +184,11 @@ public class GenerateWorld : MonoBehaviour
             GameObject newFadeBuilding = Instantiate(FadeBuilding);
             newFadeBuilding.transform.SetParent(APlaceCalledHomeReference.transform);
             newFadeBuilding.transform.localPosition = new Vector3(-100, 0, (i + 0.5f) * fadeBuildingOffset);
+            newFadeBuilding.transform.localRotation = Quaternion.Euler(0, 90, 0);
             newFadeBuilding = Instantiate(newFadeBuilding);
             newFadeBuilding.transform.SetParent(APlaceCalledHomeReference.transform);
             newFadeBuilding.transform.localPosition = new Vector3(100, 0, (i + 0.5f) * fadeBuildingOffset);
+            newFadeBuilding.transform.localRotation = Quaternion.Euler(0, 90, 0);
             GameObject newFadeLightpole = Instantiate(FadeLightpole);
             newFadeLightpole.transform.SetParent(APlaceCalledHomeReference.transform);
             newFadeLightpole.transform.localPosition = new Vector3(25, 0, i * fadeBuildingOffset);
