@@ -60,6 +60,9 @@ public class Universal_Manager : MonoBehaviour
     public bool level8Get1500;
     public bool level8Get2000;
 
+    [Header("For Final Elimination")]
+    public bool justBeatLevel8;
+
     public static Universal_Manager Instance { get; private set; }
 
     private void Awake()

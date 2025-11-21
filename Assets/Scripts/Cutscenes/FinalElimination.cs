@@ -42,10 +42,21 @@ public class FinalElimination : MonoBehaviour
     [SerializeField] private float holdDuration = 0.5f;
 
     [SerializeField] public int nextSceneIndex = 3;
+
+    public bool toWin;
         
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        GameObject foundObject2 = GameObject.Find("Universal_Manager");
+        if (foundObject2 != null) {
+            Debug.Log("Found Universal_Manager");
+            Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+            toWin = um.justBeatLevel8;
+        } else {
+            Debug.Log("No Universal_Manager");
+            toWin = false;
+        }
         cam1.SetActive(true);
 
         string opponentName = "Colin Norton";
