@@ -1217,7 +1217,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         if (foundObject != null)
         {
             Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
-            SceneManager.LoadScene(18);
+            SceneManager.LoadScene(44);
         }
         else
         {
@@ -1230,7 +1230,13 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     }
 
     public IEnumerator LoadFailScene() {
+        GameObject foundObject2 = GameObject.Find("Universal_Manager");
+        if (foundObject2 != null) {
+            Debug.Log("Found Universal_Manager");
+            Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+            um.justBeatLevel8 = false;
+        }
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene(9); // Change when we have the actual scene
+        SceneManager.LoadScene(44); // Change when we have the actual scene
     }
 }

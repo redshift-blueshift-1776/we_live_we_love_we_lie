@@ -54,7 +54,7 @@ public class Note : MonoBehaviour
         if (songTime > delay + duration)
         {
             if (realNote && !noteHit)
-                gm.addScore(-5);
+                gm.addScore(-3);
 
             Destroy(gameObject);
             return;
@@ -122,7 +122,7 @@ public class Note : MonoBehaviour
             float diff = (float)Mathf.Abs((float)(songTime - noteCenter));
 
             int scoreToAdd = (int)(10 - 20 * diff);
-            scoreToAdd = Mathf.Clamp(scoreToAdd, 1, 10);
+            scoreToAdd = Mathf.Clamp(scoreToAdd, 2, 10);
 
             scoreToAdd = (scoreToAdd > 8) ? 10 : scoreToAdd;
 
