@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class Ending_Cutscene : MonoBehaviour
 {
+    [SerializeField] public GameObject flyAround;
     [SerializeField] public TMP_Text quoteText;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,7 +33,7 @@ public class Ending_Cutscene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        flyAround.transform.RotateAround(new Vector3(0, 0, 3600), Vector3.up, 2f * Time.deltaTime);
     }
 
     public IEnumerator DoLine(string line) {
@@ -71,9 +72,10 @@ public class Ending_Cutscene : MonoBehaviour
 
     public IEnumerator DoCredits(){
         string[] lines = {
-            "I remember those days…",
-"When I was in the game dev program…",
-"It was the best thing in the world…",
+            "I truly remember those days…",
+"Back when I was in the game dev program…",
+"It was the truly best thing in the world…",
+"We made all kinds of games…",
 "We made great games…",
 "We made fun games…",
 "We even made strange games…",
@@ -83,8 +85,11 @@ public class Ending_Cutscene : MonoBehaviour
 "They called me a monster for making that.",
 "Donald James had no choice…",
 "He had to kick me out of the game dev program.",
+"And I thought that was the end of my game dev journey.",
+"That all the great times would end there...",
 "It was very painful getting kicked out.",
 "I cried, and cried.",
+"Allen comforted me, but it still hurt...",
 "I knew that I was missing something…",
 "Something important to me…",
 "Something I lost on a boat trip…",
@@ -94,15 +99,18 @@ public class Ending_Cutscene : MonoBehaviour
 "A toy, given to me when I was young.",
 "It was my inspiration, and I had to get it back.",
 "And once I did, my game dev skill was back to my prime.",
-"I remade Love Sees Differences.",
+"I remade Love Sees Differences into the game it is today.",
 "And the fans all loved it.",
 "They never saw a game as bold.",
+"Lan Attis even ranked it as the number one Pen You Never City game...",
+"Even above other great games like BTD7 and Luca.",
 "My confidence was back with the remastered game.",
 "I did another game jam with Allen, and we did well.",
 "But at the end of the day, the thing I wanted the most, more than anything…",
 "Was to get back into the game dev program…",
 "And after eight tough challenges…",
 "I'm back…",
+"I'm finally back...",
 "It's been a journey…",
 "And even though I may have been the monster…",
 "It's good to be back in the game dev program.",
