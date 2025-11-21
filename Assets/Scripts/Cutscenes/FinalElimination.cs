@@ -6,18 +6,12 @@ using System;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class Level8Intro : MonoBehaviour
+public class FinalElimination : MonoBehaviour
 {
     [Header("Cutscene Objects")]
     [SerializeField] public GameObject cam1;
-    
-    [Header("Square Rings")]
-    [SerializeField] public GameObject SquareRingsReference;
-    [SerializeField] public GameObject SquareRing;
-    [SerializeField] public float ringOffset;
-    [SerializeField] public float ringOffsetRotation;
-    [SerializeField] public int numRings;
-    [SerializeField] public int numRingsInRotation;
+    [SerializeField] public GameObject wadePillar;
+    [SerializeField] public GameObject opponentPillar;
 
     [Header("Cutscene Text")]
 
@@ -53,20 +47,38 @@ public class Level8Intro : MonoBehaviour
     void Start()
     {
         cam1.SetActive(true);
-        GenerateSquareRings();
+
+        string opponentName = "Colin Norton";
+
+        int rngNumber = UnityEngine.Random.Range(0, 10);
+        if (rngNumber == 1) {
+            opponentName = "Jacob Martin";
+        } else if (rngNumber == 2) {
+            opponentName = "Jessica She";
+        } else if (rngNumber == 3) {
+            opponentName = "Emma Rose";
+        } else if (rngNumber == 4) {
+            opponentName = "Patrick Farmer";
+        } else if (rngNumber == 5) {
+            opponentName = "Mario Carideo";
+        } else if (rngNumber == 6) {
+            opponentName = "Mary Kuang";
+        } else if (rngNumber == 7) {
+            opponentName = "Rahima Sherazi";
+        } else if (rngNumber == 8) {
+            opponentName = "Luba Novikova";
+        } else if (rngNumber == 9) {
+            opponentName = "IY-zak Wiyt";
+        }
 
         lyrics = new List<string> {
-            "Welcome to the FINAL challenge!",
-            "After seven BRUTAL challenges, it all comes down to this...",
-            "One FINAL challenge!",
-            "Every action you've taken so far in these games has led to this moment...",
-            "And you two are now one step away from getting the vacant spot in the game dev program.",
-            "One of you is about to win...",
-            "And for this final challenge... you will be playing Lan Attis's newest rhythm game.",
-            "And whoever gets the higher score wins.",
-            "It all comes down to this.",
-            "Good luck, contestants. This is the last step before getting into the game dev program.",
-            "May the best player win."
+            "What an exciting final round...",
+            "It's now time to determine who gets into the game dev program...",
+            "Will it be Wade Zunic, someone who used to be in the program, but who I had to kick out...",
+            "Or will it be the newcomer, " + opponentName + ", someone who dominated their way through the games?",
+            "",
+            "REVEAL THE WINNER!!!",
+            ""
         };
         secondsPerBeat = 60f / beatsPerMinute;
         // lyrics = lyricsText;
@@ -85,8 +97,6 @@ public class Level8Intro : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
-        SquareRingsReference.transform.position += new Vector3(0, 0, -20) * Time.deltaTime * usePostProcessing;
     }
 
     public void OnSkipPressed() {
@@ -230,16 +240,5 @@ public class Level8Intro : MonoBehaviour
         lyricsBackground.SetActive(false);
         canvas.SetActive(false);
         SceneManager.LoadScene(nextSceneIndex);
-    }
-
-    public void GenerateSquareRings() {
-        for (int i = 0; i < numRings; i++) {
-            GameObject newSquareRing = Instantiate(SquareRing);
-            newSquareRing.transform.SetParent(SquareRingsReference.transform);
-            newSquareRing.transform.localPosition = new Vector3(0, 0, i * ringOffset);
-            newSquareRing.transform.localRotation = Quaternion.Euler(0, 0, i * ringOffsetRotation);
-            SquareRing sr = newSquareRing.GetComponent<SquareRing>();
-            sr.H = ((float) i) / numRingsInRotation;
-        }
     }
 }
