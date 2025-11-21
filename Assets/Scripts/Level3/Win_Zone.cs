@@ -49,6 +49,8 @@ public class Win_Zone : MonoBehaviour
                 // SceneManager.LoadScene(15);
             } else if (sceneID == 39) {
                 nextSceneIndex = 20;
+            } else if (sceneID == 42) {
+                nextSceneIndex = 43;
             } else {
                 nextSceneIndex = 0;
                 // SceneManager.LoadScene(0);
