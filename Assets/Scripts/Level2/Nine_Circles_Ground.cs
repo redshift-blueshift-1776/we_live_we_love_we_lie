@@ -25,9 +25,10 @@ public class Nine_Circles_Ground : MonoBehaviour
     [SerializeField] public int gridSize;
     [SerializeField] public int squareSize;
 
-    [SerializeField] public Color white;
-    [SerializeField] public Color blue;
-    [SerializeField] public Color black;
+    [SerializeField] public Material white;
+    [SerializeField] public Material blue;
+    [SerializeField] public Material black;
+
 
     private int useEffect;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -111,23 +112,23 @@ public class Nine_Circles_Ground : MonoBehaviour
         }
 
         // Set all of group 1 to white, group 3 to blue, and groups 2 and 4 to black.
-        foreach (GameObject sq in group1) sq.GetComponent<Renderer>().material.color = white;
-        foreach (GameObject sq in group3) sq.GetComponent<Renderer>().material.color = blue;
-        foreach (GameObject sq in group2) sq.GetComponent<Renderer>().material.color = black;
-        foreach (GameObject sq in group4) sq.GetComponent<Renderer>().material.color = black;
+        foreach (GameObject sq in group1) sq.GetComponent<Renderer>().sharedMaterial = white;
+        foreach (GameObject sq in group3) sq.GetComponent<Renderer>().sharedMaterial = blue;
+        foreach (GameObject sq in group2) sq.GetComponent<Renderer>().sharedMaterial = black;
+        foreach (GameObject sq in group4) sq.GetComponent<Renderer>().sharedMaterial = black;
     }
 
     public void ChangeColors() {
         // Snapshot current colors
-        Color c1 = group1[0].GetComponent<Renderer>().material.color;
-        Color c2 = group2[0].GetComponent<Renderer>().material.color;
-        Color c3 = group3[0].GetComponent<Renderer>().material.color;
-        Color c4 = group4[0].GetComponent<Renderer>().material.color;
+        Material c1 = group1[0].GetComponent<Renderer>().sharedMaterial;
+        Material c2 = group2[0].GetComponent<Renderer>().sharedMaterial;
+        Material c3 = group3[0].GetComponent<Renderer>().sharedMaterial;
+        Material c4 = group4[0].GetComponent<Renderer>().sharedMaterial;
 
         // Rotate: 1←2, 2←3, 3←4, 4←1
-        foreach (GameObject sq in group1) sq.GetComponent<Renderer>().material.color = c2;
-        foreach (GameObject sq in group2) sq.GetComponent<Renderer>().material.color = c3;
-        foreach (GameObject sq in group3) sq.GetComponent<Renderer>().material.color = c4;
-        foreach (GameObject sq in group4) sq.GetComponent<Renderer>().material.color = c1;
+        foreach (GameObject sq in group1) sq.GetComponent<Renderer>().sharedMaterial = c2;
+        foreach (GameObject sq in group2) sq.GetComponent<Renderer>().sharedMaterial = c3;
+        foreach (GameObject sq in group3) sq.GetComponent<Renderer>().sharedMaterial = c4;
+        foreach (GameObject sq in group4) sq.GetComponent<Renderer>().sharedMaterial = c1;
     }
 }
