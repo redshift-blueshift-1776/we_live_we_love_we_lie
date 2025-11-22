@@ -1060,21 +1060,6 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             notes.AddRange(SonicBlasterPattern(480, 0f, 0f, 0f));
             notes.AddRange(SpectrePattern(512, 0f, 0f, 0f));
 
-            // this.notes = notes;
-
-            // notes = notes.Concat(SpectrePattern(544, 0f, 0f, 0f)).ToArray();
-
-            // int[] times = {
-            //     576 + 8,
-            //     582 + 8,
-            //     584 + 8,
-            //     588 + 8,
-            //     590 + 8,
-            //     596 + 8,
-            //     598 + 8,
-            //     600 + 8,
-            //     604 + 8,
-            // };
             int[] times = {
                 582,
                 584,
@@ -1087,7 +1072,6 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 606
             };
 
-            // notes = notes.Concat(randomScatter(times,3)).ToArray();
             solveMaze(times, maze);
 
             times = new int[] {
@@ -1138,26 +1122,6 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 times[i] = 1488 + 64 + 16 * i;
             }
             notes.AddRange(randomScatterYOffset(times, 1, 3));
-
-            // foreach (string n in notes) {
-            //     string[] parts = n.Split(',');
-            //     if (parts.Length < 3) continue;
-
-            //     if (float.TryParse(parts[0], out float duration)) {
-            //         float.TryParse(parts[1], out float x_pos);
-            //         float.TryParse(parts[2], out float y_pos);
-            //         // float.TryParse(parts[3], out float z_pos);
-            //         GameObject newNote = Instantiate(note);
-            //         newNote.transform.localPosition = player.transform.localPosition + new Vector3(3f * x_pos, 3f * y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
-            //         newNote.transform.localScale = new Vector3(3f, 3f, 1f);
-            //         Note newNoteScript = newNote.GetComponent<Note>();
-            //         newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
-            //         newNoteScript.duration = 16f * (float) secondsPerBeat;
-            //         newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
-            //         // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
-            //         newNoteScript.realNote = (duration > 0);
-            //     }
-            // }
         }
         madeNotes = true;
     }
