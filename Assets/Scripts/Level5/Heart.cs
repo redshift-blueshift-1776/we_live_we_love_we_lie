@@ -25,7 +25,7 @@ public class Heart : MonoBehaviour
     private Vector3 originalPosition;
     private Quaternion originalRotation;
 
-    public int nextSceneIndex = 7;
+    public int nextSceneIndex = 42;
     void Start()
     {
         collected = false;
@@ -237,7 +237,28 @@ public class Heart : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(1f);
         Time.timeScale = 1f;
-        sceneChanger.LoadSceneByNumber(nextSceneIndex);
+
+
+        GameObject universalManagerObject = GameObject.Find("Universal_Manager");
+        if (universalManagerObject != null)
+        {
+            Universal_Manager um = universalManagerObject.GetComponent<Universal_Manager>();
+            um.beatStoryModeLevels[4] = true;
+            um.unlockedHard[4] = true;
+            PlayerPrefs.SetInt("beatStoryModeLevels5", 1);
+            PlayerPrefs.SetInt("unlockedHard5", 1);
+        }
+
+        GameObject storyModeObject = GameObject.Find("StoryMode");
+
+        if (storyModeObject != null)
+        {
+            SceneManager.LoadScene("Open Exploration Before Level 6");
+        }
+        else
+        {
+            SceneManager.LoadScene("Menu");
+        }
 
         yield return null;
     }

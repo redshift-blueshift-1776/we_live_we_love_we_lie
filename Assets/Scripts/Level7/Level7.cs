@@ -496,7 +496,7 @@ public class Level7 : MonoBehaviour
 
             if (storyModeObject != null)
             {
-                SceneManager.LoadScene("SecondWeLiveWeLoveWeLie");
+                SceneManager.LoadScene("Open Exploration Before Level 8");
             }
             else
             {
