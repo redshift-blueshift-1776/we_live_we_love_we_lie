@@ -41,6 +41,10 @@ public class AchievementsListUI : MonoBehaviour
         AddHeader("Level 4 Achievements");
         AddAchievement("Get Betrayed", "", U.level4GetBetrayed);
 
+        AddHeader("Level 8 Achievements");
+        AddAchievement("Get 1500 Points", "", U.level8Get1500);
+        AddAchievement("Get 2000 Points", "", U.level8Get2000);
+
     }
 
     void AddHeader(string title)

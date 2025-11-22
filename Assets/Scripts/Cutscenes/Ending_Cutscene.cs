@@ -111,9 +111,13 @@ public class Ending_Cutscene : MonoBehaviour
 "And after eight tough challenges…",
 "I'm back…",
 "I'm finally back...",
+"To the place I can now call home...",
+"A place where I will find myself...",
+"Even if I have to walk an unknown path forward...",
 "It's been a journey…",
 "And even though I may have been the monster…",
 "It's good to be back in the game dev program.",
+"The place where I'll live, the place that I love, and the place I will lie."
 
         };
 
