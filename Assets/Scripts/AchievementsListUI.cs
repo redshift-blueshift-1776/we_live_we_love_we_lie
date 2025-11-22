@@ -69,4 +69,9 @@ public class AchievementsListUI : MonoBehaviour
         t.color = achieved ? Color.white : Color.red;
         d.text = description;
     }
+
+    public void ClearPlayerPrefs() {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+    }
 }
