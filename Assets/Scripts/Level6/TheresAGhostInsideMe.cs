@@ -195,7 +195,27 @@ public class TheresAGhostInsideMe : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene("Level6To7");
+
+        GameObject universalManagerObject = GameObject.Find("Universal_Manager");
+        if (universalManagerObject != null)
+        {
+            Universal_Manager um = universalManagerObject.GetComponent<Universal_Manager>();
+            um.beatStoryModeLevels[5] = true;
+            um.unlockedHard[5] = true;
+            PlayerPrefs.SetInt("beatStoryModeLevels6", 1);
+            PlayerPrefs.SetInt("unlockedHard6", 1);
+        }
+
+        GameObject storyModeObject = GameObject.Find("StoryMode");
+
+        if (storyModeObject != null)
+        {
+            SceneManager.LoadScene("Level6To7");
+        }
+        else
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     public void GameLose() {

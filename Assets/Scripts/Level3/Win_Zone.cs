@@ -80,8 +80,8 @@ public class Win_Zone : MonoBehaviour
             } else if (sceneID == 36) {
                 nextSceneIndex = 38;
                 // SceneManager.LoadScene(15);
-            } else if (sceneID == 39) {
-                nextSceneIndex = 20;
+            } else if (sceneID == 39) { //open exploration after level 4
+                nextSceneIndex = 48;
             } else if (sceneID == 42) {
                 nextSceneIndex = 43;
             } else if (sceneID == 45) {
