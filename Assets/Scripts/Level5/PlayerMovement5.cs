@@ -292,9 +292,8 @@ public class PlayerMovement5 : MonoBehaviour
         if (!userInput)
         {
             //apply friction to the velocity vector
-            Vector3 frictionVector = new Vector3(currentFrictionCoefficient, 1f, currentFrictionCoefficient);
-            velocity.x *= Mathf.Pow(currentFrictionCoefficient, Time.fixedDeltaTime * 240f);
-            velocity.z *= Mathf.Pow(currentFrictionCoefficient, Time.fixedDeltaTime * 240f);
+            velocity.x *= Mathf.Pow(currentFrictionCoefficient, Time.fixedDeltaTime * 300);
+            velocity.z *= Mathf.Pow(currentFrictionCoefficient, Time.fixedDeltaTime * 300);
         }
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
