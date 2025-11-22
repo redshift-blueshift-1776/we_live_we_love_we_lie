@@ -110,7 +110,7 @@ public class Universal_Manager : MonoBehaviour
         level8Get2000 = (PlayerPrefs.GetInt("level8Get2000", 0) == 1);
 
         beatStoryMode = (PlayerPrefs.GetInt("beatStoryMode", 0) == 1);
-        
+
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
         if (usePostProcessing == 0) {
             UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
@@ -129,6 +129,12 @@ public class Universal_Manager : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
             SceneManager.LoadScene(0);
+        }
+        if (Input.GetKey(KeyCode.L) && Input.GetKey(KeyCode.S)) {
+            SceneManager.LoadScene(8);
+        }
+        if (Input.GetKey(KeyCode.B) && Input.GetKey(KeyCode.S)) {
+            SceneManager.LoadScene(23);
         }
         if (debug) {
             unlockedHard = new bool[8] {
