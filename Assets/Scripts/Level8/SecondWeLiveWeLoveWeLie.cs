@@ -48,6 +48,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     public List<string> notes; // each: "beat,x,y"
 
+    public List<GameObject> noteblocks; // each: "beat,x,y"
+
     private double dspStartTime;
     private float secondsPerBeat;
     private int nextNoteIndex = 0;
@@ -79,14 +81,37 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         // secondsPerBeat = (float)beatManager.secondsPerBeat;
     }
 
+    public IEnumerator CallGenerateNotes() {
+        GenerateNotes();
+        yield return null;
+    }
+
+    public IEnumerator CallMakeRandomNotes(List<int> fallbackNoteTimes) {
+        notes.AddRange(randomScatterYOffset(fallbackNoteTimes.ToArray(), 0, -3));
+        yield return null;
+    }
+
     void Update() {
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
             SceneManager.LoadScene(0);
         }
         if (gameActive) {
             if (!madeNotes) {
-                GenerateNotes();
+                StartCoroutine(CallGenerateNotes());
             }
+            if (notes.Count < 200) {
+                // // Clear notes and replace it with random notes
+                // List<int> fallbackNoteTimes = new List<int>();
+                // for (int i = 64; i < 1808; i += 8) {
+                //     fallbackNoteTimes.Add(i);
+                // }
+                // StartCoroutine(CallMakeRandomNotes(fallbackNoteTimes));
+            }
+
+            // Get the final note in the list, check if the z position is near 17645.
+            // If not, clear notes and replace it with random notes
+
+            
 
             double currentDspTime = AudioSettings.dspTime;
             double songTime = currentDspTime - beatManager.StartDspTime;
@@ -151,10 +176,11 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     private void SpawnNote(float beatTime, float x_pos, float y_pos)
     {
-        GameObject newNote = Instantiate(note);
+        GameObject newNote = Instantiate(note, transform);
         newNote.transform.localPosition = player.transform.localPosition +
             new Vector3(3f * x_pos, 3f * y_pos, (Mathf.Abs(beatTime) - 64f) * 10f + 205f);
         newNote.transform.localScale = new Vector3(3f, 3f, 1f);
+        noteblocks.Add(newNote);
 
         Note newNoteScript = newNote.GetComponent<Note>();
         newNoteScript.gm = this;
