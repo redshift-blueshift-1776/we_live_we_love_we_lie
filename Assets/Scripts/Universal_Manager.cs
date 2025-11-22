@@ -90,7 +90,11 @@ public class Universal_Manager : MonoBehaviour
         beatStoryModeLevels = new bool[numLevels];
         beatHardLevels = new bool[numHardLevels];
         beatNonInfiniteLevels = new bool[numNonInfiniteLevels];
+    }
 
+    // Update is called once per frame
+    void Update()
+    {
         level1Layer20 = (PlayerPrefs.GetInt("level1Layer20", 0) == 1);
         level1Layer50 = (PlayerPrefs.GetInt("level1Layer50", 0) == 1);
         level1Layer100 = (PlayerPrefs.GetInt("level1Layer100", 0) == 1);
@@ -106,11 +110,7 @@ public class Universal_Manager : MonoBehaviour
         level8Get2000 = (PlayerPrefs.GetInt("level8Get2000", 0) == 1);
 
         beatStoryMode = (PlayerPrefs.GetInt("beatStoryMode", 0) == 1);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
         if (usePostProcessing == 0) {
             UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
