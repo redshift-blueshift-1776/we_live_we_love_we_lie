@@ -52,7 +52,7 @@ public class AchievementsListUI : MonoBehaviour
         var d = row.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
 
         icon.color = achieved ? Color.green : Color.gray;
-        icon.GetComponentInChildren<TMP_Text>().text = achieved ? "✓" : "✗";
+        icon.GetComponentInChildren<TMP_Text>().text = achieved ? "Y" : "N";
 
         t.text = title;
         t.color = achieved ? Color.white : Color.gray;
