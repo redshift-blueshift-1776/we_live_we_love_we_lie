@@ -75,7 +75,6 @@ public class PlayerMovement5 : MonoBehaviour
 
     private float yaw;
     private float pitch;
-
     private bool userInput;
     private bool isClimbing;
     private bool isJumping;
@@ -144,15 +143,18 @@ public class PlayerMovement5 : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            movePlayer();
-            rotateCamera();
             handleJump();
+            rotateCamera();
         }
     }
 
     private void FixedUpdate()
     {
         rotatePlayer();
+        if (!gameSettings.isInSettings())
+        {
+            movePlayer();
+        }
     }
 
     private void initializeSounds()
@@ -194,11 +196,11 @@ public class PlayerMovement5 : MonoBehaviour
             body.transform.rotation = Quaternion.Slerp(
                 body.transform.rotation,
                 targetRotation,
-                rotationSpeed * Time.deltaTime
+                rotationSpeed * Time.fixedDeltaTime
             );
 
             //purposefully lock the rotation forward
-            body.transform.up = Vector3.Slerp(body.transform.up, averageNormal, rotationSpeed * Time.deltaTime);
+            body.transform.up = Vector3.Slerp(body.transform.up, averageNormal, rotationSpeed * Time.fixedDeltaTime);
         }
     }
 
@@ -244,7 +246,7 @@ public class PlayerMovement5 : MonoBehaviour
             inputVelocity *= isRunning ? runningAcceleration : walkingAcceleration;
 
             //inputAcceleration should have no y component
-            velocity += inputVelocity * Time.deltaTime;
+            velocity += inputVelocity * Time.fixedDeltaTime;
         } else
         {
             userInput = false;
@@ -279,19 +281,20 @@ public class PlayerMovement5 : MonoBehaviour
             handleClimb();
         } else
         {
-            velocity.y = (groundContactPoints.Count == 0) ? (velocity.y + acceleration.y * Time.deltaTime) : 0;
+            velocity.y = (groundContactPoints.Count == 0) ? (velocity.y + acceleration.y * Time.fixedDeltaTime) : 0;
         }
         //handles movement on a ramp
         playerRigidBody.MovePosition(playerRigidBody.position + (
             groundContactPoints.Count > 0 && !isClimbing ? Vector3.ProjectOnPlane(velocity, body.transform.up) : velocity
-            ) * Time.deltaTime);
+            ) * Time.fixedDeltaTime);
 
         //only apply friction when the player stops giving input (WASD)
         if (!userInput)
         {
             //apply friction to the velocity vector
             Vector3 frictionVector = new Vector3(currentFrictionCoefficient, 1f, currentFrictionCoefficient);
-            velocity.Scale(frictionVector);
+            velocity.x *= Mathf.Pow(currentFrictionCoefficient, Time.fixedDeltaTime * 240f);
+            velocity.z *= Mathf.Pow(currentFrictionCoefficient, Time.fixedDeltaTime * 240f);
         }
         velocity.x = Mathf.Abs(velocity.x) >= minSpeed ? velocity.x : 0;
         velocity.z = Mathf.Abs(velocity.z) >= minSpeed ? velocity.z : 0;
@@ -450,6 +453,7 @@ public class PlayerMovement5 : MonoBehaviour
         {
             inputDirection += right;
         }
+
         inputDirection.Normalize();
         return inputDirection;
     }
