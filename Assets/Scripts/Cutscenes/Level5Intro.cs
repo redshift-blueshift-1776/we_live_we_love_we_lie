@@ -42,6 +42,8 @@ public class Level5Intro : MonoBehaviour
 
     [SerializeField] public int nextSceneIndex;
 
+    [SerializeField] private GameObject textBackground;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -114,11 +116,15 @@ public class Level5Intro : MonoBehaviour
         {
             activateCamera(7);
         }
-        //if (currentLine == 8)
-        //{
-        //    cam1.SetActive(true);
-        //    cam2.SetActive(false);
-        //}
+
+        if (lyrics[currentLine].Equals(""))
+        {
+            textBackground.SetActive(false);
+        }
+        else
+        {
+            textBackground.SetActive(true);
+        }
     }
 
     private void activateCamera(int index)

@@ -42,6 +42,8 @@ public class Level7Intro : MonoBehaviour
 
     [SerializeField] public int nextSceneIndex;
 
+    [SerializeField] private GameObject textBackground;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -110,6 +112,15 @@ public class Level7Intro : MonoBehaviour
         else if (currentLine == 9)
         {
             activateCamera(7);
+        }
+
+        if (lyrics[currentLine].Equals(""))
+        {
+            textBackground.SetActive(false);
+        }
+        else
+        {
+            textBackground.SetActive(true);
         }
     }
 
