@@ -41,7 +41,9 @@ public class Level3Intro : MonoBehaviour
     [SerializeField] private float holdDuration = 0.5f;
 
     [SerializeField] public int nextSceneIndex = 3;
-        
+
+    [SerializeField] private GameObject textBackground;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -85,6 +87,15 @@ public class Level3Intro : MonoBehaviour
         if (currentLine == 8) {
             cam1.SetActive(true);
             cam2.SetActive(false);
+        }
+
+        if (lyrics[currentLine].Equals(""))
+        {
+            textBackground.SetActive(false);
+        }
+        else
+        {
+            textBackground.SetActive(true);
         }
     }
 
