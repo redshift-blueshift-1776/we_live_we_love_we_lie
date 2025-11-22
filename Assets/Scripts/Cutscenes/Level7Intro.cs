@@ -172,7 +172,7 @@ public class Level7Intro : MonoBehaviour
         canvas.SetActive(false);
 
         if (nextSceneIndex >= 0)
-            SceneManager.LoadScene(nextSceneIndex);
+            SceneManager.LoadScene("Level 7");
 
         doLyricsCoroutine = null;
     }

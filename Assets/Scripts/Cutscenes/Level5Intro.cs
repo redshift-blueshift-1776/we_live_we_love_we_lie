@@ -178,7 +178,7 @@ public class Level5Intro : MonoBehaviour
         canvas.SetActive(false);
 
         if (nextSceneIndex >= 0)
-            SceneManager.LoadScene(nextSceneIndex);
+            SceneManager.LoadScene("Level 5 Supernerfed Joke");
 
         doLyricsCoroutine = null;
     }

@@ -16,7 +16,7 @@ public class Level6To7Cutscene : MonoBehaviour
 
     public void goToLevel7()
     {
-        SceneManager.LoadScene("Level 7");
+        SceneManager.LoadScene("Intro to Level 7");
     }
     
 }
