@@ -6,7 +6,7 @@ using System;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class Level5Intro : MonoBehaviour
+public class Level7Intro : MonoBehaviour
 {
     [Header("Cutscene Objects")]
     [SerializeField] private GameObject cameras;
@@ -54,19 +54,16 @@ public class Level5Intro : MonoBehaviour
         activateCamera(0);
 
         lyrics = new List<string> {
-            "Welcome to the FIFTH challenge made by Lan Atlas!",
-            "This is not the same as the ones before!",
+            "Welcome to the SEVENTH challenge!",
+            "Given the war, each contestant will fight 5 AI robots!",
             "",
-            "Your fitness skills will be put to the test...",
-            "You will have to jump from platform to platform...",
-            "There are ladders to climb!",  //5
-            "Ice to slip on!",
-            "Slime to bounce on!",
-            "Crumbling platforms too!",
-            "I spent a lot of money for these...",
-            "Finally, we have cassette blocks that alternate in and out!",
+            "You will be given only 3 minutes to find and kill them all, so don't run out of time!",
+            "Make sure you don't die...",
+            "", //5
             "",
-            "Reach the heart at the end to pass!",
+            "",
+            "",
+            "",
             "Good luck!"
         };
         secondsPerBeat = 60f / beatsPerMinute;
@@ -87,38 +84,35 @@ public class Level5Intro : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (currentLine == 4)
+
+        if (currentLine == 3)
         {
             activateCamera(1);
         }
-        else if (currentLine == 5)
+        else if (currentLine == 4)
         {
             activateCamera(2);
         }
-        else if (currentLine == 6)
+        else if (currentLine == 5)
         {
             activateCamera(3);
         }
-        else if (currentLine == 7)
+        else if (currentLine == 6)
         {
             activateCamera(4);
         }
-        else if (currentLine == 8)
+        else if (currentLine == 7)
         {
             activateCamera(5);
         }
-        else if (currentLine == 10)
+        else if (currentLine == 8)
         {
             activateCamera(6);
-        } else if (currentLine == 12)
+        }
+        else if (currentLine == 9)
         {
             activateCamera(7);
         }
-        //if (currentLine == 8)
-        //{
-        //    cam1.SetActive(true);
-        //    cam2.SetActive(false);
-        //}
     }
 
     private void activateCamera(int index)
@@ -275,6 +269,6 @@ public class Level5Intro : MonoBehaviour
         lyricsDisplay.text = "";
         lyricsBackground.SetActive(false);
         canvas.SetActive(false);
-        SceneManager.LoadScene("Level 5 Supernerfed Joke");
+        SceneManager.LoadScene("Level 7");
     }
 }
