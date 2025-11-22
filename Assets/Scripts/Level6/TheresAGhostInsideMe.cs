@@ -238,28 +238,25 @@ public class TheresAGhostInsideMe : MonoBehaviour
         SceneManager.LoadScene(9); // Change when we have the actual scene
     }
 
-    public void rotateBoard() {
-        Quaternion boardStart = currBoard.transform.localRotation;
+    public float rotationSpeed = 5f;
 
+    public void rotateBoard() {
         float targetXrot = 0f;
         float targetZrot = 0f;
-        if (rotateUp && !rotateDown) {
-            targetXrot = 10f;
-        }
-        if (rotateDown && !rotateUp) {
-            targetXrot = -10f;
-        }
-        if (rotateLeft && !rotateRight) {
-            targetZrot = 10f;
-        }
-        if (rotateRight && !rotateLeft) {
-            targetZrot = -10f;
-        }
+
+        if (rotateUp && !rotateDown) targetXrot = 10f;
+        if (rotateDown && !rotateUp) targetXrot = -10f;
+        if (rotateLeft && !rotateRight) targetZrot = 10f;
+        if (rotateRight && !rotateLeft) targetZrot = -10f;
 
         Quaternion targetRotation = Quaternion.Euler(targetXrot, 0, targetZrot);
 
-        currBoard.transform.localRotation = Quaternion.Slerp(boardStart, targetRotation, 0.01f);
+        currBoard.transform.localRotation =
+            Quaternion.Slerp(currBoard.transform.localRotation,
+                            targetRotation,
+                            rotationSpeed * Time.deltaTime);
     }
+
 
     public void startGameButton() {
         startCanvas.SetActive(false);
