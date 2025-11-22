@@ -47,10 +47,14 @@ public class GenerateWorld : MonoBehaviour
 
     public int phase = 0;
 
+    int useEffect;
+
     private Color spectreColor = new Color(127f / 255f, 224f / 255f, 255f / 255f);
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        useEffect = PlayerPrefs.GetInt("useVisualEffects", 0);
+
         gm = gameManager.GetComponent<SecondWeLiveWeLoveWeLie>();
         nextChangeTime = BeatManager.Instance.GetNextBeatTime();
         secondsPerBeat = 60.0 / 145.0 / 4.0;
@@ -58,9 +62,11 @@ public class GenerateWorld : MonoBehaviour
         phase = 0;
         doingStuff = false;
 
-        GenerateLevel1();
-        GenerateSquareRings();
-        GenerateAPlaceCalledHome();
+        if (useEffect != 0) {
+            GenerateLevel1();
+            GenerateSquareRings();
+            GenerateAPlaceCalledHome();
+        }
     }
 
     // Update is called once per frame
