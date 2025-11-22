@@ -20,7 +20,7 @@ public class Ending_Cutscene : MonoBehaviour
             um.beatStoryMode = true;
             PlayerPrefs.SetInt("beatStoryMode", 1);
             for (int i = 1; i <= 8; i++) {
-                PlayerPrefs.GetInt("unlockedEndless" + i, 1);
+                PlayerPrefs.SetInt("unlockedEndless" + i, 1);
             }
         } else {
             Debug.Log("No Universal_Manager");
