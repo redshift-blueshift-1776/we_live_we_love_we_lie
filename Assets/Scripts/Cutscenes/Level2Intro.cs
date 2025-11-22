@@ -9,8 +9,7 @@ using UnityEngine.SceneManagement;
 public class Level2Intro : MonoBehaviour
 {
     [Header("Cutscene Objects")]
-    [SerializeField] public GameObject cam1;
-    [SerializeField] public GameObject cam2;
+    [SerializeField] private GameObject cameras;
     [SerializeField] public GameObject transition;
 
     [Header("Cutscene Text")]
@@ -46,8 +45,11 @@ public class Level2Intro : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        cam1.SetActive(true);
-        cam2.SetActive(false);
+        foreach (Transform child in cameras.transform)
+        {
+            cameraList.Add(child.gameObject);
+        }
+        activateCamera(0);
 
         lyrics = new List<string> {
             "Welcome back to Spectre Games!",
@@ -55,10 +57,16 @@ public class Level2Intro : MonoBehaviour
             "",
             "That first challenge eliminated a lot of you...",
             "So for this challenge, we have something very different...",
-            "You will be driving these electric scooters around the city...",
+            "You will be driving these electric scooters around the city...",   //5
             "And your goal is to collect the six parts of the painting scattered around the city!",
             "These painting segments glow very brightly, but there is something you should know about the scooters...",
-            "They don't always work exactly the way you want them to...",
+            "They don't always work exactly the way you want them to...",   //8
+            "", //9
+            "",
+            "", //11
+            "",
+            "", //13
+            "", 
             "Good luck, competitors... you're going to need it..."
         };
         secondsPerBeat = 60f / beatsPerMinute;
@@ -73,19 +81,45 @@ public class Level2Intro : MonoBehaviour
         showLyrics();
     }
 
+    List<GameObject> cameraList = new List<GameObject>();
+
     // Update is called once per frame
     void Update()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (currentLine == 5) {
-            cam1.SetActive(false);
-            cam2.SetActive(true);
+        switch (currentLine)
+        {
+            case 5:
+                activateCamera(1);
+                break;
+            case 8:
+                activateCamera(0);
+                break;
+            case 9:
+                activateCamera(2);
+                break;
+            case 11:
+                activateCamera(3);
+                break;
+            case 13:
+                activateCamera(4);
+                break;
+            case 15:
+                activateCamera(0);
+                break;
+            default:
+                break;
         }
-        if (currentLine == 8) {
-            cam1.SetActive(true);
-            cam2.SetActive(false);
+    }
+
+    private void activateCamera(int index)
+    {
+        for (int i = 0; i < cameraList.Count; i++)
+        {
+            cameraList[i].SetActive(false);
         }
+        cameraList[index].SetActive(true);
     }
 
     public void OnSkipPressed() {

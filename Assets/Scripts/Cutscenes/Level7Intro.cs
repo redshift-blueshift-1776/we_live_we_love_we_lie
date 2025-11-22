@@ -49,8 +49,6 @@ public class Level7Intro : MonoBehaviour
         {
             cameraList.Add(child.gameObject);
         }
-        Debug.Log(cameraList);
-        Debug.Log(cameraList.Count);
         activateCamera(0);
 
         lyrics = new List<string> {
