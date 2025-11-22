@@ -20,6 +20,7 @@ public class AchievementsListUI : MonoBehaviour
                 U.beatStoryModeLevels[i]
             );
         }
+        AddAchievement("Beat Story Mode", "Beat Story Mode in One Run", U.beatStoryMode);
 
         // AddHeader("Speedrun Achievements");
         // AddAchievement("Level 1 Speedrun", "Beat Level 1 within the time limit.", U.level1Speedrun);
@@ -33,6 +34,12 @@ public class AchievementsListUI : MonoBehaviour
         AddHeader("Level 2 Achievements");
         AddAchievement("Reach Iteration 5", "", U.level2iteration5);
         AddAchievement("Reach Iteration 10", "", U.level2iteration10);
+
+        AddHeader("Level 3 Achievements");
+        AddAchievement("Reach Iteration 5", "", U.level3iteration5);
+
+        AddHeader("Level 4 Achievements");
+        AddAchievement("Get Betrayed", "", U.level4GetBetrayed);
 
     }
 
@@ -51,11 +58,11 @@ public class AchievementsListUI : MonoBehaviour
         var t = row.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         var d = row.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
 
-        icon.color = achieved ? Color.green : Color.gray;
+        icon.color = achieved ? Color.green : Color.red;
         icon.GetComponentInChildren<TMP_Text>().text = achieved ? "Y" : "N";
 
         t.text = title;
-        t.color = achieved ? Color.white : Color.gray;
+        t.color = achieved ? Color.white : Color.red;
         d.text = description;
     }
 }
