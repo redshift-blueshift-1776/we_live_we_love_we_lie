@@ -99,14 +99,14 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             if (!madeNotes) {
                 StartCoroutine(CallGenerateNotes());
             }
-            if (notes.Count < 200) {
-                // // Clear notes and replace it with random notes
-                // List<int> fallbackNoteTimes = new List<int>();
-                // for (int i = 64; i < 1808; i += 8) {
-                //     fallbackNoteTimes.Add(i);
-                // }
-                // StartCoroutine(CallMakeRandomNotes(fallbackNoteTimes));
-            }
+            // if (notes.Count < 200) {
+            //     // Clear notes and replace it with random notes
+            //     List<int> fallbackNoteTimes = new List<int>();
+            //     for (int i = 64; i < 1808; i += 8) {
+            //         fallbackNoteTimes.Add(i);
+            //     }
+            //     StartCoroutine(CallMakeRandomNotes(fallbackNoteTimes));
+            // }
 
             // Get the final note in the list, check if the z position is near 17645.
             // If not, clear notes and replace it with random notes
@@ -127,30 +127,53 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     nextNoteIndex++;
                     continue;
                 }
-
-                if (float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float beatTime))
+                if (float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float beatTime) &&
+                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float x_pos) &&
+                    float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float y_pos))
                 {
-                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float x_pos);
-                    float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float y_pos);
+                    float z_pos = 0f;
+                    if (parts.Length > 3)
+                        float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out z_pos);
 
-                    double noteTime = Mathf.Abs(beatTime) * secondsPerBeat; // when the note should hit
+                    double noteTime = beatTime * secondsPerBeat;
 
-                    // Spawn slightly before its play time
                     if (noteTime - songTime <= SPAWN_LEAD_TIME)
                     {
-                        SpawnNote(beatTime, x_pos, y_pos);
+                        SpawnNote(beatTime, x_pos, y_pos, z_pos);
                         nextNoteIndex++;
                     }
-                    else
-                    {
-                        // Not yet time to spawn this note
+                    else {
                         break;
                     }
                 }
-                else
-                {
+                else {
                     nextNoteIndex++;
                 }
+
+
+                // if (float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float beatTime))
+                // {
+                //     float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float x_pos);
+                //     float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float y_pos);
+
+                //     double noteTime = Mathf.Abs(beatTime) * secondsPerBeat; // when the note should hit
+
+                //     // Spawn slightly before its play time
+                //     if (noteTime - songTime <= SPAWN_LEAD_TIME)
+                //     {
+                //         SpawnNote(beatTime, x_pos, y_pos);
+                //         nextNoteIndex++;
+                //     }
+                //     else
+                //     {
+                //         // Not yet time to spawn this note
+                //         break;
+                //     }
+                // }
+                // else
+                // {
+                //     nextNoteIndex++;
+                // }
             }
 
             if (timer / (float) secondsPerBeat > 550f && !didBriefcases) {
@@ -174,7 +197,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         }
     }
 
-    private void SpawnNote(float beatTime, float x_pos, float y_pos)
+    private void SpawnNote(float beatTime, float x_pos, float y_pos, float z_pos)
     {
         GameObject newNote = Instantiate(note, transform);
         newNote.transform.localPosition = player.transform.localPosition +
