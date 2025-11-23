@@ -56,7 +56,7 @@ public class Level5Intro : MonoBehaviour
         activateCamera(0);
 
         lyrics = new List<string> {
-            "Welcome to the FIFTH challenge made by Lan Atlas!",
+            "Welcome to the FIFTH challenge made by Lan Attis!",
             "This is not the same as the ones before!",
             "",
             "Your fitness skills will be put to the test...",
