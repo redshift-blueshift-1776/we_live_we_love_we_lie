@@ -59,6 +59,9 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     public bool madeNotes;
     public bool didBriefcases;
+
+    [SerializeField] public bool customLevel;
+    [SerializeField] public bool levelEditor;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -78,6 +81,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
         beatManager = BeatManager.Instance;
         dspStartTime = beatManager.StartDspTime;
+
+        Debug.Log(SPAWN_LEAD_TIME);
         // secondsPerBeat = (float)beatManager.secondsPerBeat;
     }
 
@@ -137,14 +142,16 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
                     double noteTime = beatTime * secondsPerBeat;
 
-                    if (noteTime - songTime <= SPAWN_LEAD_TIME)
-                    {
-                        SpawnNote(beatTime, x_pos, y_pos, z_pos);
-                        nextNoteIndex++;
-                    }
-                    else {
-                        break;
-                    }
+                    SpawnNote(beatTime, x_pos, y_pos, z_pos);
+                    nextNoteIndex++;
+
+                    // if (noteTime - songTime <= SPAWN_LEAD_TIME)
+                    // {
+                        
+                    // }
+                    // else {
+                    //     break;
+                    // }
                 }
                 else {
                     nextNoteIndex++;
