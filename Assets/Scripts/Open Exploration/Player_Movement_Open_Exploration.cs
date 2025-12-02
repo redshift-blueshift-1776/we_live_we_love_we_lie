@@ -50,6 +50,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     [SerializeField] private GameObject crosshair;
     [SerializeField] private GameObject bigCrosshair;
 
+    [SerializeField] public GameObject bodySlamSound;
+
 
     private void Start()
     {
@@ -66,6 +68,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         crosshair.SetActive(true);
         bigCrosshair.SetActive(false);
         mainCamera.SetActive(true);
+        bodySlamSound.SetActive(true);
+        // Application.targetFrameRate = 6;
     }
 
     void Update()
@@ -155,6 +159,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     }
 
     private Door currentDoor = null;
+    private Open_Exploration_Collectible currentCollectible = null;
 
     void interactRaycast()
     {
@@ -162,13 +167,14 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         Vector3 origin = Camera.main.transform.position;
         Vector3 dir = Camera.main.transform.forward;
         Door newDoor = null;
+        Open_Exploration_Collectible collectible = null;
 
         float radius = 0.05f;
         if (Physics.SphereCast(origin, radius, dir, out hit, interactDistance))
         {
             newDoor = hit.collider.GetComponent<Door>();
+            collectible = hit.collider.GetComponent<Open_Exploration_Collectible>();
         }
-
 
         // Only update state if changed
         if (newDoor != currentDoor)
@@ -199,6 +205,36 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 currentDoor.Interact(); // or InteractPull()
             }
         }
+
+        // Only update state if changed
+        if (collectible != currentCollectible)
+        {
+            currentCollectible = collectible;
+
+            if (currentCollectible != null)
+            {
+                crosshair.SetActive(false);
+                bigCrosshair.SetActive(true);
+            }
+            else
+            {
+                crosshair.SetActive(true);
+                bigCrosshair.SetActive(false);
+            }
+        }
+
+        // Only interact if we currently have a valid target
+        if (currentCollectible != null)
+        {
+            if (Input.GetKeyDown(pushKey))
+            {
+                currentCollectible.Interact(); // or InteractPush()
+            }
+            else if (Input.GetKeyDown(pullKey))
+            {
+                currentCollectible.Interact(); // or InteractPull()
+            }
+        }
     }
 
     // void OnTriggerEnter(Collider hit) {
@@ -219,5 +255,13 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     public void SetMouseSensitivity(float sensitivity) {
         mouseSensitivity = sensitivity;
         PlayerPrefs.SetFloat("MouseSensitivity", sensitivity); // Save to PlayerPrefs
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit) {
+        if (hit.rigidbody != null) {
+            Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 1, hit.moveDirection.z);
+            hit.rigidbody.AddForce(horizontalDir * 10000000 * Time.fixedDeltaTime);
+            bodySlamSound.GetComponent<AudioSource>().Play();
+        }
     }
 }

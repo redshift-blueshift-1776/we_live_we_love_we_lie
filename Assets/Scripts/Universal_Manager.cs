@@ -16,6 +16,8 @@ public class Universal_Manager : MonoBehaviour
     [SerializeField] public int numHardLevels;
     [SerializeField] public int numNonInfiniteLevels;
 
+    [SerializeField] public int numOpenExplorationCollectibles;
+
     [Header("Unlocked Levels")]
     public bool[] unlockedEasy;
     public bool[] unlockedHard;
@@ -65,6 +67,9 @@ public class Universal_Manager : MonoBehaviour
     [Header("For Final Elimination")]
     public bool justBeatLevel8;
 
+    [Header("Open Exploration")]
+    public bool[] openExplorationCollectibles;
+
     public static Universal_Manager Instance { get; private set; }
 
     private void Awake()
@@ -90,6 +95,7 @@ public class Universal_Manager : MonoBehaviour
         beatStoryModeLevels = new bool[numLevels];
         beatHardLevels = new bool[numHardLevels];
         beatNonInfiniteLevels = new bool[numNonInfiniteLevels];
+        openExplorationCollectibles = new bool[numOpenExplorationCollectibles];
     }
 
     // Update is called once per frame
@@ -148,6 +154,9 @@ public class Universal_Manager : MonoBehaviour
                 beatStoryModeLevels[i - 1] = (PlayerPrefs.GetInt("beatStoryModeLevels" + i, 0) == 1);
                 unlockedHard[i - 1] = (PlayerPrefs.GetInt("unlockedHard" + i, 0) == 1);
                 unlockedEndless[i - 1] = (PlayerPrefs.GetInt("unlockedEndless" + i, 0) == 1);
+            }
+            for (int i = 0; i < numOpenExplorationCollectibles; i++) {
+                openExplorationCollectibles[i] = (PlayerPrefs.GetInt("openExplorationCollectibles" + i, 0) == 1);
             }
         }
     }
