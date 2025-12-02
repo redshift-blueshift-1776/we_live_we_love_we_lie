@@ -109,6 +109,8 @@ public class Ending_Cutscene : MonoBehaviour
 "But at the end of the day, the thing I wanted the most, more than anything…",
 "Was to get back into the game dev program…",
 "And after eight tough challenges…",
+"Stacking blocks, driving scooters, memorizing paths, gaslighting...",
+"Playing my old game, solving puzzles, shooting robots, and hitting notes...",
 "I'm back…",
 "I'm finally back...",
 "To the place I can now call home...",
