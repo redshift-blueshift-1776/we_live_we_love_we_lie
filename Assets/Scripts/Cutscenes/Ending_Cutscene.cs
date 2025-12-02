@@ -33,7 +33,7 @@ public class Ending_Cutscene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        flyAround.transform.RotateAround(new Vector3(0, 0, 3600), Vector3.up, 2f * Time.deltaTime);
+        flyAround.transform.RotateAround(new Vector3(0, 0, 4200), Vector3.up, 2f * Time.deltaTime);
     }
 
     public IEnumerator DoLine(string line) {
@@ -72,53 +72,55 @@ public class Ending_Cutscene : MonoBehaviour
 
     public IEnumerator DoCredits(){
         string[] lines = {
-            "I truly remember those days…",
-"Back when I was in the game dev program…",
-"It was the truly best thing in the world…",
-"We made all kinds of games…",
-"We made great games…",
-"We made fun games…",
-"We even made strange games…",
-"Everything was going well…",
-"Until disaster struck…",
+            "Those were the best days...",
+"Back when I was in the game dev program...",
+"It was the truly best thing in the world...",
+"We made all kinds of games...",
+"We made great games...",
+"We made fun games...",
+"We even made strange games...",
+"Everything was going well...",
+"Until disaster struck...",
 "A game jam came, and my game, Love Sees Differences, was hated by everyone.",
 "They called me a monster for making that.",
-"Donald James had no choice…",
+"Donald James had no choice...",
 "He had to kick me out of the game dev program.",
-"And I thought that was the end of my game dev journey.",
+"And I thought that would be the end of my game dev journey.",
 "That all the great times would end there...",
 "It was very painful getting kicked out.",
-"I cried, and cried.",
+"I cried and cried.",
 "Allen comforted me, but it still hurt...",
-"I knew that I was missing something…",
-"Something important to me…",
-"Something I lost on a boat trip…",
+"I knew that I was missing something...",
+"Something important to me...",
+"Something I lost on a boat trip.",
 "So I went to Atlantis to find the root of my inspiration.",
 "A toy, given to me by a game dev that I idolize.",
 "A toy, given to me by Lan.",
 "A toy, given to me when I was young.",
 "It was my inspiration, and I had to get it back.",
 "And once I did, my game dev skill was back to my prime.",
-"I remade Love Sees Differences into the game it is today.",
-"And the fans all loved it.",
+"I remade Love Sees Differences into the game it is today...",
+"And all of the fans loved it.",
 "They never saw a game as bold.",
 "Lan Attis even ranked it as the number one Pen You Never City game...",
 "Even above other great games like BTD7 and Luca.",
 "My confidence was back with the remastered game.",
-"I did another game jam with Allen, and we did well.",
-"But at the end of the day, the thing I wanted the most, more than anything…",
-"Was to get back into the game dev program…",
-"And after eight tough challenges…",
+"I did another game jam with Allen and Lana, and we did well.",
+"But at the end of the day, the thing I wanted the most, more than anything...",
+"Was to get back into the game dev program...",
+"I joined Donald James's game show...",
+"It was the only way back in...",
+"And after eight tough challenges...",
 "Stacking blocks, driving scooters, memorizing paths, gaslighting...",
 "Playing my old game, solving puzzles, shooting robots, and hitting notes...",
-"I'm back…",
+"I'm back...",
 "I'm finally back...",
 "To the place I can now call home...",
 "A place where I will find myself...",
 "Even if I have to walk an unknown path forward...",
-"It's been a journey…",
-"And even though I may have been the monster…",
-"It's good to be back in the game dev program.",
+"It's been a journey...",
+"And even though I may have been the monster...",
+"It's good to be back in the game dev program...",
 "The place where I'll live, the place that I love, and the place I will lie."
 
         };
@@ -128,6 +130,10 @@ public class Ending_Cutscene : MonoBehaviour
             yield return StartCoroutine(DoLine(line));
         }
         
+        SceneManager.LoadScene(17);
+    }
+
+    public void OnSkipPressed() {
         SceneManager.LoadScene(17);
     }
 }
