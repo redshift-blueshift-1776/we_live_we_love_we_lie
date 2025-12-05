@@ -259,8 +259,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     void OnControllerColliderHit(ControllerColliderHit hit) {
         if (hit.rigidbody != null) {
-            Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 1, hit.moveDirection.z);
-            hit.rigidbody.AddForce(horizontalDir * 10000000 * Time.fixedDeltaTime);
+            Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.1f, hit.moveDirection.z);
+            hit.rigidbody.AddForce(horizontalDir * (Input.GetKey(runKey) ? 300000 : 30000) * Time.fixedDeltaTime);
             bodySlamSound.GetComponent<AudioSource>().Play();
         }
     }
