@@ -62,6 +62,9 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     [SerializeField] public bool customLevel;
     [SerializeField] public bool levelEditor;
+
+    public GameObject simpleCustomMapMaker;
+    public SimpleCustomMapMaker scmm;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -84,6 +87,10 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
         Debug.Log(SPAWN_LEAD_TIME);
         // secondsPerBeat = (float)beatManager.secondsPerBeat;
+
+        if (levelEditor) {
+            scmm = simpleCustomMapMaker.GetComponent<SimpleCustomMapMaker>();
+        }
     }
 
     public IEnumerator CallGenerateNotes() {
@@ -101,106 +108,82 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             SceneManager.LoadScene(0);
         }
         if (gameActive) {
-            if (!madeNotes) {
-                StartCoroutine(CallGenerateNotes());
-            }
-            // if (notes.Count < 200) {
-            //     // Clear notes and replace it with random notes
-            //     List<int> fallbackNoteTimes = new List<int>();
-            //     for (int i = 64; i < 1808; i += 8) {
-            //         fallbackNoteTimes.Add(i);
-            //     }
-            //     StartCoroutine(CallMakeRandomNotes(fallbackNoteTimes));
-            // }
+            if (levelEditor) {
+                double currentDspTime = AudioSettings.dspTime;
+                double songTime = currentDspTime - beatManager.StartDspTime;
+                timer += Time.deltaTime;
 
-            // Get the final note in the list, check if the z position is near 17645.
-            // If not, clear notes and replace it with random notes
+                if (timer >= 192f) {
+                    gameActive = false;
+                    if (score > scoreThreshold) {
+                        Win();
+                    } else {
+                        Fail();
+                    }
+                }
+                scoreGame.text = "Score: " + score;
 
-            
+                if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.R)) {
+                    scmm.StopRecording();
+                }
+            } else {
+                if (!madeNotes) {
+                    StartCoroutine(CallGenerateNotes());
+                }
 
-            double currentDspTime = AudioSettings.dspTime;
-            double songTime = currentDspTime - beatManager.StartDspTime;
-            timer += Time.deltaTime;
+                // Get the final note in the list, check if the z position is near 17645.
+                // If not, clear notes and replace it with random notes
 
-            // The DSP-based note spawning code goes here
-            while (nextNoteIndex < notes.Count)
-            {
-                string n = notes[nextNoteIndex];
-                string[] parts = n.Split(',');
-                if (parts.Length < 3)
+                double currentDspTime = AudioSettings.dspTime;
+                double songTime = currentDspTime - beatManager.StartDspTime;
+                timer += Time.deltaTime;
+
+                // The DSP-based note spawning code goes here
+                while (nextNoteIndex < notes.Count)
                 {
-                    nextNoteIndex++;
-                    continue;
-                }
-                if (float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float beatTime) &&
-                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float x_pos) &&
-                    float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float y_pos))
-                {
-                    float z_pos = 0f;
-                    if (parts.Length > 3)
-                        float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out z_pos);
+                    string n = notes[nextNoteIndex];
+                    string[] parts = n.Split(',');
+                    if (parts.Length < 3)
+                    {
+                        nextNoteIndex++;
+                        continue;
+                    }
+                    if (float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float beatTime) &&
+                        float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float x_pos) &&
+                        float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float y_pos))
+                    {
+                        float z_pos = 0f;
+                        if (parts.Length > 3)
+                            float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out z_pos);
 
-                    double noteTime = beatTime * secondsPerBeat;
+                        double noteTime = beatTime * secondsPerBeat;
 
-                    SpawnNote(beatTime, x_pos, y_pos, z_pos);
-                    nextNoteIndex++;
-
-                    // if (noteTime - songTime <= SPAWN_LEAD_TIME)
-                    // {
-                        
-                    // }
-                    // else {
-                    //     break;
-                    // }
-                }
-                else {
-                    nextNoteIndex++;
+                        SpawnNote(beatTime, x_pos, y_pos, z_pos);
+                        nextNoteIndex++;
+                    }
+                    else {
+                        nextNoteIndex++;
+                    }
                 }
 
+                if (timer / (float) secondsPerBeat > 550f && !didBriefcases) {
+                    Debug.Log(timer / (float) secondsPerBeat);
+                    DoBriefcases(new int[] { 576+64, 576+64+8, 576+64+16 }, briefcases, briefcasePivots);
+                    // DoBriefcases(new int[] { 64, 64+8, 64+16 }, briefcases, briefcasePivots);
+                    didBriefcases = true;
+                }
 
-                // if (float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float beatTime))
-                // {
-                //     float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float x_pos);
-                //     float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float y_pos);
 
-                //     double noteTime = Mathf.Abs(beatTime) * secondsPerBeat; // when the note should hit
-
-                //     // Spawn slightly before its play time
-                //     if (noteTime - songTime <= SPAWN_LEAD_TIME)
-                //     {
-                //         SpawnNote(beatTime, x_pos, y_pos);
-                //         nextNoteIndex++;
-                //     }
-                //     else
-                //     {
-                //         // Not yet time to spawn this note
-                //         break;
-                //     }
-                // }
-                // else
-                // {
-                //     nextNoteIndex++;
-                // }
+                if (timer >= 192f) {
+                    gameActive = false;
+                    if (score > scoreThreshold) {
+                        Win();
+                    } else {
+                        Fail();
+                    }
+                }
+                scoreGame.text = "Score: " + score;
             }
-
-            if (timer / (float) secondsPerBeat > 550f && !didBriefcases) {
-                Debug.Log(timer / (float) secondsPerBeat);
-                DoBriefcases(new int[] { 576+64, 576+64+8, 576+64+16 }, briefcases, briefcasePivots);
-                // DoBriefcases(new int[] { 64, 64+8, 64+16 }, briefcases, briefcasePivots);
-                didBriefcases = true;
-            }
-
-
-            if (timer >= 192f) {
-                gameActive = false;
-                if (score > scoreThreshold) {
-                    Win();
-                } else {
-                    Fail();
-                }
-            }
-
-            scoreGame.text = "Score: " + score;
         }
     }
 
@@ -1007,26 +990,6 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 times[i] = 1488 + 64 + 8 * i;
             }
             notes.AddRange(randomScatterYOffset(times, 2, 3));
-
-            // foreach (string n in notes) {
-            //     string[] parts = n.Split(',');
-            //     if (parts.Length < 3) continue;
-
-            //     if (float.TryParse(parts[0], out float duration)) {
-            //         float.TryParse(parts[1], out float x_pos);
-            //         float.TryParse(parts[2], out float y_pos);
-            //         // float.TryParse(parts[3], out float z_pos);
-            //         GameObject newNote = Instantiate(note);
-            //         newNote.transform.localPosition = player.transform.localPosition + new Vector3(x_pos, y_pos, (Mathf.Abs(duration) - 64f) * 10f + 205f);
-            //         newNote.transform.localScale = new Vector3(1f, 1f, 1f);
-            //         Note newNoteScript = newNote.GetComponent<Note>();
-            //         newNoteScript.gm = gameObject.GetComponent<SecondWeLiveWeLoveWeLie>();
-            //         newNoteScript.duration = 16f * (float) secondsPerBeat;
-            //         newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat) - 8f * (float) secondsPerBeat;
-            //         // newNoteScript.delay = Mathf.Abs(duration * (float) secondsPerBeat);
-            //         newNoteScript.realNote = (duration > 0);
-            //     }
-            // }
         } else {
             this.notes = new List<string> {
             "64,2,0",
@@ -1191,11 +1154,18 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         gameAudio.SetActive(true);
         gameActive = true;
         timer = 0f;
+        if (levelEditor) {
+            scmm.StartRecording();
+        }
     }
 
     public void Fail() {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        if (levelEditor) {
+            scmm.StopRecording();
+            SceneManager.LoadScene(0);
+        }
         Scene currentScene = SceneManager.GetActiveScene();
         PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
         gameActive = false;

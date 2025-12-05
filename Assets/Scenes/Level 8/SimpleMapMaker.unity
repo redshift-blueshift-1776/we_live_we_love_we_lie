@@ -746,6 +746,56 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 393080563}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &471416574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 471416576}
+  - component: {fileID: 471416575}
+  m_Layer: 0
+  m_Name: Custom Map Maker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &471416575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 471416574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78dbe03082a4d4776819b19dcdc07e1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tapTimes: 
+  startTime: 0
+  recording: 0
+  doneRecording: 0
+  bpm: 120
+  scatterAmount: 2
+--- !u!4 &471416576
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 471416574}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &489397351
 GameObject:
   m_ObjectHideFlags: 0
@@ -1063,6 +1113,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &916656353 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3749184155722117987, guid: 7dac02d696f41430fa9aa6477309ec98, type: 3}
+  m_PrefabInstance: {fileID: 1133858495}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1019762752
 GameObject:
   m_ObjectHideFlags: 0
@@ -1228,7 +1283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3968fb125b94f5887a4c72957ef088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 916656353}
   note: {fileID: 4041991552332027269, guid: 140d008b851434b9bb5cbf87bb6f3d9c, type: 3}
   hard: 0
   debug: 0
@@ -1245,8 +1300,8 @@ MonoBehaviour:
   startCanvas: {fileID: 1353777964}
   gameCanvas: {fileID: 1126752312}
   scoreGame: {fileID: 1551723488}
-  loadingAudio: {fileID: 0}
-  gameAudio: {fileID: 0}
+  loadingAudio: {fileID: 111828205}
+  gameAudio: {fileID: 643270146}
   timer: 0
   score: 0
   beatManager: {fileID: 0}
@@ -1255,7 +1310,10 @@ MonoBehaviour:
   noteblocks: []
   madeNotes: 0
   didBriefcases: 0
-  customLevel: 0
+  customLevel: 1
+  levelEditor: 1
+  simpleCustomMapMaker: {fileID: 471416574}
+  scmm: {fileID: 0}
 --- !u!4 &1080848858
 Transform:
   m_ObjectHideFlags: 0
@@ -1543,7 +1601,7 @@ PrefabInstance:
     - target: {fileID: 8614412967131746421, guid: 7dac02d696f41430fa9aa6477309ec98, type: 3}
       propertyPath: gameManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1080848856}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2396,5 +2454,6 @@ SceneRoots:
   - {fileID: 1133858495}
   - {fileID: 1353777968}
   - {fileID: 1080848858}
+  - {fileID: 471416576}
   - {fileID: 1136532442}
   - {fileID: 1126752316}
