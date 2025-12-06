@@ -776,13 +776,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tapBeats: 
-  startTime: 0
   recording: 0
   doneRecording: 0
   bpm: 120
   scatterAmount: 2
-  beatManager: {fileID: 0}
-  dspStartTime: -1
+  songToPlay: {fileID: 0}
 --- !u!4 &471416576
 Transform:
   m_ObjectHideFlags: 0
@@ -1002,7 +1000,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 643270148}
   secondsPerBeat: 0
-  tempo: 580
+  tempo: 512
 --- !u!82 &643270148
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1014,7 +1012,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: cefe10f55303f485eaf5cb4901e773f8, type: 3}
+  m_Resource: {fileID: 8300000, guid: 08546fdfe33b340959c803dacce21d3d, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1289,7 +1287,7 @@ MonoBehaviour:
   player: {fileID: 916656353}
   note: {fileID: 4041991552332027269, guid: 140d008b851434b9bb5cbf87bb6f3d9c, type: 3}
   hard: 0
-  debug: 0
+  debug: 1
   maze: {fileID: 0}
   briefcases:
   - {fileID: 0}
@@ -1317,7 +1315,7 @@ MonoBehaviour:
   levelEditor: 0
   simpleCustomMapMaker: {fileID: 471416574}
   scmm: {fileID: 0}
-  customMapPath: SimpleMap_20251205_232444.json
+  customMapPath: SimpleMap_20251206_004132.json
 --- !u!4 &1080848858
 Transform:
   m_ObjectHideFlags: 0

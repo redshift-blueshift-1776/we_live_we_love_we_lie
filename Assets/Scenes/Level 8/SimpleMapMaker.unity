@@ -776,13 +776,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tapBeats: 
-  startTime: 0
   recording: 0
   doneRecording: 0
   bpm: 120
   scatterAmount: 2
-  beatManager: {fileID: 0}
-  dspStartTime: -1
   songToPlay: {fileID: 643270148}
 --- !u!4 &471416576
 Transform:
@@ -1016,7 +1013,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: cefe10f55303f485eaf5cb4901e773f8, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

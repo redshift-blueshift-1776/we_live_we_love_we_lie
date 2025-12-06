@@ -10,7 +10,7 @@ public class BeatManager : MonoBehaviour {
 
     [SerializeField] public float tempo = 120f; // Tempo of the song used
 
-    public double StartDspTime { get; private set; }
+    public double StartDspTime { get; set; }
 
     void Awake() {
         Instance = this;
@@ -32,7 +32,7 @@ public class BeatManager : MonoBehaviour {
         //return Mathf.FloorToInt((float)((AudioSettings.dspTime - StartDspTime) / secondsPerBeat));
 
         double elapsed = AudioSettings.dspTime - StartDspTime;
-        if (elapsed <= 0) return 0; // Audio hasn¡¯t started yet
+        if (elapsed <= 0) return 0; // Audio hasn't started yet
         return (int) Mathf.Clamp(Mathf.FloorToInt((float)(elapsed / secondsPerBeat)), 0f, Mathf.Infinity);
     }
 }

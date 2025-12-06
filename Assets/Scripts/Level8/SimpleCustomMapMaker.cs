@@ -4,88 +4,109 @@ using System.IO;
 
 public class SimpleCustomMapMaker : MonoBehaviour
 {
+    [Header("Recording Output")]
     public List<int> tapBeats = new List<int>();
-    public float startTime;
 
+    [Header("Recording Control Flags")]
     public bool recording;
     public bool doneRecording;
 
+    [Header("Song Settings")]
     [SerializeField] public int bpm = 120;
     public int scatterAmount = 2;
 
-    private readonly KeyCode mainKey = KeyCode.Space;
-
-    public BeatManager beatManager;
-    public double dspStartTime = -1;
-
-    private SongDataSO[] songs;
-
-    private string songName;
-
+    [Header("Audio")]
     [SerializeField] public AudioSource songToPlay;
 
-    void Start() {
-        beatManager = BeatManager.Instance;
+    private SongDataSO[] songs;
+    private string songName;
+    private readonly KeyCode mainKey = KeyCode.Space;
+
+    // Timing
+    private bool hasStartedSong = false;
+    private double scheduledStartDSP = -1;
+    private float secondsPerBeat;
+
+    void Start()
+    {
+        // Load song data
         songs = Resources.LoadAll<SongDataSO>("Songs");
         songName = PlayerPrefs.GetString("SelectedSong", "UNKNOWN");
-        foreach (SongDataSO song in songs) {
-            if (song.songName == songName) {
+
+        foreach (SongDataSO song in songs)
+        {
+            if (song.songName == songName)
+            {
                 bpm = song.bpm;
                 songToPlay.clip = song.audioClip;
             }
         }
+
+        secondsPerBeat = 60f / bpm;
     }
 
     void Update()
     {
-        if (recording)
+        if (!recording) return;
+
+        if (!hasStartedSong)
         {
-            if (dspStartTime == -1) {
-                dspStartTime = beatManager.StartDspTime;
-            }
-            if (Input.GetKeyDown(mainKey) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
-            {
-                RegisterNote();
-            }
+            hasStartedSong = true;
+
+            scheduledStartDSP = AudioSettings.dspTime + 0.15f;
+            songToPlay.PlayScheduled(scheduledStartDSP);
+
+            Debug.Log($"Song scheduled for DSP time {scheduledStartDSP:F6}");
+        }
+
+        if (Input.GetKeyDown(mainKey) ||
+            Input.GetKeyDown(KeyCode.A) ||
+            Input.GetKeyDown(KeyCode.D))
+        {
+            RegisterNote();
         }
     }
 
     public void StartRecording()
     {
         tapBeats.Clear();
-        startTime = Time.time;
         recording = true;
         doneRecording = false;
+        hasStartedSong = false;
 
-        Debug.Log("Started recording.");
+        Debug.Log("Started recording map.");
     }
 
-    // Call this from UI
     public void StopRecording()
     {
         recording = false;
         doneRecording = true;
+
         SaveToJson();
     }
 
-    void RegisterNote()
+    private void RegisterNote()
     {
-        double songDspTime = AudioSettings.dspTime - dspStartTime;
+        int sampleRate = AudioSettings.outputSampleRate;
 
-        float currentBeat = (float)(songDspTime / beatManager.secondsPerBeat);
+        float songTime =
+            (songToPlay != null && songToPlay.isPlaying)
+            ? (float)songToPlay.timeSamples / sampleRate
+            : 0f;
 
-        // snap to nearest 16th note, assuming that the tempo is set at the actual tempo
-        // float snappedBeat = Mathf.Round(currentBeat * 4f) / 4f;
-        int snappedBeat = (int) Mathf.Round(currentBeat * 4f);
+        float beatFloat = songTime / secondsPerBeat;
 
-        // float x = Random.Range(-scatterAmount, scatterAmount + 1);
-        // float y = Random.Range(-scatterAmount, scatterAmount + 1);
+        // Sixteenth note quantization
+        int snappedBeat = Mathf.RoundToInt(beatFloat * 4f);
 
         tapBeats.Add(snappedBeat);
+
+        Debug.Log(
+            $"RegisterNote: samples={songToPlay.timeSamples}, " +
+            $"songTime={songTime:F4}, beat={beatFloat:F4}, snapped={snappedBeat}");
     }
 
-
-    void SaveToJson()
+    private void SaveToJson()
     {
         SimpleMapData map = new SimpleMapData();
         map.mapType = "simple";
