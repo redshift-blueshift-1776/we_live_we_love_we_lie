@@ -50,6 +50,8 @@ public class GenerateWorld : MonoBehaviour
     int useEffect;
 
     private Color spectreColor = new Color(127f / 255f, 224f / 255f, 255f / 255f);
+
+    public bool customLevel;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -61,11 +63,13 @@ public class GenerateWorld : MonoBehaviour
         Debug.Log(secondsPerBeat);
         phase = 0;
         doingStuff = false;
-
-        if (useEffect != 0) {
-            GenerateLevel1();
-            GenerateSquareRings();
-            GenerateAPlaceCalledHome();
+        customLevel = gm.customLevel;
+        if (!customLevel) {
+            if (useEffect != 0) {
+                GenerateLevel1();
+                GenerateSquareRings();
+                GenerateAPlaceCalledHome();
+            }
         }
     }
 
@@ -81,10 +85,14 @@ public class GenerateWorld : MonoBehaviour
 
             int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
             if (currentBeat - initialBeat == 32) {
-                if (!doingStuff) {
-                    Debug.Log("calling coroutine MoveThings() on currentBeat - initialBeat == 32");
-                    StartCoroutine(MoveThings());
-                    doingStuff = true;
+                if (!customLevel) {
+                    if (!doingStuff) {
+                        Debug.Log("calling coroutine MoveThings() on currentBeat - initialBeat == 32");
+                        StartCoroutine(MoveThings());
+                        doingStuff = true;
+                    }
+                } else {
+                    phase = 1;
                 }
             }
             if (currentBeat - initialBeat == 48) {

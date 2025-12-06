@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class SimpleMapData
 {
     public string mapType = "simple";  // for the future
+    public string songName;
     public int bpm;
     public float msPerSixteenth;
     public List<NoteData> notes = new List<NoteData>();
@@ -13,13 +14,13 @@ public class SimpleMapData
 [Serializable]
 public class NoteData
 {
-    public int time;
+    public int beat;
     public int x;
     public int y;
 
     public NoteData(int time, int x, int y)
     {
-        this.time = time;
+        this.beat = time;
         this.x = x;
         this.y = y;
     }

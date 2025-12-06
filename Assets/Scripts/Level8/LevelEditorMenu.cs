@@ -98,6 +98,7 @@ public class LevelEditorMenu : MonoBehaviour
     {
         PlayerPrefs.SetString("SelectedSong", song.songName);
         Debug.Log($"Selected: {song.songName}");
+        SceneManager.LoadScene(54);
     }
 
     // Initialize page positions

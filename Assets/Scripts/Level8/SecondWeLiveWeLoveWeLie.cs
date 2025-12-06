@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Linq;
 using System.Globalization;
+using System.IO;
 
 public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 {
@@ -65,6 +66,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     public GameObject simpleCustomMapMaker;
     public SimpleCustomMapMaker scmm;
+
+    public string customMapPath;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -93,10 +96,37 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         }
     }
 
-    public IEnumerator CallGenerateNotes() {
-        GenerateNotes();
+    public IEnumerator CallGenerateNotes()
+    {
+        if (customLevel)
+        {
+            string realPath = Path.Combine(Application.persistentDataPath, customMapPath);
+            string json = File.ReadAllText(realPath);
+            SimpleMapData map = JsonUtility.FromJson<SimpleMapData>(json);
+
+            foreach (var note in map.notes)
+            {
+                float beat = note.beat;
+                float x = note.x;
+                float y = note.y;
+                // float z = note.z;
+
+                if (map.mapType == "simple") {
+                    x = UnityEngine.Random.Range(-2, 3);
+                    y = UnityEngine.Random.Range(-2, 3);
+                    notes.Add($"{beat},{x},{y}");
+                } else {
+                    notes.Add($"{beat},{x},{y}");
+                }
+            }
+            madeNotes = true;
+        }
+        else {
+            GenerateNotes();
+        }
         yield return null;
     }
+
 
     public IEnumerator CallMakeRandomNotes(List<int> fallbackNoteTimes) {
         notes.AddRange(randomScatterYOffset(fallbackNoteTimes.ToArray(), 0, -3));
@@ -111,6 +141,9 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             if (levelEditor) {
                 double currentDspTime = AudioSettings.dspTime;
                 double songTime = currentDspTime - beatManager.StartDspTime;
+                // if (double.IsNaN(songTime) || songTime < 0) {
+                //     songTime = Time.time - dspStartTime;
+                // }
                 timer += Time.deltaTime;
 
                 if (timer >= 192f) {

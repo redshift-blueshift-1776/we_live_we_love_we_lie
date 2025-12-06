@@ -762,7 +762,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &471416575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -949,7 +949,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &498820937
 Transform:
   m_ObjectHideFlags: 0
@@ -1002,7 +1002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 643270148}
   secondsPerBeat: 0
-  tempo: 145
+  tempo: 580
 --- !u!82 &643270148
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1266,6 +1266,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1080848858}
   - component: {fileID: 1080848857}
+  - component: {fileID: 1080848859}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1313,10 +1314,10 @@ MonoBehaviour:
   madeNotes: 0
   didBriefcases: 0
   customLevel: 1
-  levelEditor: 1
+  levelEditor: 0
   simpleCustomMapMaker: {fileID: 471416574}
   scmm: {fileID: 0}
-  customMapPath: 
+  customMapPath: SimpleMap_20251205_232444.json
 --- !u!4 &1080848858
 Transform:
   m_ObjectHideFlags: 0
@@ -1332,6 +1333,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1080848859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080848856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8f81c150ea4945a8950c726bbe40926, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Level1Reference: {fileID: 0}
+  Pillar: {fileID: 0}
+  player: {fileID: 916656353}
+  Building: {fileID: 0}
+  gameManager: {fileID: 1080848856}
+  gm: {fileID: 0}
+  SquareRingsReference: {fileID: 0}
+  SquareRing: {fileID: 0}
+  ringOffset: 0
+  ringOffsetRotation: 0
+  numRings: 0
+  numRingsInRotation: 0
+  APlaceCalledHomeReference: {fileID: 0}
+  Fence: {fileID: 0}
+  fenceOffset: 0
+  fenceVariance: 0
+  numFences: 0
+  FadeBuilding: {fileID: 0}
+  FadeLightpole: {fileID: 0}
+  fadeBuildingOffset: 0
+  numFadeBuildings: 0
+  doingStuff: 0
+  phase: 0
+  customLevel: 1
 --- !u!1 &1126752312
 GameObject:
   m_ObjectHideFlags: 0

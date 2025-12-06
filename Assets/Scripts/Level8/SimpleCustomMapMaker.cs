@@ -4,7 +4,7 @@ using System.IO;
 
 public class SimpleCustomMapMaker : MonoBehaviour
 {
-    public List<int> tapTimes = new List<int>();
+    public List<int> tapBeats = new List<int>();
     public float startTime;
 
     public bool recording;
@@ -15,10 +15,20 @@ public class SimpleCustomMapMaker : MonoBehaviour
 
     private readonly KeyCode mainKey = KeyCode.Space;
 
+    public BeatManager beatManager;
+    public double dspStartTime = -1;
+
+    void Start() {
+        beatManager = BeatManager.Instance;
+    }
+
     void Update()
     {
         if (recording)
         {
+            if (dspStartTime == -1) {
+                dspStartTime = beatManager.StartDspTime;
+            }
             if (Input.GetKeyDown(mainKey) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
             {
                 RegisterNote();
@@ -28,7 +38,7 @@ public class SimpleCustomMapMaker : MonoBehaviour
 
     public void StartRecording()
     {
-        tapTimes.Clear();
+        tapBeats.Clear();
         startTime = Time.time;
         recording = true;
         doneRecording = false;
@@ -46,25 +56,35 @@ public class SimpleCustomMapMaker : MonoBehaviour
 
     void RegisterNote()
     {
-        int rawMs = Mathf.RoundToInt((Time.time - startTime) * 1000f);
-        tapTimes.Add(rawMs);
-        Debug.Log("Tap at: " + rawMs);
+        double songDspTime = AudioSettings.dspTime - dspStartTime;
+
+        float currentBeat = (float)(songDspTime / beatManager.secondsPerBeat);
+
+        // snap to nearest 16th note, assuming that the tempo is set at the actual tempo
+        // float snappedBeat = Mathf.Round(currentBeat * 4f) / 4f;
+        int snappedBeat = (int) Mathf.Round(currentBeat * 4f);
+
+        // float x = Random.Range(-scatterAmount, scatterAmount + 1);
+        // float y = Random.Range(-scatterAmount, scatterAmount + 1);
+
+        tapBeats.Add(snappedBeat);
     }
+
 
     void SaveToJson()
     {
         SimpleMapData map = new SimpleMapData();
+        map.mapType = "simple";
+        map.songName = PlayerPrefs.GetString("SelectedSong", "UNKNOWN");
         map.bpm = bpm;
         map.msPerSixteenth = (60000f / bpm) / 4f;
 
-        foreach (int rawTime in tapTimes)
+        foreach (int beat in tapBeats)
         {
-            int snapped = Mathf.RoundToInt(rawTime / map.msPerSixteenth) * (int)map.msPerSixteenth;
-
             int x = Random.Range(-scatterAmount, scatterAmount + 1);
             int y = Random.Range(-scatterAmount, scatterAmount + 1);
 
-            map.notes.Add(new NoteData(snapped, x, y));
+            map.notes.Add(new NoteData(beat, x, y));
         }
 
         string json = JsonUtility.ToJson(map, true);
