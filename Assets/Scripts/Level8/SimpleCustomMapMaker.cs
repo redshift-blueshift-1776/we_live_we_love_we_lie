@@ -18,8 +18,22 @@ public class SimpleCustomMapMaker : MonoBehaviour
     public BeatManager beatManager;
     public double dspStartTime = -1;
 
+    private SongDataSO[] songs;
+
+    private string songName;
+
+    [SerializeField] public AudioSource songToPlay;
+
     void Start() {
         beatManager = BeatManager.Instance;
+        songs = Resources.LoadAll<SongDataSO>("Songs");
+        songName = PlayerPrefs.GetString("SelectedSong", "UNKNOWN");
+        foreach (SongDataSO song in songs) {
+            if (song.songName == songName) {
+                bpm = song.bpm;
+                songToPlay.clip = song.audioClip;
+            }
+        }
     }
 
     void Update()
@@ -75,7 +89,7 @@ public class SimpleCustomMapMaker : MonoBehaviour
     {
         SimpleMapData map = new SimpleMapData();
         map.mapType = "simple";
-        map.songName = PlayerPrefs.GetString("SelectedSong", "UNKNOWN");
+        map.songName = songName;
         map.bpm = bpm;
         map.msPerSixteenth = (60000f / bpm) / 4f;
 

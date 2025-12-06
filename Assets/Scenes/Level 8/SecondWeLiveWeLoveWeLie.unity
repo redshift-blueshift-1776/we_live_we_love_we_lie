@@ -65495,7 +65495,7 @@ MonoBehaviour:
   - {fileID: 1569520596}
   - {fileID: 501922466}
   - {fileID: 1218096917}
-  scoreThreshold: -800
+  scoreThreshold: 0
   startCanvas: {fileID: 1198141249}
   gameCanvas: {fileID: 46956321}
   scoreGame: {fileID: 423849317}
@@ -65506,8 +65506,14 @@ MonoBehaviour:
   beatManager: {fileID: 0}
   gameActive: 0
   notes: []
+  noteblocks: []
   madeNotes: 0
   didBriefcases: 0
+  customLevel: 0
+  levelEditor: 0
+  simpleCustomMapMaker: {fileID: 0}
+  scmm: {fileID: 0}
+  customMapPath: 
 --- !u!1001 &1086101137
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92853,6 +92859,7 @@ MonoBehaviour:
   numFadeBuildings: 11
   doingStuff: 0
   phase: 0
+  customLevel: 0
 --- !u!1 &1477246715
 GameObject:
   m_ObjectHideFlags: 0
