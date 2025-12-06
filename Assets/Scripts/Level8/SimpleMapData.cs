@@ -15,10 +15,10 @@ public class SimpleMapData
 public class NoteData
 {
     public int beat;
-    public int x;
-    public int y;
+    public float x;
+    public float y;
 
-    public NoteData(int time, int x, int y)
+    public NoteData(int time, float x, float y)
     {
         this.beat = time;
         this.x = x;
