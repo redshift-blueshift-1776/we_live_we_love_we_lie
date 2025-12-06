@@ -2,12 +2,21 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using TMPro;
 
 public class LevelEditorScene : MonoBehaviour
 {
     [Header("References")]
     public Camera editorCamera;
     public GameObject notePrefab;
+
+    [Header("UI")]
+    public GameObject xTextBackground;
+    public GameObject yTextBackground;
+    public GameObject beatTextBackground;
+    public TMP_Text xText;
+    public TMP_Text yText;
+    public TMP_Text beatText;
 
     [Header("Editor Settings")]
     public float zScale = 10f;
@@ -43,6 +52,7 @@ public class LevelEditorScene : MonoBehaviour
         HandleFreecam();
         HandleSelection();
         HandleDragging();
+        HandleUI();
     }
 
     public string[] jsonfilen;
@@ -88,6 +98,30 @@ public class LevelEditorScene : MonoBehaviour
 
             note.transform.position = pos;
             editorNotes.Add(en);
+        }
+    }
+
+    // UI
+    void HandleUI() {
+        if (selectedNote == null) {
+            return;
+        }
+        if (draggingXY) {
+            xTextBackground.SetActive(true);
+            yTextBackground.SetActive(true);
+
+            xText.text = "x: " + selectedNote.x;
+            yText.text = "y: " + selectedNote.y;
+        } else {
+            xTextBackground.SetActive(false);
+            yTextBackground.SetActive(false);
+        }
+        if (draggingZ) {
+            beatTextBackground.SetActive(true);
+
+            beatText.text = "Beat: " + selectedNote.beat;
+        } else {
+            beatTextBackground.SetActive(false);
         }
     }
 
@@ -208,7 +242,8 @@ public class LevelEditorScene : MonoBehaviour
 
         // Snap to 1/16 note
         int snapped16 = Mathf.RoundToInt(beatFloat * 4f);
-        float snappedBeats = snapped16 / 4f;
+        // float snappedBeats = snapped16 / 4f;
+        int snappedBeats = snapped16;
 
         selectedNote.beat = snappedBeats;
 
