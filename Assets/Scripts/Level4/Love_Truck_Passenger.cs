@@ -165,8 +165,11 @@ public class Love_Truck_Passenger : MonoBehaviour
 
 
     private IEnumerator ChangePose(Pose pose) {
-        if (currentPose == pose)
-            yield break;
+        if (currentPose == pose) {
+            if (currentPose != Pose.KirKan) {
+                yield break;
+            }
+        }
 
         float duration = secondsPerBeat / 2f;
         float elapsed = 0f;
