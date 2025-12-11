@@ -15,15 +15,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     private bool groundedPlayer;
     public static float basePlayerSpeed = 5.0f;
 
-    public static float speedUp = 2.5f;
+    public static float speedUp = 4.2f;
 
     // time to run from standstill
-    private static float timeToRun = 2;
+    private static float timeToRun = 6;
 
-    private float playerSpeed = 0;
+    public float playerSpeed = 0;
 
-    private float jumpHeight = 1.0f;
-    private float gravityValue = -9.81f;
+    private float jumpHeight = 2.0f;
+    private float gravityValue = -16f;
 
     private float jumpVelocity;
 
@@ -35,7 +35,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     private float interactDistance = 5f;
 
 
-    private float maxSpeed;
+    public float maxSpeed;
 
     private float defaultFieldOfView;
     private float fieldOfViewMultiplier = 1.18f;
@@ -59,7 +59,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
         controller.skinWidth = 0.1f * controller.radius;
-        maxSpeed = Player_Movement.basePlayerSpeed * Player_Movement.speedUp;
+        maxSpeed = basePlayerSpeed * speedUp;
         defaultFieldOfView = Camera.main.fieldOfView;
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
@@ -128,7 +128,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             playerSpeed = Mathf.MoveTowards(playerSpeed, maxSpeed, maxSpeed * Time.deltaTime / timeToRun);
             Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / timeToRun);
         } else {
-            playerSpeed = Mathf.MoveTowards(playerSpeed, basePlayerSpeed, maxSpeed * Time.deltaTime / timeToRun);
+            playerSpeed = Mathf.MoveTowards(playerSpeed, basePlayerSpeed, 10 * maxSpeed * Time.deltaTime / timeToRun);
             Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / timeToRun);
         }
         if (Input.GetKey(failKey)) {
