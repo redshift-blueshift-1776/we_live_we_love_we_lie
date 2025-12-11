@@ -72,6 +72,7 @@ public class Universal_Manager : MonoBehaviour
     public int numCollectiblesCollected;
     public bool openExplorationCollect10Collectibles;
     public bool openExplorationCollect20Collectibles;
+    public bool[] openExplorationBallChallenges;
 
     public static Universal_Manager Instance { get; private set; }
 
