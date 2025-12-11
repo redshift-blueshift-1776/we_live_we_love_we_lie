@@ -38,6 +38,46 @@ public class Open_Exploration_Collectible : MonoBehaviour
             yield return null;
         }
         // Destroy(gameObject);
+        gameObject.SetActive(false);
+    }
+
+    public IEnumerator collectVisualization() {
+        GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/Collected_Visual");
+        if (foundObject != null) {
+            Debug.Log("Found Visual");
+            foundObject.SetActive(true);
+            float duration = 2f;
+            float elapsed = 0f;
+            Vector3 oldPosition = foundObject.transform.localPosition + new Vector3(0,0,0);
+            TMP_Text visualText = foundObject.GetComponentInChildren<TMP_Text>();
+            int numCollected = 0;
+            for (int i = 10 * (id / 10); i < 10 * (id / 10) + 10; i++) {
+                Debug.Log(i + " " + PlayerPrefs.GetInt("openExplorationCollectibles" + i, 0));
+                numCollected += PlayerPrefs.GetInt("openExplorationCollectibles" + i, 0);
+            }
+            visualText.text = "Collectables:\n" + numCollected + "/10";
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+
+                foundObject.transform.localPosition = oldPosition + new Vector3(50 * Mathf.Sin(10 * t), 0, 0);
+                foundObject.transform.localRotation = Quaternion.Euler(0, 0, -45 * Mathf.Sin(10 * t));
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            foundObject.transform.localPosition = new Vector3(0, 0, 0);
+            foundObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            foundObject.SetActive(false);
+        } else {
+            Debug.Log("No Visual");
+        }
+        yield return null;
+    }
+
+    public void Interact() {
+        Debug.Log("Interacting");
+        collectSound.SetActive(false);
+        collectSound.SetActive(true);
         GameObject foundObject2 = GameObject.Find("Universal_Manager");
         if (foundObject2 != null) {
             Debug.Log("Found Universal_Manager");
@@ -47,13 +87,7 @@ public class Open_Exploration_Collectible : MonoBehaviour
         } else {
             Debug.Log("No Universal_Manager");
         }
-        gameObject.SetActive(false);
-    }
-
-    public void Interact() {
-        Debug.Log("Interacting");
-        collectSound.SetActive(false);
-        collectSound.SetActive(true);
+        StartCoroutine(collectVisualization());
         StartCoroutine(collect());
     }
 }
