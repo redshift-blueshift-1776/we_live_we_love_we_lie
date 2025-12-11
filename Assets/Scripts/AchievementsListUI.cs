@@ -45,13 +45,18 @@ public class AchievementsListUI : MonoBehaviour
         AddAchievement("Get 1500 Points", "", U.level8Get1500);
         AddAchievement("Get 2000 Points", "", U.level8Get2000);
 
+        AddHeader("Open Exploration");
+        AddAchievement("Find 10 Collectibles", "", U.openExplorationCollect10Collectibles);
+        AddAchievement("Find 20 Collectibles", "", U.openExplorationCollect20Collectibles);
+
     }
 
     void AddHeader(string title)
     {
         var header = Instantiate(achievementRowPrefab, content);
         header.transform.GetChild(0).GetComponent<Image>().enabled = false;
-        header.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = title;
+        header.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "<u>" + title + "</u>";
+        header.transform.GetChild(1).GetComponent<TextMeshProUGUI>().fontSize = 72f;
         header.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "";
     }
 

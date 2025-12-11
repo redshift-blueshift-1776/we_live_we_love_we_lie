@@ -69,6 +69,9 @@ public class Universal_Manager : MonoBehaviour
 
     [Header("Open Exploration")]
     public bool[] openExplorationCollectibles;
+    public int numCollectiblesCollected;
+    public bool openExplorationCollect10Collectibles;
+    public bool openExplorationCollect20Collectibles;
 
     public static Universal_Manager Instance { get; private set; }
 
@@ -96,6 +99,7 @@ public class Universal_Manager : MonoBehaviour
         beatHardLevels = new bool[numHardLevels];
         beatNonInfiniteLevels = new bool[numNonInfiniteLevels];
         openExplorationCollectibles = new bool[numOpenExplorationCollectibles];
+        numCollectiblesCollected = 0;
     }
 
     // Update is called once per frame
@@ -157,6 +161,21 @@ public class Universal_Manager : MonoBehaviour
             }
             for (int i = 0; i < numOpenExplorationCollectibles; i++) {
                 openExplorationCollectibles[i] = (PlayerPrefs.GetInt("openExplorationCollectibles" + i, 0) == 1);
+            }
+            int newNumCollectiblesCollected = 0;
+            for (int i = 0; i < numOpenExplorationCollectibles; i++) {
+                newNumCollectiblesCollected += openExplorationCollectibles[i] ? 1 : 0;
+            }
+            numCollectiblesCollected = newNumCollectiblesCollected;
+            if (numCollectiblesCollected >= 10) {
+                openExplorationCollect10Collectibles = true;
+            } else {
+                openExplorationCollect10Collectibles = false;
+            }
+            if (numCollectiblesCollected >= 20) {
+                openExplorationCollect20Collectibles = true;
+            } else {
+                openExplorationCollect20Collectibles = false;
             }
         }
     }
