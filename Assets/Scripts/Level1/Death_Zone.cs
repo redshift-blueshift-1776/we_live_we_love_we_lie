@@ -40,5 +40,16 @@ public class Death_Zone : MonoBehaviour
             Cursor.visible = true;
             SceneManager.LoadScene(9); // Change once official scene is made
         }
+        if(col.gameObject.name.Contains("Scooter")) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            // transitionScript.ToFail();
+            // PlayerPrefs.SetInt("PreviousLevel", 1);
+            Scene currentScene = SceneManager.GetActiveScene();
+            PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene(9); // Change once official scene is made
+        }
     }
 }

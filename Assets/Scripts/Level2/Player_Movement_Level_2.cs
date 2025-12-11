@@ -40,6 +40,8 @@ public class Player_Movement_Level_2 : MonoBehaviour
     private readonly KeyCode pushKey = KeyCode.Mouse0;
     private readonly KeyCode pullKey = KeyCode.Mouse1;
 
+    
+
     [Header("Speed Stats")]
     [SerializeField] private float acceleration = 10f; // Acceleration rate
     [SerializeField] private float maxSpeed = 200f; // Maximum speed
@@ -76,9 +78,34 @@ public class Player_Movement_Level_2 : MonoBehaviour
     private Vector3 checkStartPosition;
     private float checkStartTime;
 
+    [Header("Grapple")]
+    [SerializeField] private float grappleSpeed = 420f;
+    private enum GrappleState { Idle, Extending, Pulling }
+    private GrappleState grappleState = GrappleState.Idle;
+    public bool grappleUnlocked;
+    private float grappleDistance = 1000f;
+    private Vector3 grapplePoint;
+    private GameObject ropeObject;
+    public float currentRopeLength = 0f;
+    [SerializeField] public bool banGrapple;
+
+    // Assign in inspector or create procedurally
+    public GameObject ropePrefab; // a thin cylinder scaled to (1,1,1)
+
 
     private void Awake()
     {
+        GameObject foundObject2 = GameObject.Find("Universal_Manager");
+        if (foundObject2 != null) {
+            Debug.Log("Found Universal_Manager");
+            Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+            grappleUnlocked = um.beatStoryMode;
+        } else {
+            Debug.Log("No Universal_Manager");
+        }
+        if (banGrapple) {
+            grappleUnlocked = false;
+        }
         gm = gameManager.GetComponent<ToFindWhatIveBecome>();
         jumpVelocity = Mathf.Sqrt(-2 * gravityValue * jumpHeight);
         // controller = gameObject.GetComponent<CharacterController>();
@@ -118,6 +145,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
             // controller.Move(playerVelocity * Time.deltaTime);
             interactRaycast();
             rotationHelper();
+            HandleGrapple();
         }
         if (gm.gameActive) {
             // Gravity Handling
@@ -327,8 +355,6 @@ public class Player_Movement_Level_2 : MonoBehaviour
                 Debug.Log("Raycase");
                 if (Input.GetKeyDown(pushKey)) {
                     interactableObject.Interact();
-                } else if (Input.GetKeyDown(pullKey)) {
-                    interactableObject.Interact();
                 }
             }
             if (foundSomething) {
@@ -342,5 +368,113 @@ public class Player_Movement_Level_2 : MonoBehaviour
             crosshair.SetActive(true);
             bigCrosshair.SetActive(false);
         }
+        if (Physics.SphereCast(origin, radius, dir, out hit, grappleDistance)) {
+            bool foundSomething = false;
+            Debug.Log("Raycase Grapple");
+            if (grappleUnlocked && !banGrapple) {
+                crosshair.transform.localRotation = Quaternion.Euler(0, 0, 45);
+            } else {
+                crosshair.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            }
+            // if (Input.GetKey(pullKey) && grappleUnlocked) {
+            //     // Grapple
+            //     Vector3 movement = dir * grappleSpeed * Time.deltaTime;
+            //     controller.Move(movement);
+            // }
+        } else {
+            crosshair.SetActive(true);
+            bigCrosshair.SetActive(false);
+        }
+    }
+
+    void HandleGrapple()
+    {
+        if (!grappleUnlocked) {
+            return;
+        }
+
+        // Fire grapple
+        if (Input.GetKeyDown(pullKey) && grappleState == GrappleState.Idle) {
+            TryStartGrapple();
+        }
+
+        // Cancel grapple
+        if (Input.GetKeyUp(pullKey)) {
+            CancelGrapple();
+        }
+
+        // Advance rope
+        if (grappleState == GrappleState.Extending) {
+            UpdateRopeExtension();
+        }
+
+        // Pull player
+        if (grappleState == GrappleState.Pulling) {
+            UpdateGrapplePull();
+        }
+    }
+
+    void TryStartGrapple()
+    {
+        RaycastHit hit;
+        Vector3 origin = Camera.main.transform.position;
+        Vector3 dir = Camera.main.transform.forward;
+
+        if (Physics.Raycast(origin, dir, out hit, grappleDistance))
+        {
+            grapplePoint = hit.point;
+            StartRope(origin + new Vector3(1, -1, 0), grapplePoint);
+            grappleState = GrappleState.Extending;
+        }
+    }
+
+    void StartRope(Vector3 start, Vector3 end)
+    {
+        ropeObject = Instantiate(ropePrefab);
+        ropeObject.transform.position = start;
+        ropeObject.transform.LookAt(end);
+        currentRopeLength = 0f;
+    }
+
+    void UpdateRopeExtension()
+    {
+        currentRopeLength += grappleSpeed * Time.deltaTime;
+
+        float totalDistance = Vector3.Distance(Camera.main.transform.position + new Vector3(1, -1, 0), grapplePoint);
+
+        ropeObject.transform.localScale = new Vector3(
+            0.5f,
+            0.5f,
+            currentRopeLength / 2f
+        );
+
+        ropeObject.transform.position = Camera.main.transform.position + new Vector3(1, -1, 0) + 
+            ropeObject.transform.forward * (currentRopeLength / 2f);
+
+        // Reached point, switch to pulling
+        if (currentRopeLength >= totalDistance) {
+            grappleState = GrappleState.Pulling;
+        }
+    }
+
+    void UpdateGrapplePull()
+    {
+        Vector3 direction = (grapplePoint - transform.position).normalized;
+
+        controller.Move(direction * grappleSpeed * Time.deltaTime);
+
+        // close enough, auto-cancel
+        if (Vector3.Distance(transform.position, grapplePoint) < 1.5f)
+            CancelGrapple();
+    }
+
+    void CancelGrapple()
+    {
+        grappleState = GrappleState.Idle;
+
+        if (ropeObject != null)
+            Destroy(ropeObject);
+
+        ropeObject = null;
     }
 }
