@@ -34,6 +34,8 @@ public class AchievementsListUI : MonoBehaviour
         AddHeader("Level 2 Achievements");
         AddAchievement("Reach Iteration 5", "", U.level2iteration5);
         AddAchievement("Reach Iteration 10", "", U.level2iteration10);
+        AddAchievement("Reach Iteration 5, No Grapple", "Reach Iteration 5 without using the grapple gun.", U.level2iteration5noGrapple);
+        AddAchievement("Reach Iteration 10, No Grapple", "Reach Iteration 5 without using the grapple gun.", U.level2iteration10noGrapple);
 
         AddHeader("Level 3 Achievements");
         AddAchievement("Reach Iteration 5", "", U.level3iteration5);
@@ -48,6 +50,14 @@ public class AchievementsListUI : MonoBehaviour
         AddHeader("Open Exploration");
         AddAchievement("Find 10 Collectibles", "", U.openExplorationCollect10Collectibles);
         AddAchievement("Find 20 Collectibles", "", U.openExplorationCollect20Collectibles);
+        for (int i = 0; i < U.numOpenExplorationLevels; i++)
+        {
+            AddAchievement(
+                "Ball Challenge " + (i+1),
+                "Complete Ball Challenge " + (i+1) + " in Open Exploration.",
+                U.openExplorationBallChallenges[i]
+            );
+        }
 
     }
 

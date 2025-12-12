@@ -88,6 +88,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
     private GameObject ropeObject;
     public float currentRopeLength = 0f;
     [SerializeField] public bool banGrapple;
+    public bool usedGrapple;
 
     // Assign in inspector or create procedurally
     public GameObject ropePrefab; // a thin cylinder scaled to (1,1,1)
@@ -405,6 +406,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
         // Pull player
         if (grappleState == GrappleState.Pulling) {
+            usedGrapple = true;
             UpdateGrapplePull();
         }
     }

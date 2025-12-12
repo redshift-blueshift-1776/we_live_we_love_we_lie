@@ -52,6 +52,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     [SerializeField] public GameObject bodySlamSound;
 
+    public float timeSinceLastKick;
+
 
     private void Start()
     {
@@ -69,6 +71,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         bigCrosshair.SetActive(false);
         mainCamera.SetActive(true);
         bodySlamSound.SetActive(true);
+        timeSinceLastKick = 0;
         // Application.targetFrameRate = 6;
     }
 
@@ -81,6 +84,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         controller.Move(playerVelocity * Time.deltaTime);
         interactRaycast();
         rotationHelper();
+        timeSinceLastKick += Time.deltaTime;
     }
 
 
@@ -259,9 +263,17 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     void OnControllerColliderHit(ControllerColliderHit hit) {
         if (hit.rigidbody != null) {
-            Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.1f, hit.moveDirection.z);
-            hit.rigidbody.AddForce(horizontalDir * (Input.GetKey(runKey) ? 300000 : 30000) * Time.fixedDeltaTime);
-            bodySlamSound.GetComponent<AudioSource>().Play();
+            if (timeSinceLastKick >= 1f) {
+                if (Input.GetKey(runKey)) {
+                    Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.1f, hit.moveDirection.z);
+                    hit.rigidbody.AddForce(horizontalDir * 300000 * Time.fixedDeltaTime);
+                } else {
+                    Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.01f, hit.moveDirection.z);
+                    hit.rigidbody.AddForce(horizontalDir * 60000 * Time.fixedDeltaTime);
+                }
+                bodySlamSound.GetComponent<AudioSource>().Play();
+                timeSinceLastKick = 0f;
+            }
         }
     }
 }

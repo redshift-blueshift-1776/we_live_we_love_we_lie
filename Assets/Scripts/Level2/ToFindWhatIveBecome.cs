@@ -226,6 +226,10 @@ public class ToFindWhatIveBecome : MonoBehaviour
                     Universal_Manager um = foundObject.GetComponent<Universal_Manager>();
                     um.level2iteration5 = true;
                     PlayerPrefs.SetInt("level2iteration5", 1);
+                    if (!player.GetComponent<Player_Movement_Level_2>().usedGrapple) {
+                        um.level2iteration5noGrapple = true;
+                        PlayerPrefs.SetInt("level2iteration5noGrapple", 1);
+                    }
                 } else {
                     Debug.Log("No Universal_Manager");
                 }
@@ -238,6 +242,10 @@ public class ToFindWhatIveBecome : MonoBehaviour
                     Universal_Manager um = foundObject.GetComponent<Universal_Manager>();
                     um.level2iteration10 = true;
                     PlayerPrefs.SetInt("level2iteration10", 1);
+                    if (!player.GetComponent<Player_Movement_Level_2>().usedGrapple) {
+                        um.level2iteration10noGrapple = true;
+                        PlayerPrefs.SetInt("level2iteration10noGrapple", 1);
+                    }
                 } else {
                     Debug.Log("No Universal_Manager");
                 }

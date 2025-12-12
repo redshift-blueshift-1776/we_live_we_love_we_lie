@@ -17,6 +17,7 @@ public class Universal_Manager : MonoBehaviour
     [SerializeField] public int numNonInfiniteLevels;
 
     [SerializeField] public int numOpenExplorationCollectibles;
+    [SerializeField] public int numOpenExplorationLevels;
 
     [Header("Unlocked Levels")]
     public bool[] unlockedEasy;
@@ -51,6 +52,8 @@ public class Universal_Manager : MonoBehaviour
     [Header("Level 2 Achievements")]
     public bool level2iteration5;
     public bool level2iteration10;
+    public bool level2iteration5noGrapple;
+    public bool level2iteration10noGrapple;
 
     [Header("Level 3 Achievements")]
     public bool level3iteration5;
@@ -101,6 +104,7 @@ public class Universal_Manager : MonoBehaviour
         beatNonInfiniteLevels = new bool[numNonInfiniteLevels];
         openExplorationCollectibles = new bool[numOpenExplorationCollectibles];
         numCollectiblesCollected = 0;
+        openExplorationBallChallenges = new bool[numOpenExplorationLevels];
     }
 
     // Update is called once per frame
@@ -112,6 +116,8 @@ public class Universal_Manager : MonoBehaviour
 
         level2iteration5 = (PlayerPrefs.GetInt("level2iteration5", 0) == 1);
         level2iteration10 = (PlayerPrefs.GetInt("level2iteration10", 0) == 1);
+        level2iteration5noGrapple = (PlayerPrefs.GetInt("level2iteration5noGrapple", 0) == 1);
+        level2iteration10noGrapple = (PlayerPrefs.GetInt("level2iteration10noGrapple", 0) == 1);
 
         level3iteration5 = (PlayerPrefs.GetInt("level3iteration5", 0) == 1);
 
@@ -139,12 +145,18 @@ public class Universal_Manager : MonoBehaviour
             PlayerPrefs.SetInt("useVisualEffects", 0);
         }
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             SceneManager.LoadScene(0);
         }
         if (Input.GetKey(KeyCode.L) && Input.GetKey(KeyCode.S)) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             SceneManager.LoadScene(8);
         }
         if (Input.GetKey(KeyCode.B) && Input.GetKey(KeyCode.S)) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             SceneManager.LoadScene(23);
         }
         if (debug) {
@@ -160,9 +172,11 @@ public class Universal_Manager : MonoBehaviour
                 unlockedHard[i - 1] = (PlayerPrefs.GetInt("unlockedHard" + i, 0) == 1);
                 unlockedEndless[i - 1] = (PlayerPrefs.GetInt("unlockedEndless" + i, 0) == 1);
             }
+
             for (int i = 0; i < numOpenExplorationCollectibles; i++) {
                 openExplorationCollectibles[i] = (PlayerPrefs.GetInt("openExplorationCollectibles" + i, 0) == 1);
             }
+
             int newNumCollectiblesCollected = 0;
             for (int i = 0; i < numOpenExplorationCollectibles; i++) {
                 newNumCollectiblesCollected += openExplorationCollectibles[i] ? 1 : 0;
@@ -177,6 +191,10 @@ public class Universal_Manager : MonoBehaviour
                 openExplorationCollect20Collectibles = true;
             } else {
                 openExplorationCollect20Collectibles = false;
+            }
+
+            for (int i = 0; i < numOpenExplorationLevels; i++) {
+                openExplorationBallChallenges[i] = (PlayerPrefs.GetInt("openExplorationBallChallenges" + i, 0) == 1);
             }
         }
     }
