@@ -29,7 +29,7 @@ public class MassEliminationLevel3 : MonoBehaviour
                 UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
                 cameraData.renderPostProcessing = true;
             }
-            playersRemaining.text = "Players Remaining:\n276";
+            playersRemaining.text = "Players Remaining:\n163";
             MakeGrid();
             StartCoroutine(MoveCamera());
     }

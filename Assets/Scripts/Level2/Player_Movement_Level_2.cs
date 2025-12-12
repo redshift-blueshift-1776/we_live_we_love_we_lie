@@ -368,20 +368,15 @@ public class Player_Movement_Level_2 : MonoBehaviour
             crosshair.SetActive(true);
             bigCrosshair.SetActive(false);
         }
-        if (Physics.SphereCast(origin, radius, dir, out hit, grappleDistance)) {
-            bool foundSomething = false;
+        if (Physics.Raycast(origin, dir, out hit, grappleDistance)) {
             Debug.Log("Raycase Grapple");
             if (grappleUnlocked && !banGrapple) {
                 crosshair.transform.localRotation = Quaternion.Euler(0, 0, 45);
             } else {
                 crosshair.transform.localRotation = Quaternion.Euler(0, 0, 0);
             }
-            // if (Input.GetKey(pullKey) && grappleUnlocked) {
-            //     // Grapple
-            //     Vector3 movement = dir * grappleSpeed * Time.deltaTime;
-            //     controller.Move(movement);
-            // }
         } else {
+            crosshair.transform.localRotation = Quaternion.Euler(0, 0, 0);
             crosshair.SetActive(true);
             bigCrosshair.SetActive(false);
         }
