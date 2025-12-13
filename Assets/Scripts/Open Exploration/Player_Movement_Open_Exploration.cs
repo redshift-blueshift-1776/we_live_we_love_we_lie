@@ -43,7 +43,6 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
 
     private readonly KeyCode runKey = KeyCode.LeftShift;
-    private readonly KeyCode failKey = KeyCode.M;
     private readonly KeyCode pushKey = KeyCode.Mouse0;
     private readonly KeyCode pullKey = KeyCode.Mouse1;
 
@@ -77,6 +76,9 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     void Update()
     {
+        if (!controller.enabled) {
+            return;
+        }
         // modify player velocity
         jumpHelper();
         horizontalMovementHelper();
@@ -134,11 +136,6 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         } else {
             playerSpeed = Mathf.MoveTowards(playerSpeed, basePlayerSpeed, 10 * maxSpeed * Time.deltaTime / timeToRun);
             Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / timeToRun);
-        }
-        if (Input.GetKey(failKey)) {
-            Cursor.lockState = Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            SceneManager.LoadScene("MoveInMenu");
         }
         playerVelocity += Vector3.Normalize(gameObject.transform.right * hSpeed + gameObject.transform.forward * vSpeed) * playerSpeed;
     }

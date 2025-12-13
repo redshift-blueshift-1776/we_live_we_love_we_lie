@@ -3685,7 +3685,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1746382431138695536, guid: 4c7e98ad4b18e4f3a8d6b5f2ad62d695, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7191712486551841833}
   m_SourcePrefab: {fileID: 100100000, guid: 4c7e98ad4b18e4f3a8d6b5f2ad62d695, type: 3}
 --- !u!33 &4130144660280311662
 MeshFilter:
@@ -4141,6 +4144,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 12, y: 10, z: 20}
   m_Center: {x: 0, y: 5, z: 0}
+--- !u!1 &7191712486551841832 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1746382431138695536, guid: 4c7e98ad4b18e4f3a8d6b5f2ad62d695, type: 3}
+  m_PrefabInstance: {fileID: 3919237600347301419}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7191712486551841833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7191712486551841832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e301725ac6c04e3db7e04ac82f7c07e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcName: Jeff
+  player: {fileID: 0}
+  talkingTo: 0
 --- !u!1001 &7723090357196975475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4149,6 +4172,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3971109567834222066, guid: d2e93bb19dc904702a77b80c38917222, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4836149843469601357, guid: d2e93bb19dc904702a77b80c38917222, type: 3}
       propertyPath: m_LocalPosition.x
       value: -185
