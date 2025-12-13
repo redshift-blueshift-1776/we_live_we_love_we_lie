@@ -47,7 +47,13 @@ public class Television : MonoBehaviour
         // If the player is close enough to the TV, disable the mainAudio and play tvAudio.
         // This could also be done with a secondary hitbox.
         // Repeatedly call showNextGame every secondsBetween seconds if the player is close enough.
-        bool playerClose = Vector3.Distance(player.transform.position, transform.position) < 16f;
+        bool playerClose = (
+            Mathf.Abs(player.transform.position.x + 162.5f) <= 5f
+        ) && (
+            Mathf.Abs(player.transform.position.y - 5f) <= 5f
+        ) && (
+            Mathf.Abs(player.transform.position.z - 250f) <= 10f
+        );
 
         if (playerClose)
         {
