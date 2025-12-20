@@ -8,14 +8,20 @@ using UnityEngine.SceneManagement;
 
 public class NPC_Open_Exploration : MonoBehaviour
 {
-    [SerializeField] public string npcName;
+    [Header("References")]
+    [SerializeField] public GameObject iclsd;
+    [SerializeField] public NPC_Dialogue npcd;
     public GameObject player;
 
     public bool talkingTo;
 
+    [Header("Info")]
+    [SerializeField] public string npcName;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        npcd = iclsd.GetComponent<NPC_Dialogue>();
         player = GameObject.Find("Player_Open_Exploration");
     }
 
@@ -51,11 +57,15 @@ public class NPC_Open_Exploration : MonoBehaviour
     private void FreezePlayer()
     {
         player.GetComponent<CharacterController>().enabled = false;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     private void UnfreezePlayer()
     {
         player.GetComponent<CharacterController>().enabled = true;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void endConversation() {
@@ -94,13 +104,16 @@ public class NPC_Open_Exploration : MonoBehaviour
         float elapsed = 0f;
         float duration = 2f;
         while (elapsed < duration) {
-            float t = elapsed / duration;
+            float tx = elapsed / duration;
+            float t = tx * tx;
             player.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
             player.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
             elapsed += Time.deltaTime;
             yield return null;
         }
         player.transform.position = targetPosition;
+        player.transform.rotation = targetRotation;
+        npcd.showLyrics();
         yield return null;
     }
 }
