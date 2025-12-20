@@ -111,6 +111,13 @@ public class NPC_Open_Exploration : MonoBehaviour
 
         UnfreezePlayer();
         npcd.ClearLyrics();
+        GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/RawImage");
+        if (foundObject != null) {
+            // Debug.Log("Found Visual");
+            foundObject.SetActive(true);
+        } else {
+            Debug.Log("No Visual");
+        }
     }
 
     public void StartConversationWrapper()
