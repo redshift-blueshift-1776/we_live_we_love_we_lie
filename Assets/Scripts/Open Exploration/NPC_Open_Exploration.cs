@@ -17,12 +17,41 @@ public class NPC_Open_Exploration : MonoBehaviour
 
     [Header("Info")]
     [SerializeField] public string npcName;
+    [SerializeField] public int levelID;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         npcd = iclsd.GetComponent<NPC_Dialogue>();
         player = GameObject.Find("Player_Open_Exploration");
+
+        if (levelID == 0) {
+            if (npcName == "Jeff") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Jeff.",
+                    "r:Hi Wade.",
+                    "l:Have you heard about Spectre Games?",
+                    "r:Yeah, but I'm probably not going to do it.",
+                    "r:Professor Donald James is across the street if you want to speak to him, though...",
+                    "r:"
+                };
+            }
+            if (npcName == "Colin") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Colin.",
+                    "r:Hi Wade.",
+                    "l:Have you heard about Spectre Games?",
+                    "r:Oh, I'm definitely doing that...",
+                    "l:Really? I didn't know you were into game dev...",
+                    "r:Well, I played Doguns and Planetary Platformer recently.",
+                    "r:So now I really want to join the program.",
+                    "r:And I'm sure I'm going to win.",
+                    "r:"
+                };
+            }
+        }
     }
 
     // Update is called once per frame
@@ -71,6 +100,7 @@ public class NPC_Open_Exploration : MonoBehaviour
     public void endConversation() {
         UnfreezePlayer();
         Debug.Log("Unfreeze player");
+        npcd.ClearLyrics();
         talkingTo = false;
         GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/RawImage");
         if (foundObject != null) {

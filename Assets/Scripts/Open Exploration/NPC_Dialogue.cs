@@ -50,15 +50,6 @@ public class NPC_Dialogue : MonoBehaviour
 
     void Start() {
         npcoe = clsd_parent.GetComponent<NPC_Open_Exploration>();
-        lyricsText = new string[] {
-            "l:",
-            "l:Hello Jeff.",
-            "r:Hi Wade.",
-            "l:Have you seen Spectre Games?",
-            "r:Yeah, probably not going to do it.",
-            "r:Professor Donald James is across the street if you want to speak to him.",
-            "r:"
-        };
         secondsPerBeat = 60f / beatsPerMinute;
         ParseLyrics();
 
@@ -295,7 +286,7 @@ public class NPC_Dialogue : MonoBehaviour
         lyricsProgressBarFill.sizeDelta = new Vector2(0, lyricsProgressBarFill.sizeDelta.y);
     }
 
-    private void ClearLyrics() {
+    public void ClearLyrics() {
         lyricsDisplay.text = "";
         lyricsDisplayRight.text = "";
         lyricsBackground.SetActive(false);
