@@ -51,7 +51,6 @@ public class NPC_Dialogue : MonoBehaviour
     void Start() {
         npcoe = clsd_parent.GetComponent<NPC_Open_Exploration>();
         secondsPerBeat = 60f / beatsPerMinute;
-        ParseLyrics();
 
         nextLyricTime = 0;
         currentLine = 0;
@@ -118,6 +117,8 @@ public class NPC_Dialogue : MonoBehaviour
     }
 
     public void showLyrics() {
+        ParseLyrics();
+        Debug.Log("Called Show Lyrics");
         nextLyricTime = AudioSettings.dspTime;
         currentLine = 0;
         lyricsDisplay.text = "";
@@ -129,17 +130,20 @@ public class NPC_Dialogue : MonoBehaviour
 
         if (doLyricsCoroutine != null)
             StopCoroutine(doLyricsCoroutine);
+        Debug.Log("Calling Do Lyrics");
         doLyricsCoroutine = StartCoroutine(doLyrics());
     }
 
     private IEnumerator doLyrics()
     {
+        Debug.Log("Called Do Lyrics");
         nextLyricTime = AudioSettings.dspTime;
         currentLine = 0;
         lastSideRight = null;
 
         while (currentLine < lyrics.Count && isAutoPlaying)
         {
+            Debug.Log("Calling fillLyrics");
             yield return fillLyrics(lyrics[currentLine]);
             currentLine++;
         }

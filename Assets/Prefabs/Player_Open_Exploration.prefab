@@ -747,9 +747,10 @@ GameObject:
   - component: {fileID: 8366194261447731812}
   - component: {fileID: 6357802057317375858}
   - component: {fileID: 1988243703861388225}
+  - component: {fileID: 3364269657160922641}
   m_Layer: 0
   m_Name: Player_Open_Exploration
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -890,6 +891,20 @@ MonoBehaviour:
   bigCrosshair: {fileID: 5604705282953709231}
   bodySlamSound: {fileID: 8933730421718646175}
   timeSinceLastKick: 0
+--- !u!114 &3364269657160922641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7893448649787232892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87b81868fda7641308e666f67a8c497f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcVisual: {fileID: 3971109567834222066}
+  player: {fileID: 4836149843469601357}
 --- !u!1 &8310432888505506750
 GameObject:
   m_ObjectHideFlags: 0

@@ -767,6 +767,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3108910499974366609}
   - component: {fileID: 2685354359395507515}
+  - component: {fileID: 9064393054665168296}
   m_Layer: 0
   m_Name: NPC_Open_Exploration
   m_TagString: Untagged
@@ -808,6 +809,30 @@ MonoBehaviour:
   player: {fileID: 0}
   talkingTo: 0
   npcName: Jeff
+  levelID: 0
+  interactRange: 10
+  playerInRange: 0
+--- !u!65 &9064393054665168296
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746382431138695536}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 11, y: 1, z: 11}
+  m_Center: {x: 0, y: 3, z: 0}
 --- !u!1 &1996163403626925663
 GameObject:
   m_ObjectHideFlags: 0

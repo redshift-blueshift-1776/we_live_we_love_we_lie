@@ -53,6 +53,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     public float timeSinceLastKick;
 
+    public bool movementLocked;
+
 
     private void Start()
     {
@@ -76,7 +78,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     void Update()
     {
-        if (!controller.enabled) {
+        if (!controller.enabled || movementLocked) {
             return;
         }
         // modify player velocity

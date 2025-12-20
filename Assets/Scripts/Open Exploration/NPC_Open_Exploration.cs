@@ -11,6 +11,7 @@ public class NPC_Open_Exploration : MonoBehaviour
     [Header("References")]
     [SerializeField] public GameObject iclsd;
     [SerializeField] public NPC_Dialogue npcd;
+    private InteractionManager interactionManager;
     public GameObject player;
 
     public bool talkingTo;
@@ -18,10 +19,14 @@ public class NPC_Open_Exploration : MonoBehaviour
     [Header("Info")]
     [SerializeField] public string npcName;
     [SerializeField] public int levelID;
+    public float interactRange = 10f;
+    public bool playerInRange;
+    private Coroutine conversationRoutine;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        interactionManager = InteractionManager.Instance;
         npcd = iclsd.GetComponent<NPC_Dialogue>();
         player = GameObject.Find("Player_Open_Exploration");
 
@@ -57,61 +62,73 @@ public class NPC_Open_Exploration : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(transform.position, player.transform.position) < 10f) {
-            GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/NPC_Visual");
-            if (foundObject != null) {
-                // Debug.Log("Found Visual");
-                foundObject.SetActive(!talkingTo);
-            } else {
-                Debug.Log("No Visual");
-            }
-            if (Input.GetKeyDown(KeyCode.Mouse1)) {
-                talkingTo = true;
-                FreezePlayer();
-                StartCoroutine(startConversation());
-            }
-        } else {
-            GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/NPC_Visual");
-            if (foundObject != null) {
-                // Debug.Log("Found Visual");
-                foundObject.SetActive(false);
-            }
-            talkingTo = false;
-        }
-        if (Input.GetKeyDown(KeyCode.E) && talkingTo) {
-            endConversation();
-        }
+        
     }
 
     private void FreezePlayer()
     {
-        player.GetComponent<CharacterController>().enabled = false;
+        var cc = player.GetComponent<CharacterController>();
+        if (cc != null)
+            cc.enabled = false;
+
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
+
     private void UnfreezePlayer()
     {
         player.GetComponent<CharacterController>().enabled = true;
+        player.GetComponent<Player_Movement_Open_Exploration>().movementLocked = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    public void endConversation() {
-        UnfreezePlayer();
-        Debug.Log("Unfreeze player");
-        npcd.ClearLyrics();
+    // public void endConversation() {
+    //     UnfreezePlayer();
+    //     Debug.Log("Unfreeze player");
+    //     npcd.ClearLyrics();
+    //     talkingTo = false;
+    //     GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/RawImage");
+    //     if (foundObject != null) {
+    //         // Debug.Log("Found Visual");
+    //         foundObject.SetActive(true);
+    //     } else {
+    //         Debug.Log("No Visual");
+    //     }
+    // }
+    public void endConversation()
+    {
+        if (!talkingTo) return;
+
         talkingTo = false;
-        GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/RawImage");
-        if (foundObject != null) {
-            // Debug.Log("Found Visual");
-            foundObject.SetActive(true);
-        } else {
-            Debug.Log("No Visual");
+
+        if (conversationRoutine != null)
+        {
+            StopCoroutine(conversationRoutine);
+            conversationRoutine = null;
         }
+
+        UnfreezePlayer();
+        npcd.ClearLyrics();
     }
 
+    public void StartConversationWrapper()
+    {
+        if (conversationRoutine != null)
+            StopCoroutine(conversationRoutine);
+
+        conversationRoutine = StartCoroutine(startConversation());
+    }
+
+
     public IEnumerator startConversation() {
+        if (talkingTo) yield break;
+        talkingTo = true;
+
+        FreezePlayer();
+
+        Debug.Log("START CONVERSATION " + npcName);
         GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/RawImage");
         if (foundObject != null) {
             // Debug.Log("Found Visual");
@@ -127,7 +144,7 @@ public class NPC_Open_Exploration : MonoBehaviour
             Debug.Log("No Visual");
         }
         Vector3 startPosition = player.transform.position + new Vector3(0,0,0);
-        Vector3 targetPosition = transform.position + transform.forward * -5f + new Vector3(0, 2.5f, 0);
+        Vector3 targetPosition = transform.position + transform.forward * -4.20f + new Vector3(0, 2.5f, 0);
         Quaternion startRotation = player.transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(transform.forward);
 
@@ -143,7 +160,27 @@ public class NPC_Open_Exploration : MonoBehaviour
         }
         player.transform.position = targetPosition;
         player.transform.rotation = targetRotation;
+        Debug.Log("Calling Show Lyrics");
         npcd.showLyrics();
         yield return null;
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = true;
+            interactionManager.RegisterNPC(this);
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+        if (talkingTo) return; // IMPORTANT
+
+        playerInRange = false;
+        interactionManager.UnregisterNPC(this);
+    }
+
 }
