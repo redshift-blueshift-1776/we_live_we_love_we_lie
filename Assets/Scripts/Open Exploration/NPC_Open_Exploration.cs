@@ -56,6 +56,85 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:"
                 };
             }
+            if (npcName == "Jessica") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Jessica.",
+                    "r:Yo.",
+                    "l:Have you heard about Spectre Games?",
+                    "r:I'm literally praying that I win so I can get into the game dev program.",
+                    "l:...",
+                    "r:You know, I applied to Pen You Never City as a game dev major.",
+                    "r:But I didn't get it, so I had to do computer science instead.",
+                    "r:I've been praying every day for an opportunity to join... and the prayers have been answered.",
+                    "l:Ok... Also, didn't this Meetinghouse have benches?",
+                    "r:Bruh, you're trying to get back into the game dev program, and you worry about the benches?",
+                    "r:I'm sure Donald James just took them for the game or something.",
+                    "r:"
+                };
+            }
+        }
+        if (levelID == 1) {
+            if (npcName == "Colin") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Colin.",
+                    "r:Hi Wade.",
+                    "l:Have you heard about Spectre Games?",
+                    "r:Oh, I'm definitely doing that...",
+                    "l:Really? I didn't know you were into game dev...",
+                    "r:Well, I played Doguns and Planetary Platformer recently.",
+                    "r:So now I really want to join the program.",
+                    "r:And I'm sure I'm going to win.",
+                    "r:"
+                };
+            }
+        }
+        if (levelID == 2) {
+            if (npcName == "Colin") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Colin.",
+                    "r:Hi Wade.",
+                    "l:Have you heard about Spectre Games?",
+                    "r:Oh, I'm definitely doing that...",
+                    "l:Really? I didn't know you were into game dev...",
+                    "r:Well, I played Doguns and Planetary Platformer recently.",
+                    "r:So now I really want to join the program.",
+                    "r:And I'm sure I'm going to win.",
+                    "r:"
+                };
+            }
+        }
+        if (levelID == 3) {
+            if (npcName == "Colin") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Colin.",
+                    "r:Hi Wade.",
+                    "l:Have you heard about Spectre Games?",
+                    "r:Oh, I'm definitely doing that...",
+                    "l:Really? I didn't know you were into game dev...",
+                    "r:Well, I played Doguns and Planetary Platformer recently.",
+                    "r:So now I really want to join the program.",
+                    "r:And I'm sure I'm going to win.",
+                    "r:"
+                };
+            }
+        }
+        if (levelID == 4) {
+            if (npcName == "Colin") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Colin.",
+                    "r:Hi Wade.",
+                    "r:That last challenge was so easy...",
+                    "r:Donald James better get some harder challenges...",
+                    "r:I hope he eliminates a lot of the competition...",
+                    "r:Because that'll make it easier for me to win!",
+                    "r:"
+                };
+            }
         }
     }
 
