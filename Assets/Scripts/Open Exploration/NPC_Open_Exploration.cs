@@ -89,6 +89,19 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:"
                 };
             }
+            if (npcName == "Jessica") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Jessica.",
+                    "r:Yo.",
+                    "l:I just signed up for Spectre Games.",
+                    "r:Makes sense.",
+                    "l:...",
+                    "r:I mean, Lan Attis put Love Sees Differences as the best game here...",
+                    "r:I personally think Luca is better because of the music, art, and message, but...",
+                    "r:"
+                };
+            }
         }
         if (levelID == 2) {
             if (npcName == "Colin") {
