@@ -41,6 +41,7 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:Professor Donald James is across the street if you want to speak to him, though...",
                     "r:"
                 };
+                npcd.rightName = "Jeff Johnson";
             }
             if (npcName == "Colin") {
                 npcd.lyricsText = new string[] {
@@ -55,6 +56,7 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:And I'm sure I'm going to win.",
                     "r:"
                 };
+                npcd.rightName = "Colin Norton";
             }
             if (npcName == "Jessica") {
                 npcd.lyricsText = new string[] {
@@ -72,6 +74,7 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:I'm sure Donald James just took them for the game or something.",
                     "r:"
                 };
+                npcd.rightName = "Jessica She";
             }
         }
         if (levelID == 1) {
@@ -88,6 +91,7 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:And I'm sure I'm going to win.",
                     "r:"
                 };
+                npcd.rightName = "Colin Norton";
             }
             if (npcName == "Jessica") {
                 npcd.lyricsText = new string[] {
@@ -101,6 +105,7 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:I personally think Luca is better because of the music, art, and message, but...",
                     "r:"
                 };
+                npcd.rightName = "Jessica She";
             }
         }
         if (levelID == 2) {
@@ -117,6 +122,7 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:And I'm sure I'm going to win.",
                     "r:"
                 };
+                npcd.rightName = "Colin Norton";
             }
         }
         if (levelID == 3) {
@@ -133,6 +139,7 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:And I'm sure I'm going to win.",
                     "r:"
                 };
+                npcd.rightName = "Colin Norton";
             }
         }
         if (levelID == 4) {
@@ -147,6 +154,7 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:Because that'll make it easier for me to win!",
                     "r:"
                 };
+                npcd.rightName = "Colin Norton";
             }
         }
     }

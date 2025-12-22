@@ -15,12 +15,24 @@ public class NPC_Dialogue : MonoBehaviour
     public string[] lyricsText;
     private List<DualLyricLine> lyrics;
 
+    public string leftName = "Wade Zunic";
+    public string rightName;
+
+    [Header("Main Text")]
     [SerializeField] private TMP_Text lyricsDisplay;
     [SerializeField] private TMP_Text lyricsDisplayRight;
     [SerializeField] private GameObject lyricsBackground;
     [SerializeField] private GameObject lyricsBackgroundRight;
     [SerializeField] private CanvasGroup lyricsBackgroundGroup;
     [SerializeField] private CanvasGroup lyricsBackgroundRightGroup;
+
+    [Header("Name Text")]
+    [SerializeField] private TMP_Text nameDisplay;
+    [SerializeField] private TMP_Text nameDisplayRight;
+    [SerializeField] private GameObject nameBackground;
+    [SerializeField] private GameObject nameBackgroundRight;
+    [SerializeField] private CanvasGroup nameBackgroundGroup;
+    [SerializeField] private CanvasGroup nameBackgroundRightGroup;
     [SerializeField] private float beatsPerMinute = 900f;
     [SerializeField] private GameObject canvas;
 
@@ -59,6 +71,10 @@ public class NPC_Dialogue : MonoBehaviour
         lyricsBackgroundRight.SetActive(false);
         lyricsBackground.SetActive(false);
         canvas.SetActive(false);
+
+        nameDisplay.text = leftName;
+        nameDisplayRight.text = rightName;
+
         originalLyricsBarWidth = lyricsProgressBarFill.sizeDelta.x;
 
         if (autoStart) showLyrics();
@@ -123,6 +139,8 @@ public class NPC_Dialogue : MonoBehaviour
         currentLine = 0;
         lyricsDisplay.text = "";
         lyricsDisplayRight.text = "";
+        nameDisplay.text = leftName;
+        nameDisplayRight.text = rightName;
         canvas.SetActive(true);
         isAutoPlaying = true;
 
