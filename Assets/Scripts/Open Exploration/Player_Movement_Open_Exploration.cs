@@ -212,7 +212,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 // while limiting forward acceleration when over max speed
                 if (horizontalVelocity.magnitude > maxGroundSpeed && parallelComponent > 0)
                 {
-                    parallelAccel *= consecutiveBhops > 0 ? airAccelerationFactor : 0f;
+                    parallelAccel *= consecutiveBhops >= 5 ? airAccelerationFactor : 0f;
                 }
 
                 playerAcceleration = parallelAccel + perpAccel;
