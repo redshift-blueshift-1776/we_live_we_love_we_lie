@@ -18,7 +18,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     public static float speedUp = 4.2f;
 
     // time to run from standstill
-    private static float timeToRun = 6;
+    private static float timeToRun = 0.25f;
 
     public float playerSpeed = 0;
 
@@ -91,9 +91,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         timeSinceLastKick += Time.deltaTime;
     }
 
-
     void jumpHelper() {
-        groundedPlayer = controller.isGrounded;
+        groundedPlayer = isGrounded();
         if (groundedPlayer && playerVelocity.y < 0) {
             playerVelocity.y = 0f;
         }
@@ -105,6 +104,13 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         playerVelocity.y += gravityValue * Time.deltaTime;
     }
 
+    private bool isGrounded()
+    {
+        float sphereRadius = controller.radius * 0.99f;
+        Vector3 bottomPos = controller.transform.position + controller.center - new Vector3(0, gameObject.transform.localScale.y * controller.height / 2, 0)
+            + 1.001f * sphereRadius * Vector3.up;
+        return Physics.SphereCast(new Ray(bottomPos, Vector3.down), sphereRadius, 1.05f * sphereRadius);
+    }
 
     void horizontalMovementHelper() {
         playerVelocity.x = 0;
