@@ -241,7 +241,6 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxGroundSpeed;
             }
         }
-        Debug.Log(consecutiveBhops + " " + horizontalVelocity.magnitude);
         //allows player to come to a complete stop when not holding anything
         if (horizontalVelocity.magnitude < minSpeedThreshold && inputDirection.magnitude == 0)
         {
