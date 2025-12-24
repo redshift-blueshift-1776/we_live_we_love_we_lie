@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class Player_Movement_Open_Exploration : MonoBehaviour
@@ -48,6 +49,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     public bool autoBunnyHopping = false;
 
+    private Vector3 initialPosition = Vector3.zero;
+    private Quaternion initialRotation = Quaternion.identity;
+
+    private void Awake()
+    {
+        initialPosition = gameObject.transform.position;
+        initialRotation = gameObject.transform.rotation;
+    }
+
     private void Start()
     {
         jumpVelocity = Mathf.Sqrt(-2 * gravityValue * jumpHeight);
@@ -79,18 +89,35 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         interactRaycast();
         rotationHelper();
         timeSinceLastKick += Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.R)) {
+            respawn();
+        }
     }
 
     private void FixedUpdate()
     {
-        // modify player velocity
+        movePlayer();
+    }
+
+    private void respawn()
+    {
+        controller.enabled = false; // Disable to bypass collision
+        transform.position = initialPosition;
+        transform.rotation = initialRotation;
+        controller.enabled = true; // Re-enable
+        playerVelocity = Vector3.zero;
+    }
+
+    private void movePlayer()
+    {
         horizontalMovementHelper();
-        // move player
         controller.Move(playerVelocity * Time.deltaTime);
     }
 
     private float jumpBufferTime = 0.3f;
     private float jumpBufferCounter = 0f;
+    private bool hasJumpedThisLanding = false;
     void jumpHelper() {
         groundedPlayer = isGrounded();
         if (groundedPlayer) {
@@ -100,6 +127,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             {
                 playerVelocity.y = -4f;
             }
+
+            hasJumpedThisLanding = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Space) || (autoBunnyHopping && Input.GetKey(KeyCode.Space)))
@@ -114,20 +143,24 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
         // conditions for jumping include coyote time and jump buffering (search up for more details)
         const float coyoteTime = 0.05f;
-        if (timeSinceGrounded <= coyoteTime && jumpBufferCounter > 0) {
+        if (timeSinceGrounded <= coyoteTime && jumpBufferCounter > 0 && !hasJumpedThisLanding) {
             playerVelocity.y = jumpVelocity;
             timeSinceGrounded = coyoteTime + Time.deltaTime;
             jumpBufferCounter = 0f;
             consecutiveBhops += 1;
+            hasJumpedThisLanding = true;
         }
         playerVelocity.y += gravityValue * Time.deltaTime;
+    }
+    private Vector3 getBottomPos()
+    {
+        return controller.transform.position + controller.center - new Vector3(0, gameObject.transform.localScale.y * controller.height / 2, 0);
     }
 
     private bool isGrounded()
     {
         float sphereRadius = controller.radius * 0.99f;
-        Vector3 bottomPos = controller.transform.position + controller.center - new Vector3(0, gameObject.transform.localScale.y * controller.height / 2, 0)
-            + 1.001f * sphereRadius * Vector3.up;
+        Vector3 bottomPos = getBottomPos() + 1.001f * sphereRadius * Vector3.up;
         bool grounded = Physics.SphereCast(new Ray(bottomPos, Vector3.down), sphereRadius, 1.002f * sphereRadius);
         timeSinceGrounded = grounded ? 0f : timeSinceGrounded + Time.deltaTime;
         timeSinceLanded += Time.deltaTime;
@@ -138,15 +171,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         return grounded;
     }
 
-    private const float baseAcceleration = 60f;
+    private const float baseAcceleration = 80f;
     private const float airAccelerationFactor = 5f / baseAcceleration;
     private const float maxAirSpeed = 200f;
     private const float maxRunningSpeed = 21f;
     private const float maxWalkingSpeed = 5f;
     private const float minSpeedThreshold = 0.1f;
-    private const float frictionFactor = 0.925f;
+    private const float frictionFactor = 0.9f;
     private int consecutiveBhops = 0;
-    private const float bhopsRequired = 3;
+    private const float bhopsRequired = 1;
     void horizontalMovementHelper() {
         //simplified friction
 
@@ -193,15 +226,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         if (isGrounded() && timeSinceLanded > 10 * Time.deltaTime)
         {
             consecutiveBhops = 0;
-            if (horizontalVelocity.magnitude > minSpeedThreshold * 10f)
+            if (horizontalVelocity.magnitude > 1)
             {
                 horizontalVelocity *= frictionFactor;
             } else if (inputDirection.magnitude == 0)
             {
                 //much faster deceleration at slower speeds
 
-                horizontalVelocity.x = Mathf.Sign(horizontalVelocity.x) * Mathf.Abs(Mathf.Pow(horizontalVelocity.x, 2f));
-                horizontalVelocity.z = Mathf.Sign(horizontalVelocity.z) * Mathf.Abs(Mathf.Pow(horizontalVelocity.z, 2f));
+                horizontalVelocity.x = Mathf.Sign(horizontalVelocity.x) * Mathf.Abs(Mathf.Pow(horizontalVelocity.x, 5f));
+                horizontalVelocity.z = Mathf.Sign(horizontalVelocity.z) * Mathf.Abs(Mathf.Pow(horizontalVelocity.z, 5f));
             }
             if (horizontalVelocity.magnitude > maxGroundSpeed)
             {
@@ -215,7 +248,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 // decompose acceleration into parallel and perpendicular components
                 float parallelComponent = Vector3.Dot(playerAcceleration, velocityDir);
                 Vector3 parallelAccel = velocityDir * parallelComponent;
-                Vector3 perpAccel = playerAcceleration - parallelAccel;
+                Vector3 perpAccel = horizontalVelocity.magnitude > 10f ? playerAcceleration - parallelAccel : Vector3.zero;
 
                 // allow full perpendicular control (strafing)
                 // while limiting forward acceleration when over max speed
@@ -241,6 +274,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxGroundSpeed;
             }
         }
+        
         //allows player to come to a complete stop when not holding anything
         if (horizontalVelocity.magnitude < minSpeedThreshold && inputDirection.magnitude == 0)
         {
