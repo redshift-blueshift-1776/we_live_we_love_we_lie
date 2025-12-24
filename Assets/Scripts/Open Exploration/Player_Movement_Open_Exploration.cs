@@ -138,14 +138,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         return grounded;
     }
 
-    private const float baseAcceleration = 35f;
+    private const float baseAcceleration = 60f;
     private const float airAccelerationFactor = 5f / baseAcceleration;
     private const float maxAirSpeed = 200f;
     private const float maxRunningSpeed = 21f;
     private const float maxWalkingSpeed = 5f;
     private const float minSpeedThreshold = 0.1f;
-    private const float frictionFactor = 0.98f;
+    private const float frictionFactor = 0.925f;
     private int consecutiveBhops = 0;
+    private const float bhopsRequired = 3;
     void horizontalMovementHelper() {
         //simplified friction
 
@@ -192,8 +193,16 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         if (isGrounded() && timeSinceLanded > 10 * Time.deltaTime)
         {
             consecutiveBhops = 0;
-            horizontalVelocity.x *= frictionFactor;
-            horizontalVelocity.z *= frictionFactor;
+            if (horizontalVelocity.magnitude > minSpeedThreshold * 10f)
+            {
+                horizontalVelocity *= frictionFactor;
+            } else if (inputDirection.magnitude == 0)
+            {
+                //much faster deceleration at slower speeds
+
+                horizontalVelocity.x = Mathf.Sign(horizontalVelocity.x) * Mathf.Abs(Mathf.Pow(horizontalVelocity.x, 2f));
+                horizontalVelocity.z = Mathf.Sign(horizontalVelocity.z) * Mathf.Abs(Mathf.Pow(horizontalVelocity.z, 2f));
+            }
             if (horizontalVelocity.magnitude > maxGroundSpeed)
             {
                 horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxGroundSpeed;
@@ -212,7 +221,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 // while limiting forward acceleration when over max speed
                 if (horizontalVelocity.magnitude > maxGroundSpeed && parallelComponent > 0)
                 {
-                    parallelAccel *= consecutiveBhops >= 5 ? airAccelerationFactor : 0f;
+                    parallelAccel *= consecutiveBhops >= bhopsRequired ? airAccelerationFactor : 0f;
                 }
 
                 playerAcceleration = parallelAccel + perpAccel;
@@ -227,6 +236,9 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             if (horizontalVelocity.magnitude > maxAirSpeed)
             {
                 horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxAirSpeed;
+            } else if (consecutiveBhops < bhopsRequired)
+            {
+                horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxGroundSpeed;
             }
         }
         Debug.Log(consecutiveBhops + " " + horizontalVelocity.magnitude);
