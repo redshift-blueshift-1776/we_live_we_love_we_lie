@@ -118,6 +118,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             playerVelocity.y = jumpVelocity;
             timeSinceGrounded = coyoteTime + Time.deltaTime;
             jumpBufferCounter = 0f;
+            consecutiveBhops += 1;
         }
         playerVelocity.y += gravityValue * Time.deltaTime;
     }
@@ -144,6 +145,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     private const float maxWalkingSpeed = 5f;
     private const float minSpeedThreshold = 0.1f;
     private const float frictionFactor = 0.98f;
+    private int consecutiveBhops = 0;
     void horizontalMovementHelper() {
         //simplified friction
 
@@ -184,11 +186,12 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / 0.25f);
         }
         
-        //set horizontal acceleration to 0 when crossing speed threshold and grounded for more than 2 frames
+        //set horizontal acceleration to 0 when crossing speed threshold and grounded for more than 10 frames
         Vector3 horizontalVelocity = new Vector3(playerVelocity.x, 0, playerVelocity.z);
         float maxGroundSpeed = isRunning ? maxRunningSpeed : maxWalkingSpeed;
-        if (isGrounded() && timeSinceLanded > 3 * Time.deltaTime)
+        if (isGrounded() && timeSinceLanded > 10 * Time.deltaTime)
         {
+            consecutiveBhops = 0;
             horizontalVelocity.x *= frictionFactor;
             horizontalVelocity.z *= frictionFactor;
             if (horizontalVelocity.magnitude > maxGroundSpeed)
@@ -209,7 +212,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 // while limiting forward acceleration when over max speed
                 if (horizontalVelocity.magnitude > maxGroundSpeed && parallelComponent > 0)
                 {
-                    parallelAccel *= airAccelerationFactor;
+                    parallelAccel *= consecutiveBhops > 0 ? airAccelerationFactor : 0f;
                 }
 
                 playerAcceleration = parallelAccel + perpAccel;
@@ -226,6 +229,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxAirSpeed;
             }
         }
+        Debug.Log(consecutiveBhops + " " + horizontalVelocity.magnitude);
         //allows player to come to a complete stop when not holding anything
         if (horizontalVelocity.magnitude < minSpeedThreshold && inputDirection.magnitude == 0)
         {
