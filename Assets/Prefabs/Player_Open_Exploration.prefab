@@ -516,7 +516,7 @@ Transform:
   m_GameObject: {fileID: 5490503952596708218}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -765,7 +765,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -185, y: 17.5, z: 293}
-  m_LocalScale: {x: 1, y: 5, z: 1}
+  m_LocalScale: {x: 1, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7106185065223820435}
@@ -891,6 +891,7 @@ MonoBehaviour:
   bigCrosshair: {fileID: 5604705282953709231}
   bodySlamSound: {fileID: 8933730421718646175}
   timeSinceLastKick: 0
+  movementLocked: 0
 --- !u!114 &3364269657160922641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -905,6 +906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcVisual: {fileID: 3971109567834222066}
   player: {fileID: 4836149843469601357}
+  nearbyNPCs: []
 --- !u!1 &8310432888505506750
 GameObject:
   m_ObjectHideFlags: 0

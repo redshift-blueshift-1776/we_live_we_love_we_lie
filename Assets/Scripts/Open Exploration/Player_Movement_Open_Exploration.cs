@@ -13,14 +13,6 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     private Vector3 playerVelocity = new(0,0,0);
     private bool groundedPlayer;
-    public static float basePlayerSpeed = 5.0f;
-
-    public static float speedUp = 4.2f;
-
-    // time to run from standstill
-    private static float timeToRun = 0.25f;
-
-    public float playerSpeed = 0;
 
     private float jumpHeight = 2.0f;
     private float gravityValue = -16f;
@@ -33,9 +25,6 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
 
     private float interactDistance = 5f;
-
-
-    public float maxSpeed;
 
     private float defaultFieldOfView;
     private float fieldOfViewMultiplier = 1.18f;
@@ -52,9 +41,12 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     [SerializeField] public GameObject bodySlamSound;
 
     public float timeSinceLastKick;
+    private float timeSinceGrounded;
+    private float timeSinceLanded;
 
     public bool movementLocked;
 
+    public bool autoBunnyHopping = false;
 
     private void Start()
     {
@@ -62,7 +54,6 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
         controller.skinWidth = 0.1f * controller.radius;
-        maxSpeed = basePlayerSpeed * speedUp;
         defaultFieldOfView = Camera.main.fieldOfView;
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
@@ -73,6 +64,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         mainCamera.SetActive(true);
         bodySlamSound.SetActive(true);
         timeSinceLastKick = 0;
+        timeSinceGrounded = 0;
+        timeSinceLanded = 0;
         // Application.targetFrameRate = 6;
     }
 
@@ -81,25 +74,50 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         if (!controller.enabled || movementLocked) {
             return;
         }
-        // modify player velocity
         jumpHelper();
-        horizontalMovementHelper();
-        // move player
-        controller.Move(playerVelocity * Time.deltaTime);
+
         interactRaycast();
         rotationHelper();
         timeSinceLastKick += Time.deltaTime;
     }
 
+    private void FixedUpdate()
+    {
+        // modify player velocity
+        horizontalMovementHelper();
+        // move player
+        controller.Move(playerVelocity * Time.deltaTime);
+    }
+
+    private float jumpBufferTime = 0.3f;
+    private float jumpBufferCounter = 0f;
     void jumpHelper() {
         groundedPlayer = isGrounded();
-        if (groundedPlayer && playerVelocity.y < 0) {
-            playerVelocity.y = -4f;
+        if (groundedPlayer) {
+            //needs a little bit of downward velocity to prevent slowly sinking into the ground
+            //and also allows proper grounded detection
+            if (playerVelocity.y < 0)
+            {
+                playerVelocity.y = -4f;
+            }
         }
 
-        // Changes the height position of the player..
-        if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer) {
-            playerVelocity.y += jumpVelocity;
+        if (Input.GetKeyDown(KeyCode.Space) || (autoBunnyHopping && Input.GetKey(KeyCode.Space)))
+        {
+            jumpBufferCounter = jumpBufferTime;
+        }
+
+        if (jumpBufferCounter > 0)
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
+
+        // conditions for jumping include coyote time and jump buffering (search up for more details)
+        const float coyoteTime = 0.05f;
+        if (timeSinceGrounded <= coyoteTime && jumpBufferCounter > 0) {
+            playerVelocity.y = jumpVelocity;
+            timeSinceGrounded = coyoteTime + Time.deltaTime;
+            jumpBufferCounter = 0f;
         }
         playerVelocity.y += gravityValue * Time.deltaTime;
     }
@@ -109,43 +127,120 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         float sphereRadius = controller.radius * 0.99f;
         Vector3 bottomPos = controller.transform.position + controller.center - new Vector3(0, gameObject.transform.localScale.y * controller.height / 2, 0)
             + 1.001f * sphereRadius * Vector3.up;
-        return Physics.SphereCast(new Ray(bottomPos, Vector3.down), sphereRadius, 1.002f * sphereRadius);
+        bool grounded = Physics.SphereCast(new Ray(bottomPos, Vector3.down), sphereRadius, 1.002f * sphereRadius);
+        timeSinceGrounded = grounded ? 0f : timeSinceGrounded + Time.deltaTime;
+        timeSinceLanded += Time.deltaTime;
+        if (!groundedPlayer && grounded)
+        {
+            timeSinceLanded = 0f;
+        }
+        return grounded;
     }
 
+    private const float baseAcceleration = 35f;
+    private const float airAccelerationFactor = 5f / baseAcceleration;
+    private const float maxAirSpeed = 200f;
+    private const float maxRunningSpeed = 21f;
+    private const float maxWalkingSpeed = 5f;
+    private const float minSpeedThreshold = 0.1f;
+    private const float frictionFactor = 0.98f;
     void horizontalMovementHelper() {
-        playerVelocity.x = 0;
-        playerVelocity.z = 0;
+        //simplified friction
 
         float diffFOV = math.abs(fastFieldOfView - defaultFieldOfView);
-
-        float hSpeed = 0.0f;
-        float vSpeed = 0.0f;
+        Vector3 inputDirection = Vector3.zero;
 
         if (Input.GetKey(KeyCode.W))
         {
-            vSpeed += 1.0f;
+            inputDirection += transform.forward;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            vSpeed -= 1.0f;
+            inputDirection -= transform.forward;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            hSpeed -= 1.0f;
+            inputDirection -= transform.right;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            hSpeed += 1.0f;
+            inputDirection += transform.right;
         }
 
-        if (Input.GetKey(runKey) && vSpeed > 0) {
-            playerSpeed = Mathf.MoveTowards(playerSpeed, maxSpeed, maxSpeed * Time.deltaTime / timeToRun);
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / timeToRun);
+        inputDirection = Vector3.Normalize(inputDirection);
+
+        bool isRunning = false;
+        //running
+        Vector3 playerAcceleration = inputDirection * baseAcceleration;
+        if (Input.GetKey(runKey) && !Input.GetKey(KeyCode.S)) {
+            isRunning = true;
+            playerAcceleration *= 1.5f;
+            //do not change the fov when holding shift alone
+            if (inputDirection.magnitude > 0)
+            {
+                Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / 0.25f);
+            }
         } else {
-            playerSpeed = Mathf.MoveTowards(playerSpeed, basePlayerSpeed, 10 * maxSpeed * Time.deltaTime / timeToRun);
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / timeToRun);
+            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / 0.25f);
         }
-        playerVelocity += Vector3.Normalize(gameObject.transform.right * hSpeed + gameObject.transform.forward * vSpeed) * playerSpeed;
+        
+        //set horizontal acceleration to 0 when crossing speed threshold and grounded for more than 2 frames
+        Vector3 horizontalVelocity = new Vector3(playerVelocity.x, 0, playerVelocity.z);
+        float maxGroundSpeed = isRunning ? maxRunningSpeed : maxWalkingSpeed;
+        if (isGrounded() && timeSinceLanded > 3 * Time.deltaTime)
+        {
+            horizontalVelocity.x *= frictionFactor;
+            horizontalVelocity.z *= frictionFactor;
+            if (horizontalVelocity.magnitude > maxGroundSpeed)
+            {
+                horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxGroundSpeed;
+            }
+        } else {
+            if (horizontalVelocity.magnitude > 0.1f)
+            {
+                Vector3 velocityDir = horizontalVelocity.normalized;
+
+                // decompose acceleration into parallel and perpendicular components
+                float parallelComponent = Vector3.Dot(playerAcceleration, velocityDir);
+                Vector3 parallelAccel = velocityDir * parallelComponent;
+                Vector3 perpAccel = playerAcceleration - parallelAccel;
+
+                // allow full perpendicular control (strafing)
+                // while limiting forward acceleration when over max speed
+                if (horizontalVelocity.magnitude > maxGroundSpeed && parallelComponent > 0)
+                {
+                    parallelAccel *= airAccelerationFactor;
+                }
+
+                playerAcceleration = parallelAccel + perpAccel;
+            }
+            else if (horizontalVelocity.magnitude > maxGroundSpeed)
+            {
+                // when starting from near-zero, just reduce all acceleration
+                playerAcceleration *= airAccelerationFactor;
+            }
+
+            // hard cap at max air speed
+            if (horizontalVelocity.magnitude > maxAirSpeed)
+            {
+                horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxAirSpeed;
+            }
+        }
+        //allows player to come to a complete stop when not holding anything
+        if (horizontalVelocity.magnitude < minSpeedThreshold && inputDirection.magnitude == 0)
+        {
+            horizontalVelocity = Vector3.zero;
+        }
+
+        //counter strafing
+        if (Vector3.Dot(horizontalVelocity, inputDirection) < -Mathf.Sin(46f * Mathf.Deg2Rad) && horizontalVelocity.magnitude < maxGroundSpeed / 2f)
+        {
+            horizontalVelocity *= 0.5f;
+            playerAcceleration = Vector3.zero;
+        }
+        playerVelocity.x = horizontalVelocity.x;
+        playerVelocity.z = horizontalVelocity.z;
+        playerVelocity += playerAcceleration * Time.deltaTime;
     }
 
 

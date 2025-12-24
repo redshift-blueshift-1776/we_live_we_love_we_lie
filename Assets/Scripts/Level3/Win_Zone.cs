@@ -23,7 +23,6 @@ public class Win_Zone : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider col) {
-        Debug.Log("collided");
         if(col.gameObject == player) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
