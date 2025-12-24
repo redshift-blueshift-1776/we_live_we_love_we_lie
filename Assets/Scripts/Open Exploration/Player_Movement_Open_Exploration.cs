@@ -94,7 +94,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     void jumpHelper() {
         groundedPlayer = isGrounded();
         if (groundedPlayer && playerVelocity.y < 0) {
-            playerVelocity.y = 0f;
+            playerVelocity.y = -4f;
         }
 
         // Changes the height position of the player..
@@ -109,7 +109,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         float sphereRadius = controller.radius * 0.99f;
         Vector3 bottomPos = controller.transform.position + controller.center - new Vector3(0, gameObject.transform.localScale.y * controller.height / 2, 0)
             + 1.001f * sphereRadius * Vector3.up;
-        return Physics.SphereCast(new Ray(bottomPos, Vector3.down), sphereRadius, 1.05f * sphereRadius);
+        return Physics.SphereCast(new Ray(bottomPos, Vector3.down), sphereRadius, 1.002f * sphereRadius);
     }
 
     void horizontalMovementHelper() {
