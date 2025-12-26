@@ -84,6 +84,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         if (!controller.enabled || movementLocked) {
             return;
         }
+        groundedPlayer = isGrounded();
+
         jumpHelper();
 
         interactRaycast();
@@ -93,6 +95,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R)) {
             respawn();
         }
+
     }
 
     private void FixedUpdate()
@@ -102,10 +105,10 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     private void respawn()
     {
-        controller.enabled = false; // Disable to bypass collision
+        controller.enabled = false;
         transform.position = initialPosition;
         transform.rotation = initialRotation;
-        controller.enabled = true; // Re-enable
+        controller.enabled = true;
         playerVelocity = Vector3.zero;
     }
 
@@ -119,14 +122,13 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     private float jumpBufferCounter = 0f;
     private bool hasJumpedThisLanding = false;
     void jumpHelper() {
-        groundedPlayer = isGrounded();
         if (groundedPlayer) {
             //needs a little bit of downward velocity to prevent slowly sinking into the ground
             //and also allows proper grounded detection
-            if (playerVelocity.y < 0)
-            {
-                playerVelocity.y = -4f;
-            }
+            //if (playerVelocity.y < 0)
+            //{
+            //    playerVelocity.y = 0f;
+            //}
 
             hasJumpedThisLanding = false;
         }
@@ -150,7 +152,11 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             consecutiveBhops += 1;
             hasJumpedThisLanding = true;
         }
-        playerVelocity.y += gravityValue * Time.deltaTime;
+
+        if (!groundedPlayer)
+        {
+            playerVelocity.y += gravityValue * Time.deltaTime;
+        }
     }
     private Vector3 getBottomPos()
     {
@@ -166,6 +172,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         timeSinceLanded += Time.deltaTime;
         if (!groundedPlayer && grounded)
         {
+            playerVelocity.y = 0f;
             timeSinceLanded = 0f;
         }
         return grounded;
@@ -223,7 +230,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         //set horizontal acceleration to 0 when crossing speed threshold and grounded for more than 10 frames
         Vector3 horizontalVelocity = new Vector3(playerVelocity.x, 0, playerVelocity.z);
         float maxGroundSpeed = isRunning ? maxRunningSpeed : maxWalkingSpeed;
-        if (isGrounded() && timeSinceLanded > 10 * Time.deltaTime)
+        if (groundedPlayer && timeSinceLanded > 10 * Time.deltaTime)
         {
             consecutiveBhops = 0;
             if (horizontalVelocity.magnitude > 1)
