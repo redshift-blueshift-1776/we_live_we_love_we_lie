@@ -13,6 +13,7 @@ public class NPC_Open_Exploration : MonoBehaviour
     [SerializeField] public NPC_Dialogue npcd;
     private InteractionManager interactionManager;
     public GameObject player;
+    public GameObject mainCamera;
 
     public bool talkingTo;
 
@@ -29,6 +30,7 @@ public class NPC_Open_Exploration : MonoBehaviour
         interactionManager = InteractionManager.Instance;
         npcd = iclsd.GetComponent<NPC_Dialogue>();
         player = GameObject.Find("Player_Open_Exploration");
+        mainCamera = GameObject.Find("Player_Open_Exploration/Main Camera");
 
         if (levelID == 0) {
             if (npcName == "Jeff") {
@@ -107,8 +109,35 @@ public class NPC_Open_Exploration : MonoBehaviour
                 };
                 npcd.rightName = "Jessica She";
             }
+            if (npcName == "Jacob") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Jacob.",
+                    "r:Hello Wade.",
+                    "l:Are you doing Spectre Games?",
+                    "r:Yes. I mean, this is the program everyone at this school wants to join.",
+                    "r:Well, maybe not everyone, but you get the point.",
+                    "r:"
+                };
+                npcd.rightName = "Jacob Martin";
+            }
         }
         if (levelID == 2) {
+            if (npcName == "Jeff") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hey, how did I get out here?",
+                    "l:Aren't these walls supposed to be solid?",
+                    "r:They are...",
+                    "r:But they say that words have no wings, but they can fly thousands of miles.",
+                    "l:So I flew through the wall?",
+                    "r:If you want to interpret it like that, you can...",
+                    "r:I guess there's just some power of speaking to people...",
+                    "l:No one is going to believe that this is an intentional game mechanic...",
+                    "r:"
+                };
+                npcd.rightName = "Jeff Johnson";
+            }
             if (npcName == "Colin") {
                 npcd.lyricsText = new string[] {
                     "l:",
@@ -251,9 +280,11 @@ public class NPC_Open_Exploration : MonoBehaviour
             Debug.Log("No Visual");
         }
         Vector3 startPosition = player.transform.position + new Vector3(0,0,0);
-        Vector3 targetPosition = transform.position + transform.forward * -4.20f + new Vector3(0, 2.5f, 0);
+        Vector3 targetPosition = transform.position + transform.forward * -4.20f + new Vector3(0, 3f, 0);
         Quaternion startRotation = player.transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(transform.forward);
+        Quaternion startRotation2 = mainCamera.transform.rotation;
+        Quaternion targetRotation2 = Quaternion.LookRotation(transform.forward);
 
         float elapsed = 0f;
         float duration = 2f;
@@ -262,6 +293,7 @@ public class NPC_Open_Exploration : MonoBehaviour
             float t = tx * tx;
             player.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
             player.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+            mainCamera.transform.rotation = Quaternion.Slerp(startRotation2, targetRotation2, t);
             elapsed += Time.deltaTime;
             yield return null;
         }
