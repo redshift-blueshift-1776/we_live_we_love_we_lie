@@ -16,7 +16,7 @@ public class InteractionManager : MonoBehaviour
     public List<NPC_Open_Exploration> nearbyNPCs = new();
     private NPC_Open_Exploration currentNPC;
 
-    private bool inConversation = false;
+    public bool inConversation = false;
 
     void Awake()
     {
@@ -28,6 +28,10 @@ public class InteractionManager : MonoBehaviour
     {
         if (!inConversation)
             SelectClosestNPC();
+
+        if (Input.GetKeyDown(KeyCode.K)) {
+            nearbyNPCs = new();
+        }
 
         npcVisual.SetActive(currentNPC != null && !inConversation);
 
