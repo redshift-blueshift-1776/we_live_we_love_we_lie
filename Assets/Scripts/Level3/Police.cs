@@ -31,6 +31,11 @@ public class Police : MonoBehaviour
     public int xBound;
     bool direction;
 
+    [SerializeField] public GameObject leftLegJoint;
+    [SerializeField] public GameObject rightLegJoint;
+    [SerializeField] public float legRange;
+    [SerializeField] public float legPeriod;
+
     [SerializeField] public GameObject bullet;
     [SerializeField] public float speed;
     [SerializeField] public GameObject bulletSpawn;
@@ -126,6 +131,8 @@ public class Police : MonoBehaviour
                 
             } else {
                 currentCoroutine = null;
+                leftLegJoint.transform.localRotation = Quaternion.Euler(Mathf.Sin(Time.time / legPeriod * 2 * Mathf.PI) * legRange,0,0);
+                rightLegJoint.transform.localRotation = Quaternion.Euler(-Mathf.Sin(Time.time / legPeriod * 2 * Mathf.PI) * legRange,0,0);
             }
         }
     }
