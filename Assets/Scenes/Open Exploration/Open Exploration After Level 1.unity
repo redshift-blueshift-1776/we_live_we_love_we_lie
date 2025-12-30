@@ -1409,6 +1409,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: currentDance
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: m_Animation
       value: 
@@ -1880,6 +1884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1189793235}
   - component: {fileID: 1189793234}
+  - component: {fileID: 1189793236}
   m_Layer: 0
   m_Name: GBDFA Song
   m_TagString: Untagged
@@ -1898,7 +1903,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 32e1d3433816a4525b8889f5f4492b2d, type: 3}
+  m_Resource: {fileID: 8300000, guid: cefe10f55303f485eaf5cb4901e773f8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.8
   m_Pitch: 1
@@ -1999,6 +2004,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1189793236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189793233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a5c8f60a94643488d6cd79322cd547, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 1189793234}
+  secondsPerBeat: 0
+  tempo: 145
 --- !u!1 &1213851577
 GameObject:
   m_ObjectHideFlags: 0
@@ -2807,6 +2827,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7135915798407466447, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: currentDance
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
@@ -3706,6 +3730,10 @@ PrefabInstance:
     - target: {fileID: 7135915798407466447, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: currentDance
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: m_Animation
