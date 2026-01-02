@@ -160,13 +160,18 @@ public class Universal_Manager : MonoBehaviour
             PlayerPrefs.SetInt("useVisualEffects", 1);
         }
         if (Input.GetKey(KeyCode.P) && Input.GetKey(KeyCode.I)) {
-            Debug.Log("Using Camera Effect");
+            Debug.Log("Using Image Pixel");
             PlayerPrefs.SetInt("useVisualEffects", 2);
+        }
+        if (Input.GetKey(KeyCode.R) && Input.GetKey(KeyCode.L)) {
+            Debug.Log("Using Retro Look");
+            PlayerPrefs.SetInt("useVisualEffects", 3);
         }
         if (Input.GetKey(KeyCode.N) && Input.GetKey(KeyCode.P)) {
             Debug.Log("Disabling Post Processing");
             PlayerPrefs.SetInt("useVisualEffects", 0);
         }
+
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
