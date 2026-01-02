@@ -77,6 +77,13 @@ public class Universal_Manager : MonoBehaviour
     public bool openExplorationCollect20Collectibles;
     public bool[] openExplorationBallChallenges;
 
+    [Header("Camera Effects")]
+    public int usePostProcessing;
+    [SerializeField] public RenderTexture defaultRenderTexture;
+    [SerializeField] public RenderTexture cameraEffect;
+    [SerializeField] public GameObject defaultRawImage;
+    [SerializeField] public GameObject cameraEffectRawImage;
+
     public static Universal_Manager Instance { get; private set; }
 
     private void Awake()
@@ -105,6 +112,8 @@ public class Universal_Manager : MonoBehaviour
         openExplorationCollectibles = new bool[numOpenExplorationCollectibles];
         numCollectiblesCollected = 0;
         openExplorationBallChallenges = new bool[numOpenExplorationLevels];
+        defaultRawImage.SetActive(false);
+        cameraEffectRawImage.SetActive(false);
     }
 
     // Update is called once per frame
@@ -128,7 +137,7 @@ public class Universal_Manager : MonoBehaviour
 
         beatStoryMode = (PlayerPrefs.GetInt("beatStoryMode", 0) == 1);
 
-        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
+        usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
         if (usePostProcessing == 0) {
             UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
             cameraData.renderPostProcessing = false;
@@ -136,9 +145,23 @@ public class Universal_Manager : MonoBehaviour
             UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
             cameraData.renderPostProcessing = true;
         }
+        if (usePostProcessing == 2) {
+            Camera.main.targetTexture = cameraEffect;
+            defaultRawImage.SetActive(false);
+            cameraEffectRawImage.SetActive(true);
+        } else {
+            Camera.main.targetTexture = defaultRenderTexture;
+            defaultRawImage.SetActive(true);
+            cameraEffectRawImage.SetActive(false);
+        }
+        
         if (Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.P)) {
             Debug.Log("Enabling Post Processing");
             PlayerPrefs.SetInt("useVisualEffects", 1);
+        }
+        if (Input.GetKey(KeyCode.P) && Input.GetKey(KeyCode.I)) {
+            Debug.Log("Using Camera Effect");
+            PlayerPrefs.SetInt("useVisualEffects", 2);
         }
         if (Input.GetKey(KeyCode.N) && Input.GetKey(KeyCode.P)) {
             Debug.Log("Disabling Post Processing");
