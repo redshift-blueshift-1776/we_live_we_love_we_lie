@@ -149,10 +149,12 @@ public class Universal_Manager : MonoBehaviour
             Camera.main.targetTexture = cameraEffect;
             defaultRawImage.SetActive(false);
             cameraEffectRawImage.SetActive(true);
+            Application.targetFrameRate = 10;
         } else {
             Camera.main.targetTexture = defaultRenderTexture;
             defaultRawImage.SetActive(true);
             cameraEffectRawImage.SetActive(false);
+            Application.targetFrameRate = -1;
         }
         
         if (Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.P)) {
