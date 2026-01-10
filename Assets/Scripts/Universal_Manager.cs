@@ -151,7 +151,8 @@ public class Universal_Manager : MonoBehaviour
             cameraEffectRawImage.SetActive(true);
             Application.targetFrameRate = 10;
         } else {
-            Camera.main.targetTexture = defaultRenderTexture;
+            // Camera.main.targetTexture = defaultRenderTexture;
+            Camera.main.targetTexture = null;
             defaultRawImage.SetActive(true);
             cameraEffectRawImage.SetActive(false);
             Application.targetFrameRate = -1;
