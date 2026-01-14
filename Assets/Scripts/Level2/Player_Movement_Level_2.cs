@@ -90,6 +90,9 @@ public class Player_Movement_Level_2 : MonoBehaviour
     [SerializeField] public bool banGrapple;
     public bool usedGrapple;
 
+    [Header("Particles")]
+    [SerializeField] public GameObject particleObject;
+
     // Assign in inspector or create procedurally
     public GameObject ropePrefab; // a thin cylinder scaled to (1,1,1)
 
@@ -139,6 +142,13 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
     void Update()
     {
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
+        if (usePostProcessing == 0) {
+            // Low Detail Mode
+            particleObject.SetActive(false);
+        } else {
+            particleObject.SetActive(true);
+        }
         if (gm.gameActive) {
             // modify player velocity
             // horizontalMovementHelper();
