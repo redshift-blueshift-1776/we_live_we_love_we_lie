@@ -166,10 +166,10 @@ public class Universal_Manager : MonoBehaviour
             Debug.Log("Using Image Pixel");
             PlayerPrefs.SetInt("useVisualEffects", 2);
         }
-        if (Input.GetKey(KeyCode.R) && Input.GetKey(KeyCode.L)) {
-            Debug.Log("Using Retro Look");
-            PlayerPrefs.SetInt("useVisualEffects", 3);
-        }
+        // if (Input.GetKey(KeyCode.R) && Input.GetKey(KeyCode.L)) {
+        //     Debug.Log("Using Retro Look");
+        //     PlayerPrefs.SetInt("useVisualEffects", 3);
+        // }
         if (Input.GetKey(KeyCode.N) && Input.GetKey(KeyCode.P)) {
             Debug.Log("Disabling Post Processing");
             PlayerPrefs.SetInt("useVisualEffects", 0);
