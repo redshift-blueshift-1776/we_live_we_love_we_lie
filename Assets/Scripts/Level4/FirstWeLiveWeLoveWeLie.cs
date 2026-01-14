@@ -72,6 +72,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] private GameObject cardInBriefcaseSafe;
     [SerializeField] private GameObject cardInBriefcaseEliminate;
     [SerializeField] public GameObject skipButton;
+    [SerializeField] public GameObject[] customWalls;
 
     [SerializeField] private TMP_Text opponentText;
 
@@ -134,6 +135,12 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         SeatSlider.value = 0;
         UpdateSeatText();
 
+        if (endless) {
+            numRed = 32;
+            numBlack = 32;
+            numPlayers = numRed + numBlack;   
+        }
+
         cm = cutsceneManager.GetComponent<CutsceneManager>();
         dm = dialogueManager.GetComponent<DialogueManager>();
         showSkipButton = false;
@@ -163,6 +170,15 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             blackLeft.text = $"Safes Left: {blacksRemaining}";
         }
         skipButton.SetActive(showSkipButton);
+        if (PlayerPrefs.GetInt("useVisualEffects", 0) == 0) {
+            foreach (GameObject wall in customWalls) {
+                wall.SetActive(false);
+            }
+        } else {
+            foreach (GameObject wall in customWalls) {
+                wall.SetActive(true);
+            }
+        }
     }
 
     public void OnSeatSliderChanged()
