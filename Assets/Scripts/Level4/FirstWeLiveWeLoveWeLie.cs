@@ -74,6 +74,12 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] public GameObject skipButton;
     [SerializeField] public GameObject[] customWalls;
 
+    [SerializeField] private GameObject customLevelObjects;
+    [SerializeField] private Slider PlayersSlider;
+    [SerializeField] private TMP_Text PlayersText;
+    [SerializeField] private Slider RatioSlider;
+    [SerializeField] private TMP_Text RatioText;
+
     [SerializeField] private TMP_Text opponentText;
 
     [SerializeField] private GameObject cutsceneManager;
@@ -136,9 +142,13 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         UpdateSeatText();
 
         if (endless) {
+            customLevelObjects.SetActive(true);
             numRed = 32;
             numBlack = 32;
-            numPlayers = numRed + numBlack;   
+            numPlayers = numRed + numBlack; 
+            UpdatePlayersText();  
+        } else {
+            customLevelObjects.SetActive(false);
         }
 
         cm = cutsceneManager.GetComponent<CutsceneManager>();
@@ -190,6 +200,20 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     {
         int seat = Mathf.RoundToInt(SeatSlider.value);
         SeatText.text = $"Seat: {seat + 1}";
+    }
+
+    public void OnPlayersSliderChanged()
+    {
+        UpdatePlayersText();
+    }
+
+    void UpdatePlayersText()
+    {
+        numPlayers = Mathf.RoundToInt(PlayersSlider.value);
+        numBlack = Mathf.RoundToInt(RatioSlider.value * numPlayers);
+        numRed = numPlayers - numBlack;
+        PlayersText.text = $"Players: {numPlayers}";
+        RatioText.text = $"{numBlack} safe, {numRed} eliminate";
     }
 
     public void ConfirmSeatChoice()
@@ -524,11 +548,13 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
             if (finalColor == CardColor.Red)
             {
-                if (bayesian) {
-                    PlayerPrefs.SetInt("PreviousLevel", 4);
-                } else {
-                    PlayerPrefs.SetInt("PreviousLevel", 15);
-                }
+                // if (bayesian) {
+                //     PlayerPrefs.SetInt("PreviousLevel", 4);
+                // } else {
+                //     PlayerPrefs.SetInt("PreviousLevel", 15);
+                // }
+                Scene currentScene = SceneManager.GetActiveScene();
+                PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
                 SceneManager.LoadScene(9);
             }
             else
@@ -573,11 +599,13 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         CardColor finalColor = players[humanPlayerIndex].GetCardColor();
         if (finalColor == CardColor.Red)
         {
-            if (bayesian) {
-                PlayerPrefs.SetInt("PreviousLevel", 4);
-            } else {
-                PlayerPrefs.SetInt("PreviousLevel", 15);
-            }
+            Scene currentScene = SceneManager.GetActiveScene();
+            PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
+            // if (bayesian) {
+            //     PlayerPrefs.SetInt("PreviousLevel", 4);
+            // } else {
+            //     PlayerPrefs.SetInt("PreviousLevel", 15);
+            // }
             SceneManager.LoadScene(9);
         }
         else
