@@ -138,14 +138,14 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
         SeatSlider.minValue = 0;
         SeatSlider.maxValue = numPlayers - 1;
-        SeatSlider.value = 0;
+        SeatSlider.value = (int) numPlayers / 2;
         UpdateSeatText();
 
         if (endless) {
             customLevelObjects.SetActive(true);
-            numRed = 32;
-            numBlack = 32;
-            numPlayers = numRed + numBlack; 
+            // numRed = 32;
+            // numBlack = 32;
+            // numPlayers = numRed + numBlack; 
             UpdatePlayersText();  
         } else {
             if (customLevelObjects != null) {
@@ -176,6 +176,11 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
             SceneManager.LoadScene(0);
+        }
+        if (SeatSelectCanvas.activeSelf && endless) {
+            SeatSlider.minValue = 0;
+            SeatSlider.maxValue = numPlayers - 1;
+            UpdateSeatText();
         }
         if (UICanvas.activeSelf) {
             redLeft.text = $"Eliminates Left: {redsRemaining}";
