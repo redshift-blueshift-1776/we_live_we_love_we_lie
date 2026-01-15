@@ -148,7 +148,9 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
             numPlayers = numRed + numBlack; 
             UpdatePlayersText();  
         } else {
-            customLevelObjects.SetActive(false);
+            if (customLevelObjects != null) {
+                customLevelObjects.SetActive(false);
+            }
         }
 
         cm = cutsceneManager.GetComponent<CutsceneManager>();
