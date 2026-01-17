@@ -68,15 +68,20 @@ public class Win_Zone : MonoBehaviour
                 nextSceneIndex = 0;
                 // SceneManager.LoadScene(0);
             } else if (sceneID == 24) {
+                // Open Exploration 1
                 nextSceneIndex = 25;
                 // SceneManager.LoadScene(25);
             } else if (sceneID == 27) {
-                nextSceneIndex = 29;
+                // Open Exploration 2
+                // nextSceneIndex = 29;
+                nextSceneIndex = 57;
                 // SceneManager.LoadScene(29);
             } else if (sceneID == 32) {
+                // Open Exploration After Level 1
                 nextSceneIndex = 33;
                 // SceneManager.LoadScene(33);
             } else if (sceneID == 36) {
+                // Open Exploration 3
                 nextSceneIndex = 38;
                 // SceneManager.LoadScene(15);
             } else if (sceneID == 39) { //open exploration after level 4
