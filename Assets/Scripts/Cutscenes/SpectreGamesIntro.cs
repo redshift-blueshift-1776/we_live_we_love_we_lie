@@ -63,7 +63,13 @@ public class SpectreGamesIntro : MonoBehaviour
             "The most valuable ticket prize in game show history...",
             "And competing for this spot in the game dev program...",
             "Are these ONE THOUSAND Students!",
-
+            "",
+            "This is the most amount of students ever competing for a ticket...",
+            "And it's one to the most prestigious program ever.",
+            "But only one of these students will be able to win...",
+            "Beating everyone around them...",
+            "In games of Strategy, Reflexes, Memory, Strength, and more...",
+            "Welcome to Spectre Games!",
         };
 
         foreach (string line in lines)
