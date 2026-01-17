@@ -143,11 +143,13 @@ public class Player_Movement_Level_2 : MonoBehaviour
     void Update()
     {
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
-        if (usePostProcessing == 0) {
-            // Low Detail Mode
-            particleObject.SetActive(false);
-        } else {
-            particleObject.SetActive(true);
+        if (particleObject != null) {
+            if (usePostProcessing == 0) {
+                // Low Detail Mode
+                particleObject.SetActive(false);
+            } else {
+                particleObject.SetActive(true);
+            }
         }
         if (gm.gameActive) {
             // modify player velocity

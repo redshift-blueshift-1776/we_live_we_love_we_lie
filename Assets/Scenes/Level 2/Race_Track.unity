@@ -29590,7 +29590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bddfe4e1c749c4ef88351db8a6ca74cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transition: {fileID: 0}
+  transition: {fileID: 4127499618764176704}
   transitionScript: {fileID: 0}
 --- !u!65 &2013590140
 BoxCollider:
@@ -29679,7 +29679,7 @@ Transform:
   m_LocalScale: {x: 10000, y: 1, z: 10000}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 6353061001174972238}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2014621778
 GameObject:
@@ -33106,6 +33106,8 @@ MonoBehaviour:
   grappleUnlocked: 0
   currentRopeLength: 0
   banGrapple: 0
+  usedGrapple: 0
+  particleObject: {fileID: 0}
   ropePrefab: {fileID: 8499501033176614423, guid: 75df89661d0fa44f3b068f2330f381c5, type: 3}
 --- !u!23 &1403213278163327217
 MeshRenderer:
@@ -39459,6 +39461,7 @@ Transform:
   - {fileID: 4413156017743405088}
   - {fileID: 8640382467997252495}
   - {fileID: 5463277369417594580}
+  - {fileID: 2013590143}
   - {fileID: 6362889162246311638}
   - {fileID: 4033798450646901384}
   - {fileID: 1616945211093865011}
@@ -42834,7 +42837,6 @@ SceneRoots:
   - {fileID: 500021126}
   - {fileID: 1104948370}
   - {fileID: 6353061001174972238}
-  - {fileID: 2013590143}
   - {fileID: 310741358}
   - {fileID: 202174847}
   - {fileID: 2054303512633162898}
