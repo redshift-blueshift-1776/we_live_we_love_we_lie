@@ -50,6 +50,16 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
 
 "16:You're the color and you hover in my mind fit for you",
 "16:You fix broken pieces chosen by a great mind, make it two",
+
+"8:When I saw you at this school",
+"8:I thought that you were cool",
+"8:Now a cycle has been done",
+"8:The two of us are one.",
+
+"9:I say O-o-o-o-o-o-o-o-oh.",
+"8:O-o-o-o-o-o-o-o-oh.",
+"8:O-o-o-o-o-o-o-o-oh.",
+"8:O-o-o-o-o-o-o-o-oh.",
         };
         audioSource = gameAudio.GetComponent<AudioSource>();
         secondsPerBeat = 60f / beatsPerMinute;
