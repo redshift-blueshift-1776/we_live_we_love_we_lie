@@ -237,6 +237,38 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 88f4770f9996f43bebfbb2ba2bbacc91, type: 2}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: beatsPerLoop
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: currentDance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: dances.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'dances.Array.data[5]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[0]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
     - target: {fileID: 8042814526847497068, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -303,6 +335,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dancer New (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: beatsPerLoop
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: currentDance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: dances.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'dances.Array.data[5]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[0]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
     - target: {fileID: 8070721850225206692, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5
@@ -602,7 +666,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 10000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -787,7 +851,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 16777215
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1003,7 +1067,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 16777215
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1324,6 +1388,38 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 4731389b138e04da9b3082ca38162e25, type: 2}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: beatsPerLoop
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: currentDance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: dances.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'dances.Array.data[5]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[0]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
     - target: {fileID: 8042814526847497068, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -1662,6 +1758,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dancer New
       objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: beatsPerLoop
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: currentDance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: dances.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'dances.Array.data[5]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[0]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
     - target: {fileID: 8070721850225206692, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2335,6 +2463,38 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 88f4770f9996f43bebfbb2ba2bbacc91, type: 2}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: beatsPerLoop
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: currentDance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: dances.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373673556917667665, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'dances.Array.data[5]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: m_Animations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[0]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
+    - target: {fileID: 7481308001557135348, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
+      propertyPath: 'm_Animations.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7400000, guid: 01ef8a011bb1048d6a179becae6b849d, type: 2}
     - target: {fileID: 8042814526847497068, guid: 916abcea6f025434e835c9d53c936f50, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -2852,6 +3012,10 @@ PlayableDirector:
     value: {fileID: 324246605}
   - key: {fileID: -243591928079464200, guid: 052dc7480921f4b1d95954a2bf53326c, type: 2}
     value: {fileID: 1361630585}
+  - key: {fileID: 876457959749695828, guid: 052dc7480921f4b1d95954a2bf53326c, type: 2}
+    value: {fileID: 1967527890}
+  - key: {fileID: 3305399028080455474, guid: 052dc7480921f4b1d95954a2bf53326c, type: 2}
+    value: {fileID: 182823600}
   m_ExposedReferences:
     m_References:
     - f00eacaceb2984cb289a820fc5bad2b3: {fileID: 346913487}
@@ -4422,7 +4586,7 @@ Transform:
   m_GameObject: {fileID: 2982446763669411499}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 5505, y: 0, z: -5180}
+  m_LocalPosition: {x: 5406.8, y: 0, z: -5180}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
