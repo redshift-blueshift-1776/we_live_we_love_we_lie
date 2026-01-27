@@ -2286,9 +2286,9 @@ MonoBehaviour:
   ringGap: 250
   gridSize: 100
   squareSize: 50
-  white: {r: 1, g: 1, b: 1, a: 0}
-  blue: {r: 0, g: 0, b: 1, a: 0}
-  black: {r: 0, g: 0, b: 0, a: 0}
+  white: {fileID: 0}
+  blue: {fileID: 0}
+  black: {fileID: 0}
 --- !u!1001 &428459691
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5960,6 +5960,10 @@ PrefabInstance:
       propertyPath: winText
       value: 
       objectReference: {fileID: 1663842215}
+    - target: {fileID: 2305681245508650155, guid: 83dc6296eda4d4aea818d5a1944a79ac, type: 3}
+      propertyPath: disableMinimap
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4161262104008936411, guid: 83dc6296eda4d4aea818d5a1944a79ac, type: 3}
       propertyPath: m_Resource
       value: 
@@ -8247,6 +8251,8 @@ MonoBehaviour:
   gameAudio: {fileID: 168550974}
   cam1: {fileID: 4691135881139931112}
   cam2: {fileID: 980084578}
+  minimap: {fileID: 0}
+  disableMinimap: 1
   gameActive: 0
   timer: 0
   timeLimit: 169
