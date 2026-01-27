@@ -60,6 +60,25 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
 "8:O-o-o-o-o-o-o-o-oh.",
 "8:O-o-o-o-o-o-o-o-oh.",
 "8:O-o-o-o-o-o-o-o-oh.",
+
+"63:",
+"8:When we go to any place,",
+"8:My thoughts fill up the space.",
+"8:When I look into your eyes,",
+"8:The sadness in me dies.",
+
+"16:You make any moment plenty joyful when I'm with you.",
+"16:Oh My Goodness, when you're hoodless, I see why I grow with you.",
+
+"8:If you ever need to cry,",
+"8:Iʼll be there by your side.",
+"8:I can make you full of joy,",
+"8:Your sadness be destroyed.",
+
+"9:I say O-o-o-o-o-o-o-o-oh.",
+"8:O-o-o-o-o-o-o-o-oh.",
+"8:O-o-o-o-o-o-o-o-oh.",
+"8:O-o-o-o-o-o-o-o-oh.",
         };
         audioSource = gameAudio.GetComponent<AudioSource>();
         secondsPerBeat = 60f / beatsPerMinute;
@@ -83,6 +102,7 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
 
         if (nextLyricTime == 0) {
             // Sync with the exact DSP time when the audio starts playing
+            // nextLyricTime = AudioSettings.dspTime - 0.5;
             nextLyricTime = AudioSettings.dspTime;
         }
 
