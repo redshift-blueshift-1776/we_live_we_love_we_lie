@@ -851,7 +851,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 16777215
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1067,7 +1067,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 16777215
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -2937,7 +2937,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f6b3d04d7665640c1b24b9c83f165ceb, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -3326,6 +3326,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2135029785}
   - component: {fileID: 2135029786}
+  - component: {fileID: 2135029787}
+  - component: {fileID: 2135029788}
   m_Layer: 0
   m_Name: Cutscene Manager
   m_TagString: Untagged
@@ -3396,12 +3398,54 @@ PlayableDirector:
     value: {fileID: 1176364612431890659}
   - key: {fileID: -1098519075797350758, guid: 052dc7480921f4b1d95954a2bf53326c, type: 2}
     value: {fileID: 1176364612140441575}
-  - key: {fileID: 261446902955570014, guid: 052dc7480921f4b1d95954a2bf53326c, type: 2}
-    value: {fileID: 571245810}
+  - key: {fileID: -434985690103556114, guid: 052dc7480921f4b1d95954a2bf53326c, type: 2}
+    value: {fileID: 2135029788}
   m_ExposedReferences:
     m_References:
     - f00eacaceb2984cb289a820fc5bad2b3: {fileID: 346913487}
     - 55322f86773f841029f673ba94a96649: {fileID: 432400042}
+--- !u!114 &2135029787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135029784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f61a73d57eb0747f29f8fc39f22477e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2135029788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135029784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: c4a657e3268b94ed898e0bbc518fe1b6, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2135029787}
+          m_TargetAssemblyTypeName: Level2to3Cutscene, Assembly-CSharp
+          m_MethodName: goToLevel3
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &3386214688370141
 GameObject:
   m_ObjectHideFlags: 0
@@ -11564,13 +11608,14 @@ GameObject:
   m_Component:
   - component: {fileID: 3381465792759150769}
   - component: {fileID: 7056304882982340218}
+  - component: {fileID: 7056304882982340219}
   m_Layer: 0
   m_Name: LyricsSyncDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &7056304882982340218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11588,6 +11633,36 @@ MonoBehaviour:
   gameAudio: {fileID: 1849710025}
   lyricsDisplay: {fileID: 1157710835521919608}
   beatsPerMinute: 120
+--- !u!114 &7056304882982340219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7056304882982340217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: c4a657e3268b94ed898e0bbc518fe1b6, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2135029787}
+          m_TargetAssemblyTypeName: Level2to3Cutscene, Assembly-CSharp
+          m_MethodName: goToLevel3
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!33 &7068382850962956512
 MeshFilter:
   m_ObjectHideFlags: 0
