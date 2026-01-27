@@ -34,6 +34,8 @@ public class ToFindWhatIveBecome : MonoBehaviour
     [Header("Cameras")]
     [SerializeField] public GameObject cam1;
     [SerializeField] public GameObject cam2;
+    [SerializeField] public GameObject minimap;
+    [SerializeField] public bool disableMinimap;
 
     public bool gameActive;
     public float timer;
@@ -64,6 +66,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
         gameAudio.SetActive(false);
         cam2.SetActive(true);
         cam1.SetActive(false);
+        minimap.SetActive(!disableMinimap);
         gameActive = false;
         timer = 0f;
 
