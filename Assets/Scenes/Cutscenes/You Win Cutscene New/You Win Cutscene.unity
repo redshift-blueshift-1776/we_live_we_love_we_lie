@@ -1414,6 +1414,8 @@ GameObject:
   m_Component:
   - component: {fileID: 54832631}
   - component: {fileID: 54832630}
+  - component: {fileID: 54832633}
+  - component: {fileID: 54832632}
   m_Layer: 0
   m_Name: Cutscene Manager
   m_TagString: Untagged
@@ -1433,7 +1435,7 @@ PlayableDirector:
   m_PlayableAsset: {fileID: 11400000, guid: 32043bbf902ba4ad3ac038b450c4a998, type: 2}
   m_InitialState: 1
   m_WrapMode: 2
-  m_DirectorUpdateMode: 1
+  m_DirectorUpdateMode: 0
   m_InitialTime: 0
   m_SceneBindings:
   - key: {fileID: 6935477319086840068, guid: 052dc7480921f4b1d95954a2bf53326c, type: 2}
@@ -1468,6 +1470,10 @@ PlayableDirector:
     value: {fileID: 360041576}
   - key: {fileID: 1531867763958558907, guid: 32043bbf902ba4ad3ac038b450c4a998, type: 2}
     value: {fileID: 686730117}
+  - key: {fileID: -2269600189996864952, guid: 32043bbf902ba4ad3ac038b450c4a998, type: 2}
+    value: {fileID: 54832633}
+  - key: {fileID: 8638303540270301359, guid: 32043bbf902ba4ad3ac038b450c4a998, type: 2}
+    value: {fileID: 1833493213}
   m_ExposedReferences:
     m_References:
     - f00eacaceb2984cb289a820fc5bad2b3: {fileID: 212601356}
@@ -1488,6 +1494,48 @@ Transform:
   - {fileID: 715207081}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &54832632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54832629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8559be654c8f84cf0a518b92e3a8a930, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &54832633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54832629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: afb642fe2fb654b029799ad78fd79a5d, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 54832632}
+          m_TargetAssemblyTypeName: NewYouWinCutscene, Assembly-CSharp
+          m_MethodName: goToFinalCutscene
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &60973351
 GameObject:
   m_ObjectHideFlags: 0
@@ -44809,10 +44857,10 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 90ef9273f11494d6fa75849e03ac5473, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
