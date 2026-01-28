@@ -26472,8 +26472,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967040
-  m_fontColor: {r: 0, g: 1, b: 1, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -65445,8 +65445,14 @@ MonoBehaviour:
   beatManager: {fileID: 0}
   gameActive: 0
   notes: []
+  noteblocks: []
   madeNotes: 0
   didBriefcases: 0
+  customLevel: 0
+  levelEditor: 0
+  simpleCustomMapMaker: {fileID: 0}
+  scmm: {fileID: 0}
+  customMapPath: 
 --- !u!1001 &1086101137
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92792,6 +92798,7 @@ MonoBehaviour:
   numFadeBuildings: 10
   doingStuff: 0
   phase: 0
+  customLevel: 0
 --- !u!1 &1477246715
 GameObject:
   m_ObjectHideFlags: 0
@@ -121951,7 +121958,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
