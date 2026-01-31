@@ -138,20 +138,17 @@ public class NPC_Open_Exploration : MonoBehaviour
                 };
                 npcd.rightName = "Jeff Johnson";
             }
-            if (npcName == "Colin") {
+            if (npcName == "Emma") {
                 npcd.lyricsText = new string[] {
                     "l:",
-                    "l:Hello Colin.",
-                    "r:Hi Wade.",
-                    "l:Have you heard about Spectre Games?",
-                    "r:Oh, I'm definitely doing that...",
-                    "l:Really? I didn't know you were into game dev...",
-                    "r:Well, I played Doguns and Planetary Platformer recently.",
-                    "r:So now I really want to join the program.",
-                    "r:And I'm sure I'm going to win.",
+                    "l:Hi Emma.",
+                    "r:Hi Wade!",
+                    "l:How are you feeling about Spectre Games?",
+                    "r:Oh, that first task was easy...",
+                    "r:I can't believe that 724 people got eliminated.",
                     "r:"
                 };
-                npcd.rightName = "Colin Norton";
+                npcd.rightName = "Emma Rose";
             }
         }
         if (levelID == 3) {
