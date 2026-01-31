@@ -607,7 +607,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1804488883}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LevelEditorMenu, Assembly-CSharp
         m_MethodName: OnNextPage
         m_Mode: 1
@@ -1264,7 +1264,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1804488883}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LevelEditorMenu, Assembly-CSharp
         m_MethodName: OnPrevPage
         m_Mode: 1
@@ -2444,12 +2444,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1545799021}
         m_TargetAssemblyTypeName: Transition, Assembly-CSharp
-        m_MethodName: ToMenu
-        m_Mode: 1
+        m_MethodName: ToSpecified
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 55
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4187,7 +4187,7 @@ GameObject:
   - component: {fileID: 1804488879}
   - component: {fileID: 1804488883}
   m_Layer: 5
-  m_Name: SongSelectCanvas
+  m_Name: MapSelectCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4292,7 +4292,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1804488878}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36cf37293748c47c1bc68af58c2fbf71, type: 3}
+  m_Script: {fileID: 11500000, guid: 1da3220cfeeed49e9bdbaed84d4a4ca2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pagePrefab: {fileID: 5818972585805815147, guid: 103a70f1f4efb48c093246d713cf5f74, type: 3}
@@ -4899,7 +4899,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Song Select
+  m_text: Map Select
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
