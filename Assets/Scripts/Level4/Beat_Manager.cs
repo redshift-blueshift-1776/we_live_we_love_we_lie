@@ -22,6 +22,10 @@ public class BeatManager : MonoBehaviour {
         secondsPerBeat = 60f / tempo;
     }
 
+    public double GetSecondsPerBeat() {
+        return secondsPerBeat;
+    }
+
     public double GetNextBeatTime() {
         double timeSinceStart = AudioSettings.dspTime - StartDspTime;
         int beatsPassed = Mathf.FloorToInt((float)(timeSinceStart / secondsPerBeat));
