@@ -91,7 +91,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
     public bool usedGrapple;
 
     [Header("Particles")]
-    [SerializeField] public GameObject particleObject;
+    [SerializeField] public GameObject particleObjectRain;
 
     // Assign in inspector or create procedurally
     public GameObject ropePrefab; // a thin cylinder scaled to (1,1,1)
@@ -143,12 +143,12 @@ public class Player_Movement_Level_2 : MonoBehaviour
     void Update()
     {
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
-        if (particleObject != null) {
+        if (particleObjectRain != null) {
             if (usePostProcessing == 0) {
                 // Low Detail Mode
-                particleObject.SetActive(false);
+                particleObjectRain.SetActive(false);
             } else {
-                particleObject.SetActive(true);
+                particleObjectRain.SetActive(true);
             }
         }
         if (gm.gameActive) {

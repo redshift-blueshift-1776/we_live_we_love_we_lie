@@ -55,9 +55,12 @@ public class ToFindWhatIveBecome : MonoBehaviour
 
     public int iteration;
 
+    [SerializeField] public GameObject particleObjectConfetti;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        particleObjectConfetti.SetActive(false);
         transitionScript = transition.GetComponent<Transition>();
         startCanvas.SetActive(true);
         gameCanvas.SetActive(false);
@@ -309,6 +312,15 @@ public class ToFindWhatIveBecome : MonoBehaviour
     public IEnumerator GameWin() {
         winCanvas.SetActive(true);
         gameActive = false;
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
+        if (particleObjectConfetti != null) {
+            if (usePostProcessing == 0) {
+                // Low Detail Mode
+                particleObjectConfetti.SetActive(false);
+            } else {
+                particleObjectConfetti.SetActive(true);
+            }
+        }
         yield return new WaitForSeconds(3f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
