@@ -298,6 +298,15 @@ public class ToFindWhatIveBecome : MonoBehaviour
         gameActive = false;
         winCanvas.SetActive(true);
         winText.text = $"Iteration {iteration} Complete! Shuffling...";
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
+        if (particleObjectConfetti != null) {
+            if (usePostProcessing == 0) {
+                // Low Detail Mode
+                particleObjectConfetti.SetActive(false);
+            } else {
+                particleObjectConfetti.SetActive(true);
+            }
+        }
         yield return new WaitForSeconds(3f);
         shuffleCollectibles(usingAlternate);
         gameActive = true;
@@ -307,6 +316,7 @@ public class ToFindWhatIveBecome : MonoBehaviour
         }
         iteration++;
         winCanvas.SetActive(false);
+        particleObjectConfetti.SetActive(false);
     }
 
     public IEnumerator GameWin() {

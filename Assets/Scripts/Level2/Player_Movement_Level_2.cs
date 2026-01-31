@@ -254,7 +254,11 @@ public class Player_Movement_Level_2 : MonoBehaviour
             // currentSpeed *= speedFactor;
             currentSpeed += moveInput * acceleration * Time.deltaTime * speedFactor;
             // Apply friction
-            currentSpeed *= friction;
+            float referenceFPS = 120f;
+
+            float frictionPerSecond = Mathf.Pow(friction, referenceFPS);
+            currentSpeed *= Mathf.Pow(frictionPerSecond, Time.deltaTime);
+            // currentSpeed *= friction;
         }
         // Accelerate and decelerate
         currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
