@@ -13,9 +13,12 @@ public class Collectible : MonoBehaviour
     public ToFindWhatIveBecome gm;
 
     [SerializeField] public GameObject collectSound;
+
+    [SerializeField] public GameObject particleObject;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
+        particleObject.SetActive(false);
         gameObject.SetActive(true);
         gm = gameManager.GetComponent<ToFindWhatIveBecome>();
         collectSound.SetActive(false);
@@ -28,6 +31,10 @@ public class Collectible : MonoBehaviour
     }
 
     public IEnumerator collect() {
+        int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
+        if (usePostProcessing != 0) {
+            particleObject.SetActive(true);
+        }
         int oldUsingAlternate = gm.usingAlternate;
         float duration = 2f;
         float elapsed = 0f;
@@ -42,6 +49,7 @@ public class Collectible : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
+        particleObject.SetActive(false);
         // Destroy(gameObject);
         if (!gm.endless) {
             gameObject.SetActive(false);
