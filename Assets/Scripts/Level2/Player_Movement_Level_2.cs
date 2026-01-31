@@ -226,11 +226,13 @@ public class Player_Movement_Level_2 : MonoBehaviour
             }
         }
         if (!seeARamp) {
-            if (Input.GetKey(KeyCode.Space)) {
-                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, transform.eulerAngles.y, 0), Time.deltaTime / 2f);
-            } else {
-                // Reset rotation when not on a ramp
-                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, transform.eulerAngles.y, 0), Time.deltaTime);
+            if (!Input.GetKey(KeyCode.B) || banGrapple) {
+                if (Input.GetKey(KeyCode.Space)) {
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, transform.eulerAngles.y, 0), Time.deltaTime / 2f);
+                } else {
+                    // Reset rotation when not on a ramp
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, transform.eulerAngles.y, 0), Time.deltaTime);
+                }
             }
         }
     }
