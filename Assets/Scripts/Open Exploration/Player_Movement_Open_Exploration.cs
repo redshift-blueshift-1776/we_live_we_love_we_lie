@@ -429,6 +429,17 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 }
                 bodySlamSound.GetComponent<AudioSource>().Play();
                 timeSinceLastKick = 0f;
+            } else
+            {
+                if (Input.GetKey(runKey)) {
+                    Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.1f, hit.moveDirection.z);
+                    hit.rigidbody.AddForce(horizontalDir * 30000 * Time.fixedDeltaTime);
+                } else {
+                    Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.01f, hit.moveDirection.z);
+                    hit.rigidbody.AddForce(horizontalDir * 6000 * Time.fixedDeltaTime);
+                }
+                bodySlamSound.GetComponent<AudioSource>().Play();
+                timeSinceLastKick = 0f;
             }
         }
     }
