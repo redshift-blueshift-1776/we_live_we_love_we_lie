@@ -86,6 +86,14 @@ public class NewYouWinCutscene : MonoBehaviour
             "Stick, Stick, Stick, Stick, Stickity Stack!:32:0:82",
             "Stick, Stick, Stickity Stack!:32:0:82",
             "Stick, Stick, Stick, Stick, Stickity Stack!:32:0:82",
+            "Stick, Stick, Stickity Stack!:255:0:255",
+            "Stick, Stick, Stick, Stick, Stickity Stack!:255:0:255",
+            "Stick, Stick, Stickity Stack!:255:0:0",
+            "Stick, Stick, Stick, Stick, Stickity Stack!:255:0:0",
+            "Stick, Stick, Stickity Stack!:32:0:82",
+            "Stick, Stick, Stick, Stick, Stickity Stack!:32:0:82",
+            "Stick, Stick, Stickity Stack!:255:255:0",
+            "Stick, Stick, Stick, Stick, Stickity Stack!:255:255:0",
         };
         ParseLyrics();
         StartCoroutine(StartCutsceneDSP());
