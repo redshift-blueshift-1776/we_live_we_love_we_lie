@@ -190,6 +190,13 @@ public class Universal_Manager : MonoBehaviour
             Cursor.visible = true;
             SceneManager.LoadScene(23);
         }
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.R))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        
         if (debug) {
             unlockedHard = new bool[8] {
                 true, true, true, true, true, true, true, true

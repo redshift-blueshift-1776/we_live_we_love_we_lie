@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Playables;
 
 public class NewYouWinCutscene : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class NewYouWinCutscene : MonoBehaviour
     [SerializeField] public string[] lyricsText;
     private List<LyricLineWithColor> lyrics;
     private int currentLine = 0;
+
+    [SerializeField] public PlayableDirector director;
+
+    public static double dspStartTime;
 
     void ParseLyrics() {
         lyrics = new List<LyricLineWithColor>();
@@ -54,6 +59,26 @@ public class NewYouWinCutscene : MonoBehaviour
             "I knew you could do it!:255:0:0",
         };
         ParseLyrics();
+        StartCoroutine(StartCutsceneDSP());
+    }
+
+    IEnumerator StartCutsceneDSP()
+    {
+        yield return null;
+
+        dspStartTime = AudioSettings.dspTime + 0.2;
+
+        director.time = 0;
+        director.initialTime = 0;
+
+        director.Play();
+
+        while (AudioSettings.dspTime < dspStartTime)
+        {
+            yield return null;
+        }
+
+        director.playableGraph.GetRootPlayable(0).SetSpeed(1);
     }
 
     // Update is called once per frame

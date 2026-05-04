@@ -29,11 +29,11 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
         }
     }
 
-    [SerializeField] private GameObject gameAudio;
+    // [SerializeField] private GameObject gameAudio;
     [SerializeField] private TMP_Text lyricsDisplay;
     [SerializeField] private float beatsPerMinute = 120f;
 
-    private AudioSource audioSource;
+    // private AudioSource audioSource;
     private int currentLine = 0;
     private double nextLyricTime;
     private float secondsPerBeat;
@@ -71,7 +71,7 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
 "16:Oh My Goodness, when you're hoodless, I see why I grow with you.",
 
 "8:If you ever need to cry,",
-"8:Iʼll be there by your side.",
+"8:I'll be there by your side.",
 "8:I can make you full of joy,",
 "8:Your sadness be destroyed.",
 
@@ -80,7 +80,7 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
 "8:O-o-o-o-o-o-o-o-oh.",
 "8:O-o-o-o-o-o-o-o-oh.",
         };
-        audioSource = gameAudio.GetComponent<AudioSource>();
+        // audioSource = gameAudio.GetComponent<AudioSource>();
         secondsPerBeat = 60f / beatsPerMinute;
         ParseLyrics();
         
@@ -92,24 +92,34 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if (!audioSource.isPlaying) {
-            // If the audio isn't playing, reset and show nothing
-            currentLine = 0;
-            nextLyricTime = 0;
+        if (Level2to3Cutscene.dspStartTime == 0)
+        {
+            return;
+        }
+
+        double songTime = AudioSettings.dspTime - Level2to3Cutscene.dspStartTime;
+
+        if (songTime < 0)
+        {
             lyricsDisplay.text = "";
             return;
         }
 
-        if (nextLyricTime == 0) {
-            // Sync with the exact DSP time when the audio starts playing
-            // nextLyricTime = AudioSettings.dspTime - 0.5;
-            nextLyricTime = AudioSettings.dspTime;
-        }
+        double accumulatedTime = 0;
 
-        if (currentLine < lyrics.Count && AudioSettings.dspTime >= nextLyricTime) {
-            lyricsDisplay.text = lyrics[currentLine].text;
-            nextLyricTime += lyrics[currentLine].duration * secondsPerBeat;
-            currentLine++;
+        for (int i = 0; i < lyrics.Count; i++)
+        {
+            accumulatedTime += lyrics[i].duration * secondsPerBeat;
+
+            if (songTime < accumulatedTime)
+            {
+                if (currentLine != i)
+                {
+                    currentLine = i;
+                    lyricsDisplay.text = lyrics[i].text;
+                }
+                break;
+            }
         }
     }
 
