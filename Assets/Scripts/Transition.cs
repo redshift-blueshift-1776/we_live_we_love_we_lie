@@ -22,6 +22,10 @@ public class Transition : MonoBehaviour
         transitionSound.SetActive(false);
         failSound.SetActive(false);
         currentCoroutine = null;
+        rightWall.SetActive(false);
+        leftWall.SetActive(false);
+        topWall.SetActive(false);
+        bottomWall.SetActive(false);
     }
 
     // Update is called once per frame
@@ -31,6 +35,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadLevel1() {
+        rightWall.SetActive(true);
+        leftWall.SetActive(true);
+        topWall.SetActive(true);
+        bottomWall.SetActive(true);
+
         transitionSound.SetActive(true);
         foreach (GameObject g in toDisable) {
             g.SetActive(false);
@@ -82,6 +91,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadLevelSelect() {
+        rightWall.SetActive(true);
+        leftWall.SetActive(true);
+        topWall.SetActive(true);
+        bottomWall.SetActive(true);
+
         transitionSound.SetActive(true);
         foreach (GameObject g in toDisable) {
             g.SetActive(false);
@@ -119,6 +133,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadMenu() {
+        rightWall.SetActive(true);
+        leftWall.SetActive(true);
+        topWall.SetActive(true);
+        bottomWall.SetActive(true);
+
         transitionSound.SetActive(true);
         foreach (GameObject g in toDisable) {
             g.SetActive(false);
@@ -156,6 +175,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadPrevious() {
+        rightWall.SetActive(true);
+        leftWall.SetActive(true);
+        topWall.SetActive(true);
+        bottomWall.SetActive(true);
+
         int n = PlayerPrefs.GetInt("PreviousLevel", 1);
         transitionSound.SetActive(true);
         foreach (GameObject g in toDisable) {
@@ -208,6 +232,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadFail() {
+        rightWall.SetActive(true);
+        leftWall.SetActive(true);
+        topWall.SetActive(true);
+        bottomWall.SetActive(true);
+
         failSound.SetActive(true);
         foreach (GameObject g in toDisable) {
             g.SetActive(false);
@@ -247,6 +276,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadSpecified(int sceneNum) {
+        rightWall.SetActive(true);
+        leftWall.SetActive(true);
+        topWall.SetActive(true);
+        bottomWall.SetActive(true);
+
         int n = sceneNum;
         transitionSound.SetActive(true);
         foreach (GameObject g in toDisable) {
