@@ -178,9 +178,9 @@ public class TheresAGhostInsideMe : MonoBehaviour
             if (boardsSolved == boardsToBeat) {
                 StartCoroutine(GameWin());
             }
-            timerGame.text = $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
+            timerGame.text = difficulty == 2 ? "Endless Mode" : $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
             ab.SetRatio(timer / timeLimit);
-            puzzles.text = $"Puzzles Beaten: {Mathf.Min(boardsSolved, 10)}{(difficulty == 2 ? "" : $"/{boardsToBeat}")}";
+            puzzles.text = $"Puzzles Beaten: {(difficulty == 2 ? boardsSolved : Mathf.Min(boardsSolved, 10))}{(difficulty == 2 ? "" : $"/{boardsToBeat}")}";
             timer += Time.deltaTime;
         }
     }
