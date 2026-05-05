@@ -155,7 +155,7 @@ public class Weapon : MonoBehaviour
 
     private void updateAmmoDisplay()
     {
-        string infinity = "¡Þ";
+        string infinity = "inf";
         if (primaryWeapon != "")
         {
             primaryAmmoText.text = $"{currPrimaryMag}/{(primaryRemainingAmmo >= 0 ? primaryRemainingAmmo : infinity)}";
