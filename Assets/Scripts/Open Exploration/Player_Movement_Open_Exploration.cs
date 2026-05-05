@@ -52,6 +52,11 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     private Vector3 initialPosition = Vector3.zero;
     private Quaternion initialRotation = Quaternion.identity;
 
+    [SerializeField] private GameObject leftLeg;
+    [SerializeField] private GameObject rightLeg;
+    [SerializeField] private GameObject leftArm;
+    [SerializeField] private GameObject rightArm;
+
     private void Awake()
     {
         initialPosition = gameObject.transform.position;
@@ -208,6 +213,28 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             inputDirection += transform.right;
+        }
+
+        if (inputDirection == Vector3.zero)
+        {
+            leftLeg.transform.rotation = Quaternion.Euler(0, 0, 0);
+            rightLeg.transform.rotation = Quaternion.Euler(0, 0, 0);
+            leftArm.transform.rotation = Quaternion.Euler(0, 0, 0);
+            rightArm.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (Input.GetKey(KeyCode.LeftShift))
+        {
+            leftLeg.transform.rotation = Quaternion.Euler(Mathf.Sin(Time.time * 17f) * 60f, 0, 0);
+            rightLeg.transform.rotation = Quaternion.Euler(-Mathf.Sin(Time.time * 17f) * 60f, 0, 0);
+            leftArm.transform.rotation = Quaternion.Euler(-Mathf.Sin(Time.time * 17f) * 60f, 0, 0);
+            rightArm.transform.rotation = Quaternion.Euler(Mathf.Sin(Time.time * 17f) * 60f, 0, 0);
+        }
+        else
+        {
+            leftLeg.transform.rotation = Quaternion.Euler(Mathf.Sin(Time.time * 5f) * 45f, 0, 0);
+            rightLeg.transform.rotation = Quaternion.Euler(-Mathf.Sin(Time.time * 5f) * 45f, 0, 0);
+            leftArm.transform.rotation = Quaternion.Euler(-Mathf.Sin(Time.time * 5f) * 45f, 0, 0);
+            rightArm.transform.rotation = Quaternion.Euler(Mathf.Sin(Time.time * 5f) * 45f, 0, 0);
         }
 
         inputDirection = Vector3.Normalize(inputDirection);
