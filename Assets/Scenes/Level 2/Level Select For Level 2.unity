@@ -1862,7 +1862,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &477746211
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2678,7 +2678,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -2702,7 +2702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: setDifficulty
+      value: ToSpecified
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -2714,7 +2714,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 1
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 1611295228087822412, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
@@ -2806,9 +2806,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8538603582460279404, guid: 47514b19c153d416b86c678784ee162b, type: 3}
       propertyPath: m_text
-      value: 'Hard
-
-'
+      value: Play
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4413,7 +4411,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: There's A Ghost Inside Me
+  m_text: Rejected Race Track Idea
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4440,7 +4438,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 185.9
+  m_fontSize: 202.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7648,6 +7646,7 @@ MonoBehaviour:
   - {fileID: 1105013332}
   - {fileID: 1096061513}
   - {fileID: 2087628312}
+  - {fileID: 477746210}
   pageContainer: {fileID: 1234542021}
   slideDuration: 0.5
   pageWidth: 1920
