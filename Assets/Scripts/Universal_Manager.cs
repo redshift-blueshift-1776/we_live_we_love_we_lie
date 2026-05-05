@@ -157,46 +157,79 @@ public class Universal_Manager : MonoBehaviour
             cameraEffectRawImage.SetActive(false);
             Application.targetFrameRate = -1;
         }
-        
+
+        // --------------------
+        // VISUAL "CHEAT CODES"
+        // --------------------
+
+        // High Detail Mode
         if (Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.P)) {
             Debug.Log("Enabling Post Processing");
             PlayerPrefs.SetInt("useVisualEffects", 1);
         }
+
+        // Super Low Detail Mode
         if (Input.GetKey(KeyCode.P) && Input.GetKey(KeyCode.I)) {
             Debug.Log("Using Image Pixel");
             PlayerPrefs.SetInt("useVisualEffects", 2);
         }
-        // if (Input.GetKey(KeyCode.R) && Input.GetKey(KeyCode.L)) {
-        //     Debug.Log("Using Retro Look");
-        //     PlayerPrefs.SetInt("useVisualEffects", 3);
-        // }
+
+        // Low Detail Mode
         if (Input.GetKey(KeyCode.N) && Input.GetKey(KeyCode.P)) {
             Debug.Log("Disabling Post Processing");
             PlayerPrefs.SetInt("useVisualEffects", 0);
         }
 
+        // Show Cursor
+        if (Input.GetKey(KeyCode.C) && Input.GetKey(KeyCode.V))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        // Hide Cursor
+        if (Input.GetKey(KeyCode.H) && Input.GetKey(KeyCode.C))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        // ------------------
+        // TRUE "CHEAT CODES"
+        // ------------------
+
+        // Quit to Menu
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             SceneManager.LoadScene(0);
         }
+
+        // Go to Level Select (MAIN CHEAT CODE)
         if (Input.GetKey(KeyCode.L) && Input.GetKey(KeyCode.S)) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             SceneManager.LoadScene(8);
         }
+
+        // Begin Story
         if (Input.GetKey(KeyCode.B) && Input.GetKey(KeyCode.S)) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             SceneManager.LoadScene(23);
         }
+
+        // Force Reset
         if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.R))
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-        
+
+        // ------------
+        // ACHIEVEMENTS
+        // ------------
         if (debug) {
             unlockedHard = new bool[8] {
                 true, true, true, true, true, true, true, true

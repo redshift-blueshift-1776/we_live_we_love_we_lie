@@ -39,7 +39,12 @@ public class MainMenu : MonoBehaviour
         startAnchoredPos3 = textRectTransform3.anchoredPosition;
         StartCoroutine(MenuLoop());
         StartCoroutine(DoTextStuff());
-        
+
+        GameObject difficultyInfo = GameObject.FindGameObjectWithTag("DifficultyInfo");
+        if (difficultyInfo != null)
+        {
+            Destroy(difficultyInfo);
+        }
     }
 
     // Update is called once per frame
