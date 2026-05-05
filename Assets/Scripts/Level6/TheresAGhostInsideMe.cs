@@ -178,8 +178,17 @@ public class TheresAGhostInsideMe : MonoBehaviour
             if (boardsSolved == boardsToBeat) {
                 StartCoroutine(GameWin());
             }
+
+            if (difficulty == 2)
+            {
+                ab.SetRatio(Mathf.PingPong(timer / timeLimit, 1));
+            }
+            else
+            {
+                ab.SetRatio(timer / timeLimit);
+            }
+
             timerGame.text = difficulty == 2 ? "Endless Mode" : $"Time Remaining: {timeLimit - Mathf.Floor(timer)}";
-            ab.SetRatio(timer / timeLimit);
             puzzles.text = $"Puzzles Beaten: {(difficulty == 2 ? boardsSolved : Mathf.Min(boardsSolved, 10))}{(difficulty == 2 ? "" : $"/{boardsToBeat}")}";
             timer += Time.deltaTime;
         }
