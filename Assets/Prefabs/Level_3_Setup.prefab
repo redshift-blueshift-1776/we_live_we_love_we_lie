@@ -2905,17 +2905,28 @@ MonoBehaviour:
   hard: 0
   endless: 0
   player: {fileID: 4630781536512482618}
+  goal: {fileID: 0}
   police: {fileID: 0}
   maze: {fileID: 6005058074843271332}
   wallMoveTime: 0
   timeLimit: 90
   timeToMemorize: 10
+  policeSpeed: 10
+  mazeGeneratorObject: {fileID: 0}
+  mazeGenerator: {fileID: 0}
+  mazeWidth: 5
+  mazeHeight: 5
+  cellSize: 50
+  topLeftX: -100
+  topLeftZ: 100
   cutsceneMaterial: {fileID: 2100000, guid: 95f1c2179e4c2435d9286dfe2cffb17a, type: 2}
   startCanvas: {fileID: 8627415288124647991}
   mazeCanvas: {fileID: 3278826606952062697}
   timerMaze: {fileID: 7494935715469682229}
   gameCanvas: {fileID: 9173596903460824067}
   timerGame: {fileID: 8052786935311268163}
+  iterationBackground: {fileID: 0}
+  iterationText: {fileID: 0}
   loadingAudio: {fileID: 1509220478733571523}
   gameAudio: {fileID: 2591008020099283597}
   alarmAudio: {fileID: 5250276728769298066}
@@ -2925,11 +2936,14 @@ MonoBehaviour:
   cam2: {fileID: 6937636907976779298}
   gameActive: 0
   timer: 0
+  iteration: 0
   hitRealWall: 0
   mg: {fileID: 0}
   mg_improved: {fileID: 0}
   transition: {fileID: 5551410948255815513}
   transitionScript: {fileID: 0}
+  startingSquare: {x: 0, y: 0}
+  goalSquare: {x: 0, y: 0}
 --- !u!1 &2742972715857366126
 GameObject:
   m_ObjectHideFlags: 0
@@ -4411,7 +4425,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -10616,7 +10630,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -11336,7 +11350,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -11775,6 +11789,10 @@ MonoBehaviour:
   Game: {fileID: 2667253907564593735}
   gameScript: {fileID: 0}
   xBound: 0
+  leftLegJoint: {fileID: 0}
+  rightLegJoint: {fileID: 0}
+  legRange: 0
+  legPeriod: 0
   bullet: {fileID: 6930206681932115964, guid: 1a22416494d7648d0809eb2beb407f1c, type: 3}
   speed: 10
   bulletSpawn: {fileID: 4056711467021812984}
