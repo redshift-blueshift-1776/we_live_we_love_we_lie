@@ -29,9 +29,9 @@ public class Television : MonoBehaviour
         gamesInfoLi = new string[] {
             "LSD:Wade Zunic",
             "Luca:Melora Oh, Mortem, Alessia Chou, and Lana Attis",
-            "BTD7:Wade Zunic and Allen Lively",
             "Doguns:Donald James and program",
             "Live Laugh Love:Lana Attis, Alessia Chou, Melora Oh",
+            "BTD7:Wade Zunic and Allen Lively",
             "EL HL:Mortem, Sam Chang, and Worng Retipulo",
             "GvG4:Candice Long and Joseph Momah",
             "God Made Guns:Lana Attis",
