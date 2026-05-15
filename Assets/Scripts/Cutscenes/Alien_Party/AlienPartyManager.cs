@@ -45,25 +45,27 @@ public class AlienPartyManager : MonoBehaviour
     [SerializeField] private Color bruhAintNoWayColor;
 
     public List<AlienPartyPlayer> alienPartyPlayers =
-        new List<AlienPartyPlayer>();
+        new();
 
     [SerializeField] private TMP_Text infoText;
     [SerializeField] private TMP_Text resultText;
 
     [Header("Alien Party Playable")]
     [SerializeField] private bool isPlayableRound = false;
-    [SerializeField] private GameObject uiCanvas;
+    [SerializeField] private bool randomize = false;
+    [SerializeField] private GameObject interactCanvas;
     [SerializeField] private Slider numberPicker; // Limited to only 0 to m-1 for this version.
+    [SerializeField] private TMP_Text sliderText;
     public bool canPlay = false;
 
     [Header("Alien Party Parameters")]
     [SerializeField] private int alien_party_m = 10;
     [SerializeField] private int alien_party_k = 5;
 
-    public List<int> alien_party_guesses = new List<int>();
+    public List<int> alien_party_guesses = new();
     public float alien_party_median = -1f;
     public float alien_party_target = -1f;
-    public List<float> alien_party_profits = new List<float>(); // Will assume that the guesses and profits are in the same order
+    public List<float> alien_party_profits = new(); // Will assume that the guesses and profits are in the same order
 
     [Header("Camera")]
     [SerializeField] private Camera mainCamera;
@@ -79,22 +81,28 @@ public class AlienPartyManager : MonoBehaviour
     {
         resultText.text = "";
         infoText.text = "";
+        if (randomize)
+        {
+            alien_party_m = UnityEngine.Random.Range(5, 20);
+            alien_party_k = UnityEngine.Random.Range(0, 20);
+        }
         SetupPlayers();
 
         if (isPlayableRound)
         {
-            uiCanvas.SetActive(true);
+            interactCanvas.SetActive(true);
 
             numberPicker.minValue = 0;
             numberPicker.maxValue = alien_party_m - 1;
 
-            canPlay = true;
+            canPlay = false;
 
-            infoText.text =
-                "Choose your landing segment!";
+            infoText.text = "k = " + alien_party_k + ", m = " + alien_party_m +
+                "!\nChoose your landing segment!";
         }
         else
         {
+            interactCanvas.SetActive(false);
             StartCoroutine(VisualSequence());
         }
     }
@@ -102,7 +110,10 @@ public class AlienPartyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!canPlay && isPlayableRound)
+        {
+            sliderText.text = "" + numberPicker.value;
+        }
     }
 
     public GameObject SpawnPersonWithColor(Color c)
@@ -132,14 +143,15 @@ public class AlienPartyManager : MonoBehaviour
     )
     {
         AlienPartyPlayer p =
-            new AlienPartyPlayer();
+            new()
+            {
+                playerName = playerName,
+                guess = guess,
+                playerColor = c,
+                isUser = isUser,
 
-        p.playerName = playerName;
-        p.guess = guess;
-        p.playerColor = c;
-        p.isUser = isUser;
-
-        p.body = SpawnPersonWithColor(c);
+                body = SpawnPersonWithColor(c)
+            };
 
         alienPartyPlayers.Add(p);
     }
@@ -164,7 +176,7 @@ public class AlienPartyManager : MonoBehaviour
                     0.77592873f * alien_party_k
                     + 0.99049305f * alien_party_m
                     - 0.65541429f
-                ),
+                ) % alien_party_m,
                 0,
                 alien_party_m - 1
             );
@@ -191,7 +203,7 @@ public class AlienPartyManager : MonoBehaviour
     // Let user select their number
     public void SetUserGuess()
     {
-        if (!canPlay)
+        if (canPlay)
         {
             return;
         }
@@ -203,9 +215,9 @@ public class AlienPartyManager : MonoBehaviour
             true
         );
 
-        canPlay = false;
+        canPlay = true;
 
-        uiCanvas.SetActive(false);
+        interactCanvas.SetActive(false);
 
         StartCoroutine(VisualSequence());
     }
@@ -239,7 +251,7 @@ public class AlienPartyManager : MonoBehaviour
             % alien_party_m;
 
         // Calculate losses
-        List<float> negLosses = new List<float>();
+        List<float> negLosses = new();
 
         foreach (AlienPartyPlayer p in alienPartyPlayers)
         {
@@ -273,12 +285,8 @@ public class AlienPartyManager : MonoBehaviour
         float duration
     )
     {
-        Vector3 startPos =
-            mainCamera.transform.position;
-
-        Quaternion startRot =
-            mainCamera.transform.rotation;
-
+        
+        mainCamera.transform.GetPositionAndRotation(out Vector3 startPos, out Quaternion startRot);
         float elapsed = 0f;
 
         while (elapsed < duration)
@@ -292,29 +300,26 @@ public class AlienPartyManager : MonoBehaviour
                     elapsed / duration
                 );
 
-            mainCamera.transform.position =
+            
+            mainCamera.transform.SetPositionAndRotation(
                 Vector3.Lerp(
                     startPos,
                     targetPos,
                     t
-                );
-
-            mainCamera.transform.rotation =
+                ),
                 Quaternion.Slerp(
                     startRot,
                     targetRot,
                     t
-                );
-
+                ));
             yield return null;
         }
 
-        mainCamera.transform.position =
-            targetPos;
-
-        mainCamera.transform.rotation =
-            targetRot;
-}
+        
+        mainCamera.transform.SetPositionAndRotation(
+            targetPos,
+            targetRot);
+    }
 
     IEnumerator MovePlayerToGuess(
         AlienPartyPlayer p
@@ -363,7 +368,7 @@ public class AlienPartyManager : MonoBehaviour
 
             if (Vector3.Distance(mainCamera.transform.position, spawnedUFO.transform.position) > 100f)
             {
-                mainCamera.transform.position += mainCamera.transform.forward * Time.deltaTime * 125f;
+                mainCamera.transform.position += 125f * Time.deltaTime * mainCamera.transform.forward;
             }
 
             yield return null;
@@ -387,7 +392,7 @@ public class AlienPartyManager : MonoBehaviour
 
             Vector3 lineupPos =
                 locustWalkStart.transform.position
-                + Vector3.right * i * 20f;
+                + 20f * i * Vector3.right;
 
             p.body.transform.position =
                 lineupPos;
@@ -525,7 +530,7 @@ public class AlienPartyManager : MonoBehaviour
 
         Vector3 finalPos =
             end
-            + new Vector3(-300, 15, -30);
+            + new Vector3(-300, 15, -20);
 
         Quaternion finalRot =
             Quaternion.LookRotation(

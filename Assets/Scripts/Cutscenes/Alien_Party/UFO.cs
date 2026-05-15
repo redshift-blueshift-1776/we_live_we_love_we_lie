@@ -56,10 +56,9 @@ public class UFO : MonoBehaviour
 
             float angle = i * 360f / numLights;
 
-            newLight.transform.localRotation = Quaternion.Euler(0, angle, 0);
-
-            newLight.transform.localPosition = Quaternion.Euler(0, angle, 0) * Vector3.forward * 25f;
-
+            
+            newLight.transform.SetLocalPositionAndRotation(Quaternion.Euler(0, angle, 0) * Vector3.forward * 25f,
+                Quaternion.Euler(0, angle, 0));
             newLight.transform.localScale = new Vector3(5, 1, 5);
 
             lights.Add(newLight);
@@ -85,7 +84,7 @@ public class UFO : MonoBehaviour
 
     void RotateLights()
     {
-        lightPivot.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+        lightPivot.Rotate(rotationSpeed * Time.deltaTime * Vector3.up);
     }
 
     void FlashLights()
@@ -94,9 +93,7 @@ public class UFO : MonoBehaviour
 
         foreach (GameObject lightObj in lights)
         {
-            Light l = lightObj.GetComponent<Light>();
-
-            if (l != null)
+            if (lightObj.TryGetComponent<Light>(out var l))
             {
                 l.intensity = Mathf.Lerp(0.5f, 3f, t);
             }
@@ -131,9 +128,8 @@ public class UFO : MonoBehaviour
 
             transform.rotation = Quaternion.Euler(wobbleX, t * 360f, wobbleZ);
 
-            trackingCamera.transform.position = new Vector3(-500, 100, 0) + transform.position;
-            trackingCamera.transform.rotation = Quaternion.Euler(0, 90, 0);
-
+            trackingCamera.transform.SetPositionAndRotation(new Vector3(-500, 100, 0) + transform.position,
+                Quaternion.Euler(0, 90, 0));
             yield return null;
         }
 
@@ -149,9 +145,8 @@ public class UFO : MonoBehaviour
 
             transform.rotation = Quaternion.Lerp(initialRotation, Quaternion.identity, t);
 
-            trackingCamera.transform.position = Vector3.Lerp(new Vector3(-500, 100, 0), new Vector3(-420, 67, 0), t) + transform.position;
-            trackingCamera.transform.rotation = Quaternion.Euler(0, 90, 0);
-
+            trackingCamera.transform.SetPositionAndRotation(Vector3.Lerp(new Vector3(-500, 100, 0),
+                new Vector3(-420, 67, 0), t) + transform.position, Quaternion.Euler(0, 90, 0));
             yield return null;
         }
 
@@ -184,16 +179,15 @@ public class UFO : MonoBehaviour
             spawnedBomb.transform.position =
                 Vector3.Lerp(bombStart, bombEnd, t);
 
-            trackingCamera.transform.position = Vector3.Lerp(new Vector3(-420, 67, 0), new Vector3(-320, 167, 0), t) + transform.position;
-            trackingCamera.transform.rotation = Quaternion.Lerp(Quaternion.Euler(0, 90, 0), Quaternion.Euler(45, 90, 0), t);
-
+            trackingCamera.transform.SetPositionAndRotation(Vector3.Lerp(new Vector3(-420, 67, 0),
+                new Vector3(-320, 167, 0), t) + transform.position,
+                Quaternion.Lerp(Quaternion.Euler(0, 90, 0), Quaternion.Euler(45, 90, 0), t));
             yield return null;
         }
 
         // Detach bomb
-        Rigidbody rb = spawnedBomb.GetComponent<Rigidbody>();
-
-        if (rb != null)
+        
+        if (spawnedBomb.TryGetComponent<Rigidbody>(out var rb))
         {
             rb.isKinematic = false;
             rb.linearVelocity = Vector3.down * bombDropForce;
