@@ -22,8 +22,8 @@ public class UFO : MonoBehaviour
     public List<GameObject> lights = new List<GameObject>();
 
     [Header("UFO Movements")]
-    [SerializeField] private Transform startPosition;
-    [SerializeField] private Transform endPosition;
+    [SerializeField] public Transform startPosition;
+    [SerializeField] public Transform endPosition;
     [SerializeField] private float flightDuration = 10f;
     [SerializeField] private float holdingTime = 2f;
     [SerializeField] private float wobble = 30f; // Tilt in degrees from (-wobble, wobble)
@@ -43,7 +43,7 @@ public class UFO : MonoBehaviour
     [SerializeField] private AudioSource explosionSound;
 
     [Header("Camera")]
-    [SerializeField] private GameObject trackingCamera;
+    [SerializeField] public GameObject trackingCamera;
     public bool manualTrackCamera = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
