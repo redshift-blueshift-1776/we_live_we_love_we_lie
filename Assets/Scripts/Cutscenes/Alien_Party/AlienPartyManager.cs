@@ -47,6 +47,8 @@ public class AlienPartyManager : MonoBehaviour
     public List<AlienPartyPlayer> alienPartyPlayers =
         new();
 
+    [SerializeField] private GameObject broadcastVisual;
+
     [SerializeField] private TMP_Text infoText;
     [SerializeField] private TMP_Text resultText;
 
@@ -102,7 +104,10 @@ public class AlienPartyManager : MonoBehaviour
         }
         else
         {
-            interactCanvas.SetActive(false);
+            if (interactCanvas != null)
+            {
+                interactCanvas.SetActive(false);
+            }
             StartCoroutine(VisualSequence());
         }
     }
@@ -355,6 +360,23 @@ public class AlienPartyManager : MonoBehaviour
 
             yield return null;
         }
+
+        GameObject newBroadcastVisual = Instantiate(broadcastVisual, p.body.transform);
+        newBroadcastVisual.GetComponent<AlienPartyBroadcastVisual>().Setup(
+            newBroadcastVisual.transform.position,
+            newBroadcastVisual.transform.position + new Vector3(0, 500, 0),
+            newBroadcastVisual.transform.position + new Vector3(0, 1000, 0) + Vector3.Lerp(
+                locustWalkStart.position,
+                locustWalkEnd.position,
+                alien_party_k / (alien_party_m + 0f)
+            ) - locustWalkStart.position,
+            newBroadcastVisual.transform.position + new Vector3(0, 1500, 0) + Vector3.Lerp(
+                locustWalkStart.position,
+                locustWalkEnd.position,
+                alien_party_k / (alien_party_m + 0f)
+            ) - locustWalkStart.position,
+            p.playerColor
+        );
     }
 
     IEnumerator FollowUFO(GameObject spawnedUFO, float trackDuration)
@@ -368,7 +390,7 @@ public class AlienPartyManager : MonoBehaviour
 
             if (Vector3.Distance(mainCamera.transform.position, spawnedUFO.transform.position) > 100f)
             {
-                mainCamera.transform.position += 125f * Time.deltaTime * mainCamera.transform.forward;
+                mainCamera.transform.position += 200f * Time.deltaTime * mainCamera.transform.forward;
             }
 
             yield return null;
@@ -446,6 +468,14 @@ public class AlienPartyManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(4f);
+
+        yield return StartCoroutine(
+            MoveCamera(
+                overviewCamPoint.transform.position + new Vector3(0, 100, 0),
+                Quaternion.Euler(0, 60, 0),
+                4f
+            )
+        );
 
         // Calculate results
         CalculateAndUpdateProfits();
