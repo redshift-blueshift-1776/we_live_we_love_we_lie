@@ -36,7 +36,7 @@ public class AlienPartyManager : MonoBehaviour
     [SerializeField] private float ufoFlightDuration = 10f;
     [SerializeField] private float ufoHoldingTime = 2f;
     public GameObject ufoCamera;
-    [SerializeField] private GameObject otherCamera;
+    // [SerializeField] private GameObject otherCamera;
     [SerializeField] private GameObject genericPersonPrefab;
     [SerializeField] private Color zeroZeropyColor;
     [SerializeField] private Color hannahHalfColor;
@@ -64,6 +64,15 @@ public class AlienPartyManager : MonoBehaviour
     public float alien_party_median = -1f;
     public float alien_party_target = -1f;
     public List<float> alien_party_profits = new List<float>(); // Will assume that the guesses and profits are in the same order
+
+    [Header("Camera")]
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private Transform overviewCamPoint;
+    [SerializeField] private Transform playerCamPoint;
+    [SerializeField] private Transform finalCamPoint;
+    [SerializeField] private Transform bombCamPoint;
+
+    [SerializeField] private float cameraMoveDuration = 2f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -258,6 +267,55 @@ public class AlienPartyManager : MonoBehaviour
     // ------------
     // Visual Stuff
     // ------------
+    IEnumerator MoveCamera(
+        Vector3 targetPos,
+        Quaternion targetRot,
+        float duration
+    )
+    {
+        Vector3 startPos =
+            mainCamera.transform.position;
+
+        Quaternion startRot =
+            mainCamera.transform.rotation;
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            float t =
+                Mathf.SmoothStep(
+                    0f,
+                    1f,
+                    elapsed / duration
+                );
+
+            mainCamera.transform.position =
+                Vector3.Lerp(
+                    startPos,
+                    targetPos,
+                    t
+                );
+
+            mainCamera.transform.rotation =
+                Quaternion.Slerp(
+                    startRot,
+                    targetRot,
+                    t
+                );
+
+            yield return null;
+        }
+
+        mainCamera.transform.position =
+            targetPos;
+
+        mainCamera.transform.rotation =
+            targetRot;
+}
+
     IEnumerator MovePlayerToGuess(
         AlienPartyPlayer p
     )
@@ -294,6 +352,26 @@ public class AlienPartyManager : MonoBehaviour
         }
     }
 
+    IEnumerator FollowUFO(GameObject spawnedUFO, float trackDuration)
+    {
+        float elapsed = 0f;
+        while (spawnedUFO != null && elapsed < trackDuration)
+        {
+            mainCamera.transform.LookAt(
+                spawnedUFO.transform
+            );
+
+            if (Vector3.Distance(mainCamera.transform.position, spawnedUFO.transform.position) > 100f)
+            {
+                mainCamera.transform.position += mainCamera.transform.forward * Time.deltaTime * 125f;
+            }
+
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
+        yield return null;
+    }
+
     public IEnumerator VisualSequence()
     {
         infoText.text =
@@ -309,16 +387,49 @@ public class AlienPartyManager : MonoBehaviour
 
             Vector3 lineupPos =
                 locustWalkStart.transform.position
-                + Vector3.forward * i * 10f;
+                + Vector3.right * i * 20f;
 
             p.body.transform.position =
                 lineupPos;
         }
 
-        yield return new WaitForSeconds(2f);
+        foreach (AlienPartyPlayer p in alienPartyPlayers)
+        {
+            Vector3 camPos2 =
+                p.body.transform.position
+                + new Vector3(0, 15, -30);
+
+            Quaternion camRot2 =
+                Quaternion.LookRotation(
+                    p.body.transform.position - camPos2 + new Vector3(0, 10, 0)
+                );
+
+            yield return StartCoroutine(
+                MoveCamera(
+                    camPos2,
+                    camRot2,
+                    1.5f
+                )
+            );
+
+            infoText.text =
+                p.playerName
+                + "\nGuess: "
+                + p.guess;
+
+            yield return new WaitForSeconds(1.5f);
+        }
 
         infoText.text =
             "Claiming land on Locust Walk...";
+
+        yield return StartCoroutine(
+            MoveCamera(
+                overviewCamPoint.transform.position,
+                overviewCamPoint.transform.rotation,
+                1.5f
+            )
+        );
 
         // Move players
         foreach (AlienPartyPlayer p
@@ -353,6 +464,9 @@ public class AlienPartyManager : MonoBehaviour
         UFO ufoScript =
             spawnedUFO.GetComponent<UFO>();
 
+        ufoScript.flightDuration = ufoFlightDuration;
+        ufoScript.holdingTime = ufoHoldingTime;
+
         spawnedUFO.transform.position =
             ufoStartPosition.position;
 
@@ -373,10 +487,58 @@ public class AlienPartyManager : MonoBehaviour
         
         ufoScript.endPosition = targetLight.transform;
 
-        yield return new WaitForSeconds(
-            ufoFlightDuration
-            + ufoHoldingTime
-            + 2f
+        Vector3 camPos =
+            ufoStartPosition.position
+            + new Vector3(-80, 40, -80);
+
+        Quaternion camRot =
+            Quaternion.LookRotation(
+                spawnedUFO.transform.position
+                - camPos
+            );
+
+        yield return StartCoroutine(
+            MoveCamera(
+                camPos,
+                camRot,
+                1f
+            )
+        );
+        
+        camRot =
+            Quaternion.LookRotation(
+                spawnedUFO.transform.position
+                - camPos
+            );
+
+        yield return StartCoroutine(
+            MoveCamera(
+                camPos,
+                camRot,
+                1f
+            )
+        );
+
+        yield return StartCoroutine(
+            FollowUFO(spawnedUFO, ufoFlightDuration)
+        );
+
+        Vector3 finalPos =
+            end
+            + new Vector3(-300, 15, -30);
+
+        Quaternion finalRot =
+            Quaternion.LookRotation(
+                locustWalkEnd.position
+                - finalPos
+            );
+
+        yield return StartCoroutine(
+            MoveCamera(
+                finalPos,
+                finalRot,
+                2f
+            )
         );
 
         // Show profits

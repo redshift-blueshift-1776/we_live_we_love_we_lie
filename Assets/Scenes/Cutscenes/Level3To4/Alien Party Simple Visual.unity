@@ -381,7 +381,6 @@ MonoBehaviour:
   ufoFlightDuration: 10
   ufoHoldingTime: 2
   ufoCamera: {fileID: 324246605}
-  otherCamera: {fileID: 324246605}
   genericPersonPrefab: {fileID: 2982446765147625492, guid: fbba2d858f9fb418ab5d8fe7114a3ed4, type: 3}
   zeroZeropyColor: {r: 0, g: 0, b: 0, a: 0}
   hannahHalfColor: {r: 0.5019608, g: 0, b: 1, a: 0}
@@ -401,6 +400,12 @@ MonoBehaviour:
   alien_party_median: -1
   alien_party_target: -1
   alien_party_profits: []
+  mainCamera: {fileID: 324246608}
+  overviewCamPoint: {fileID: 1502867728}
+  playerCamPoint: {fileID: 1502867728}
+  finalCamPoint: {fileID: 1502867728}
+  bombCamPoint: {fileID: 1502867728}
+  cameraMoveDuration: 2
 --- !u!4 &482968424
 Transform:
   m_ObjectHideFlags: 0
@@ -624,7 +629,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 50}
+  m_SizeDelta: {x: 1000, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1718092420
 MonoBehaviour:
@@ -673,7 +678,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.75
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

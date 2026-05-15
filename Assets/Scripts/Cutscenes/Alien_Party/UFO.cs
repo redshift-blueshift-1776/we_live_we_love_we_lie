@@ -24,8 +24,8 @@ public class UFO : MonoBehaviour
     [Header("UFO Movements")]
     [SerializeField] public Transform startPosition;
     [SerializeField] public Transform endPosition;
-    [SerializeField] private float flightDuration = 10f;
-    [SerializeField] private float holdingTime = 2f;
+    [SerializeField] public float flightDuration = 10f;
+    [SerializeField] public float holdingTime = 2f;
     [SerializeField] private float wobble = 30f; // Tilt in degrees from (-wobble, wobble)
     [SerializeField] private float wobbleSpeed = 2f;
 
