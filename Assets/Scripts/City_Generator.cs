@@ -14,6 +14,8 @@ public class City_Generator : MonoBehaviour
     [SerializeField] private bool menuOrLevelSelect;
 
     [Header("Dimensions")]
+    [SerializeField] public int x_start;
+    [SerializeField] public int z_start;
     [SerializeField] public int x_dimension; // Should be an odd number
     [SerializeField] public int z_dimension; // Should be an odd number
     [SerializeField] public float x_length;
@@ -140,7 +142,7 @@ public class City_Generator : MonoBehaviour
 
         newBuilding.transform.position = getGlobalCoordinates(i, 0, j);
 
-        int height = UnityEngine.Random.Range(1, 6) * 15;
+        int height = UnityEngine.Random.Range(1, 16) * 15;
         newBuilding.transform.localScale = new Vector3(x_length - road_width - 2 * sidewalk_width, (float) height, z_length - road_width - 2 * sidewalk_width);
     }
 
@@ -155,18 +157,18 @@ public class City_Generator : MonoBehaviour
 
         GameObject newRoof = Instantiate(roof);
         newRoof.transform.position = getGlobalCoordinates(i, height, j);
-        newRoof.transform.localScale = 100f / 12f * new Vector3(x_length - road_width - 2 * sidewalk_width, Mathf.Min(x_length - road_width - 2 * sidewalk_width, (z_length - road_width - 2 * sidewalk_width) / 2f), (z_length - road_width - 2 * sidewalk_width) / 2f);
+        newRoof.transform.localScale = 1f * new Vector3(x_length - road_width - 2 * sidewalk_width, Mathf.Min(x_length - road_width - 2 * sidewalk_width, (z_length - road_width - 2 * sidewalk_width) / 2f), (z_length - road_width - 2 * sidewalk_width) / 2f);
     }
 
     public void GenerateSpecialRoofedBuilding(int i, int j)
     {
         GameObject newBuilding = Instantiate(building);
-        float globalX = (i - (x_dimension - 1) / 2) * x_length;
-        float globalZ = (j - (z_dimension - 1) / 2) * z_length;
+        float globalX = (i - (x_dimension - 1) / 2) * x_length + x_start;
+        float globalZ = (j - (z_dimension - 1) / 2) * z_length + z_start;
 
         newBuilding.transform.position = new Vector3(globalX, 0, globalZ);
 
-        int height = UnityEngine.Random.Range(1, 6) * 15;
+        int height = UnityEngine.Random.Range(1, 12) * 15;
         float building_x_length = x_length - road_width - 2 * sidewalk_width;
         float building_z_length = z_length - road_width - 2 * sidewalk_width;
         newBuilding.transform.localScale = new Vector3(building_x_length, (float)height, building_z_length);
@@ -185,18 +187,18 @@ public class City_Generator : MonoBehaviour
             globalZ
             );
         newSpecialRoof.transform.position = roofPos1;
-        newSpecialRoof.transform.localScale = 100f / 12f * new Vector3(true_width, true_width, (building_z_length + sidewalk_width) / 2);
+        newSpecialRoof.transform.localScale = 1f * new Vector3(true_width, true_width, (building_z_length + sidewalk_width) / 2);
 
         newSpecialRoof = Instantiate(specialRoof);
         newSpecialRoof.transform.position = roofPos2;
         newSpecialRoof.transform.localRotation = Quaternion.Euler(0, 180, 0);
-        newSpecialRoof.transform.localScale = 100f / 12f * new Vector3(true_width, true_width, (building_z_length + sidewalk_width) / 2);
+        newSpecialRoof.transform.localScale = 1f * new Vector3(-true_width, true_width, (building_z_length + sidewalk_width) / 2);
 
         if (2 * (building_x_length / 2f - sidewalk_width) > 0f)
         {
             GameObject newRoof = Instantiate(roof);
             newRoof.transform.position = new Vector3(globalX, height, globalZ);
-            newRoof.transform.localScale = 100f / 12f * new Vector3(
+            newRoof.transform.localScale = 1f * new Vector3(
                 Mathf.Max(building_x_length - building_z_length, 0),
                 true_width,
                 (building_z_length + sidewalk_width) / 2);
@@ -215,8 +217,8 @@ public class City_Generator : MonoBehaviour
     public GameObject GenerateDoorRoom(int i, int j, Color c)
     {
         GameObject newDoorRoom = Instantiate(doorRoom);
-        float globalX = (i - (x_dimension - 1) / 2) * x_length;
-        float globalZ = (j - (z_dimension - 1) / 2) * z_length;
+        float globalX = (i - (x_dimension - 1) / 2) * x_length + x_start;
+        float globalZ = (j - (z_dimension - 1) / 2) * z_length + z_start;
 
         newDoorRoom.transform.position = new Vector3(globalX, 0, globalZ);
         newDoorRoom.transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
@@ -241,9 +243,9 @@ public class City_Generator : MonoBehaviour
             int dx = corner[k, 0];
             int dz = corner[k, 1];
             GameObject newLightpole = Instantiate(lightpole);
-            globalX = (i - (x_dimension - 1) / 2) * x_length + dx * (x_length / 2f - road_width / 2f - lightpole_edge_distance);
+            globalX = (i - (x_dimension - 1) / 2) * x_length + dx * (x_length / 2f - road_width / 2f - lightpole_edge_distance) + x_start;
             globalY = 0;
-            globalZ = (j - (z_dimension - 1) / 2) * z_length + dz * (z_length / 2f - road_width / 2f - lightpole_edge_distance);
+            globalZ = (j - (z_dimension - 1) / 2) * z_length + dz * (z_length / 2f - road_width / 2f - lightpole_edge_distance) + z_start;
             newLightpole.transform.position = new Vector3(globalX, globalY, globalZ);
             Streetlight sl = newLightpole.GetComponent<Streetlight>();
             sl.displacement = (i + j) % 4;
@@ -336,8 +338,8 @@ public class City_Generator : MonoBehaviour
 
     private Vector3 getGlobalCoordinates(int i, float offsetY, int j)
     {
-        float globalX = (i - (x_dimension - 1) / 2) * x_length;
-        float globalZ = (j - (z_dimension - 1) / 2) * z_length;
+        float globalX = (i - (x_dimension - 1) / 2) * x_length + x_start;
+        float globalZ = (j - (z_dimension - 1) / 2) * z_length + z_start;
         return new Vector3(globalX, offsetY, globalZ);
     }
 }

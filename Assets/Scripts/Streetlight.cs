@@ -33,7 +33,14 @@ public class Streetlight : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!BeatManager.Instance.audioSource.isPlaying) return;
+        if (BeatManager.Instance == null)
+        {
+            return;
+        }
+        
+        if (!BeatManager.Instance.audioSource.isPlaying) {
+            return;
+        }
 
         int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
 
