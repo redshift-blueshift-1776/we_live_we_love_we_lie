@@ -37,4 +37,9 @@ public class Level2to3Cutscene : MonoBehaviour
     {
         SceneManager.LoadScene("Intro to Level 3");
     }
+
+    public void goToDanceSequence()
+    {
+        SceneManager.LoadScene("DanceSequence");
+    }
 }
