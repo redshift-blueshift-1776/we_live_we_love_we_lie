@@ -65,6 +65,7 @@ public class FootballCutscene : MonoBehaviour
             "Jang with the kick, it's up...:255:0:0",
             "It looks good, it looks very good...:255:0:0",
             "IT'S GOOD! PYNC WINS 38-37!:255:0:0",
+            "Fire whoever runs the jumbotron camera, that was terrible!:0:0:255",
             
         };
         ParseLyrics();
@@ -102,9 +103,9 @@ public class FootballCutscene : MonoBehaviour
         currentLine++;
     }
 
-    public void goToFinalCutscene()
+    public void goToDanceCutscene()
     {
-        SceneManager.LoadScene(18);
+        SceneManager.LoadScene(58);
     }
 
     
