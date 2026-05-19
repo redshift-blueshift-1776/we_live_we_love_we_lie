@@ -18,8 +18,8 @@ public class ClassroomCutscene : MonoBehaviour
         public Color speakerColor = Color.white;
 
         [Header("Visuals")]
-        public Sprite backgroundSprite;
-        public RawImage renderTextureDisplay;
+        // public Sprite backgroundSprite;
+        // public RawImage renderTextureDisplay;
         public Texture renderTexture;
         [TextArea(3, 8)]
         public string slideText;
@@ -100,6 +100,7 @@ public class ClassroomCutscene : MonoBehaviour
         backgroundImage.color = new Color(slide.speakerColor.r, slide.speakerColor.g, slide.speakerColor.b, 0.5f);
 
         dialogueText.text = "";
+        dialogueText.alpha = 1f;
 
         slideText.text = slide.slideText;
 
@@ -122,8 +123,10 @@ public class ClassroomCutscene : MonoBehaviour
         while (t < slide.holdTime)
         {
             if (skipping)
+            {
                 break;
-
+            }
+            
             t += Time.deltaTime;
 
             if (slide.shake)
@@ -134,11 +137,22 @@ public class ClassroomCutscene : MonoBehaviour
             if (slide.slowZoom)
             {
                 backgroundImage.rectTransform.localScale +=
-                    Vector3.one * Time.deltaTime * 0.01f;
+                    0.01f * Time.deltaTime * Vector3.one;
             }
 
             yield return null;
         }
+
+        Color originalTextColor = dialogueText.color;
+
+        t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            dialogueText.color = new Color(originalTextColor.r, originalTextColor.g, originalTextColor.b, 1f - t / fadeDuration);
+            yield return null;
+        }
+        dialogueText.alpha = 0f;
 
         backgroundImage.rectTransform.localPosition = originalPosition;
         backgroundImage.rectTransform.localScale = Vector3.one;
@@ -154,7 +168,7 @@ public class ClassroomCutscene : MonoBehaviour
                 yield break;
             }
 
-            dialogueText.text = line.Substring(0, i);
+            dialogueText.text = line[..i];
 
             yield return new WaitForSeconds(typeSpeed);
         }
