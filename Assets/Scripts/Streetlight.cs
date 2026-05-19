@@ -24,6 +24,10 @@ public class Streetlight : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (BeatManager.Instance == null)
+        {
+            return;
+        }
         nextChangeTime = BeatManager.Instance.GetNextBeatTime();
         targetRenderer = lightCube.GetComponent<Renderer>();
         emissionColor = targetRenderer.material.GetColor("_EmissionColor");
@@ -37,7 +41,7 @@ public class Streetlight : MonoBehaviour
         {
             return;
         }
-        
+
         if (!BeatManager.Instance.audioSource.isPlaying) {
             return;
         }
