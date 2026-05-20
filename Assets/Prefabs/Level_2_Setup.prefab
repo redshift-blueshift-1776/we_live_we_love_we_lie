@@ -749,7 +749,6 @@ Transform:
   - {fileID: 3396064036522840093}
   - {fileID: 882535384482882657}
   - {fileID: 8501216782311356777}
-  - {fileID: 8883250075168259163}
   - {fileID: 6312115584140075470}
   - {fileID: 5098456675344131507}
   - {fileID: 7486910685533860450}
@@ -1523,7 +1522,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1195569548986135605}
   - component: {fileID: 66371332994504949}
-  - component: {fileID: 212363863933738424}
   - component: {fileID: 9128828367300271515}
   m_Layer: 0
   m_Name: Minimap Camera
@@ -1598,14 +1596,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &212363863933738424
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3235397281803329889}
-  m_Enabled: 1
 --- !u!114 &9128828367300271515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3721,7 +3711,7 @@ RectTransform:
   - {fileID: 3899696208505775252}
   - {fileID: 3271859591462241252}
   - {fileID: 5772446569567520608}
-  m_Father: {fileID: 6122535348034802246}
+  m_Father: {fileID: 7377794799143107935}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4857,7 +4847,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8956862865085492031, guid: 92df77a9dc4dc4ee9b21352a67ebbf40, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8883250075168259163}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92df77a9dc4dc4ee9b21352a67ebbf40, type: 3}
 --- !u!1 &816529220982821721 stripped

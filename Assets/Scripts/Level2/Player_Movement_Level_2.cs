@@ -243,9 +243,13 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
         // Forward and backward movement
         if (Input.GetKey(KeyCode.W))
+        {
             moveInput = 1f;
-        if (Input.GetKey(KeyCode.S))
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
             moveInput = -1f;
+        } 
 
         // Boost logic
         bool isBoosting = Input.GetKey(KeyCode.LeftShift);
@@ -267,9 +271,13 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
         // Braking
         if (Input.GetKey(KeyCode.S) && currentSpeed > 0)
+        {
             currentSpeed -= brakeForce * Time.deltaTime;
+        }
 
-        if (Mathf.Abs(currentSpeed) < 0.05f) currentSpeed = 0f;
+        if (Mathf.Abs(currentSpeed) < 0.05f) {
+            currentSpeed = 0f;
+        }
 
         // Wall detection with Raycast
         // Vector3 moveDirection = transform.forward.normalized;
@@ -288,7 +296,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
         // }
 
         // Apply movement
-        Vector3 movement = transform.forward * currentSpeed * Time.deltaTime;
+        Vector3 movement = currentSpeed * Time.deltaTime * transform.forward;
         // velocity = movement;
         controller.Move(movement);
 
@@ -371,7 +379,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
             Collectible interactableObject = hit.collider.gameObject.GetComponent<Collectible>();
             if (interactableObject != null) {
                 foundSomething = true;
-                Debug.Log("Raycase");
+                // Debug.Log("Raycase");
                 if (Input.GetKeyDown(pushKey)) {
                     interactableObject.Interact();
                 }
@@ -388,7 +396,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
             bigCrosshair.SetActive(false);
         }
         if (Physics.Raycast(origin, dir, out hit, grappleDistance)) {
-            Debug.Log("Raycase Grapple");
+            // Debug.Log("Raycase Grapple");
             if (grappleUnlocked && !banGrapple) {
                 crosshair.transform.localRotation = Quaternion.Euler(0, 0, 45);
             } else {
@@ -476,11 +484,13 @@ public class Player_Movement_Level_2 : MonoBehaviour
     {
         Vector3 direction = (grapplePoint - transform.position).normalized;
 
-        controller.Move(direction * grappleSpeed * Time.deltaTime);
+        controller.Move(grappleSpeed * Time.deltaTime * direction);
 
         // close enough, auto-cancel
         if (Vector3.Distance(transform.position, grapplePoint) < 1.5f)
+        {
             CancelGrapple();
+        }
     }
 
     void CancelGrapple()
