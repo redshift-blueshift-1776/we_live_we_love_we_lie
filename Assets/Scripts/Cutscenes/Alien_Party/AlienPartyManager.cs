@@ -121,6 +121,11 @@ public class AlienPartyManager : MonoBehaviour
         }
     }
 
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public GameObject SpawnPersonWithColor(Color c)
     {
         GameObject newPerson =
