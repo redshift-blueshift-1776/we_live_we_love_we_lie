@@ -59,7 +59,7 @@ public class MassEliminationLevel2 : MonoBehaviour
         }
         yield return new WaitForSeconds(3f);
         // SceneManager.LoadScene(37);
-        SceneManager.LoadScene(58);
+        SceneManager.LoadScene("FootballGame");
     }
 
     public void MakeGrid() {
