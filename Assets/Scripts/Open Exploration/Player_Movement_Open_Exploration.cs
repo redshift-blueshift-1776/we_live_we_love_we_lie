@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class Player_Movement_Open_Exploration : MonoBehaviour
 {
+    public enum OpenExplorationVehicle {Walking, Scooter, F150};
     [SerializeField] public GameObject mainCamera;
     private CharacterController controller;
 
@@ -57,8 +58,38 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     [SerializeField] private GameObject leftArm;
     [SerializeField] private GameObject rightArm;
 
+    public OpenExplorationVehicle vehicle;
+
+    [Header("Scooter Stats")]
+    public Vector3 velocityScooter;
+    public float gravityScooter = 32f;
+    [SerializeField] private float acceleration = 1000f; // Acceleration rate
+    [SerializeField] private float maxSpeed = 420f; // Maximum speed
+    [SerializeField] private float brakeForce = 666f; // Braking power
+    [SerializeField] private float friction = 0.98f; // Simulated drag
+    [SerializeField] private float speedMultiplier = 20f; // Speed boost with Shift
+
+    public float currentSpeed = 0f;
+    public float groundCheckDistance = 1f;
+    public LayerMask groundMask;
+    public Vector3 lastPosition;
+    [SerializeField] private bool isGroundedScooter;
+
+    [Header("Scooter Rotation Settings")]
+    public float rotationSpeed = 360f;   // degrees per second
+    public float manualRotationSpeed = 30f;   // degrees per second
+
+    [Header("Scooter Smoothing")]
+    public float normalLerpSpeed = 10f;  // how quickly ground normal smooths
+
+    private Vector3 smoothedNormal = Vector3.up;
+
+    private Vector3 checkStartPosition;
+    private float checkStartTime;
+
     private void Awake()
     {
+        vehicle = OpenExplorationVehicle.Walking;
         initialPosition = gameObject.transform.position;
         initialRotation = gameObject.transform.rotation;
     }
@@ -86,26 +117,65 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     void Update()
     {
-        if (!controller.enabled || movementLocked) {
-            return;
+        if (vehicle == OpenExplorationVehicle.Walking)
+        {
+            if (!controller.enabled || movementLocked) {
+                return;
+            }
+            groundedPlayer = isGrounded();
+
+            jumpHelper();
+
+            interactRaycast();
+            rotationHelper();
+            timeSinceLastKick += Time.deltaTime;
+
+            if (Input.GetKeyDown(KeyCode.R)) {
+                respawn();
+            }
         }
-        groundedPlayer = isGrounded();
+        else if (vehicle == OpenExplorationVehicle.Scooter)
+        {
+            if (!controller.enabled || movementLocked) {
+                return;
+            }
+            isGroundedScooter = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, ~0);
+            if (controller.isGrounded) {
+                isGroundedScooter = true;
+            }
+            if (transform.position.y <= 1) {
+                isGroundedScooter = true;
+            }
 
-        jumpHelper();
+            if (isGroundedScooter && velocityScooter.y < 0)
+            {
+                velocityScooter.y = 0f; // Small offset to keep grounded
+            }
+            else
+            {
+                velocityScooter.y -= 1 * gravityScooter * Time.deltaTime;
+            }
 
-        interactRaycast();
-        rotationHelper();
-        timeSinceLastKick += Time.deltaTime;
+            HandleMovementScooter();
+            rotationHelperScooter();
+            AlignWithGroundScooter();
+            Vector3 move = new Vector3(0, 0, 0);
+            move.y = velocityScooter.y * Time.deltaTime; // Apply gravity
+            controller.Move(move);
 
-        if (Input.GetKeyDown(KeyCode.R)) {
-            respawn();
+            if (Input.GetKeyDown(KeyCode.R)) {
+                respawn();
+            }
         }
 
     }
 
     private void FixedUpdate()
     {
-        movePlayer();
+        if (vehicle == OpenExplorationVehicle.Walking)
+        {
+            movePlayer();
+        }
     }
 
     private void respawn()
@@ -115,7 +185,12 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         transform.rotation = initialRotation;
         controller.enabled = true;
         playerVelocity = Vector3.zero;
+        vehicle = OpenExplorationVehicle.Walking;
     }
+
+    // ============================
+    // WALKING MOVEMENT FUNCTIONS
+    // ============================
 
     private void movePlayer()
     {
@@ -424,21 +499,6 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         }
     }
 
-    // void OnTriggerEnter(Collider hit) {
-    //     Debug.Log(hit.gameObject.name);
-    //     if (hit.gameObject.name.Contains("Bullet")) {
-    //         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-    //         if (meshRenderer != null)
-    //         {
-    //             meshRenderer.enabled = false; // Disables the Mesh Renderer
-    //         }
-    //         mainCamera.SetActive(false);
-    //         altCamera.SetActive(true);
-    //         fakeBody.SetActive(true);
-    //         // gm.Fail();
-    //     }
-    // }
-
     public void SetMouseSensitivity(float sensitivity) {
         mouseSensitivity = sensitivity;
         PlayerPrefs.SetFloat("MouseSensitivity", sensitivity); // Save to PlayerPrefs
@@ -469,5 +529,172 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 timeSinceLastKick = 0f;
             }
         }
+    }
+
+    // ==========================
+    // SCOOTER MOVEMENT FUNCTIONS
+    // ==========================
+    void HandleMovementScooter()
+    {
+        float moveInput = 0f;
+
+        // Forward and backward movement
+        if (Input.GetKey(KeyCode.W))
+        {
+            moveInput = 1f;
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            moveInput = -1f;
+        } 
+
+        // Boost logic
+        bool isBoosting = Input.GetKey(KeyCode.LeftShift);
+        float speedFactor = isBoosting ? speedMultiplier : 1f;
+
+        
+        if (isGroundedScooter) {
+            // currentSpeed *= speedFactor;
+            currentSpeed += moveInput * acceleration * Time.deltaTime * speedFactor;
+            // Apply friction
+            float referenceFPS = 120f;
+
+            float frictionPerSecond = Mathf.Pow(friction, referenceFPS);
+            currentSpeed *= Mathf.Pow(frictionPerSecond, Time.deltaTime);
+            // currentSpeed *= friction;
+        }
+        // Accelerate and decelerate
+        currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
+
+        // Braking
+        if (Input.GetKey(KeyCode.S) && currentSpeed > 0)
+        {
+            currentSpeed -= brakeForce * Time.deltaTime;
+        }
+
+        if (Mathf.Abs(currentSpeed) < 0.05f) {
+            currentSpeed = 0f;
+        }
+
+        // Wall detection with Raycast
+        // Vector3 moveDirection = transform.forward.normalized;
+        // float rayLength = 1.0f + Mathf.Abs(currentSpeed * Time.deltaTime) / 5f; // look ahead
+        // RaycastHit hit;
+
+        // if (Physics.Raycast(transform.position, moveDirection, out hit, rayLength))
+        // {
+        //     if (!hit.collider.isTrigger && !hit.collider.gameObject.name.Contains("Ramp")) // ignore triggers
+        //     {
+        //         Debug.Log("Wall detected: " + hit.collider.name);
+
+        //         // Stop or slow down when close
+        //         currentSpeed = Mathf.Lerp(currentSpeed, 0f, 0.5f);
+        //     }
+        // }
+
+        // Apply movement
+        Vector3 movement = currentSpeed * Time.deltaTime * transform.forward;
+        // velocity = movement;
+        controller.Move(movement);
+
+        // Velocity check
+        float elapsed = Time.time - checkStartTime;
+        if (elapsed >= 0.05f) // check every 0.1 seconds
+        {
+            float actualDistance = Vector3.Distance(checkStartPosition, transform.position);
+            float expectedDistance = Mathf.Abs(currentSpeed) * elapsed;
+
+            // If scooter barely moved compared to expected distance, wall hit
+            if (actualDistance < expectedDistance * 0.25f) // tolerance factor
+            {
+                Debug.Log("Likely hit a wall");
+                currentSpeed = 0f;
+            }
+
+            // Reset for next interval
+            checkStartPosition = transform.position;
+            checkStartTime = Time.time;
+        }
+
+        lastPosition = new Vector3(transform.position.x, 0, transform.position.z);
+    }
+
+    void AlignWithGroundScooter()
+    {
+        // Raycast straight down from the center
+        RaycastHit[] hits = Physics.RaycastAll(transform.position + Vector3.up, Vector3.down, groundCheckDistance * 20f);
+        bool seeARamp = false;
+        foreach (RaycastHit hit in hits)
+        { 
+            // Debug.Log(hit.collider.gameObject.name);
+            if (!hit.collider.transform.IsChildOf(transform)) // ignore self
+            {
+                // Debug.Log("Hit normal: " + hit.normal);
+                // Debug.DrawRay(hit.point, hit.normal * 30f, Color.green);
+                if (!hit.collider.gameObject.name.Contains("Building")) {
+                    seeARamp = true;
+                    isGroundedScooter = true;
+                    Vector3 groundNormal = hit.normal;
+
+                    // Use cross-product to build a stable forward
+                    // This ensures we get tilt along ramps, not just flat up
+                    Vector3 forward = Vector3.Cross(transform.right, groundNormal).normalized;
+
+                    // Build the target rotation
+                    Quaternion targetRotation = Quaternion.LookRotation(forward, groundNormal);
+
+                    // Smooth rotation into place
+                    transform.rotation = Quaternion.RotateTowards(
+                        transform.rotation,
+                        targetRotation,
+                        rotationSpeed * Time.deltaTime
+                    );
+                }
+            }
+        }
+        if (!seeARamp) {
+            if (!Input.GetKey(KeyCode.B)) {
+                if (Input.GetKey(KeyCode.Space)) {
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, transform.eulerAngles.y, 0), Time.deltaTime / 2f);
+                } else {
+                    // Reset rotation when not on a ramp
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, transform.eulerAngles.y, 0), Time.deltaTime);
+                }
+            }
+        }
+    }
+
+    void rotationHelperScooter() {
+        // Rotates the camera and character object
+        float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
+
+        if (Input.GetKey(KeyCode.A)) {
+            if (Input.GetKey(KeyCode.S)) {
+                rotX = manualRotationSpeed * Time.deltaTime;
+            } else {
+                rotX = -manualRotationSpeed * Time.deltaTime;
+            }
+        }
+        if (Input.GetKey(KeyCode.D)) {
+            if (Input.GetKey(KeyCode.S)) {
+                rotX = -manualRotationSpeed * Time.deltaTime;
+            } else {
+                rotX = manualRotationSpeed * Time.deltaTime;
+            }
+        }
+
+        gameObject.transform.Rotate(0, rotX, 0);
+        Camera.main.transform.Rotate(rotY, 0, 0);
+        if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {
+            float diffBetweenUpDir = Mathf.Abs(270 - Camera.main.transform.localEulerAngles.x);
+            float diffBetweenDownDir = Mathf.Abs(90 - Camera.main.transform.localEulerAngles.x);
+            if (diffBetweenDownDir <= diffBetweenUpDir) {
+                Camera.main.transform.localEulerAngles = new Vector3(90, 0, 0);
+            } else {
+                Camera.main.transform.localEulerAngles = new Vector3(270, 0, 0);
+            }
+        }
+        gameObject.transform.Rotate(0, rotX, 0);
     }
 }
