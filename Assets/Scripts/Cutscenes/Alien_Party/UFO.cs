@@ -46,6 +46,8 @@ public class UFO : MonoBehaviour
     [SerializeField] public GameObject trackingCamera;
     public bool manualTrackCamera = true;
 
+    [SerializeField] private bool willGoToNext = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -199,6 +201,12 @@ public class UFO : MonoBehaviour
         }
 
         manualTrackCamera = false;
+
+        if (willGoToNext)
+        {
+            yield return new WaitForSeconds(5f);
+            SceneManager.LoadScene("Open Exploration 3");
+        }
     }
 
     public void Explode()

@@ -57,7 +57,7 @@ public class MassEliminationLevel3 : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(36);
+        SceneManager.LoadScene("Alien Party Intro");
     }
 
     public void MakeGrid() {
