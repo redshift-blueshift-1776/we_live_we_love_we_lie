@@ -310,7 +310,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &14238788
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6550,7 +6550,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &432400043
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6590,7 +6590,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Oh My Goodness
+  m_text: 'Oh My
+
+    Goodness'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6599,8 +6601,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6617,7 +6619,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 71.9988
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
@@ -14223,6 +14225,7 @@ GameObject:
   - component: {fileID: 990073624}
   - component: {fileID: 990073626}
   - component: {fileID: 990073625}
+  - component: {fileID: 990073627}
   m_Layer: 5
   m_Name: Text Background
   m_TagString: Untagged
@@ -14288,6 +14291,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 990073623}
   m_CullTransparentMesh: 1
+--- !u!225 &990073627
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990073623}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &991745395
 GameObject:
   m_ObjectHideFlags: 0
@@ -19014,13 +19029,14 @@ GameObject:
   - component: {fileID: 1360167980}
   - component: {fileID: 1360167979}
   - component: {fileID: 1360167978}
+  - component: {fileID: 1360167981}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1360167977
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19107,6 +19123,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!225 &1360167981
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360167976}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1360287730
 GameObject:
   m_ObjectHideFlags: 0
@@ -19565,7 +19593,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1382650808
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25925,6 +25953,115 @@ Transform:
   - {fileID: 1278977583}
   m_Father: {fileID: 1446648753}
   m_LocalEulerAnglesHint: {x: 85, y: 0, z: 0}
+--- !u!1 &1880495030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1880495034}
+  - component: {fileID: 1880495033}
+  - component: {fileID: 1880495032}
+  - component: {fileID: 1880495031}
+  m_Layer: 0
+  m_Name: Crowd Storming
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!64 &1880495031
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880495030}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &1880495032
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880495030}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 4731389b138e04da9b3082ca38162e25, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1880495033
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880495030}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1880495034
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880495030}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 1, z: 500}
+  m_LocalScale: {x: 500, y: 500, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1880500493
 GameObject:
   m_ObjectHideFlags: 0
@@ -28983,6 +29120,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092264592}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2100374042
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2100374043}
+  m_Layer: 0
+  m_Name: HDM Crowd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2100374043
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100374042}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -112.8, y: 1, z: 500}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2105086559
 GameObject:
   m_ObjectHideFlags: 0
@@ -29697,6 +29865,7 @@ MonoBehaviour:
     m_Signals:
     - {fileID: 11400000, guid: 466ad36c7b5a044d9bd5da03f077d111, type: 2}
     - {fileID: 11400000, guid: ea00c06d1cc874da7ac0c18c62ae3018, type: 2}
+    - {fileID: 11400000, guid: 72b63bd0770b0443ea9001366195e935, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
@@ -29726,6 +29895,20 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2135029789}
+          m_TargetAssemblyTypeName: FootballCutscene, Assembly-CSharp
+          m_MethodName: DoCrowdStorm
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &2135029789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29739,9 +29922,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lyricsDisplay: {fileID: 451837458}
-  lyricsBackground: {fileID: 990073623}
-  lyricsText: []
+  lyricsBackground: {fileID: 990073625}
   director: {fileID: 2135029786}
+  crowdStorming: {fileID: 1880495030}
+  crowdLDM: {fileID: 1880495030}
+  crowdHDM: {fileID: 2100374042}
+  crowdPersonPrefab: {fileID: 3919754906995132836, guid: f02393e2d6f044531ad877f4ee5fb7d1, type: 3}
+  crowdWidth: 40
+  crowdDepth: 20
+  spacing: 10
+  randomSeed: 67
+  ldmMaterial: {fileID: 2100000, guid: a5193286bf94e4ef897e87e3e6a92b62, type: 2}
+  notldmMaterial: {fileID: 2100000, guid: dcc6f54ed015d4a2da05ae8487dfcf61, type: 2}
+  crowdRenderer: {fileID: 1880495032}
+  forceOverride: 0
+  forceHighDetail: 1
+  forceLowDetail: 0
+  crowdStormDuration: 6
+  crowdEndPosition: {x: 0, y: 1, z: 0}
+  cameraShakeStrength: 0.15
+  fadeCanvas: {fileID: 1360167981}
+  fadeDuration: 2
+  nextSceneIndex: 58
+  lyricsText: []
 --- !u!1001 &64498126743810234
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32868,3 +33071,5 @@ SceneRoots:
   - {fileID: 689870837}
   - {fileID: 2960616920975009306}
   - {fileID: 1140402905}
+  - {fileID: 1880495034}
+  - {fileID: 2100374043}
