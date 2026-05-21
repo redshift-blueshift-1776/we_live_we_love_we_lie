@@ -192,7 +192,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         transform.rotation = initialRotation;
         controller.enabled = true;
         playerVelocity = Vector3.zero;
-        vehicle = OpenExplorationVehicle.Walking;
+        // vehicle = OpenExplorationVehicle.Walking;
     }
 
     // ============================

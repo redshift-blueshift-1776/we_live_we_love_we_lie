@@ -26,11 +26,6 @@ public class BeatSyncedLegacyDancer : MonoBehaviour
         beatManager = BeatManager.Instance;
         animationComponent = GetComponent<Animation>();
 
-        // secondsPerBeat = 60f / beatManager.tempo;
-        // songStartDSP = beatManager.audioSource.timeSamples /
-        //                (double)beatManager.audioSource.clip.frequency;
-        // songStartDSP = beatManager.StartDspTime;
-
         SetDance(currentDance);
     }
 
@@ -40,8 +35,10 @@ public class BeatSyncedLegacyDancer : MonoBehaviour
     {
         double elapsed = AudioSettings.dspTime - beatManager.StartDspTime;
         if (elapsed < 0)
+        {
             return;
-
+        }
+        
         int currentBeat = Mathf.FloorToInt(
             (float)(elapsed / beatManager.secondsPerBeat));
 
@@ -64,44 +61,7 @@ public class BeatSyncedLegacyDancer : MonoBehaviour
         animationComponent.Sample();
     }
 
-    // void Update()
-    // {
-    //     SampleDanceInterpolated();
-
-    //     double dspElapsed = AudioSettings.dspTime - beatManager.StartDspTime;
-    //     double audioElapsed = beatManager.audioSource.timeSamples /
-    //                         (double)beatManager.audioSource.clip.frequency;
-
-    //     Debug.Log($"DSP Elapsed: {dspElapsed:F4}  |  Audio Elapsed: {audioElapsed:F4}  |  Diff: {(dspElapsed - audioElapsed):F6}");
-
-
-    // }
-
-    // void SampleDanceInterpolated()
-    // {
-    //     AnimationClip clip = dances[currentDance];
-
-    //     // Precise song time
-    //     double songTime =
-    //         AudioSettings.dspTime - songStartDSP;
-
-    //     if (songTime < 0) {
-    //         return; // audio hasn't started yet
-    //     }
-
-    //     // Convert to beats
-    //     double beatTime = (songTime / secondsPerBeat) + beatPhaseOffset;
-
-    //     // Loop inside dance
-    //     double beatInDance = beatTime % beatsPerLoop;
-    //     float normalizedTime =
-    //         (float)(beatInDance / beatsPerLoop);
-
-    //     float clipTime = normalizedTime * clip.length;
-
-    //     animationComponent[clip.name].time = clipTime;
-    //     animationComponent.Sample();
-    // }
+    
     public void SetDance(int index)
     {
         currentDance = Mathf.Clamp(index, 0, dances.Length - 1);
