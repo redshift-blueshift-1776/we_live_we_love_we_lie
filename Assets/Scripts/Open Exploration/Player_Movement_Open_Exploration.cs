@@ -143,13 +143,13 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             if (controller.isGrounded) {
                 isGroundedScooter = true;
             }
-            if (transform.position.y <= 1) {
-                isGroundedScooter = true;
-            }
+            // if (transform.position.y <= 1) {
+            //     isGroundedScooter = true;
+            // }
 
             if (isGroundedScooter && velocityScooter.y < 0)
             {
-                velocityScooter.y = 0f; // Small offset to keep grounded
+                velocityScooter.y = -0.5f; // Small offset to keep grounded
             }
             else
             {
@@ -423,6 +423,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     private Door currentDoor = null;
     private Open_Exploration_Collectible currentCollectible = null;
 
+    public Open_Exploration_Scooter currentScooter = null;
+
     void interactRaycast()
     {
         RaycastHit hit;
@@ -430,12 +432,14 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         Vector3 dir = Camera.main.transform.forward;
         Door newDoor = null;
         Open_Exploration_Collectible collectible = null;
+        Open_Exploration_Scooter scooter = null;
 
         float radius = 0.05f;
         if (Physics.SphereCast(origin, radius, dir, out hit, interactDistance))
         {
             newDoor = hit.collider.GetComponent<Door>();
             collectible = hit.collider.GetComponent<Open_Exploration_Collectible>();
+            scooter = hit.collider.GetComponent<Open_Exploration_Scooter>();
         }
 
         // Only update state if changed
@@ -495,6 +499,36 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             else if (Input.GetKeyDown(pullKey))
             {
                 currentCollectible.Interact(); // or InteractPull()
+            }
+        }
+
+        // Only update state if changed
+        if (scooter != currentScooter)
+        {
+            currentScooter = scooter;
+
+            if (currentScooter != null)
+            {
+                crosshair.SetActive(false);
+                bigCrosshair.SetActive(true);
+            }
+            else
+            {
+                crosshair.SetActive(true);
+                bigCrosshair.SetActive(false);
+            }
+        }
+
+        // Only interact if we currently have a valid target
+        if (currentScooter != null)
+        {
+            if (Input.GetKeyDown(pushKey))
+            {
+                currentScooter.Mount(gameObject); // or InteractPush()
+            }
+            else if (Input.GetKeyDown(pullKey))
+            {
+                currentScooter.Mount(gameObject); // or InteractPull()
             }
         }
     }
