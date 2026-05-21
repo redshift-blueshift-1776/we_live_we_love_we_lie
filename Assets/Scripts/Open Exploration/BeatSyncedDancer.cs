@@ -26,6 +26,11 @@ public class BeatSyncedLegacyDancer : MonoBehaviour
         beatManager = BeatManager.Instance;
         animationComponent = GetComponent<Animation>();
 
+        if (beatManager == null)
+        {
+            Destroy(gameObject);
+        }
+
         SetDance(currentDance);
     }
 
