@@ -193,9 +193,10 @@ public class NPC_Open_Exploration : MonoBehaviour
 
     private void FreezePlayer()
     {
-        var cc = player.GetComponent<CharacterController>();
-        if (cc != null)
+        if (player.TryGetComponent<CharacterController>(out var cc))
+        {
             cc.enabled = false;
+        }
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -209,23 +210,12 @@ public class NPC_Open_Exploration : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
-
-    // public void endConversation() {
-    //     UnfreezePlayer();
-    //     Debug.Log("Unfreeze player");
-    //     npcd.ClearLyrics();
-    //     talkingTo = false;
-    //     GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/RawImage");
-    //     if (foundObject != null) {
-    //         // Debug.Log("Found Visual");
-    //         foundObject.SetActive(true);
-    //     } else {
-    //         Debug.Log("No Visual");
-    //     }
-    // }
+    
     public void endConversation()
     {
-        if (!talkingTo) return;
+        if (!talkingTo) {
+            return;
+        }
 
         talkingTo = false;
 
@@ -248,15 +238,25 @@ public class NPC_Open_Exploration : MonoBehaviour
 
     public void StartConversationWrapper()
     {
+        if (player.GetComponent<Player_Movement_Open_Exploration>().vehicle
+            != Player_Movement_Open_Exploration.OpenExplorationVehicle.Walking)
+        {
+            return;
+        }
         if (conversationRoutine != null)
+        {
             StopCoroutine(conversationRoutine);
+        }  
 
-        conversationRoutine = StartCoroutine(startConversation());
+        conversationRoutine = StartCoroutine(StartConversation());
     }
 
 
-    public IEnumerator startConversation() {
-        if (talkingTo) yield break;
+    public IEnumerator StartConversation() {
+        if (talkingTo)
+        {
+            yield break;
+        }
         talkingTo = true;
 
         FreezePlayer();
@@ -288,14 +288,13 @@ public class NPC_Open_Exploration : MonoBehaviour
         while (elapsed < duration) {
             float tx = elapsed / duration;
             float t = tx * tx;
-            player.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            player.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+            player.transform.SetPositionAndRotation(Vector3.Lerp(startPosition, targetPosition, t),
+                                                    Quaternion.Slerp(startRotation, targetRotation, t));
             mainCamera.transform.rotation = Quaternion.Slerp(startRotation2, targetRotation2, t);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        player.transform.position = targetPosition;
-        player.transform.rotation = targetRotation;
+        player.transform.SetPositionAndRotation(targetPosition, targetRotation);
         Debug.Log("Calling Show Lyrics");
         npcd.showLyrics();
         yield return null;
@@ -312,8 +311,13 @@ public class NPC_Open_Exploration : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (!other.CompareTag("Player")) return;
-        if (talkingTo) return; // IMPORTANT
+        if (!other.CompareTag("Player")) {
+            return;
+        }
+        if (talkingTo)
+        {
+            return;
+        }
 
         playerInRange = false;
         interactionManager.UnregisterNPC(this);

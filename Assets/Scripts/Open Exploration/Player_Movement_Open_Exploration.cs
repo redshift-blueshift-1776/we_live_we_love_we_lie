@@ -159,9 +159,12 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             HandleMovementScooter();
             rotationHelperScooter();
             AlignWithGroundScooter();
-            Vector3 move = new Vector3(0, 0, 0);
+            Vector3 move = Vector3.zero;
             move.y = velocityScooter.y * Time.deltaTime; // Apply gravity
-            controller.Move(move);
+            if (controller.enabled)
+            {
+                controller.Move(move);
+            }
 
             if (Input.GetKeyDown(KeyCode.R)) {
                 respawn();
@@ -614,26 +617,12 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             currentSpeed = 0f;
         }
 
-        // Wall detection with Raycast
-        // Vector3 moveDirection = transform.forward.normalized;
-        // float rayLength = 1.0f + Mathf.Abs(currentSpeed * Time.deltaTime) / 5f; // look ahead
-        // RaycastHit hit;
-
-        // if (Physics.Raycast(transform.position, moveDirection, out hit, rayLength))
-        // {
-        //     if (!hit.collider.isTrigger && !hit.collider.gameObject.name.Contains("Ramp")) // ignore triggers
-        //     {
-        //         Debug.Log("Wall detected: " + hit.collider.name);
-
-        //         // Stop or slow down when close
-        //         currentSpeed = Mathf.Lerp(currentSpeed, 0f, 0.5f);
-        //     }
-        // }
-
         // Apply movement
         Vector3 movement = currentSpeed * Time.deltaTime * transform.forward;
-        // velocity = movement;
-        controller.Move(movement);
+        if (controller.enabled)
+        {
+            controller.Move(movement);
+        }
 
         // Velocity check
         float elapsed = Time.time - checkStartTime;

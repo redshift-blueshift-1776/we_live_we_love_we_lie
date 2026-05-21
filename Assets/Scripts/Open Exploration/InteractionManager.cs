@@ -20,20 +20,30 @@ public class InteractionManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
     {
         if (!inConversation)
+        {
             SelectClosestNPC();
+        }
 
         if (Input.GetKeyDown(KeyCode.K)) {
             nearbyNPCs = new();
         }
 
-        npcVisual.SetActive(currentNPC != null && !inConversation);
+        npcVisual.SetActive(currentNPC != null && !inConversation
+                            && player.gameObject.GetComponent<Player_Movement_Open_Exploration>().vehicle
+                                == Player_Movement_Open_Exploration.OpenExplorationVehicle.Walking);
 
         if (!inConversation && currentNPC != null && Input.GetMouseButtonDown(1))
         {
@@ -50,7 +60,9 @@ public class InteractionManager : MonoBehaviour
     public void RegisterNPC(NPC_Open_Exploration npc)
     {
         if (!nearbyNPCs.Contains(npc))
+        {
             nearbyNPCs.Add(npc);
+        }
     }
 
     private List<NPC_Open_Exploration> toRemove = new();
@@ -60,7 +72,9 @@ public class InteractionManager : MonoBehaviour
         if (currentNPC == npc)
         {
             if (inConversation)
+            {
                 EndConversation(npc);
+            }
 
             currentNPC = null;
         }
@@ -70,7 +84,9 @@ public class InteractionManager : MonoBehaviour
     void LateUpdate()
     {
         foreach (var npc in toRemove)
+        {
             nearbyNPCs.Remove(npc);
+        }
 
         toRemove.Clear();
     }
@@ -84,7 +100,10 @@ public class InteractionManager : MonoBehaviour
         // iterate over a copy
         foreach (var npc in nearbyNPCs.ToArray())
         {
-            if (npc == null) continue;
+            if (npc == null)
+            {
+                continue;
+            }
 
             float dist = Vector3.Distance(player.position, npc.transform.position);
             if (dist < closestDist)
@@ -99,7 +118,10 @@ public class InteractionManager : MonoBehaviour
 
     void StartConversation(NPC_Open_Exploration npc)
     {
-        if (inConversation || npc.talkingTo) return;
+        if (inConversation || npc.talkingTo)
+        {
+            return;
+        }
 
         inConversation = true;
         npc.StartConversationWrapper();
@@ -108,7 +130,10 @@ public class InteractionManager : MonoBehaviour
 
     void EndConversation(NPC_Open_Exploration npc)
     {
-        if (!inConversation || npc == null) return;
+        if (!inConversation || npc == null)
+        {
+            return;
+        }
 
         inConversation = false;
         npc.endConversation();
