@@ -29,6 +29,7 @@ public class Open_Exploration_Scooter : MonoBehaviour
             usingThis = true;
             transform.SetParent(g.transform);
             transform.SetLocalPositionAndRotation(new(0, -0.5f, 0), Quaternion.identity);
+            transform.localScale = new(1, 0.25f, 1);
             thisCollider.enabled = false;
             if (g.TryGetComponent<Player_Movement_Open_Exploration>(out var pmoe))
             {
@@ -47,6 +48,7 @@ public class Open_Exploration_Scooter : MonoBehaviour
             transform.SetParent(null);
             // transform.SetLocalPositionAndRotation(new(0, -0.5f, 0), Quaternion.identity);
             thisCollider.enabled = true;
+            g.transform.rotation = Quaternion.Euler(0, 0, 0);
             if (g.TryGetComponent<Player_Movement_Open_Exploration>(out var pmoe))
             {
                 pmoe.vehicle = Player_Movement_Open_Exploration.OpenExplorationVehicle.Walking;

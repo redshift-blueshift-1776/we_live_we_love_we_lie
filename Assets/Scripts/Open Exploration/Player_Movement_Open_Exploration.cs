@@ -136,6 +136,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         }
         else if (vehicle == OpenExplorationVehicle.Scooter)
         {
+            crosshair.SetActive(false);
+            bigCrosshair.SetActive(false);
             if (!controller.enabled || movementLocked) {
                 return;
             }
