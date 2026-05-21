@@ -166,6 +166,10 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.R)) {
                 respawn();
             }
+
+            if (Input.GetKeyDown(KeyCode.E)) {
+                currentScooter.Dismount(gameObject);
+            }
         }
 
     }

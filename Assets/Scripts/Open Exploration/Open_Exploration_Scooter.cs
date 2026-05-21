@@ -36,4 +36,21 @@ public class Open_Exploration_Scooter : MonoBehaviour
             }
         }
     }
+
+    public void Dismount(GameObject g) {
+        Debug.Log("Dismounting Scooter");
+        scooterMountSound.SetActive(false);
+        scooterMountSound.SetActive(true);
+        if (usingThis)
+        {
+            usingThis = false;
+            transform.SetParent(null);
+            // transform.SetLocalPositionAndRotation(new(0, -0.5f, 0), Quaternion.identity);
+            thisCollider.enabled = true;
+            if (g.TryGetComponent<Player_Movement_Open_Exploration>(out var pmoe))
+            {
+                pmoe.vehicle = Player_Movement_Open_Exploration.OpenExplorationVehicle.Walking;
+            }
+        }
+    }
 }
