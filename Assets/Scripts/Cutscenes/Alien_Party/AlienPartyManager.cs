@@ -395,7 +395,7 @@ public class AlienPartyManager : MonoBehaviour
 
             if (Vector3.Distance(mainCamera.transform.position, spawnedUFO.transform.position) > 100f)
             {
-                mainCamera.transform.position += 200f * Time.deltaTime * mainCamera.transform.forward;
+                mainCamera.transform.position += 167f * Time.deltaTime * mainCamera.transform.forward;
             }
 
             yield return null;
