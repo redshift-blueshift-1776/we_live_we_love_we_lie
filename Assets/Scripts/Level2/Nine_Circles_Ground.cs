@@ -44,9 +44,13 @@ public class Nine_Circles_Ground : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!BeatManager.Instance.audioSource.isPlaying) return;
+        if (!BeatManager.Instance.audioSource.isPlaying) {
+            return;
+        }
 
-        if (useEffect == 0) return;
+        if (useEffect == 0) {
+            return;
+        }
 
         int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
 

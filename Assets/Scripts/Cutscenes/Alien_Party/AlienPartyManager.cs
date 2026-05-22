@@ -76,8 +76,6 @@ public class AlienPartyManager : MonoBehaviour
     [SerializeField] private Transform finalCamPoint;
     [SerializeField] private Transform bombCamPoint;
 
-    [SerializeField] private float cameraMoveDuration = 2f;
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

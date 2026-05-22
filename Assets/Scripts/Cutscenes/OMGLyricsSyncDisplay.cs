@@ -35,7 +35,6 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
 
     // private AudioSource audioSource;
     private int currentLine = 0;
-    private double nextLyricTime;
     private float secondsPerBeat;
 
 
@@ -85,7 +84,6 @@ public class OMGLyricsSyncDisplay : MonoBehaviour
         ParseLyrics();
         
         // Don't start the lyrics until the audio actually starts playing
-        nextLyricTime = 0;
         currentLine = 0;
         lyricsDisplay.text = ""; // Start with an empty display
     }

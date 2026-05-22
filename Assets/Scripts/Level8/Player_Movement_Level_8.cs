@@ -47,12 +47,7 @@ public class Player_Movement_Level_8 : MonoBehaviour
     {
         gm = gameManager.GetComponent<SecondWeLiveWeLoveWeLie>();
         jumpVelocity = Mathf.Sqrt(-2 * gravityValue * jumpHeight);
-        // controller = gameObject.GetComponent<CharacterController>();
-        // // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
-        // controller.skinWidth = 0.1f * controller.radius;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
-        // crosshair.SetActive(true);
-        // bigCrosshair.SetActive(false);
         laser.SetActive(false);
         fakeLaser.SetActive(false);
     }

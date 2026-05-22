@@ -401,12 +401,16 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
 
     public void OnStealButton()
     {
-        if (!turnActive) ResolveTurn(true, true);
+        if (!turnActive) {
+            ResolveTurn(true, true);
+        }
     }
 
     public void OnNoStealButton()
     {
-        if (!turnActive) ResolveTurn(false, true);
+        if (!turnActive) {
+            ResolveTurn(false, true);
+        }
     }
 
     void AutoResolveAI()

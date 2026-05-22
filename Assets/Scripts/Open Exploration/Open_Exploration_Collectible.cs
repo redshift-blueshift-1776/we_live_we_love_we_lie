@@ -41,7 +41,7 @@ public class Open_Exploration_Collectible : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public IEnumerator collectVisualization() {
+    public IEnumerator CollectVisualization() {
         GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/Collected_Visual");
         if (foundObject != null) {
             Debug.Log("Found Visual");
@@ -59,14 +59,12 @@ public class Open_Exploration_Collectible : MonoBehaviour
             while (elapsed < duration) {
                 float t = elapsed / duration;
 
-                foundObject.transform.localPosition = oldPosition + new Vector3(50 * Mathf.Sin(10 * t), 0, 0);
-                foundObject.transform.localRotation = Quaternion.Euler(0, 0, -45 * Mathf.Sin(10 * t));
-
+                foundObject.transform.SetLocalPositionAndRotation(oldPosition + new Vector3(50 * Mathf.Sin(10 * t), 0, 0),
+                                                                    Quaternion.Euler(0, 0, -45 * Mathf.Sin(10 * t)));
                 elapsed += Time.deltaTime;
                 yield return null;
             }
-            foundObject.transform.localPosition = new Vector3(0, 0, 0);
-            foundObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            foundObject.transform.SetLocalPositionAndRotation(new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
             foundObject.SetActive(false);
         } else {
             Debug.Log("No Visual");
@@ -87,7 +85,7 @@ public class Open_Exploration_Collectible : MonoBehaviour
         } else {
             Debug.Log("No Universal_Manager");
         }
-        StartCoroutine(collectVisualization());
+        StartCoroutine(CollectVisualization());
         StartCoroutine(collect());
     }
 }

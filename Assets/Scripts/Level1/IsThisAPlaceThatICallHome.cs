@@ -142,7 +142,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
     private IEnumerator MoveCameraRoutine(float targetY)
     {
         Vector3 startPos = camTransform.position;
-        Vector3 targetPos = new Vector3(startPos.x, targetY, startPos.z);
+        Vector3 targetPos = new(startPos.x, targetY, startPos.z);
 
         float t = 0f;
         while (t < 1f)
@@ -175,7 +175,7 @@ public class IsThisAPlaceThatICallHome : MonoBehaviour
         EndScreenCanvas.SetActive(true);
         winText.SetActive(false);
         Vector3 startPos = camTransform.position;
-        Vector3 targetPos = new Vector3(camTransform.position.x,
+        Vector3 targetPos = new(camTransform.position.x,
             camTransform.position.y + 50, camTransform.position.z - 100);
 
         float t = 0f;
