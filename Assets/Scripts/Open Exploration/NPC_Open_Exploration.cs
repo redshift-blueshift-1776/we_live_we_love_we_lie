@@ -247,6 +247,19 @@ public class NPC_Open_Exploration : MonoBehaviour
                 };
                 npcd.rightName = "Mack Aroni";
             }
+
+            if (npcName == "Luba") {
+                npcd.lyricsText = new string[] {
+                    "l:",
+                    "l:Hello Luba.",
+                    "r:Hi Wade.",
+                    "l:Only sixteen contestants left now.",
+                    "r:Eight after tonight, probably.",
+                    "r:Honestly, I think Donald James enjoys making elimination speeches more than making games.",
+                    "r:"
+                };
+                npcd.rightName = "Luba Novikova";
+            }
         }
 
         // After level 4, going down to the library from behind Main
@@ -264,19 +277,6 @@ public class NPC_Open_Exploration : MonoBehaviour
                     "r:"
                 };
                 npcd.rightName = "Colin Norton";
-            }
-
-            if (npcName == "Luba") {
-                npcd.lyricsText = new string[] {
-                    "l:",
-                    "l:Hello Luba.",
-                    "r:Hi Wade.",
-                    "l:Only sixteen contestants left now.",
-                    "r:Eight after tonight, probably.",
-                    "r:Honestly, I think Donald James enjoys making elimination speeches more than making games.",
-                    "r:"
-                };
-                npcd.rightName = "Luba Novikova";
             }
 
             if (npcName == "IY-zak") {
