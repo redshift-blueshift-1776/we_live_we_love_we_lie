@@ -276,6 +276,19 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     private const float frictionFactor = 0.9f;
     private int consecutiveBhops = 0;
     private const float bhopsRequired = 1;
+
+    void ApplyRotation(Transform part, float targetX)
+    {
+        Quaternion target =
+            Quaternion.Euler(targetX, 0, 0);
+
+        part.localRotation =
+            Quaternion.Lerp(
+                part.localRotation,
+                target,
+                Time.deltaTime * 8f
+            );
+    }
     void horizontalMovementHelper() {
         //simplified friction
 
@@ -301,24 +314,28 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
         if (inputDirection == Vector3.zero)
         {
-            leftLeg.transform.rotation = Quaternion.Euler(0, 0, 0);
-            rightLeg.transform.rotation = Quaternion.Euler(0, 0, 0);
-            leftArm.transform.rotation = Quaternion.Euler(0, 0, 0);
-            rightArm.transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if (Input.GetKey(KeyCode.LeftShift))
-        {
-            leftLeg.transform.rotation = Quaternion.Euler(Mathf.Sin(Time.time * 17f) * 60f, 0, 0);
-            rightLeg.transform.rotation = Quaternion.Euler(-Mathf.Sin(Time.time * 17f) * 60f, 0, 0);
-            leftArm.transform.rotation = Quaternion.Euler(-Mathf.Sin(Time.time * 17f) * 60f, 0, 0);
-            rightArm.transform.rotation = Quaternion.Euler(Mathf.Sin(Time.time * 17f) * 60f, 0, 0);
+            ApplyRotation(leftLeg.transform, 0);
+            ApplyRotation(rightLeg.transform, 0);
+            ApplyRotation(leftArm.transform, 0);
+            ApplyRotation(rightArm.transform, 0);
         }
         else
         {
-            leftLeg.transform.rotation = Quaternion.Euler(Mathf.Sin(Time.time * 5f) * 45f, 0, 0);
-            rightLeg.transform.rotation = Quaternion.Euler(-Mathf.Sin(Time.time * 5f) * 45f, 0, 0);
-            leftArm.transform.rotation = Quaternion.Euler(-Mathf.Sin(Time.time * 5f) * 45f, 0, 0);
-            rightArm.transform.rotation = Quaternion.Euler(Mathf.Sin(Time.time * 5f) * 45f, 0, 0);
+            bool running = Input.GetKey(KeyCode.LeftShift);
+            float runSpeed = 12f;
+            float runAngle = 60f;
+            float walkSpeed = 5f;
+            float walkAngle = 45f;
+            float animSpeed = running ? runSpeed : walkSpeed;
+            float angle = running ? runAngle : walkAngle;
+
+            float swing =
+                Mathf.Sin(Time.time * animSpeed) * angle;
+
+            ApplyRotation(leftLeg.transform, swing);
+            ApplyRotation(rightLeg.transform, -swing);
+            ApplyRotation(leftArm.transform, -swing);
+            ApplyRotation(rightArm.transform, swing);
         }
 
         inputDirection = Vector3.Normalize(inputDirection);

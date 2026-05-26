@@ -5,6 +5,8 @@ public class NPC_Movement : MonoBehaviour
 {
     public NavMeshAgent agent;
 
+    [SerializeField] private GameObject locations;
+
     [SerializeField] private Transform[] wanderPoints;
 
     [SerializeField] private float waitTime = 4f;
@@ -14,6 +16,7 @@ public class NPC_Movement : MonoBehaviour
 
     void Start()
     {
+        locations.transform.SetParent(null);
         agent = GetComponent<NavMeshAgent>();
         PickNextPoint();
     }
@@ -22,6 +25,7 @@ public class NPC_Movement : MonoBehaviour
     {
         if (agent.pathPending)
         {
+            Debug.Log("agent.pathPending");
             return;
         }
 
@@ -31,6 +35,7 @@ public class NPC_Movement : MonoBehaviour
 
             if (waitTimer >= waitTime)
             {
+                Debug.Log("waitTimer >= waitTime");
                 PickNextPoint();
                 waitTimer = 0;
             }
@@ -41,10 +46,12 @@ public class NPC_Movement : MonoBehaviour
     {
         if (wanderPoints.Length == 0)
         {
+            Debug.Log("wanderPoints.Length == 0");
             return;
         }
 
         currentTarget = Random.Range(0, wanderPoints.Length);
+        Debug.Log("currentTarget: " + currentTarget);
 
         agent.SetDestination(wanderPoints[currentTarget].position);
     }
