@@ -84,6 +84,8 @@ public class Universal_Manager : MonoBehaviour
     [SerializeField] public GameObject defaultRawImage;
     [SerializeField] public GameObject cameraEffectRawImage;
 
+    public bool skipTransitions = false;
+
     public static Universal_Manager Instance { get; private set; }
 
     private void Awake()
@@ -158,6 +160,8 @@ public class Universal_Manager : MonoBehaviour
             Application.targetFrameRate = -1;
         }
 
+        skipTransitions = PlayerPrefs.GetInt("skipTransitions") == 1;
+
         // --------------------
         // VISUAL "CHEAT CODES"
         // --------------------
@@ -192,6 +196,19 @@ public class Universal_Manager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        // Skip or not skip transitions
+        if (Input.GetKey(KeyCode.N) && Input.GetKey(KeyCode.T))
+        {
+            Debug.Log("Skipping Transition Animations");
+            PlayerPrefs.SetInt("skipTransitions", 1);
+        }
+
+        if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.T))
+        {
+            Debug.Log("Not skipping Transition Animations");
+            PlayerPrefs.SetInt("skipTransitions", 0);
         }
 
         // ------------------

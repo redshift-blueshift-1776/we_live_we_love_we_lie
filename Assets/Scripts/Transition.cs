@@ -16,6 +16,8 @@ public class Transition : MonoBehaviour
 
     private Coroutine currentCoroutine;
 
+    public bool skipTransition = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,57 +33,68 @@ public class Transition : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        GameObject foundObject2 = GameObject.Find("Universal_Manager");
+        if (foundObject2 != null) {
+            Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
+            skipTransition = um.skipTransitions;
+        } else {
+            Debug.Log("No Universal_Manager");
+            skipTransition = false;
+        }
     }
 
     public IEnumerator LoadLevel1() {
-        rightWall.SetActive(true);
-        leftWall.SetActive(true);
-        topWall.SetActive(true);
-        bottomWall.SetActive(true);
+        if (!skipTransition)
+        {
+            rightWall.SetActive(true);
+            leftWall.SetActive(true);
+            topWall.SetActive(true);
+            bottomWall.SetActive(true);
 
-        transitionSound.SetActive(true);
-        foreach (GameObject g in toDisable) {
-            g.SetActive(false);
+            transitionSound.SetActive(true);
+            foreach (GameObject g in toDisable) {
+                g.SetActive(false);
+            }
+            yield return new WaitForSeconds(2f);
+            float duration = 1f;
+            float elapsed = 0f;
+            Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 2f, t * t * t);
+                bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, ogBWpos / 2f, t * t * t);
+                leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 2f, t * t * t);
+                topWall.transform.localPosition = Vector3.Lerp(ogTWpos, ogTWpos / 2f, t * t * t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            elapsed = 0f;
+            ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         }
-        yield return new WaitForSeconds(2f);
-        float duration = 1f;
-        float elapsed = 0f;
-        Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 2f, t * t * t);
-            bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, ogBWpos / 2f, t * t * t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 2f, t * t * t);
-            topWall.transform.localPosition = Vector3.Lerp(ogTWpos, ogTWpos / 2f, t * t * t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        elapsed = 0f;
-        ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene(23);
-
+        yield return null;
     }
 
     public void ToLevel1() {
@@ -91,39 +104,43 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadLevelSelect() {
-        rightWall.SetActive(true);
-        leftWall.SetActive(true);
-        topWall.SetActive(true);
-        bottomWall.SetActive(true);
+        if (!skipTransition)
+        {
+            rightWall.SetActive(true);
+            leftWall.SetActive(true);
+            topWall.SetActive(true);
+            bottomWall.SetActive(true);
 
-        transitionSound.SetActive(true);
-        foreach (GameObject g in toDisable) {
-            g.SetActive(false);
+            transitionSound.SetActive(true);
+            foreach (GameObject g in toDisable) {
+                g.SetActive(false);
+            }
+            // yield return new WaitForSeconds(2f);
+            float duration = 2f;
+            float elapsed = 0f;
+            Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
+                leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
+                topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
+                bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         }
-        // yield return new WaitForSeconds(2f);
-        float duration = 2f;
-        float elapsed = 0f;
-        Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
-            topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
-            bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene(8);
-
+        yield return null;
     }
 
     public void ToLevelSelect() {
@@ -133,39 +150,43 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadMenu() {
-        rightWall.SetActive(true);
-        leftWall.SetActive(true);
-        topWall.SetActive(true);
-        bottomWall.SetActive(true);
+        if (!skipTransition)
+        {
+            rightWall.SetActive(true);
+            leftWall.SetActive(true);
+            topWall.SetActive(true);
+            bottomWall.SetActive(true);
 
-        transitionSound.SetActive(true);
-        foreach (GameObject g in toDisable) {
-            g.SetActive(false);
+            transitionSound.SetActive(true);
+            foreach (GameObject g in toDisable) {
+                g.SetActive(false);
+            }
+            // yield return new WaitForSeconds(2f);
+            float duration = 2f;
+            float elapsed = 0f;
+            Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t);
+                leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t);
+                topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t);
+                bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         }
-        // yield return new WaitForSeconds(2f);
-        float duration = 2f;
-        float elapsed = 0f;
-        Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t);
-            topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t);
-            bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene(0);
-
+        yield return null;
     }
 
     public void ToMenu() {
@@ -175,50 +196,54 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadPrevious() {
-        rightWall.SetActive(true);
-        leftWall.SetActive(true);
-        topWall.SetActive(true);
-        bottomWall.SetActive(true);
-
-        int n = PlayerPrefs.GetInt("PreviousLevel", 1);
-        transitionSound.SetActive(true);
-        foreach (GameObject g in toDisable) {
-            g.SetActive(false);
+        int n = PlayerPrefs.GetInt("PreviousLevel", 0);
+        if (!skipTransition)
+        {
+            rightWall.SetActive(true);
+            leftWall.SetActive(true);
+            topWall.SetActive(true);
+            bottomWall.SetActive(true);
+            
+            transitionSound.SetActive(true);
+            foreach (GameObject g in toDisable) {
+                g.SetActive(false);
+            }
+            yield return new WaitForSeconds(2f);
+            float duration = 1f;
+            float elapsed = 0f;
+            Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                // rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 3f, t * t * t);
+                bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, ogBWpos / 1.5f, t * t * t);
+                // leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 3f, t * t * t);
+                topWall.transform.localPosition = Vector3.Lerp(ogTWpos, ogTWpos / 1.5f, t * t * t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            elapsed = 0f;
+            ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                // bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                // topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         }
-        yield return new WaitForSeconds(2f);
-        float duration = 1f;
-        float elapsed = 0f;
-        Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            // rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 3f, t * t * t);
-            bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, ogBWpos / 1.5f, t * t * t);
-            // leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 3f, t * t * t);
-            topWall.transform.localPosition = Vector3.Lerp(ogTWpos, ogTWpos / 1.5f, t * t * t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        elapsed = 0f;
-        ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            // bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            // topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene(n);
@@ -232,35 +257,39 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadFail() {
-        rightWall.SetActive(true);
-        leftWall.SetActive(true);
-        topWall.SetActive(true);
-        bottomWall.SetActive(true);
+        if (!skipTransition)
+        {
+            rightWall.SetActive(true);
+            leftWall.SetActive(true);
+            topWall.SetActive(true);
+            bottomWall.SetActive(true);
 
-        failSound.SetActive(true);
-        foreach (GameObject g in toDisable) {
-            g.SetActive(false);
+            failSound.SetActive(true);
+            foreach (GameObject g in toDisable) {
+                g.SetActive(false);
+            }
+            yield return new WaitForSeconds(0.5f);
+            float duration = 3f;
+            float elapsed = 0f;
+            Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
+                leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
+                topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
+                bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         }
-        yield return new WaitForSeconds(0.5f);
-        float duration = 3f;
-        float elapsed = 0f;
-        Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
-            topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
-            bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t * t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene(5);
@@ -276,50 +305,54 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadSpecified(int sceneNum) {
-        rightWall.SetActive(true);
-        leftWall.SetActive(true);
-        topWall.SetActive(true);
-        bottomWall.SetActive(true);
-
         int n = sceneNum;
-        transitionSound.SetActive(true);
-        foreach (GameObject g in toDisable) {
-            g.SetActive(false);
+        if (!skipTransition)
+        {
+            rightWall.SetActive(true);
+            leftWall.SetActive(true);
+            topWall.SetActive(true);
+            bottomWall.SetActive(true);
+
+            transitionSound.SetActive(true);
+            foreach (GameObject g in toDisable) {
+                g.SetActive(false);
+            }
+            yield return new WaitForSeconds(2f);
+            float duration = 1f;
+            float elapsed = 0f;
+            Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 1.5f, t * t * t);
+                // bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, ogBWpos / 1.5f, t * t * t);
+                leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 1.5f, t * t * t);
+                // topWall.transform.localPosition = Vector3.Lerp(ogTWpos, ogTWpos / 1.5f, t * t * t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            elapsed = 0f;
+            ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
+            ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
+            ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
+            ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
+            while (elapsed < duration) {
+                float t = elapsed / duration;
+                // rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                // leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+            topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
         }
-        yield return new WaitForSeconds(2f);
-        float duration = 1f;
-        float elapsed = 0f;
-        Vector3 ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        Vector3 ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        Vector3 ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        Vector3 ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, ogRWpos / 1.5f, t * t * t);
-            // bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, ogBWpos / 1.5f, t * t * t);
-            leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, ogLWpos / 1.5f, t * t * t);
-            // topWall.transform.localPosition = Vector3.Lerp(ogTWpos, ogTWpos / 1.5f, t * t * t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        elapsed = 0f;
-        ogRWpos = new Vector3(rightWall.transform.localPosition.x, rightWall.transform.localPosition.y, rightWall.transform.localPosition.z);
-        ogLWpos = new Vector3(leftWall.transform.localPosition.x, leftWall.transform.localPosition.y, leftWall.transform.localPosition.z);
-        ogTWpos = new Vector3(topWall.transform.localPosition.x, topWall.transform.localPosition.y, topWall.transform.localPosition.z);
-        ogBWpos = new Vector3(bottomWall.transform.localPosition.x, bottomWall.transform.localPosition.y, bottomWall.transform.localPosition.z);
-        while (elapsed < duration) {
-            float t = elapsed / duration;
-            // rightWall.transform.localPosition = Vector3.Lerp(ogRWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            bottomWall.transform.localPosition = Vector3.Lerp(ogBWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            topWall.transform.localPosition = Vector3.Lerp(ogTWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            // leftWall.transform.localPosition = Vector3.Lerp(ogLWpos, new Vector3(0f, 0f, 0f), t * t * t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        rightWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        bottomWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        leftWall.transform.localPosition = new Vector3(0f, 0f, 0f);
-        topWall.transform.localPosition = new Vector3(0f, 0f, 0f);
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene(n);
