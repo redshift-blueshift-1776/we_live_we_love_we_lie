@@ -49,7 +49,6 @@ public class Player_Movement : MonoBehaviour
 
 
     private readonly KeyCode runKey = KeyCode.LeftShift;
-    private readonly KeyCode failKey = KeyCode.M;
     private readonly KeyCode pushKey = KeyCode.Mouse0;
     private readonly KeyCode pullKey = KeyCode.Mouse1;
 
@@ -137,17 +136,21 @@ public class Player_Movement : MonoBehaviour
             hSpeed += 1.0f;
         }
 
+        if (MobileSuperCheat.Instance != null)
+        {
+            if (MobileSuperCheat.Instance.mobileSuperCheat)
+            {
+                hSpeed += MobileSuperCheat.Instance.horizontal;
+                vSpeed += MobileSuperCheat.Instance.vertical;
+            }
+        }
+
         if (Input.GetKey(runKey) && vSpeed > 0) {
             playerSpeed = Mathf.MoveTowards(playerSpeed, maxSpeed, maxSpeed * Time.deltaTime / timeToRun);
             Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / timeToRun);
         } else {
             playerSpeed = Mathf.MoveTowards(playerSpeed, basePlayerSpeed, maxSpeed * Time.deltaTime / timeToRun);
             Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / timeToRun);
-        }
-        if (Input.GetKey(failKey)) {
-            Cursor.lockState = Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            SceneManager.LoadScene("MoveInMenu");
         }
         playerVelocity += Vector3.Normalize(gameObject.transform.right * hSpeed + gameObject.transform.forward * vSpeed) * playerSpeed;
     }
@@ -157,6 +160,13 @@ public class Player_Movement : MonoBehaviour
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
+
+        if (MobileSuperCheat.Instance.mobileSuperCheat)
+        {
+            rotX += MobileSuperCheat.Instance.lookX;
+            rotY += MobileSuperCheat.Instance.lookY;
+        }
+
         gameObject.transform.Rotate(0, rotX, 0);
         Camera.main.transform.Rotate(rotY, 0, 0);
         if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {

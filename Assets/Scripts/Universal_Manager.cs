@@ -86,6 +86,8 @@ public class Universal_Manager : MonoBehaviour
 
     public bool skipTransitions = false;
 
+    public bool mobileSuperCheat = false;
+
     public static Universal_Manager Instance { get; private set; }
 
     private void Awake()
@@ -161,6 +163,7 @@ public class Universal_Manager : MonoBehaviour
         }
 
         skipTransitions = PlayerPrefs.GetInt("skipTransitions") == 1;
+        mobileSuperCheat = PlayerPrefs.GetInt("mobileSuperCheat") == 1;
 
         // --------------------
         // VISUAL "CHEAT CODES"

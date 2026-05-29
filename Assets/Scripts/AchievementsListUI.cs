@@ -89,4 +89,14 @@ public class AchievementsListUI : MonoBehaviour
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
     }
+
+    public void EnableMobileSuperCheat()
+    {
+        PlayerPrefs.SetInt("mobileSuperCheat", 1);
+    }
+
+    public void DisableMobileSuperCheat()
+    {
+        PlayerPrefs.SetInt("mobileSuperCheat", 0);
+    }
 }

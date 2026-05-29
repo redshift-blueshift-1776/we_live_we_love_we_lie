@@ -174,6 +174,23 @@ public class TheresAGhostInsideMe : MonoBehaviour
             } else {
                 rotateRight = false;
             }
+
+            if (MobileSuperCheat.Instance != null)
+            {
+                if (MobileSuperCheat.Instance.mobileSuperCheat)
+                {
+                    float hSpeed = 0;
+                    float vSpeed = 0;
+                    hSpeed += MobileSuperCheat.Instance.horizontal;
+                    vSpeed += MobileSuperCheat.Instance.vertical;
+
+                    rotateRight = hSpeed > 0;
+                    rotateLeft = hSpeed < 0;
+                    rotateUp = vSpeed > 0;
+                    rotateDown = vSpeed < 0;
+                }
+            }
+            
             rotateBoard();
             if (boardsSolved == boardsToBeat) {
                 StartCoroutine(GameWin());
