@@ -18,6 +18,8 @@ public class Transition : MonoBehaviour
 
     public bool skipTransition = false;
 
+    private Universal_Manager um;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,22 +30,54 @@ public class Transition : MonoBehaviour
         leftWall.SetActive(false);
         topWall.SetActive(false);
         bottomWall.SetActive(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         GameObject foundObject2 = GameObject.Find("Universal_Manager");
         if (foundObject2 != null) {
-            Universal_Manager um = foundObject2.GetComponent<Universal_Manager>();
-            skipTransition = um.skipTransitions;
+            um = foundObject2.GetComponent<Universal_Manager>();
         } else {
             Debug.Log("No Universal_Manager");
             skipTransition = false;
         }
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (um != null)
+        {
+            skipTransition = um.skipTransitions;
+        }
+    }
+
+    // public IEnumerator LoadSceneTransition(int sceneIndex)
+    // {
+    //     Cursor.lockState = CursorLockMode.None;
+    //     Cursor.visible = true;
+
+    //     AsyncOperation asyncLoad =
+    //         SceneManager.LoadSceneAsync(sceneIndex);
+
+    //     asyncLoad.allowSceneActivation = false;
+
+    //     if (!skipTransition)
+    //     {
+    //         yield return StartCoroutine(PlayTransitionAnimation());
+    //     }
+
+    //     while (asyncLoad.progress < 0.9f)
+    //     {
+    //         yield return null;
+    //     }
+
+    //     asyncLoad.allowSceneActivation = true;
+    //     currentCoroutine = null;
+    // }
+
     public IEnumerator LoadLevel1() {
+        AsyncOperation asyncLoad =
+            SceneManager.LoadSceneAsync(23);
+
+        asyncLoad.allowSceneActivation = false;
+
         if (!skipTransition)
         {
             rightWall.SetActive(true);
@@ -93,8 +127,10 @@ public class Transition : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(23);
+
+        asyncLoad.allowSceneActivation = true;
         yield return null;
+        currentCoroutine = null;
     }
 
     public void ToLevel1() {
@@ -104,6 +140,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadLevelSelect() {
+        AsyncOperation asyncLoad =
+            SceneManager.LoadSceneAsync(8);
+
+        asyncLoad.allowSceneActivation = false;
+
         if (!skipTransition)
         {
             rightWall.SetActive(true);
@@ -139,8 +180,10 @@ public class Transition : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(8);
+
+        asyncLoad.allowSceneActivation = true;
         yield return null;
+        currentCoroutine = null;
     }
 
     public void ToLevelSelect() {
@@ -150,6 +193,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadMenu() {
+        AsyncOperation asyncLoad =
+            SceneManager.LoadSceneAsync(0);
+
+        asyncLoad.allowSceneActivation = false;
+
         if (!skipTransition)
         {
             rightWall.SetActive(true);
@@ -185,8 +233,10 @@ public class Transition : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(0);
+        
+        asyncLoad.allowSceneActivation = true;
         yield return null;
+        currentCoroutine = null;
     }
 
     public void ToMenu() {
@@ -197,6 +247,12 @@ public class Transition : MonoBehaviour
 
     public IEnumerator LoadPrevious() {
         int n = PlayerPrefs.GetInt("PreviousLevel", 0);
+
+        AsyncOperation asyncLoad =
+            SceneManager.LoadSceneAsync(n);
+
+        asyncLoad.allowSceneActivation = false;
+
         if (!skipTransition)
         {
             rightWall.SetActive(true);
@@ -246,7 +302,10 @@ public class Transition : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(n);
+        
+        asyncLoad.allowSceneActivation = true;
+        yield return null;
+        currentCoroutine = null;
 
     }
 
@@ -257,6 +316,11 @@ public class Transition : MonoBehaviour
     }
 
     public IEnumerator LoadFail() {
+        AsyncOperation asyncLoad =
+            SceneManager.LoadSceneAsync(5);
+
+        asyncLoad.allowSceneActivation = false;
+
         if (!skipTransition)
         {
             rightWall.SetActive(true);
@@ -292,7 +356,10 @@ public class Transition : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(5);
+        
+        asyncLoad.allowSceneActivation = true;
+        yield return null;
+        currentCoroutine = null;
 
     }
 
@@ -306,6 +373,12 @@ public class Transition : MonoBehaviour
 
     public IEnumerator LoadSpecified(int sceneNum) {
         int n = sceneNum;
+
+        AsyncOperation asyncLoad =
+            SceneManager.LoadSceneAsync(n);
+
+        asyncLoad.allowSceneActivation = false;
+
         if (!skipTransition)
         {
             rightWall.SetActive(true);
@@ -355,8 +428,10 @@ public class Transition : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(n);
-
+        
+        asyncLoad.allowSceneActivation = true;
+        yield return null;
+        currentCoroutine = null;
     }
 
     private int difficulty = 0;
