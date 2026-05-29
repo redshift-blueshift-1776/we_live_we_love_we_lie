@@ -96,16 +96,54 @@ public class Player_Movement : MonoBehaviour
     }
 
 
+    // void jumpHelper() {
+    //     groundedPlayer = controller.isGrounded;
+    //     if (groundedPlayer && playerVelocity.y < 0) {
+    //         playerVelocity.y = 0f;
+    //     }
+
+    //     // Changes the height position of the player..
+    //     if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer) {
+    //         playerVelocity.y += jumpVelocity;
+    //     }
+
+    //     if (MobileSuperCheat.Instance != null)
+    //     {
+    //         if (MobileSuperCheat.Instance.mobileSuperCheat)
+    //         {
+    //             if (MobileSuperCheat.Instance.jumpPressed && groundedPlayer) {
+    //                 playerVelocity.y += jumpVelocity;
+    //             }
+    //         }
+    //     }
+
+    //     playerVelocity.y += gravityValue * Time.deltaTime;
+    // }
+
     void jumpHelper() {
         groundedPlayer = controller.isGrounded;
+
         if (groundedPlayer && playerVelocity.y < 0) {
             playerVelocity.y = 0f;
         }
 
-        // Changes the height position of the player..
-        if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer) {
+        bool jumpInput = Input.GetKeyDown(KeyCode.Space);
+
+        if (MobileSuperCheat.Instance != null &&
+            MobileSuperCheat.Instance.mobileSuperCheat)
+        {
+            jumpInput |= MobileSuperCheat.Instance.jumpPressed;
+        }
+
+        if (jumpInput && groundedPlayer) {
             playerVelocity.y += jumpVelocity;
         }
+
+        // Consume the mobile input
+        if (MobileSuperCheat.Instance != null) {
+            MobileSuperCheat.Instance.jumpPressed = false;
+        }
+
         playerVelocity.y += gravityValue * Time.deltaTime;
     }
 
@@ -164,7 +202,7 @@ public class Player_Movement : MonoBehaviour
         if (MobileSuperCheat.Instance.mobileSuperCheat)
         {
             rotX += MobileSuperCheat.Instance.lookX;
-            rotY += MobileSuperCheat.Instance.lookY;
+            rotY -= MobileSuperCheat.Instance.lookY;
         }
 
         gameObject.transform.Rotate(0, rotX, 0);
@@ -198,6 +236,14 @@ public class Player_Movement : MonoBehaviour
                     interactableObject.Interact();
                 } else if (Input.GetKeyDown(pullKey)) {
                     interactableObject.Interact();
+                } else if (MobileSuperCheat.Instance != null) {
+                    if (MobileSuperCheat.Instance.mobileSuperCheat)
+                    {
+                        if (MobileSuperCheat.Instance.interactPressed)
+                        {
+                            interactableObject.Interact();
+                        }
+                    }
                 }
             } else {
                 crosshair.SetActive(true);

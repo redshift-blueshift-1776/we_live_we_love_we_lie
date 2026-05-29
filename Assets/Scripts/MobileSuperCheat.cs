@@ -67,15 +67,15 @@ public class MobileSuperCheat : MonoBehaviour
 
     void LateUpdate()
     {
-        ResetFrameInputs();
+        // ResetFrameInputs();
 
         lookX = 0;
         lookY = 0;
     }
 
-    public void ResetFrameInputs()
-    {
-        jumpPressed = false;
-        interactPressed = false;
-    }
+    // public void ResetFrameInputs()
+    // {
+    //     jumpPressed = false;
+    //     interactPressed = false;
+    // }
 }
