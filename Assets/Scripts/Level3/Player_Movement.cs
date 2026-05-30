@@ -134,14 +134,28 @@ public class Player_Movement : MonoBehaviour
         {
             jumpInput |= MobileSuperCheat.Instance.jumpPressed;
         }
+        bool didJump = false;
 
-        if (jumpInput && groundedPlayer) {
-            playerVelocity.y += jumpVelocity;
+        if (jumpInput) {
+            if (groundedPlayer)
+            {
+                playerVelocity.y += jumpVelocity;
+                didJump = true;
+            }
+            else
+            {
+                Debug.Log("!groundedPlayer");
+            }
+            
         }
 
         // Consume the mobile input
         if (MobileSuperCheat.Instance != null) {
-            MobileSuperCheat.Instance.jumpPressed = false;
+            if (MobileSuperCheat.Instance.jumpPressed && didJump)
+            {
+                Debug.Log("Consuming a jump");
+                MobileSuperCheat.Instance.jumpPressed = false;
+            }
         }
 
         playerVelocity.y += gravityValue * Time.deltaTime;
@@ -183,7 +197,7 @@ public class Player_Movement : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(runKey) && vSpeed > 0) {
+        if ((Input.GetKey(runKey) && vSpeed > 0) || MobileSuperCheat.Instance.mobileSuperCheat) {
             playerSpeed = Mathf.MoveTowards(playerSpeed, maxSpeed, maxSpeed * Time.deltaTime / timeToRun);
             Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / timeToRun);
         } else {
@@ -201,8 +215,8 @@ public class Player_Movement : MonoBehaviour
 
         if (MobileSuperCheat.Instance.mobileSuperCheat)
         {
-            rotX += MobileSuperCheat.Instance.lookX;
-            rotY -= MobileSuperCheat.Instance.lookY;
+            rotX = MobileSuperCheat.Instance.lookX;
+            rotY = -MobileSuperCheat.Instance.lookY;
         }
 
         gameObject.transform.Rotate(0, rotX, 0);
@@ -242,6 +256,7 @@ public class Player_Movement : MonoBehaviour
                         if (MobileSuperCheat.Instance.interactPressed)
                         {
                             interactableObject.Interact();
+                            MobileSuperCheat.Instance.interactPressed = false;
                         }
                     }
                 }

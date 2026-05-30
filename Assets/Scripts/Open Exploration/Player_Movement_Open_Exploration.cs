@@ -175,6 +175,16 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E)) {
                 currentScooter.Dismount(gameObject);
             }
+
+            if (MobileSuperCheat.Instance != null)
+            {
+                if (MobileSuperCheat.Instance.mobileSuperCheat
+                    && MobileSuperCheat.Instance.interactPressed)
+                {
+                    currentScooter.Dismount(gameObject);
+                    MobileSuperCheat.Instance.interactPressed = false;
+                }
+            }
         }
 
     }
@@ -222,9 +232,14 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             hasJumpedThisLanding = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) || (autoBunnyHopping && Input.GetKey(KeyCode.Space)))
+        bool didJump = false;
+
+        if (Input.GetKeyDown(KeyCode.Space)
+            || (autoBunnyHopping && Input.GetKey(KeyCode.Space))
+            || MobileSuperCheat.Instance.jumpPressed)
         {
             jumpBufferCounter = jumpBufferTime;
+            didJump = true;
         }
 
         if (jumpBufferCounter > 0)
@@ -245,6 +260,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         if (!groundedPlayer)
         {
             playerVelocity.y += gravityValue * Time.deltaTime;
+        }
+
+        // Consume the mobile input
+        if (MobileSuperCheat.Instance != null) {
+            if (MobileSuperCheat.Instance.jumpPressed && didJump)
+            {
+                Debug.Log("Consuming a jump");
+                MobileSuperCheat.Instance.jumpPressed = false;
+            }
         }
     }
     private Vector3 getBottomPos()
@@ -312,6 +336,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             inputDirection += transform.right;
         }
 
+        if (MobileSuperCheat.Instance != null)
+        {
+            if (MobileSuperCheat.Instance.mobileSuperCheat)
+            {
+                inputDirection += MobileSuperCheat.Instance.horizontal * transform.right;
+                inputDirection += MobileSuperCheat.Instance.vertical * transform.forward;
+            }
+        }
+
         if (inputDirection == Vector3.zero)
         {
             ApplyRotation(leftLeg.transform, 0);
@@ -322,6 +355,13 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         else
         {
             bool running = Input.GetKey(KeyCode.LeftShift);
+            if (MobileSuperCheat.Instance != null)
+            {
+                if (MobileSuperCheat.Instance.mobileSuperCheat)
+                {
+                    running = true;
+                }
+            }
             float runSpeed = 12f;
             float runAngle = 60f;
             float walkSpeed = 5f;
@@ -343,7 +383,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         bool isRunning = false;
         //running
         Vector3 playerAcceleration = inputDirection * baseAcceleration;
-        if (Input.GetKey(runKey) && !Input.GetKey(KeyCode.S)) {
+        if ((Input.GetKey(runKey) && !Input.GetKey(KeyCode.S)) || MobileSuperCheat.Instance.mobileSuperCheat) {
             isRunning = true;
             playerAcceleration *= 1.5f;
             //do not change the fov when holding shift alone
@@ -432,6 +472,13 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
+
+        if (MobileSuperCheat.Instance.mobileSuperCheat)
+        {
+            rotX = MobileSuperCheat.Instance.lookX;
+            rotY = -MobileSuperCheat.Instance.lookY;
+        }
+
         gameObject.transform.Rotate(0, rotX, 0);
         Camera.main.transform.Rotate(rotY, 0, 0);
         if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {
@@ -459,6 +506,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         Door newDoor = null;
         Open_Exploration_Collectible collectible = null;
         Open_Exploration_Scooter scooter = null;
+        bool didInteract = false;
 
         float radius = 0.05f;
         if (Physics.SphereCast(origin, radius, dir, out hit, interactDistance))
@@ -488,14 +536,39 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         // Only interact if we currently have a valid target
         if (currentDoor != null)
         {
-            if (Input.GetKeyDown(pushKey))
+            if (MobileSuperCheat.Instance != null)
             {
-                currentDoor.Interact(); // or InteractPush()
+                if (MobileSuperCheat.Instance.mobileSuperCheat
+                    && MobileSuperCheat.Instance.interactPressed)
+                {
+                    currentDoor.Interact();
+                    MobileSuperCheat.Instance.interactPressed = false;
+                    didInteract = true;
+                } else
+                {
+                    if (Input.GetKeyDown(pushKey))
+                    {
+                        currentDoor.Interact(); // or InteractPush()
+                    }
+                    else if (Input.GetKeyDown(pullKey))
+                    {
+                        currentDoor.Interact(); // or InteractPull()
+                    }
+                }
             }
-            else if (Input.GetKeyDown(pullKey))
+
+            if (!didInteract)
             {
-                currentDoor.Interact(); // or InteractPull()
+                if (Input.GetKeyDown(pushKey))
+                {
+                    currentDoor.Interact(); // or InteractPush()
+                }
+                else if (Input.GetKeyDown(pullKey))
+                {
+                    currentDoor.Interact(); // or InteractPull()
+                }
             }
+            
         }
 
         // Only update state if changed
@@ -518,13 +591,26 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         // Only interact if we currently have a valid target
         if (currentCollectible != null)
         {
-            if (Input.GetKeyDown(pushKey))
+            if (MobileSuperCheat.Instance != null)
             {
-                currentCollectible.Interact(); // or InteractPush()
+                if (MobileSuperCheat.Instance.mobileSuperCheat
+                    && MobileSuperCheat.Instance.interactPressed)
+                {
+                    currentCollectible.Interact();
+                    MobileSuperCheat.Instance.interactPressed = false;
+                }
             }
-            else if (Input.GetKeyDown(pullKey))
+
+            if (!didInteract)
             {
-                currentCollectible.Interact(); // or InteractPull()
+                if (Input.GetKeyDown(pushKey))
+                {
+                    currentCollectible.Interact(); // or InteractPush()
+                }
+                else if (Input.GetKeyDown(pullKey))
+                {
+                    currentCollectible.Interact(); // or InteractPull()
+                }
             }
         }
 
@@ -548,13 +634,26 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         // Only interact if we currently have a valid target
         if (currentScooter != null)
         {
-            if (Input.GetKeyDown(pushKey))
+            if (MobileSuperCheat.Instance != null)
             {
-                currentScooter.Mount(gameObject); // or InteractPush()
+                if (MobileSuperCheat.Instance.mobileSuperCheat
+                    && MobileSuperCheat.Instance.interactPressed)
+                {
+                    currentScooter.Mount(gameObject);
+                    MobileSuperCheat.Instance.interactPressed = false;
+                }
             }
-            else if (Input.GetKeyDown(pullKey))
+
+            if (!didInteract)
             {
-                currentScooter.Mount(gameObject); // or InteractPull()
+                if (Input.GetKeyDown(pushKey))
+                {
+                    currentScooter.Mount(gameObject); // or InteractPush()
+                }
+                else if (Input.GetKeyDown(pullKey))
+                {
+                    currentScooter.Mount(gameObject); // or InteractPull()
+                }
             }
         }
     }
@@ -606,12 +705,21 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         else if (Input.GetKey(KeyCode.S))
         {
             moveInput = -1f;
-        } 
+        }
 
         // Boost logic
         bool isBoosting = Input.GetKey(KeyCode.LeftShift);
-        float speedFactor = isBoosting ? speedMultiplier : 1f;
 
+        if (MobileSuperCheat.Instance != null)
+        {
+            if (MobileSuperCheat.Instance.mobileSuperCheat)
+            {
+                moveInput += MobileSuperCheat.Instance.vertical;
+                isBoosting = true;
+            }
+        }
+
+        float speedFactor = isBoosting ? speedMultiplier : 1f;
         
         if (isGroundedScooter) {
             // currentSpeed *= speedFactor;
@@ -728,6 +836,12 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             } else {
                 rotX = manualRotationSpeed * Time.deltaTime;
             }
+        }
+
+        if (MobileSuperCheat.Instance.mobileSuperCheat)
+        {
+            rotX = MobileSuperCheat.Instance.lookX;
+            rotY = -MobileSuperCheat.Instance.lookY;
         }
 
         gameObject.transform.Rotate(0, rotX, 0);
