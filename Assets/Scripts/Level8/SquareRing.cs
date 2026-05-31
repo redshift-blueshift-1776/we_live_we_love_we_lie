@@ -13,10 +13,4 @@ public class SquareRing : MonoBehaviour
             r.material.color = targetColor;
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -52,6 +52,8 @@ public class GenerateWorld : MonoBehaviour
     private Color spectreColor = new Color(127f / 255f, 224f / 255f, 255f / 255f);
 
     public bool customLevel;
+
+    public bool generatedSquareRings = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -64,11 +66,10 @@ public class GenerateWorld : MonoBehaviour
         phase = 0;
         doingStuff = false;
         customLevel = gm.customLevel;
+        generatedSquareRings = false;
         if (!customLevel) {
             if (useEffect != 0) {
                 GenerateLevel1();
-                GenerateSquareRings();
-                GenerateAPlaceCalledHome();
             }
         }
     }
@@ -100,6 +101,28 @@ public class GenerateWorld : MonoBehaviour
                     Debug.Log("calling coroutine MoveThings() on currentBeat - initialBeat == 48");
                     StartCoroutine(MoveThings());
                     doingStuff = true;
+                }
+            }
+
+            if (!generatedSquareRings && player.transform.position.z > 5000)
+            {
+                generatedSquareRings = true;
+                StartCoroutine(GenerateAPlaceCalledHome());
+                StartCoroutine(GenerateSquareRings());
+            }
+
+            if (player.transform.position.z > 10000)
+            {
+                foreach (Transform ring in SquareRingsReference.transform)
+                {
+                    bool active =
+                        ring.position.z >
+                        player.transform.position.z - 500f;
+
+                    if (ring.gameObject.activeSelf != active)
+                    {
+                        ring.gameObject.SetActive(active);
+                    }
                 }
             }
         }
@@ -174,7 +197,7 @@ public class GenerateWorld : MonoBehaviour
         }
     }
 
-    public void GenerateSquareRings() {
+    public IEnumerator GenerateSquareRings() {
         for (int i = 0; i < numRings; i++) {
             GameObject newSquareRing = Instantiate(SquareRing);
             newSquareRing.transform.SetParent(SquareRingsReference.transform);
@@ -182,10 +205,12 @@ public class GenerateWorld : MonoBehaviour
             newSquareRing.transform.localRotation = Quaternion.Euler(0, 0, i * ringOffsetRotation);
             SquareRing sr = newSquareRing.GetComponent<SquareRing>();
             sr.H = ((float) i) / numRingsInRotation;
+            yield return null;
         }
+        yield return null;
     }
 
-    public void GenerateAPlaceCalledHome() {
+    public IEnumerator GenerateAPlaceCalledHome() {
         for (int i = 0; i < numFences; i++) {
             GameObject newFence = Instantiate(Fence);
             newFence.transform.SetParent(APlaceCalledHomeReference.transform);
@@ -193,6 +218,7 @@ public class GenerateWorld : MonoBehaviour
             newFence = Instantiate(Fence);
             newFence.transform.SetParent(APlaceCalledHomeReference.transform);
             newFence.transform.localPosition = new Vector3(0f + (5f + UnityEngine.Random.Range(0f, fenceVariance)), 0, i * fenceOffset);
+            yield return null;
         }
         for (int i = 0; i < numFadeBuildings; i++) {
             GameObject newFadeBuilding = Instantiate(FadeBuilding);
@@ -209,6 +235,13 @@ public class GenerateWorld : MonoBehaviour
             newFadeLightpole = Instantiate(FadeLightpole);
             newFadeLightpole.transform.SetParent(APlaceCalledHomeReference.transform);
             newFadeLightpole.transform.localPosition = new Vector3(-25, 0, i * fadeBuildingOffset);
+            yield return null;
         }
+
+        Debug.Log("Rings: " + numRings);
+        Debug.Log("Fences: " + (numFences * 2));
+        Debug.Log("Fade Buildings: " + (numFadeBuildings * 2));
+        Debug.Log("Lightpoles: " + (numFadeBuildings * 2));
+        yield return null;
     }
 }
