@@ -538,37 +538,40 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         {
             if (MobileSuperCheat.Instance != null)
             {
-                if (MobileSuperCheat.Instance.mobileSuperCheat
-                    && MobileSuperCheat.Instance.interactPressed)
+                if (MobileSuperCheat.Instance.mobileSuperCheat)
                 {
-                    currentDoor.Interact();
-                    MobileSuperCheat.Instance.interactPressed = false;
-                    didInteract = true;
-                } else
+                    if (MobileSuperCheat.Instance.interactPressed)
+                    {
+                        currentDoor.Interact();
+                        MobileSuperCheat.Instance.interactPressed = false;
+                        didInteract = true;
+                    }
+                }
+                else
                 {
                     if (Input.GetKeyDown(pushKey))
                     {
-                        currentDoor.Interact(); // or InteractPush()
+                        currentDoor.Interact();
+                        didInteract = true;
                     }
                     else if (Input.GetKeyDown(pullKey))
                     {
-                        currentDoor.Interact(); // or InteractPull()
+                        currentDoor.Interact();
+                        didInteract = true;
                     }
                 }
             }
-
-            if (!didInteract)
+            else
             {
                 if (Input.GetKeyDown(pushKey))
                 {
-                    currentDoor.Interact(); // or InteractPush()
+                    currentDoor.Interact();
                 }
                 else if (Input.GetKeyDown(pullKey))
                 {
-                    currentDoor.Interact(); // or InteractPull()
+                    currentDoor.Interact();
                 }
             }
-            
         }
 
         // Only update state if changed
@@ -598,6 +601,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 {
                     currentCollectible.Interact();
                     MobileSuperCheat.Instance.interactPressed = false;
+                    didInteract = true;
                 }
             }
 
@@ -641,6 +645,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 {
                     currentScooter.Mount(gameObject);
                     MobileSuperCheat.Instance.interactPressed = false;
+                    didInteract = true;
                 }
             }
 
@@ -666,7 +671,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     void OnControllerColliderHit(ControllerColliderHit hit) {
         if (hit.rigidbody != null) {
             if (timeSinceLastKick >= 1f) {
-                if (Input.GetKey(runKey)) {
+                if (Input.GetKey(runKey) || MobileSuperCheat.Instance.mobileSuperCheat) {
                     Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.1f, hit.moveDirection.z);
                     hit.rigidbody.AddForce(horizontalDir * 300000 * Time.fixedDeltaTime);
                 } else {
@@ -677,7 +682,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 timeSinceLastKick = 0f;
             } else
             {
-                if (Input.GetKey(runKey)) {
+                if (Input.GetKey(runKey) || MobileSuperCheat.Instance.mobileSuperCheat) {
                     Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.1f, hit.moveDirection.z);
                     hit.rigidbody.AddForce(horizontalDir * 30000 * Time.fixedDeltaTime);
                 } else {
