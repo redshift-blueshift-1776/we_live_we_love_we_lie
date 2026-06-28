@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem; 
 
 public class Player_Movement_Open_Exploration : MonoBehaviour
 {
@@ -236,7 +237,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space)
             || (autoBunnyHopping && Input.GetKey(KeyCode.Space))
-            || MobileSuperCheat.Instance.jumpPressed)
+            || (MobileSuperCheat.Instance != null && MobileSuperCheat.Instance.jumpPressed))
         {
             jumpBufferCounter = jumpBufferTime;
             didJump = true;
@@ -383,7 +384,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         bool isRunning = false;
         //running
         Vector3 playerAcceleration = inputDirection * baseAcceleration;
-        if ((Input.GetKey(runKey) && !Input.GetKey(KeyCode.S)) || MobileSuperCheat.Instance.mobileSuperCheat) {
+        if ((Input.GetKey(runKey) && !Input.GetKey(KeyCode.S)) || (MobileSuperCheat.Instance != null && MobileSuperCheat.Instance.mobileSuperCheat)) {
             isRunning = true;
             playerAcceleration *= 1.5f;
             //do not change the fov when holding shift alone
@@ -473,7 +474,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        if (MobileSuperCheat.Instance.mobileSuperCheat)
+        if (MobileSuperCheat.Instance != null && MobileSuperCheat.Instance.mobileSuperCheat)
         {
             rotX = MobileSuperCheat.Instance.lookX;
             rotY = -MobileSuperCheat.Instance.lookY;
@@ -671,7 +672,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     void OnControllerColliderHit(ControllerColliderHit hit) {
         if (hit.rigidbody != null) {
             if (timeSinceLastKick >= 1f) {
-                if (Input.GetKey(runKey) || MobileSuperCheat.Instance.mobileSuperCheat) {
+                if (Input.GetKey(runKey) || (MobileSuperCheat.Instance != null && MobileSuperCheat.Instance.mobileSuperCheat)) {
                     Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.1f, hit.moveDirection.z);
                     hit.rigidbody.AddForce(horizontalDir * 300000 * Time.fixedDeltaTime);
                 } else {
@@ -682,7 +683,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 timeSinceLastKick = 0f;
             } else
             {
-                if (Input.GetKey(runKey) || MobileSuperCheat.Instance.mobileSuperCheat) {
+                if (Input.GetKey(runKey) || (MobileSuperCheat.Instance != null && MobileSuperCheat.Instance.mobileSuperCheat)) {
                     Vector3 horizontalDir = new Vector3(hit.moveDirection.x, 0.1f, hit.moveDirection.z);
                     hit.rigidbody.AddForce(horizontalDir * 30000 * Time.fixedDeltaTime);
                 } else {
@@ -843,7 +844,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             }
         }
 
-        if (MobileSuperCheat.Instance.mobileSuperCheat)
+        if (MobileSuperCheat.Instance != null && MobileSuperCheat.Instance.mobileSuperCheat)
         {
             rotX = MobileSuperCheat.Instance.lookX;
             rotY = -MobileSuperCheat.Instance.lookY;
