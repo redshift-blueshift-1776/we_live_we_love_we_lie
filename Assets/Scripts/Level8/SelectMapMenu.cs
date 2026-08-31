@@ -98,7 +98,7 @@ public class SelectMapMenu : MonoBehaviour
     {
         PlayerPrefs.SetString("SelectedSong", song.songName);
         Debug.Log($"Selected: {song.songName}");
-        SceneManager.LoadScene(65);
+        SceneManager.LoadScene("Level Editor");
     }
 
     // Initialize page positions

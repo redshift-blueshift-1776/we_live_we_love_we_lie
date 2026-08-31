@@ -135,7 +135,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     void Update() {
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.M)) {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("Menu");
         }
         if (gameActive) {
             if (levelEditor) {
@@ -1197,7 +1197,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         Cursor.visible = true;
         if (levelEditor) {
             scmm.StopRecording();
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("Menu");
         }
         Scene currentScene = SceneManager.GetActiveScene();
         PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
@@ -1240,11 +1240,11 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         if (foundObject != null)
         {
             Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
-            SceneManager.LoadScene(44);
+            SceneManager.LoadScene("Final Elimination");
         }
         else
         {
-            SceneManager.LoadScene(0); // Not in story mode, goes back to the menu page
+            SceneManager.LoadScene("Menu"); // Not in story mode, goes back to the menu page
         } 
     }
 
@@ -1260,6 +1260,6 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             um.justBeatLevel8 = false;
         }
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene(44); // Change when we have the actual scene
+        SceneManager.LoadScene("Final Elimination"); // Change when we have the actual scene
     }
 }
