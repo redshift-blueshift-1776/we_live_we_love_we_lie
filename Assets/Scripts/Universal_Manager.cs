@@ -94,9 +94,13 @@ public class Universal_Manager : MonoBehaviour
 
     private Camera GetMainCamera()
     {
-        if (_cachedMainCamera == null)
-        {
+        if (_cachedMainCamera == null || !_cachedMainCamera.gameObject.activeInHierarchy)
             _cachedMainCamera = Camera.main;
+        else
+        {
+            var currentMain = Camera.main;
+            if (currentMain != null && currentMain != _cachedMainCamera)
+                _cachedMainCamera = currentMain;
         }
         return _cachedMainCamera;
     }
@@ -163,10 +167,6 @@ public class Universal_Manager : MonoBehaviour
 
         usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
         var mainCam = GetMainCamera();
-        // Re-acquire if destroyed during scene loads
-        if (mainCam == null) {
-            mainCam = _cachedMainCamera = Camera.main;
-        }
         if (mainCam != null)
         {
             // Fallback to extension method if component lookup fails (URP 17)

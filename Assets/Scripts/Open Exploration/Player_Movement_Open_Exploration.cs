@@ -93,9 +93,13 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     {
         get
         {
-            if (_cachedMainCamera == null)
-            {
+            if (_cachedMainCamera == null || !_cachedMainCamera.gameObject.activeInHierarchy)
                 _cachedMainCamera = Camera.main;
+            else
+            {
+                var currentMain = Camera.main;
+                if (currentMain != null && currentMain != _cachedMainCamera)
+                    _cachedMainCamera = currentMain;
             }
             return _cachedMainCamera;
         }
@@ -148,8 +152,8 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
             jumpHelper();
 
-            InteractRaycast();
-            RotationHelper();
+            interactRaycast();
+            rotationHelper();
             timeSinceLastKick += Time.deltaTime;
 
             if (Input.GetKeyDown(KeyCode.R)) {
@@ -181,7 +185,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             }
 
             HandleMovementScooter();
-            RotationHelperScooter();
+            rotationHelperScooter();
             AlignWithGroundScooter();
             Vector3 move = Vector3.zero;
             move.y = velocityScooter.y * Time.deltaTime; // Apply gravity
@@ -494,7 +498,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     }
 
 
-    void RotationHelper() {
+    void rotationHelper() {
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -526,7 +530,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     public Open_Exploration_Scooter currentScooter = null;
 
-    void InteractRaycast()
+    void interactRaycast()
     {
         RaycastHit hit;
         var cam = CachedMainCamera;
@@ -853,7 +857,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         }
     }
 
-    void RotationHelperScooter() {
+    void rotationHelperScooter() {
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;

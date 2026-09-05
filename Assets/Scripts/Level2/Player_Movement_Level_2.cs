@@ -101,9 +101,16 @@ public class Player_Movement_Level_2 : MonoBehaviour
     {
         get
         {
-            if (_cachedMainCamera == null)
-            {
+            // Re-acquire if cached is null, inactive, or no longer the tagged MainCamera
+            // (Level 2 swaps between cam1/cam2 via SetActive, so the cached menu cam
+            // becomes inactive after startGameButton)
+            if (_cachedMainCamera == null || !_cachedMainCamera.gameObject.activeInHierarchy)
                 _cachedMainCamera = Camera.main;
+            else
+            {
+                var currentMain = Camera.main;
+                if (currentMain != null && currentMain != _cachedMainCamera)
+                    _cachedMainCamera = currentMain;
             }
             return _cachedMainCamera;
         }
@@ -123,7 +130,32 @@ public class Player_Movement_Level_2 : MonoBehaviour
         if (banGrapple) {
             grappleUnlocked = false;
         }
-        gm = gameManager.GetComponent<ToFindWhatIveBecome>();
+        if (gameManager == null)
+        {
+            // Fallback: try to find the manager in scene if prefab override was lost during Unity upgrade
+            gameManager = GameObject.Find("ToFindWhatIveBecome");
+            if (gameManager == null) gameManager = GameObject.Find("GameManager");
+            if (gameManager == null)
+            {
+                var found = FindFirstObjectByType<ToFindWhatIveBecome>();
+                if (found != null) gameManager = found.gameObject;
+            }
+            if (gameManager == null)
+                Debug.LogWarning("Player_Movement_Level_2: gameManager reference missing and not found in scene. Interaction and win conditions will fail.");
+        }
+        if (gameManager != null)
+            gm = gameManager.GetComponent<ToFindWhatIveBecome>();
+        if (gm == null)
+        {
+            var found = FindFirstObjectByType<ToFindWhatIveBecome>();
+            if (found != null) gm = found;
+            if (gm == null) Debug.LogWarning("Player_Movement_Level_2: ToFindWhatIveBecome not found.");
+        }
+        // Fallback for crosshair refs if prefab overrides lost
+        if (crosshair == null) crosshair = GameObject.Find("Crosshair");
+        if (bigCrosshair == null) bigCrosshair = GameObject.Find("BigCrosshair");
+        if (crosshair == null) Debug.LogWarning("Player_Movement_Level_2: crosshair not assigned.");
+        if (bigCrosshair == null) Debug.LogWarning("Player_Movement_Level_2: bigCrosshair not assigned.");
         jumpVelocity = Mathf.Sqrt(-2 * gravityValue * jumpHeight);
         // controller = gameObject.GetComponent<CharacterController>();
         // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
@@ -171,6 +203,8 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
     void Update()
     {
+        // Defensive: allow looking even if gm is null (common after scene upgrade losing prefab overrides)
+        bool isGameActive = gm != null ? gm.gameActive : true;
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
         if (particleObjectRain != null) {
             if (usePostProcessing == 0) {
@@ -180,16 +214,16 @@ public class Player_Movement_Level_2 : MonoBehaviour
                 particleObjectRain.SetActive(true);
             }
         }
-        if (gm.gameActive) {
+        if (isGameActive) {
             // modify player velocity
             // horizontalMovementHelper();
             // move player
             // controller.Move(playerVelocity * Time.deltaTime);
-            InteractRaycast();
-            RotationHelper();
+            interactRaycast();
+            rotationHelper();
             HandleGrapple();
         }
-        if (gm.gameActive) {
+        if (isGameActive) {
             // Gravity Handling
             isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, ~0);
             if (controller.isGrounded) {
@@ -354,7 +388,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
     }
 
 
-    void RotationHelper() {
+    void rotationHelper() {
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -404,7 +438,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
         }
     }
 
-    void InteractRaycast() {
+    void interactRaycast() {
         RaycastHit hit;
         var cam = CachedMainCamera;
         if (cam == null) {
@@ -424,27 +458,30 @@ public class Player_Movement_Level_2 : MonoBehaviour
                 }
             }
             if (foundSomething) {
-                crosshair.SetActive(false);
-                bigCrosshair.SetActive(true);
+                if (crosshair != null) crosshair.SetActive(false);
+                if (bigCrosshair != null) bigCrosshair.SetActive(true);
             } else {
-                crosshair.SetActive(true);
-                bigCrosshair.SetActive(false);
+                if (crosshair != null) crosshair.SetActive(true);
+                if (bigCrosshair != null) bigCrosshair.SetActive(false);
             }
         } else {
-            crosshair.SetActive(true);
-            bigCrosshair.SetActive(false);
+            if (crosshair != null) crosshair.SetActive(true);
+            if (bigCrosshair != null) bigCrosshair.SetActive(false);
         }
         if (Physics.Raycast(origin, dir, out hit, grappleDistance)) {
             // Debug.Log("Raycase Grapple");
-            if (grappleUnlocked && !banGrapple) {
-                crosshair.transform.localRotation = Quaternion.Euler(0, 0, 45);
-            } else {
-                crosshair.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            if (crosshair != null)
+            {
+                if (grappleUnlocked && !banGrapple) {
+                    crosshair.transform.localRotation = Quaternion.Euler(0, 0, 45);
+                } else {
+                    crosshair.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                }
             }
         } else {
-            crosshair.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            crosshair.SetActive(true);
-            bigCrosshair.SetActive(false);
+            if (crosshair != null) crosshair.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            if (crosshair != null) crosshair.SetActive(true);
+            if (bigCrosshair != null) bigCrosshair.SetActive(false);
         }
     }
 

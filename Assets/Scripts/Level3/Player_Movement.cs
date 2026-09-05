@@ -60,9 +60,13 @@ public class Player_Movement : MonoBehaviour
     {
         get
         {
-            if (_cachedMainCamera == null)
-            {
+            if (_cachedMainCamera == null || !_cachedMainCamera.gameObject.activeInHierarchy)
                 _cachedMainCamera = Camera.main;
+            else
+            {
+                var currentMain = Camera.main;
+                if (currentMain != null && currentMain != _cachedMainCamera)
+                    _cachedMainCamera = currentMain;
             }
             return _cachedMainCamera;
         }
