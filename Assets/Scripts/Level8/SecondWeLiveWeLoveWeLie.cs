@@ -68,6 +68,21 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     public SimpleCustomMapMaker scmm;
 
     public string customMapPath;
+
+    [Header("Custom Level Tuning")]
+    [Tooltip("If true, 'simple' maps keep the x/y saved in JSON (editor positions). If false, randomize as before (legacy bug).")]
+    public bool preserveSimpleMapPositions = true;
+    [Tooltip("If true, use the map's BPM for timing in custom levels; if false, keep story 145 BPM.")]
+    public bool useMapBpmForCustomLevels = true;
+    [Tooltip("If true and customMapPath is empty/missing, search persistentDataPath for a JSON matching PlayerPrefs SelectedSong.")]
+    public bool resolveCustomMapBySelectedSong = true;
+    [Tooltip("Extra seconds after the last note before win/fail is evaluated in custom levels.")]
+    public float customLevelEndBufferSeconds = 8f;
+
+    // Runtime custom-map state (populated after load)
+    private SimpleMapData loadedCustomMap;
+    private float customLevelDurationSeconds = 192f;
+    private bool customLevelLoadFailed = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -96,28 +111,161 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         }
     }
 
+    private string ResolveCustomMapPath()
+    {
+        // 1) Explicit customMapPath (if set and exists)
+        if (!string.IsNullOrEmpty(customMapPath))
+        {
+            string direct = Path.Combine(Application.persistentDataPath, customMapPath);
+            if (File.Exists(direct))
+                return direct;
+            // Allow absolute path as fallback (in case customMapPath is already full path)
+            if (File.Exists(customMapPath))
+                return customMapPath;
+        }
+        // 2) Lookup by PlayerPrefs SelectedSong (matches LevelEditorScene.cs:61)
+        if (resolveCustomMapBySelectedSong)
+        {
+            string selected = PlayerPrefs.GetString("SelectedSong", "");
+            if (!string.IsNullOrEmpty(selected) && selected != "UNKNOWN")
+            {
+                try
+                {
+                    string[] jsonFiles = Directory.GetFiles(Application.persistentDataPath, "*.json");
+                    foreach (string file in jsonFiles)
+                    {
+                        try
+                        {
+                            string j = File.ReadAllText(file);
+                            SimpleMapData m = JsonUtility.FromJson<SimpleMapData>(j);
+                            if (m != null && m.songName == selected)
+                                return file;
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarning($"ResolveCustomMapPath: failed to parse {file}: {ex.Message}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"ResolveCustomMapPath: Directory scan failed: {ex.Message}");
+                }
+            }
+        }
+        return null;
+    }
+
     public IEnumerator CallGenerateNotes()
     {
         if (customLevel)
         {
-            string realPath = Path.Combine(Application.persistentDataPath, customMapPath);
-            string json = File.ReadAllText(realPath);
-            SimpleMapData map = JsonUtility.FromJson<SimpleMapData>(json);
+            string realPath = ResolveCustomMapPath();
+            if (string.IsNullOrEmpty(realPath) || !File.Exists(realPath))
+            {
+                Debug.LogError($"CallGenerateNotes: custom map not found. customMapPath='{customMapPath}' resolved='{realPath}' persistent='{Application.persistentDataPath}' SelectedSong='{PlayerPrefs.GetString("SelectedSong", "UNKNOWN")}'");
+                customLevelLoadFailed = true;
+                // Fallback to story notes so the level is still playable in editor validation
+                GenerateNotes();
+                madeNotes = true;
+                yield break;
+            }
+            SimpleMapData map = null;
+            try
+            {
+                string json = File.ReadAllText(realPath);
+                map = JsonUtility.FromJson<SimpleMapData>(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"CallGenerateNotes: failed to read/parse {realPath}: {ex}");
+                customLevelLoadFailed = true;
+                GenerateNotes();
+                madeNotes = true;
+                yield break;
+            }
+            if (map == null || map.notes == null)
+            {
+                Debug.LogError($"CallGenerateNotes: parsed map is null at {realPath}");
+                customLevelLoadFailed = true;
+                GenerateNotes();
+                madeNotes = true;
+                yield break;
+            }
+            loadedCustomMap = map;
 
+            // Use map BPM for timing if tunable enabled (story default 145 BPM -> secondsPerBeat = 60/145/4)
+            if (useMapBpmForCustomLevels && map.bpm > 0)
+            {
+                secondsPerBeat = 60f / map.bpm / 4f;
+                // Propagate to BeatManager so GetCurrentBeatNumber / visual sync matches map BPM
+                if (beatManager != null)
+                {
+                    beatManager.tempo = map.bpm;
+                    beatManager.secondsPerBeat = 60f / map.bpm;
+                }
+                else if (BeatManager.Instance != null)
+                {
+                    BeatManager.Instance.tempo = map.bpm;
+                    BeatManager.Instance.secondsPerBeat = 60f / map.bpm;
+                }
+                // Also swap audio clip to the selected song if available
+                try
+                {
+                    var songs = Resources.LoadAll<SongDataSO>("Songs");
+                    foreach (var s in songs)
+                    {
+                        if (s.songName == map.songName && s.audioClip != null)
+                        {
+                            // gameAudio is the main gameplay audio source holder
+                            AudioSource gameAudioSource = null;
+                            if (gameAudio != null) gameAudioSource = gameAudio.GetComponent<AudioSource>();
+                            if (gameAudioSource == null && gameAudio != null) gameAudioSource = gameAudio.GetComponentInChildren<AudioSource>();
+                            if (gameAudioSource != null && gameAudioSource.clip != s.audioClip)
+                                gameAudioSource.clip = s.audioClip;
+                            if (beatManager != null && beatManager.audioSource != null && beatManager.audioSource.clip != s.audioClip)
+                                beatManager.audioSource.clip = s.audioClip;
+                            else if (BeatManager.Instance != null && BeatManager.Instance.audioSource != null && BeatManager.Instance.audioSource.clip != s.audioClip)
+                                BeatManager.Instance.audioSource.clip = s.audioClip;
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"CallGenerateNotes: failed to assign custom audio clip for '{map.songName}': {ex.Message}");
+                }
+            }
+
+            // Build note list — preserve editor x/y when tunable is on
+            // float z = note.z;
+            int maxBeat = int.MinValue;
             foreach (var note in map.notes)
             {
                 float beat = note.beat;
                 float x = note.x;
                 float y = note.y;
-                // float z = note.z;
 
-                if (map.mapType == "simple") {
+                // Legacy bug: simple maps randomized positions. Tunable preserves editor positions.
+                if (map.mapType == "simple" && !preserveSimpleMapPositions) {
                     x = UnityEngine.Random.Range(-2, 3);
                     y = UnityEngine.Random.Range(-2, 3);
-                    notes.Add($"{beat},{x},{y}");
-                } else {
-                    notes.Add($"{beat},{x},{y}");
                 }
+                notes.Add($"{beat},{x},{y}");
+                if (beat > maxBeat) maxBeat = Mathf.RoundToInt(beat);
+            }
+            // Dynamic duration: last beat -> seconds + buffer (instead of fixed 192f)
+            if (maxBeat != int.MinValue)
+            {
+                float lastNoteSeconds = Mathf.Abs(maxBeat * secondsPerBeat);
+                // Duration covers note window (16 sixteenths ~= 4 beats) plus buffer
+                customLevelDurationSeconds = lastNoteSeconds + 16f * secondsPerBeat + customLevelEndBufferSeconds;
+                // Clamp to at least story length to avoid instant win on tiny maps, but respect longer songs
+                customLevelDurationSeconds = Mathf.Max(customLevelDurationSeconds, 30f);
+            }
+            else
+            {
+                customLevelDurationSeconds = 192f;
             }
             madeNotes = true;
         }
@@ -146,7 +294,10 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 // }
                 timer += Time.deltaTime;
 
-                if (timer >= 192f) {
+                // levelEditor recording mode uses fixed 192s timeout (song length approx)
+                float levelEditorTimeout = 192f;
+                // For custom playback we use dynamic duration computed from map; story stays 192f
+                if (timer >= levelEditorTimeout) {
                     gameActive = false;
                     if (score > scoreThreshold) {
                         Win();
@@ -199,7 +350,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                     }
                 }
 
-                if (timer / (float) secondsPerBeat > 550f && !didBriefcases) {
+                // Briefcases are story-only (beat 550+); skip for custom levels
+                if (!customLevel && timer / (float) secondsPerBeat > 550f && !didBriefcases) {
                     Debug.Log(timer / (float) secondsPerBeat);
                     DoBriefcases(new int[] { 576+64, 576+64+8, 576+64+16 }, briefcases, briefcasePivots);
                     // DoBriefcases(new int[] { 64, 64+8, 64+16 }, briefcases, briefcasePivots);
@@ -207,7 +359,8 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
                 }
 
 
-                if (timer >= 192f) {
+                float endTime = customLevel ? customLevelDurationSeconds : 192f;
+                if (timer >= endTime) {
                     gameActive = false;
                     if (score > scoreThreshold) {
                         Win();
@@ -1198,6 +1351,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         if (levelEditor) {
             scmm.StopRecording();
             SceneManager.LoadScene("Menu");
+            return;
         }
         Scene currentScene = SceneManager.GetActiveScene();
         PlayerPrefs.SetInt("PreviousLevel", currentScene.buildIndex);
@@ -1241,10 +1395,12 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         {
             Debug.Log("GameObject '" + "StoryMode" + "' found in the scene.");
             SceneManager.LoadScene("Final Elimination");
+            return;
         }
         else
         {
             SceneManager.LoadScene("Menu"); // Not in story mode, goes back to the menu page
+            return;
         } 
     }
 
