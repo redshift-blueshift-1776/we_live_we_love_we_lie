@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LevelEditorScene : MonoBehaviour
 {
@@ -40,7 +41,9 @@ public class LevelEditorScene : MonoBehaviour
     void Start()
     {
         if (editorCamera == null)
+        {
             editorCamera = Camera.main;
+        }
 
         LoadMap();
         SpawnEditorNotes();
@@ -49,6 +52,10 @@ public class LevelEditorScene : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            SaveMap();
+        }
         HandleFreecam();
         HandleSelection();
         HandleDragging();
@@ -258,11 +265,13 @@ public class LevelEditorScene : MonoBehaviour
     // Save
     public void SaveMap()
     {
-        SimpleMapData newMap = new SimpleMapData();
-        newMap.mapType = loadedMap.mapType;
-        newMap.bpm = loadedMap.bpm;
-        newMap.msPerSixteenth = loadedMap.msPerSixteenth;
-        newMap.songName = loadedMap.songName;
+        SimpleMapData newMap = new()
+        {
+            mapType = loadedMap.mapType,
+            bpm = loadedMap.bpm,
+            msPerSixteenth = loadedMap.msPerSixteenth,
+            songName = loadedMap.songName
+        };
 
         foreach (EditorNote e in editorNotes)
         {
@@ -282,5 +291,6 @@ public class LevelEditorScene : MonoBehaviour
         File.WriteAllText(path, json);
 
         Debug.Log("Saved edited map to: " + path);
+        SceneManager.LoadScene("Menu");
     }
 }
