@@ -96,6 +96,19 @@ public class Player_Movement_Level_2 : MonoBehaviour
     // Assign in inspector or create procedurally
     public GameObject ropePrefab; // a thin cylinder scaled to (1,1,1)
 
+    private Camera _cachedMainCamera;
+    private Camera CachedMainCamera
+    {
+        get
+        {
+            if (_cachedMainCamera == null)
+            {
+                _cachedMainCamera = Camera.main;
+            }
+            return _cachedMainCamera;
+        }
+    }
+
 
     private void Awake()
     {
@@ -117,16 +130,32 @@ public class Player_Movement_Level_2 : MonoBehaviour
         // controller.skinWidth = 0.1f * controller.radius;
         // maxSpeed = Player_Movement.basePlayerSpeed * Player_Movement.speedUp;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
-        crosshair.SetActive(true);
-        bigCrosshair.SetActive(false);
-        defaultFieldOfView = Camera.main.fieldOfView;
+        if (crosshair != null) {
+            crosshair.SetActive(true);
+        }
+        if (bigCrosshair != null) {
+            bigCrosshair.SetActive(false);
+        }
+        var camInit = CachedMainCamera;
+        if (camInit != null)
+        {
+            defaultFieldOfView = camInit.fieldOfView;
+        }
+        else
+        {
+            defaultFieldOfView = 60f;
+        }
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
-        if (usePostProcessing == 0) {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = false;
-        } else {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = true;
+        var camPP = CachedMainCamera;
+        if (camPP != null)
+        {
+            var cameraData = camPP.GetComponent<UniversalAdditionalCameraData>();
+            if (cameraData == null) {
+                cameraData = camPP.GetUniversalAdditionalCameraData();
+            }
+            if (cameraData != null) {
+                cameraData.renderPostProcessing = (usePostProcessing != 0);
+            }
         }
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         //rb = GetComponent<Rigidbody>();
@@ -156,8 +185,8 @@ public class Player_Movement_Level_2 : MonoBehaviour
             // horizontalMovementHelper();
             // move player
             // controller.Move(playerVelocity * Time.deltaTime);
-            interactRaycast();
-            rotationHelper();
+            InteractRaycast();
+            RotationHelper();
             HandleGrapple();
         }
         if (gm.gameActive) {
@@ -184,8 +213,10 @@ public class Player_Movement_Level_2 : MonoBehaviour
 
             // Move the scooter
             //Vector3 move = transform.forward * currentSpeed * Time.deltaTime;
-            Vector3 move = new Vector3(0, 0, 0);
-            move.y = velocity.y * Time.deltaTime; // Apply gravity
+            Vector3 move = new(0, 0, 0)
+            {
+                y = velocity.y * Time.deltaTime // Apply gravity
+            };
 
             controller.Move(move);
         }
@@ -323,7 +354,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
     }
 
 
-    void rotationHelper() {
+    void RotationHelper() {
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -344,14 +375,18 @@ public class Player_Movement_Level_2 : MonoBehaviour
         }
 
         gameObject.transform.Rotate(0, rotX, 0);
-        Camera.main.transform.Rotate(rotY, 0, 0);
-        if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {
-            float diffBetweenUpDir = Mathf.Abs(270 - Camera.main.transform.localEulerAngles.x);
-            float diffBetweenDownDir = Mathf.Abs(90 - Camera.main.transform.localEulerAngles.x);
+        var cam = CachedMainCamera;
+        if (cam == null) {
+            return;
+        }
+        cam.transform.Rotate(rotY, 0, 0);
+        if (cam.transform.localEulerAngles.y == 180 && cam.transform.localEulerAngles.z == 180) {
+            float diffBetweenUpDir = Mathf.Abs(270 - cam.transform.localEulerAngles.x);
+            float diffBetweenDownDir = Mathf.Abs(90 - cam.transform.localEulerAngles.x);
             if (diffBetweenDownDir <= diffBetweenUpDir) {
-                Camera.main.transform.localEulerAngles = new Vector3(90, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(90, 0, 0);
             } else {
-                Camera.main.transform.localEulerAngles = new Vector3(270, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(270, 0, 0);
             }
         }
         gameObject.transform.Rotate(0, rotX, 0);
@@ -369,10 +404,14 @@ public class Player_Movement_Level_2 : MonoBehaviour
         }
     }
 
-    void interactRaycast() {
+    void InteractRaycast() {
         RaycastHit hit;
-        Vector3 origin = Camera.main.transform.position;
-        Vector3 dir = Camera.main.transform.forward;
+        var cam = CachedMainCamera;
+        if (cam == null) {
+            return;
+        }
+        Vector3 origin = cam.transform.position;
+        Vector3 dir = cam.transform.forward;
         float radius = 0.05f;
         if (Physics.SphereCast(origin, radius, dir, out hit, interactDistance)) {
             bool foundSomething = false;
@@ -440,8 +479,12 @@ public class Player_Movement_Level_2 : MonoBehaviour
     void TryStartGrapple()
     {
         RaycastHit hit;
-        Vector3 origin = Camera.main.transform.position;
-        Vector3 dir = Camera.main.transform.forward;
+        var cam = CachedMainCamera;
+        if (cam == null) {
+            return;
+        }
+        Vector3 origin = cam.transform.position;
+        Vector3 dir = cam.transform.forward;
 
         if (Physics.Raycast(origin, dir, out hit, grappleDistance))
         {
@@ -463,7 +506,11 @@ public class Player_Movement_Level_2 : MonoBehaviour
     {
         currentRopeLength += grappleSpeed * Time.deltaTime;
 
-        float totalDistance = Vector3.Distance(Camera.main.transform.position + new Vector3(1, -1, 0), grapplePoint);
+        var cam = CachedMainCamera;
+        if (cam == null) {
+            return;
+        }
+        float totalDistance = Vector3.Distance(cam.transform.position + new Vector3(1, -1, 0), grapplePoint);
 
         ropeObject.transform.localScale = new Vector3(
             0.5f,
@@ -471,7 +518,7 @@ public class Player_Movement_Level_2 : MonoBehaviour
             currentRopeLength / 2f
         );
 
-        ropeObject.transform.position = Camera.main.transform.position + new Vector3(1, -1, 0) + 
+        ropeObject.transform.position = cam.transform.position + new Vector3(1, -1, 0) + 
             ropeObject.transform.forward * (currentRopeLength / 2f);
 
         // Reached point, switch to pulling

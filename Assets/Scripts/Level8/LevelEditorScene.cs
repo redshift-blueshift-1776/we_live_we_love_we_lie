@@ -30,7 +30,7 @@ public class LevelEditorScene : MonoBehaviour
     public string songName;
     public SimpleMapData loadedMap;
 
-    private List<EditorNote> editorNotes = new List<EditorNote>();
+    private List<EditorNote> editorNotes = new();
     private EditorNote selectedNote;
 
     private Vector3 lastMousePos;
@@ -97,7 +97,7 @@ public class LevelEditorScene : MonoBehaviour
             en.x = n.x;
             en.y = n.y;
 
-            Vector3 pos = new Vector3(
+            Vector3 pos = new(
                 n.x * xyScale,
                 n.y * xyScale,
                 n.beat * zScale
@@ -136,6 +136,13 @@ public class LevelEditorScene : MonoBehaviour
     // Camera
     void HandleFreecam()
     {
+        if (editorCamera == null)
+        {
+            editorCamera = Camera.main;
+            if (editorCamera == null) {
+                return;
+            }
+        }
         float mx = Input.GetAxis("Mouse X") * lookSensitivity;
         float my = Input.GetAxis("Mouse Y") * lookSensitivity;
 
@@ -153,7 +160,7 @@ public class LevelEditorScene : MonoBehaviour
 
         float speed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : moveSpeed;
 
-        editorCamera.transform.position += dir * speed * Time.deltaTime;
+        editorCamera.transform.position += speed * Time.deltaTime * dir;
     }
 
 
@@ -186,7 +193,9 @@ public class LevelEditorScene : MonoBehaviour
     void SelectNote(EditorNote n)
     {
         if (selectedNote != null)
+        {
             selectedNote.SetSelected(false);
+        }
 
         selectedNote = n;
         selectedNote.SetSelected(true);
@@ -195,7 +204,9 @@ public class LevelEditorScene : MonoBehaviour
     void DeselectNote()
     {
         if (selectedNote != null)
+        {
             selectedNote.SetSelected(false);
+        }
 
         selectedNote = null;
     }
@@ -205,25 +216,39 @@ public class LevelEditorScene : MonoBehaviour
     void HandleDragging()
     {
         if (selectedNote == null)
+        {
             return;
+        }
 
         if (Input.GetKeyDown(KeyCode.X))
+        {
             draggingXY = true;
+        }
 
         if (Input.GetKeyDown(KeyCode.Z))
+        {
             draggingZ = true;
+        }
 
         if (Input.GetKeyUp(KeyCode.X))
+        {
             draggingXY = false;
+        }
 
         if (Input.GetKeyUp(KeyCode.Z))
+        {
             draggingZ = false;
+        }
 
         if (draggingXY)
+        {
             DragXY();
+        }
 
         if (draggingZ)
+        {
             DragZ();
+        }
     }
 
     void DragXY()

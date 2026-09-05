@@ -90,6 +90,17 @@ public class Universal_Manager : MonoBehaviour
 
     public static Universal_Manager Instance { get; private set; }
 
+    private Camera _cachedMainCamera;
+
+    private Camera GetMainCamera()
+    {
+        if (_cachedMainCamera == null)
+        {
+            _cachedMainCamera = Camera.main;
+        }
+        return _cachedMainCamera;
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -116,50 +127,76 @@ public class Universal_Manager : MonoBehaviour
         openExplorationCollectibles = new bool[numOpenExplorationCollectibles];
         numCollectiblesCollected = 0;
         openExplorationBallChallenges = new bool[numOpenExplorationLevels];
-        defaultRawImage.SetActive(false);
-        cameraEffectRawImage.SetActive(false);
+        _cachedMainCamera = Camera.main;
+        if (defaultRawImage != null) {
+            defaultRawImage.SetActive(false);
+        } else {
+            Debug.LogWarning("Universal_Manager: defaultRawImage not assigned in inspector.");
+        }
+        if (cameraEffectRawImage != null) {
+            cameraEffectRawImage.SetActive(false);
+        } else {
+            Debug.LogWarning("Universal_Manager: cameraEffectRawImage not assigned in inspector.");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        level1Layer20 = (PlayerPrefs.GetInt("level1Layer20", 0) == 1);
-        level1Layer50 = (PlayerPrefs.GetInt("level1Layer50", 0) == 1);
-        level1Layer100 = (PlayerPrefs.GetInt("level1Layer100", 0) == 1);
+        level1Layer20 = PlayerPrefs.GetInt("level1Layer20", 0) == 1;
+        level1Layer50 = PlayerPrefs.GetInt("level1Layer50", 0) == 1;
+        level1Layer100 = PlayerPrefs.GetInt("level1Layer100", 0) == 1;
 
-        level2iteration5 = (PlayerPrefs.GetInt("level2iteration5", 0) == 1);
-        level2iteration10 = (PlayerPrefs.GetInt("level2iteration10", 0) == 1);
-        level2iteration5noGrapple = (PlayerPrefs.GetInt("level2iteration5noGrapple", 0) == 1);
-        level2iteration10noGrapple = (PlayerPrefs.GetInt("level2iteration10noGrapple", 0) == 1);
+        level2iteration5 = PlayerPrefs.GetInt("level2iteration5", 0) == 1;
+        level2iteration10 = PlayerPrefs.GetInt("level2iteration10", 0) == 1;
+        level2iteration5noGrapple = PlayerPrefs.GetInt("level2iteration5noGrapple", 0) == 1;
+        level2iteration10noGrapple = PlayerPrefs.GetInt("level2iteration10noGrapple", 0) == 1;
 
-        level3iteration5 = (PlayerPrefs.GetInt("level3iteration5", 0) == 1);
+        level3iteration5 = PlayerPrefs.GetInt("level3iteration5", 0) == 1;
 
-        level4GetBetrayed = (PlayerPrefs.GetInt("level4GetBetrayed", 0) == 1);
+        level4GetBetrayed = PlayerPrefs.GetInt("level4GetBetrayed", 0) == 1;
 
-        level8Get1500 = (PlayerPrefs.GetInt("level8Get1500", 0) == 1);
-        level8Get2000 = (PlayerPrefs.GetInt("level8Get2000", 0) == 1);
+        level8Get1500 = PlayerPrefs.GetInt("level8Get1500", 0) == 1;
+        level8Get2000 = PlayerPrefs.GetInt("level8Get2000", 0) == 1;
 
-        beatStoryMode = (PlayerPrefs.GetInt("beatStoryMode", 0) == 1);
+        beatStoryMode = PlayerPrefs.GetInt("beatStoryMode", 0) == 1;
 
         usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 1);
-        if (usePostProcessing == 0) {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = false;
-        } else {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = true;
+        var mainCam = GetMainCamera();
+        // Re-acquire if destroyed during scene loads
+        if (mainCam == null) {
+            mainCam = _cachedMainCamera = Camera.main;
         }
-        if (usePostProcessing == 2) {
-            Camera.main.targetTexture = cameraEffect;
-            defaultRawImage.SetActive(false);
-            cameraEffectRawImage.SetActive(true);
-            Application.targetFrameRate = 10;
-        } else {
-            // Camera.main.targetTexture = defaultRenderTexture;
-            Camera.main.targetTexture = null;
-            defaultRawImage.SetActive(true);
-            cameraEffectRawImage.SetActive(false);
-            Application.targetFrameRate = -1;
+        if (mainCam != null)
+        {
+            // Fallback to extension method if component lookup fails (URP 17)
+            if (!mainCam.TryGetComponent<UniversalAdditionalCameraData>(out var cameraData)) {
+                cameraData = mainCam.GetUniversalAdditionalCameraData();
+            }
+            if (cameraData != null)
+            {
+                cameraData.renderPostProcessing = usePostProcessing != 0;
+            }
+
+            if (usePostProcessing == 2) {
+                mainCam.targetTexture = cameraEffect;
+                if (defaultRawImage != null) {
+                    defaultRawImage.SetActive(false);
+                }
+                if (cameraEffectRawImage != null) {
+                    cameraEffectRawImage.SetActive(true);
+                }
+                Application.targetFrameRate = 10;
+            } else {
+                mainCam.targetTexture = null;
+                if (defaultRawImage != null) {
+                    defaultRawImage.SetActive(true);
+                }
+                if (cameraEffectRawImage != null) {
+                    cameraEffectRawImage.SetActive(false);
+                }
+                Application.targetFrameRate = -1;
+            }
         }
 
         skipTransitions = PlayerPrefs.GetInt("skipTransitions") == 1;
@@ -259,13 +296,13 @@ public class Universal_Manager : MonoBehaviour
             };
         } else {
             for (int i = 1; i <= numLevels; i++) {
-                beatStoryModeLevels[i - 1] = (PlayerPrefs.GetInt("beatStoryModeLevels" + i, 0) == 1);
-                unlockedHard[i - 1] = (PlayerPrefs.GetInt("unlockedHard" + i, 0) == 1);
-                unlockedEndless[i - 1] = (PlayerPrefs.GetInt("unlockedEndless" + i, 0) == 1);
+                beatStoryModeLevels[i - 1] = PlayerPrefs.GetInt("beatStoryModeLevels" + i, 0) == 1;
+                unlockedHard[i - 1] = PlayerPrefs.GetInt("unlockedHard" + i, 0) == 1;
+                unlockedEndless[i - 1] = PlayerPrefs.GetInt("unlockedEndless" + i, 0) == 1;
             }
 
             for (int i = 0; i < numOpenExplorationCollectibles; i++) {
-                openExplorationCollectibles[i] = (PlayerPrefs.GetInt("openExplorationCollectibles" + i, 0) == 1);
+                openExplorationCollectibles[i] = PlayerPrefs.GetInt("openExplorationCollectibles" + i, 0) == 1;
             }
 
             int newNumCollectiblesCollected = 0;
@@ -285,7 +322,7 @@ public class Universal_Manager : MonoBehaviour
             }
 
             for (int i = 0; i < numOpenExplorationLevels; i++) {
-                openExplorationBallChallenges[i] = (PlayerPrefs.GetInt("openExplorationBallChallenges" + i, 0) == 1);
+                openExplorationBallChallenges[i] = PlayerPrefs.GetInt("openExplorationBallChallenges" + i, 0) == 1;
             }
         }
     }

@@ -10,7 +10,7 @@ using UnityEngine.Rendering.Universal;
 public class Player
 {
     public string Name { get; private set; }
-    private List<Card> cards = new List<Card>();
+    private List<Card> cards = new();
 
     public Player(string name)
     {
@@ -97,7 +97,7 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
     [SerializeField] public float probTruthIfEliminate = 0.2f;
 
     private DeckManager deckManager;
-    private List<Player> players = new List<Player>();
+    private List<Player> players = new();
 
     private int humanPlayerIndex = -1; // decided at runtime
     private int currentDefenseIndex = 0;
@@ -163,12 +163,16 @@ public class FirstWeLiveWeLoveWeLie : MonoBehaviour
         probTruthIfEliminate = PlayerPrefs.GetFloat("probTruthIfEliminate", 0.2f);
         probTruthIfSafe = PlayerPrefs.GetFloat("probTruthIfSafe", 0.6f);
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
-        if (usePostProcessing == 0) {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = false;
-        } else {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = true;
+        var camPP = Camera.main;
+        if (camPP != null)
+        {
+            if (!camPP.TryGetComponent<UniversalAdditionalCameraData>(out var cameraData)) {
+                cameraData = camPP.GetUniversalAdditionalCameraData();
+            }
+            if (cameraData != null)
+            {
+                cameraData.renderPostProcessing = (usePostProcessing != 0);
+            }
         }
     }
 

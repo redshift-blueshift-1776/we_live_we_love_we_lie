@@ -88,6 +88,19 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     private Vector3 checkStartPosition;
     private float checkStartTime;
 
+    private Camera _cachedMainCamera;
+    private Camera CachedMainCamera
+    {
+        get
+        {
+            if (_cachedMainCamera == null)
+            {
+                _cachedMainCamera = Camera.main;
+            }
+            return _cachedMainCamera;
+        }
+    }
+
     private void Awake()
     {
         vehicle = OpenExplorationVehicle.Walking;
@@ -101,7 +114,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
         controller.skinWidth = 0.1f * controller.radius;
-        defaultFieldOfView = Camera.main.fieldOfView;
+        var camInit = CachedMainCamera;
+        if (camInit != null)
+        {
+            defaultFieldOfView = camInit.fieldOfView;
+        }
+        else
+        {
+            defaultFieldOfView = 60f;
+        }
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
         Cursor.visible = false;
@@ -123,16 +144,16 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             if (!controller.enabled || movementLocked) {
                 return;
             }
-            groundedPlayer = isGrounded();
+            groundedPlayer = IsGrounded();
 
             jumpHelper();
 
-            interactRaycast();
-            rotationHelper();
+            InteractRaycast();
+            RotationHelper();
             timeSinceLastKick += Time.deltaTime;
 
             if (Input.GetKeyDown(KeyCode.R)) {
-                respawn();
+                Respawn();
             }
         }
         else if (vehicle == OpenExplorationVehicle.Scooter)
@@ -160,7 +181,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             }
 
             HandleMovementScooter();
-            rotationHelperScooter();
+            RotationHelperScooter();
             AlignWithGroundScooter();
             Vector3 move = Vector3.zero;
             move.y = velocityScooter.y * Time.deltaTime; // Apply gravity
@@ -170,7 +191,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             }
 
             if (Input.GetKeyDown(KeyCode.R)) {
-                respawn();
+                Respawn();
             }
 
             if (Input.GetKeyDown(KeyCode.E)) {
@@ -194,11 +215,11 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     {
         if (vehicle == OpenExplorationVehicle.Walking)
         {
-            movePlayer();
+            MovePlayer();
         }
     }
 
-    private void respawn()
+    private void Respawn()
     {
         controller.enabled = false;
         transform.position = initialPosition;
@@ -212,9 +233,9 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     // WALKING MOVEMENT FUNCTIONS
     // ============================
 
-    private void movePlayer()
+    private void MovePlayer()
     {
-        horizontalMovementHelper();
+        HorizontalMovementHelper();
         controller.Move(playerVelocity * Time.deltaTime);
     }
 
@@ -248,7 +269,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             jumpBufferCounter -= Time.deltaTime;
         }
 
-        // conditions for jumping include coyote time and jump buffering (search up for more details)
+        // conditions for jumping include coyote time and jump buffering
         const float coyoteTime = 0.05f;
         if (timeSinceGrounded <= coyoteTime && jumpBufferCounter > 0 && !hasJumpedThisLanding) {
             playerVelocity.y = jumpVelocity;
@@ -272,15 +293,15 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             }
         }
     }
-    private Vector3 getBottomPos()
+    private Vector3 GetBottomPos()
     {
         return controller.transform.position + controller.center - new Vector3(0, gameObject.transform.localScale.y * controller.height / 2, 0);
     }
 
-    private bool isGrounded()
+    private bool IsGrounded()
     {
         float sphereRadius = controller.radius * 0.99f;
-        Vector3 bottomPos = getBottomPos() + 1.001f * sphereRadius * Vector3.up;
+        Vector3 bottomPos = GetBottomPos() + 1.001f * sphereRadius * Vector3.up;
         bool grounded = Physics.SphereCast(new Ray(bottomPos, Vector3.down), sphereRadius, 1.002f * sphereRadius);
         timeSinceGrounded = grounded ? 0f : timeSinceGrounded + Time.deltaTime;
         timeSinceLanded += Time.deltaTime;
@@ -314,7 +335,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
                 Time.deltaTime * 8f
             );
     }
-    void horizontalMovementHelper() {
+    void HorizontalMovementHelper() {
         //simplified friction
 
         float diffFOV = math.abs(fastFieldOfView - defaultFieldOfView);
@@ -390,10 +411,14 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
             //do not change the fov when holding shift alone
             if (inputDirection.magnitude > 0)
             {
-                Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / 0.25f);
+                var camFov = CachedMainCamera;
+                if (camFov != null)
+                    camFov.fieldOfView = Mathf.MoveTowards(camFov.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / 0.25f);
             }
         } else {
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / 0.25f);
+            var camFov2 = CachedMainCamera;
+            if (camFov2 != null)
+                camFov2.fieldOfView = Mathf.MoveTowards(camFov2.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / 0.25f);
         }
         
         //set horizontal acceleration to 0 when crossing speed threshold and grounded for more than 10 frames
@@ -469,7 +494,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
     }
 
 
-    void rotationHelper() {
+    void RotationHelper() {
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -481,14 +506,16 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         }
 
         gameObject.transform.Rotate(0, rotX, 0);
-        Camera.main.transform.Rotate(rotY, 0, 0);
-        if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {
-            float diffBetweenUpDir = Mathf.Abs(270 - Camera.main.transform.localEulerAngles.x);
-            float diffBetweenDownDir = Mathf.Abs(90 - Camera.main.transform.localEulerAngles.x);
+        var cam = CachedMainCamera;
+        if (cam == null) return;
+        cam.transform.Rotate(rotY, 0, 0);
+        if (cam.transform.localEulerAngles.y == 180 && cam.transform.localEulerAngles.z == 180) {
+            float diffBetweenUpDir = Mathf.Abs(270 - cam.transform.localEulerAngles.x);
+            float diffBetweenDownDir = Mathf.Abs(90 - cam.transform.localEulerAngles.x);
             if (diffBetweenDownDir <= diffBetweenUpDir) {
-                Camera.main.transform.localEulerAngles = new Vector3(90, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(90, 0, 0);
             } else {
-                Camera.main.transform.localEulerAngles = new Vector3(270, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(270, 0, 0);
             }
         }
         gameObject.transform.Rotate(0, rotX, 0);
@@ -499,11 +526,13 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
 
     public Open_Exploration_Scooter currentScooter = null;
 
-    void interactRaycast()
+    void InteractRaycast()
     {
         RaycastHit hit;
-        Vector3 origin = Camera.main.transform.position;
-        Vector3 dir = Camera.main.transform.forward;
+        var cam = CachedMainCamera;
+        if (cam == null) return;
+        Vector3 origin = cam.transform.position;
+        Vector3 dir = cam.transform.forward;
         Door newDoor = null;
         Open_Exploration_Collectible collectible = null;
         Open_Exploration_Scooter scooter = null;
@@ -824,7 +853,7 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         }
     }
 
-    void rotationHelperScooter() {
+    void RotationHelperScooter() {
         // Rotates the camera and character object
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -851,14 +880,18 @@ public class Player_Movement_Open_Exploration : MonoBehaviour
         }
 
         gameObject.transform.Rotate(0, rotX, 0);
-        Camera.main.transform.Rotate(rotY, 0, 0);
-        if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {
-            float diffBetweenUpDir = Mathf.Abs(270 - Camera.main.transform.localEulerAngles.x);
-            float diffBetweenDownDir = Mathf.Abs(90 - Camera.main.transform.localEulerAngles.x);
+        var cam = CachedMainCamera;
+        if (cam == null) {
+            return;
+        }
+        cam.transform.Rotate(rotY, 0, 0);
+        if (cam.transform.localEulerAngles.y == 180 && cam.transform.localEulerAngles.z == 180) {
+            float diffBetweenUpDir = Mathf.Abs(270 - cam.transform.localEulerAngles.x);
+            float diffBetweenDownDir = Mathf.Abs(90 - cam.transform.localEulerAngles.x);
             if (diffBetweenDownDir <= diffBetweenUpDir) {
-                Camera.main.transform.localEulerAngles = new Vector3(90, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(90, 0, 0);
             } else {
-                Camera.main.transform.localEulerAngles = new Vector3(270, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(270, 0, 0);
             }
         }
         gameObject.transform.Rotate(0, rotX, 0);

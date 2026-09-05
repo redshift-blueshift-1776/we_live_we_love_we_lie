@@ -26,12 +26,16 @@ public class MassElimination : MonoBehaviour
             StartCoroutine(MenuLoop());
         } else {
             int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
-            if (usePostProcessing == 0) {
-                UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-                cameraData.renderPostProcessing = false;
-            } else {
-                UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-                cameraData.renderPostProcessing = true;
+            var camPP = Camera.main;
+            if (camPP != null)
+            {
+                var cameraData = camPP.GetComponent<UniversalAdditionalCameraData>();
+                if (cameraData == null) {
+                    cameraData = camPP.GetUniversalAdditionalCameraData();
+                }
+                if (cameraData != null) {
+                    cameraData.renderPostProcessing = (usePostProcessing != 0);
+                }
             }
             playersRemaining.text = "Players Remaining:\n1000";
             MakeGrid();

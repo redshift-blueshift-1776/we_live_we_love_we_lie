@@ -341,6 +341,9 @@ public class FootballCutscene : MonoBehaviour
         Camera cam =
             Camera.main;
 
+        if (cam == null) {
+            yield break;
+        }
         Vector3 originalCamPos =
             cam.transform.position;
 

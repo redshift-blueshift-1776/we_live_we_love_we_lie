@@ -98,6 +98,17 @@ public class Weapon : MonoBehaviour
     private string primaryWeaponCategory = "";
 
     Dictionary<string, float> knifeStats;
+    private Camera _cachedMainCamera;
+    private Camera CachedMainCamera
+    {
+        get
+        {
+            if (_cachedMainCamera == null)
+                _cachedMainCamera = Camera.main;
+            return _cachedMainCamera;
+        }
+    }
+
     void Start()
     {
         playDrawWeaponSound();
@@ -107,7 +118,8 @@ public class Weapon : MonoBehaviour
 
         primaryAmmoText.text = "";
         secondaryAmmoText.text = "";
-        defaultFOV = Camera.main.fieldOfView;
+        var cam = CachedMainCamera;
+        defaultFOV = cam != null ? cam.fieldOfView : 60f;
     }
 
     // Update is called once per frame
@@ -219,7 +231,9 @@ public class Weapon : MonoBehaviour
             audioManager.playSound("SSG08Zoom");
         }
 
-        Camera.main.fieldOfView = (scoped && !levelScript.getPlayerDead()) ? zoomedFOV : defaultFOV;
+        var camFov = CachedMainCamera;
+        if (camFov != null)
+            camFov.fieldOfView = (scoped && !levelScript.getPlayerDead()) ? zoomedFOV : defaultFOV;
     }
     public bool getScoped()
     {

@@ -55,30 +55,55 @@ public class Player_Movement : MonoBehaviour
     [SerializeField] private GameObject crosshair;
     [SerializeField] private GameObject bigCrosshair;
 
+    private Camera _cachedMainCamera;
+    private Camera CachedMainCamera
+    {
+        get
+        {
+            if (_cachedMainCamera == null)
+            {
+                _cachedMainCamera = Camera.main;
+            }
+            return _cachedMainCamera;
+        }
+    }
+
 
     private void Start()
     {
         gm = gameManager.GetComponent<WalkAlongThePathUnknown>();
         jumpVelocity = Mathf.Sqrt(-2 * gravityValue * jumpHeight);
         controller = gameObject.GetComponent<CharacterController>();
-        // set the skin width appropriately according to Unity documentation: https://docs.unity3d.com/Manual/class-CharacterController.html
+        
         controller.skinWidth = 0.1f * controller.radius;
-        maxSpeed = Player_Movement.basePlayerSpeed * Player_Movement.speedUp;
-        defaultFieldOfView = Camera.main.fieldOfView;
+        maxSpeed = basePlayerSpeed * speedUp;
+        var mainCamInit = CachedMainCamera;
+        if (mainCamInit != null)
+        {
+            defaultFieldOfView = mainCamInit.fieldOfView;
+        }
+        else
+        {
+            defaultFieldOfView = 60f;
+        }
+        
         fastFieldOfView = defaultFieldOfView * fieldOfViewMultiplier;
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
-        crosshair.SetActive(true);
-        bigCrosshair.SetActive(false);
-        mainCamera.SetActive(true);
-        altCamera.SetActive(false);
-        fakeBody.SetActive(false);
+        if (crosshair != null) crosshair.SetActive(true);
+        if (bigCrosshair != null) bigCrosshair.SetActive(false);
+        if (mainCamera != null) mainCamera.SetActive(true);
+        if (altCamera != null) altCamera.SetActive(false);
+        if (fakeBody != null) fakeBody.SetActive(false);
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
-        if (usePostProcessing == 0) {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = false;
-        } else {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = true;
+        var camPP = CachedMainCamera;
+        if (camPP != null)
+        {
+            var cameraData = camPP.GetComponent<UniversalAdditionalCameraData>();
+            if (cameraData == null) cameraData = camPP.GetUniversalAdditionalCameraData();
+            if (cameraData != null)
+            {
+                cameraData.renderPostProcessing = (usePostProcessing != 0);
+            }
         }
     }
 
@@ -197,12 +222,16 @@ public class Player_Movement : MonoBehaviour
             }
         }
 
-        if ((Input.GetKey(runKey) && vSpeed > 0) || MobileSuperCheat.Instance.mobileSuperCheat) {
+        if ((Input.GetKey(runKey) && vSpeed > 0) || (MobileSuperCheat.Instance != null && MobileSuperCheat.Instance.mobileSuperCheat)) {
             playerSpeed = Mathf.MoveTowards(playerSpeed, maxSpeed, maxSpeed * Time.deltaTime / timeToRun);
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / timeToRun);
+            var camFov = CachedMainCamera;
+            if (camFov != null)
+                camFov.fieldOfView = Mathf.MoveTowards(camFov.fieldOfView, fastFieldOfView, diffFOV * Time.deltaTime / timeToRun);
         } else {
             playerSpeed = Mathf.MoveTowards(playerSpeed, basePlayerSpeed, maxSpeed * Time.deltaTime / timeToRun);
-            Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / timeToRun);
+            var camFov2 = CachedMainCamera;
+            if (camFov2 != null)
+                camFov2.fieldOfView = Mathf.MoveTowards(camFov2.fieldOfView, defaultFieldOfView, diffFOV * Time.deltaTime / timeToRun);
         }
         playerVelocity += Vector3.Normalize(gameObject.transform.right * hSpeed + gameObject.transform.forward * vSpeed) * playerSpeed;
     }
@@ -213,21 +242,23 @@ public class Player_Movement : MonoBehaviour
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        if (MobileSuperCheat.Instance.mobileSuperCheat)
+        if (MobileSuperCheat.Instance != null && MobileSuperCheat.Instance.mobileSuperCheat)
         {
             rotX = MobileSuperCheat.Instance.lookX;
             rotY = -MobileSuperCheat.Instance.lookY;
         }
 
         gameObject.transform.Rotate(0, rotX, 0);
-        Camera.main.transform.Rotate(rotY, 0, 0);
-        if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {
-            float diffBetweenUpDir = Mathf.Abs(270 - Camera.main.transform.localEulerAngles.x);
-            float diffBetweenDownDir = Mathf.Abs(90 - Camera.main.transform.localEulerAngles.x);
+        var cam = CachedMainCamera;
+        if (cam == null) return;
+        cam.transform.Rotate(rotY, 0, 0);
+        if (cam.transform.localEulerAngles.y == 180 && cam.transform.localEulerAngles.z == 180) {
+            float diffBetweenUpDir = Mathf.Abs(270 - cam.transform.localEulerAngles.x);
+            float diffBetweenDownDir = Mathf.Abs(90 - cam.transform.localEulerAngles.x);
             if (diffBetweenDownDir <= diffBetweenUpDir) {
-                Camera.main.transform.localEulerAngles = new Vector3(90, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(90, 0, 0);
             } else {
-                Camera.main.transform.localEulerAngles = new Vector3(270, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(270, 0, 0);
             }
         }
         gameObject.transform.Rotate(0, rotX, 0);
@@ -235,8 +266,10 @@ public class Player_Movement : MonoBehaviour
 
     void interactRaycast() {
         RaycastHit hit;
-        Vector3 origin = Camera.main.transform.position;
-        Vector3 dir = Camera.main.transform.forward;
+        var cam = CachedMainCamera;
+        if (cam == null) return;
+        Vector3 origin = cam.transform.position;
+        Vector3 dir = cam.transform.forward;
         float radius = 0.05f;
         if (Physics.SphereCast(origin, radius, dir, out hit, interactDistance)) {
             Wall interactableObject = hit.collider.gameObject.GetComponent<Wall>();

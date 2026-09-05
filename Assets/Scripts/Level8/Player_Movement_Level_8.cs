@@ -42,6 +42,19 @@ public class Player_Movement_Level_8 : MonoBehaviour
     [SerializeField] public GameObject gunAndArms;
     [SerializeField] public GameObject laserAnchor;
 
+    private Camera _cachedMainCamera;
+    private Camera CachedMainCamera
+    {
+        get
+        {
+            if (_cachedMainCamera == null)
+            {
+                _cachedMainCamera = Camera.main;
+            }
+            return _cachedMainCamera;
+        }
+    }
+
 
     private void Start()
     {
@@ -65,14 +78,18 @@ public class Player_Movement_Level_8 : MonoBehaviour
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
         gameObject.transform.Rotate(0, rotX, 0);
-        Camera.main.transform.Rotate(rotY, 0, 0);
-        if (Camera.main.transform.localEulerAngles.y == 180 && Camera.main.transform.localEulerAngles.z == 180) {
-            float diffBetweenUpDir = Mathf.Abs(270 - Camera.main.transform.localEulerAngles.x);
-            float diffBetweenDownDir = Mathf.Abs(90 - Camera.main.transform.localEulerAngles.x);
+        var cam = CachedMainCamera;
+        if (cam == null) {
+            return;
+        }
+        cam.transform.Rotate(rotY, 0, 0);
+        if (cam.transform.localEulerAngles.y == 180 && cam.transform.localEulerAngles.z == 180) {
+            float diffBetweenUpDir = Mathf.Abs(270 - cam.transform.localEulerAngles.x);
+            float diffBetweenDownDir = Mathf.Abs(90 - cam.transform.localEulerAngles.x);
             if (diffBetweenDownDir <= diffBetweenUpDir) {
-                Camera.main.transform.localEulerAngles = new Vector3(90, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(90, 0, 0);
             } else {
-                Camera.main.transform.localEulerAngles = new Vector3(270, 0, 0);
+                cam.transform.localEulerAngles = new Vector3(270, 0, 0);
             }
         }
         gameObject.transform.Rotate(0, rotX, 0);

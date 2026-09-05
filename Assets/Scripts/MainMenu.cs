@@ -47,18 +47,35 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    private Camera _cachedMainCamera;
+    private Camera CachedMainCamera
+    {
+        get
+        {
+            if (_cachedMainCamera == null)
+            {
+                _cachedMainCamera = Camera.main;
+            }
+            return _cachedMainCamera;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         int usePostProcessing = PlayerPrefs.GetInt("useVisualEffects", 0);
-        if (usePostProcessing == 0) {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = false;
-        } else {
-            UniversalAdditionalCameraData cameraData = Camera.main.GetUniversalAdditionalCameraData();
-            cameraData.renderPostProcessing = true;
+        var cam = CachedMainCamera;
+        if (cam == null) {
+            return;
+        }
+        var cameraData = cam.GetComponent<UniversalAdditionalCameraData>();
+        if (cameraData == null) {
+            cameraData = cam.GetUniversalAdditionalCameraData();
+        }
+        if (cameraData != null) {
+            cameraData.renderPostProcessing = (usePostProcessing != 0);
         }
     }
 
