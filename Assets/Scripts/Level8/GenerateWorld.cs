@@ -37,7 +37,7 @@ public class GenerateWorld : MonoBehaviour
     [SerializeField] public float fadeBuildingOffset;
     [SerializeField] public int numFadeBuildings;
 
-    private double secondsPerBeat;
+    public double secondsPerBeat;
 
     private double nextChangeTime;
 
@@ -59,41 +59,70 @@ public class GenerateWorld : MonoBehaviour
     {
         useEffect = PlayerPrefs.GetInt("useVisualEffects", 0);
 
-        gm = gameManager.GetComponent<SecondWeLiveWeLoveWeLie>();
+        if (gameManager != null) gm = gameManager.GetComponent<SecondWeLiveWeLoveWeLie>();
+        if (gm == null) gm = FindFirstObjectByType<SecondWeLiveWeLoveWeLie>();
         nextChangeTime = BeatManager.Instance.GetNextBeatTime();
         secondsPerBeat = 60.0 / 145.0 / 4.0;
         Debug.Log(secondsPerBeat);
         phase = 0;
         doingStuff = false;
-        customLevel = gm.customLevel;
+        customLevel = gm != null ? gm.customLevel : false;
         generatedSquareRings = false;
-        if (!customLevel) {
-            if (useEffect != 0) {
-                GenerateLevel1();
-            }
+        // Custom levels should be a void - no story visuals, just forward movement.
+        // Only generate story pillars/rings when not custom.
+        if (!customLevel && useEffect != 0) {
+            GenerateLevel1();
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (gm.gameActive) {
-            if (!BeatManager.Instance.audioSource.isPlaying) return;
+        if (gm == null) gm = FindFirstObjectByType<SecondWeLiveWeLoveWeLie>();
+        if (gm == null || !gm.gameActive) return;
+        if (!BeatManager.Instance.audioSource.isPlaying) return;
 
-            if (initialBeat == -1) {
-                initialBeat = BeatManager.Instance.GetCurrentBeatNumber();
+        // Sync BPM for custom levels so forward movement matches note timing (story uses 145 BPM)
+        // SecondWeLiveWeLoveWeLie sets its secondsPerBeat to 60/bpm/4 for custom; mirror it here.
+        if (customLevel && gm != null)
+        {
+            // Keep in sync if custom map changed BPM
+            double customSpb = gm.secondsPerBeat;
+            if (customSpb > 0 && Math.Abs(secondsPerBeat - customSpb) > 0.0001)
+                secondsPerBeat = customSpb;
+            // Also keep customLevel flag in sync in case it was toggled after Start
+            customLevel = gm.customLevel;
+        }
+
+        if (initialBeat == -1) {
+            initialBeat = BeatManager.Instance.GetCurrentBeatNumber();
+        }
+
+        int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
+        // Custom levels: 1 measure (4 beats) ready is now handled in SecondWeLiveWeLoveWeLie
+        // (song/notes delayed 4 beats after pressing Start). Movement should start as soon as song starts,
+        // like story's forward phase. Story keeps original 32/48 phrasing.
+        if (customLevel)
+        {
+            // Start forward immediately when song starts (0-1 beats after initialBeat)
+            // initialBeat is set when BeatManager audio starts (after ready). Use >=0 to catch first frame.
+            if (currentBeat - initialBeat >= 0 && currentBeat - initialBeat < 2) {
+                if (!doingStuff) {
+                    Debug.Log("custom void: starting forward at song start (0 beats after initialBeat)");
+                    phase = 1; // skip building drop
+                    StartCoroutine(MoveThings());
+                    doingStuff = true;
+                }
             }
-
-            int currentBeat = BeatManager.Instance.GetCurrentBeatNumber();
+        }
+        else
+        {
+            // Story mode: original phrasing
             if (currentBeat - initialBeat == 32) {
-                if (!customLevel) {
-                    if (!doingStuff) {
-                        Debug.Log("calling coroutine MoveThings() on currentBeat - initialBeat == 32");
-                        StartCoroutine(MoveThings());
-                        doingStuff = true;
-                    }
-                } else {
-                    phase = 1;
+                if (!doingStuff) {
+                    Debug.Log("calling coroutine MoveThings() on currentBeat - initialBeat == 32");
+                    StartCoroutine(MoveThings());
+                    doingStuff = true;
                 }
             }
             if (currentBeat - initialBeat == 48) {
@@ -103,29 +132,33 @@ public class GenerateWorld : MonoBehaviour
                     doingStuff = true;
                 }
             }
+        }
 
-            if (!generatedSquareRings && player.transform.position.z > 5000)
+            // Custom levels are a void - skip story visuals (rings / A Place Called Home)
+            if (!customLevel)
             {
-                generatedSquareRings = true;
-                StartCoroutine(GenerateAPlaceCalledHome());
-                StartCoroutine(GenerateSquareRings());
-            }
-
-            if (player.transform.position.z > 10000)
-            {
-                foreach (Transform ring in SquareRingsReference.transform)
+                if (!generatedSquareRings && player.transform.position.z > 5000)
                 {
-                    bool active =
-                        ring.position.z >
-                        player.transform.position.z - 500f;
+                    generatedSquareRings = true;
+                    StartCoroutine(GenerateAPlaceCalledHome());
+                    StartCoroutine(GenerateSquareRings());
+                }
 
-                    if (ring.gameObject.activeSelf != active)
+                if (player.transform.position.z > 10000)
+                {
+                    foreach (Transform ring in SquareRingsReference.transform)
                     {
-                        ring.gameObject.SetActive(active);
+                        bool active =
+                            ring.position.z >
+                            player.transform.position.z - 500f;
+
+                        if (ring.gameObject.activeSelf != active)
+                        {
+                            ring.gameObject.SetActive(active);
+                        }
                     }
                 }
             }
-        }
     }
 
     public IEnumerator MoveThings()

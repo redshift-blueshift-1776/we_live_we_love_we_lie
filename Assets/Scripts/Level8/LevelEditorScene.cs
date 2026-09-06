@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -20,11 +21,12 @@ public class LevelEditorScene : MonoBehaviour
     public TMP_Text beatText;
 
     [Header("Editor Settings")]
-    public float zScale = 10f;
+    public float zScale = 2.2f; // Reduced from 10f so notes are close together and usable
     public float xyScale = 3f;
     public float moveSpeed = 15f;
     public float fastSpeed = 40f;
     public float lookSensitivity = 2f;
+    public float editorStartZOffset = 30f; // Camera starts this far behind first notes so bunch-at-front is visible ahead
 
     [Header("Map Data")]
     public string songName;
@@ -47,6 +49,18 @@ public class LevelEditorScene : MonoBehaviour
 
         LoadMap();
         SpawnEditorNotes();
+        // Place camera behind first notes so the initial bunch is ahead, not at your feet / behind you.
+        // This fixes "have to turn around" - current line stays in front as you advance.
+        if (editorCamera != null)
+        {
+            float minBeat = float.MaxValue;
+            foreach (var n in editorNotes) if (n.beat < minBeat) minBeat = n.beat;
+            if (minBeat == float.MaxValue) minBeat = 0;
+            float startZ = minBeat * zScale - editorStartZOffset;
+            // Keep X/Y centered, look slightly down the track
+            editorCamera.transform.position = new Vector3(0, 6f, startZ);
+            editorCamera.transform.eulerAngles = new Vector3(12f, 0, 0);
+        }
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -69,28 +83,94 @@ public class LevelEditorScene : MonoBehaviour
     {
         songName = PlayerPrefs.GetString("SelectedSong", "UNKNOWN");
 
-        string[] jsonFiles = Directory.GetFiles(Application.persistentDataPath, "*.json");
-        jsonfilen = jsonFiles;
-        foreach (string file in jsonFiles)
+        // 1) Direct path from SelectMapMenu (editing existing map) takes priority
+        string selectedMapPath = PlayerPrefs.GetString("SelectedMapPath", "");
+        if (!string.IsNullOrEmpty(selectedMapPath) && File.Exists(selectedMapPath))
         {
-            string json = File.ReadAllText(file);
-            loadedMap = JsonUtility.FromJson<SimpleMapData>(json);
-            Debug.Log("Loaded map: " + file);
-            if (loadedMap.songName == songName)
+            try
             {
-                Debug.Log("Found Song: " + file);
-                return;
+                string json = File.ReadAllText(selectedMapPath);
+                loadedMap = JsonUtility.FromJson<SimpleMapData>(json);
+                if (loadedMap != null && loadedMap.songName == songName)
+                {
+                    Debug.Log($"LevelEditorScene: Loaded map via SelectedMapPath {selectedMapPath}");
+                    jsonfilen = new[] { selectedMapPath };
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"LevelEditorScene: Failed to load SelectedMapPath {selectedMapPath}: {ex.Message}");
             }
         }
 
-        Debug.LogError("No map found for song: " + songName);
+        string[] jsonFiles = new string[0];
+        try
+        {
+            jsonFiles = Directory.GetFiles(Application.persistentDataPath, "*.json");
+            jsonfilen = jsonFiles;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"LevelEditorScene: persistentDataPath scan failed: {ex.Message}");
+            jsonFiles = new string[0];
+        }
+
+        foreach (string file in jsonFiles)
+        {
+            try
+            {
+                string json = File.ReadAllText(file);
+                var candidate = JsonUtility.FromJson<SimpleMapData>(json);
+                Debug.Log("Loaded map: " + file);
+                if (candidate != null && candidate.songName == songName)
+                {
+                    loadedMap = candidate;
+                    Debug.Log("Found Song: " + file);
+                    return;
+                }
+                // Keep last parsed as fallback but don't return yet
+                if (loadedMap == null) loadedMap = candidate;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"LevelEditorScene: failed to parse {file}: {ex.Message}");
+            }
+        }
+
+        if (loadedMap != null && loadedMap.songName == songName)
+            return;
+
+        // 2) No existing map found -> create a new empty map for this song (creation flow from Song Select)
+        Debug.LogWarning($"LevelEditorScene: No map found for song '{songName}'. Creating new empty map.");
+        SongDataSO songInfo = null;
+        var allSongs = Resources.LoadAll<SongDataSO>("Songs");
+        foreach (var s in allSongs) if (s.songName == songName) { songInfo = s; break; }
+
+        int bpm = songInfo != null ? songInfo.bpm : PlayerPrefs.GetInt("SelectedSongBPM", 120);
+        if (bpm <= 0) bpm = 120;
+
+        loadedMap = new SimpleMapData
+        {
+            songName = songName,
+            bpm = bpm,
+            msPerSixteenth = (60000f / bpm) / 4f,
+            mapType = "simple"
+        };
     }
 
     void SpawnEditorNotes()
     {
+        if (loadedMap == null || loadedMap.notes == null)
+        {
+            Debug.LogWarning("LevelEditorScene: loadedMap or notes is null, spawning empty editor.");
+            return;
+        }
         foreach (NoteData n in loadedMap.notes)
         {
+            if (n == null) continue;
             GameObject note = Instantiate(notePrefab);
+            if (note == null) continue;
             EditorNote en = note.AddComponent<EditorNote>();
 
             en.beat = n.beat;
@@ -272,12 +352,11 @@ public class LevelEditorScene : MonoBehaviour
 
         float beatFloat = selectedNote.beat + dz * 16f;
 
-        // Snap to 1/16 note
-        int snapped16 = Mathf.RoundToInt(beatFloat * 4f);
-        // float snappedBeats = snapped16 / 4f;
-        int snappedBeats = snapped16;
-
-        selectedNote.beat = snappedBeats;
+        // Snap to 1/16 note (beat is stored as sixteenths, so just round)
+        int snapped = Mathf.RoundToInt(beatFloat);
+        // Clamp to prevent negative blow-up and keep usable range
+        snapped = Mathf.Clamp(snapped, -64, 8192);
+        selectedNote.beat = snapped;
 
         selectedNote.transform.position = new Vector3(
             selectedNote.x * xyScale,
@@ -300,9 +379,8 @@ public class LevelEditorScene : MonoBehaviour
 
         foreach (EditorNote e in editorNotes)
         {
-            int beatInt16 = Mathf.RoundToInt(e.beat * 4f);
-            // float beatClean = beatInt16 / 4f;
-
+            // e.beat is already in sixteenths (no *4 needed) — fixed from exponential blow-up
+            int beatInt16 = Mathf.RoundToInt(e.beat);
             newMap.notes.Add(new NoteData(beatInt16, e.x, e.y));
         }
 

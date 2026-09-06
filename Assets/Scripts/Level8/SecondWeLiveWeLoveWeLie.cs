@@ -52,7 +52,7 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     public List<GameObject> noteblocks; // each: "beat,x,y"
 
     private double dspStartTime;
-    private float secondsPerBeat;
+    public float secondsPerBeat;
     private int nextNoteIndex = 0;
 
     // How early (in seconds) to spawn a note before it should appear
@@ -83,6 +83,11 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     private SimpleMapData loadedCustomMap;
     private float customLevelDurationSeconds = 192f;
     private bool customLevelLoadFailed = false;
+
+    [Header("Custom Void Movement Fallback")]
+    private int customInitialBeat = -1;
+    private bool customForwardStarted = false;
+    private Coroutine customMoveCoroutine;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -287,25 +292,14 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         }
         if (gameActive) {
             if (levelEditor) {
+                // Level Editor should stay open indefinitely so you can test if song is broken.
+                // Removed 192s auto-exit — only manual Save (Esc) or S+R stops recording.
                 double currentDspTime = AudioSettings.dspTime;
                 double songTime = currentDspTime - beatManager.StartDspTime;
-                // if (double.IsNaN(songTime) || songTime < 0) {
-                //     songTime = Time.time - dspStartTime;
-                // }
                 timer += Time.deltaTime;
 
-                // levelEditor recording mode uses fixed 192s timeout (song length approx)
-                float levelEditorTimeout = 192f;
-                // For custom playback we use dynamic duration computed from map; story stays 192f
-                if (timer >= levelEditorTimeout) {
-                    gameActive = false;
-                    if (score > scoreThreshold) {
-                        Win();
-                    } else {
-                        Fail();
-                    }
-                }
-                scoreGame.text = "Score: " + score;
+                // No timeout: editor stays active until user saves. Keep score display for debugging.
+                scoreGame.text = "Score: " + score + " (EDITOR - ESC to save, S+R to stop)";
 
                 if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.R)) {
                     scmm.StopRecording();
@@ -313,6 +307,23 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
             } else {
                 if (!madeNotes) {
                     StartCoroutine(CallGenerateNotes());
+                }
+
+                // Custom void fallback: GenerateWorld handles movement when present (now in Custom Levels too).
+                // Keep fallback for scenes without GenerateWorld: start forward immediately at song start (0 beats),
+                // since the 1-measure ready is already handled by StartCustomGameWithReady() delaying song.
+                if (customLevel && !customForwardStarted && FindFirstObjectByType<GenerateWorld>() == null)
+                {
+                    if (beatManager != null && beatManager.audioSource != null && beatManager.audioSource.isPlaying)
+                    {
+                        if (customInitialBeat == -1) customInitialBeat = beatManager.GetCurrentBeatNumber();
+                        int curBeat = beatManager.GetCurrentBeatNumber();
+                        if (curBeat - customInitialBeat >= 0) // immediate at song start
+                        {
+                            customForwardStarted = true;
+                            customMoveCoroutine = StartCoroutine(MovePlayerForwardCustom());
+                        }
+                    }
                 }
 
                 // Get the final note in the list, check if the z position is near 17645.
@@ -375,9 +386,18 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
 
     private void SpawnNote(float beatTime, float x_pos, float y_pos, float z_pos)
     {
+        // Story: (beat-64)*10+205 so beat 64 is 205u ahead (first story note). Custom maps start at beat 0,
+        // which would be -435 behind with that formula and with the previous Max(180) clamp all beats 0-46 bunched at 180.
+        // Fix: custom uses beat*10+205 so beat 0 is also ~205 ahead and early notes stay spaced (40u per quarter) like story,
+        // just without the -64 offset. This keeps the 1-measure ready distance similar.
+        float zOffset;
+        if (customLevel)
+            zOffset = Mathf.Abs(beatTime) * 10f + 205f; // beat 0->205, 16->365, spaced, no bunching
+        else
+            zOffset = (Mathf.Abs(beatTime) - 64f) * 10f + 205f;
         GameObject newNote = Instantiate(note, transform);
         newNote.transform.localPosition = player.transform.localPosition +
-            new Vector3(3f * x_pos, 3f * y_pos, (Mathf.Abs(beatTime) - 64f) * 10f + 205f);
+            new Vector3(3f * x_pos, 3f * y_pos, zOffset);
         newNote.transform.localScale = new Vector3(3f, 3f, 1f);
         noteblocks.Add(newNote);
 
@@ -394,6 +414,31 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         }
 
         newNoteScript.realNote = (beatTime > 0);
+    }
+
+    // Fallback forward movement for Custom Levels scene which has no GenerateWorld.
+    // Mirrors GenerateWorld phase 1: 2047 sixteenths * spb = ~211s at 145bpm, 20470u forward.
+    private IEnumerator MovePlayerForwardCustom()
+    {
+        if (player == null) yield break;
+        // Use custom BPM's secondsPerBeat (already 60/bpm/4), same scale as story
+        double startDSP = AudioSettings.dspTime;
+        double duration = 2047 * secondsPerBeat;
+        // If custom duration is shorter, cap to customLevelDurationSeconds so we stop near song end
+        if (customLevel && customLevelDurationSeconds > 0)
+            duration = Math.Min(duration, customLevelDurationSeconds);
+        Vector3 startPos = player.transform.position;
+        Vector3 targetPos = startPos + new Vector3(0, 0, 20470f);
+        double endDSP = startDSP + duration;
+        Debug.Log($"Custom void forward: moving {Vector3.Distance(startPos,targetPos)}u over {duration:F2}s (spb={secondsPerBeat:F4})");
+        while (AudioSettings.dspTime < endDSP && gameActive)
+        {
+            double t = (AudioSettings.dspTime - startDSP) / duration;
+            // Use smooth step like story, but linear t for player (story uses linear for phase 1)
+            player.transform.position = Vector3.Lerp(startPos, targetPos, (float)t);
+            yield return null;
+        }
+        if (gameActive) player.transform.position = targetPos;
     }
 
     public string[] SonicBlasterPattern(int time_start, float x_start, float y_start, float z_start) {
@@ -1332,6 +1377,11 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
     }
 
     public void startGameButton() {
+        if (customLevel && !levelEditor)
+        {
+            StartCoroutine(StartCustomGameWithReady());
+            return;
+        }
         startCanvas.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -1343,6 +1393,82 @@ public class SecondWeLiveWeLoveWeLie : MonoBehaviour
         if (levelEditor) {
             scmm.StartRecording();
         }
+    }
+
+    private IEnumerator StartCustomGameWithReady()
+    {
+        // Custom void: 1 measure (4 beats) to get ready before song/notes/movement.
+        // Ensure map is loaded so we know BPM for ready duration.
+        if (!madeNotes) yield return StartCoroutine(CallGenerateNotes());
+
+        float bpmForReady = 145f;
+        if (loadedCustomMap != null && loadedCustomMap.bpm > 0) bpmForReady = loadedCustomMap.bpm;
+        else if (beatManager != null && beatManager.tempo > 0) bpmForReady = beatManager.tempo;
+        else if (BeatManager.Instance != null && BeatManager.Instance.tempo > 0) bpmForReady = BeatManager.Instance.tempo;
+
+        float readyDuration = 4f * 60f / bpmForReady; // 1 measure = 4 quarter beats
+        Debug.Log($"Custom ready: {readyDuration:F2}s (4 beats at {bpmForReady} BPM), song and movement will start after.");
+
+        // Show ready state: keep startCanvas hidden, show loading as ready, hide game canvas
+        startCanvas.SetActive(false);
+        gameCanvas.SetActive(false);
+        loadingAudio.SetActive(true);
+        if (gameAudio != null) gameAudio.SetActive(false);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        // Optionally show a "Get Ready" text via scoreGame if available
+        if (scoreGame != null) scoreGame.text = "GET READY...";
+
+        // Wait 1 measure (4 beats) – use unscaled time so it works even if timeScale is 0?
+        float elapsed = 0f;
+        while (elapsed < readyDuration)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Now start song and movement together
+        startCanvas.SetActive(false);
+        gameCanvas.SetActive(true);
+        loadingAudio.SetActive(false);
+        if (gameAudio != null) gameAudio.SetActive(true);
+
+        // Reschedule BeatManager to start now so GetCurrentBeatNumber is 0 at song start
+        if (beatManager != null && beatManager.audioSource != null)
+        {
+            var clip = beatManager.audioSource.clip;
+            // Ensure clip is the custom song (already assigned in CallGenerateNotes)
+            beatManager.audioSource.Stop();
+            beatManager.StartDspTime = AudioSettings.dspTime + 0.1;
+            if (clip != null) beatManager.audioSource.PlayScheduled(beatManager.StartDspTime);
+        }
+        else if (BeatManager.Instance != null && BeatManager.Instance.audioSource != null)
+        {
+            BeatManager.Instance.StartDspTime = AudioSettings.dspTime + 0.1;
+            if (BeatManager.Instance.audioSource.clip != null)
+            {
+                BeatManager.Instance.audioSource.Stop();
+                BeatManager.Instance.audioSource.PlayScheduled(BeatManager.Instance.StartDspTime);
+            }
+        }
+        // Also ensure gameAudio source (if separate) starts in sync
+        if (gameAudio != null)
+        {
+            var gas = gameAudio.GetComponent<AudioSource>();
+            if (gas == null) gas = gameAudio.GetComponentInChildren<AudioSource>();
+            if (gas != null && gas.clip != null && gas != beatManager?.audioSource)
+            {
+                gas.Stop();
+                gas.PlayScheduled(AudioSettings.dspTime + 0.1);
+            }
+        }
+
+        gameActive = true;
+        timer = 0f;
+        customInitialBeat = -1;
+        customForwardStarted = false;
+        if (levelEditor && scmm != null) scmm.StartRecording();
     }
 
     public void Fail() {

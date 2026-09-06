@@ -194,6 +194,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -215,9 +217,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &87243722
 MeshFilter:
@@ -713,6 +717,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -734,9 +740,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &393080567
 MeshFilter:
@@ -891,6 +899,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1213,6 +1222,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1287,7 +1297,7 @@ MonoBehaviour:
   player: {fileID: 916656353}
   note: {fileID: 4041991552332027269, guid: 140d008b851434b9bb5cbf87bb6f3d9c, type: 3}
   hard: 0
-  debug: 1
+  debug: 0
   maze: {fileID: 0}
   briefcases:
   - {fileID: 0}
@@ -1309,6 +1319,7 @@ MonoBehaviour:
   gameActive: 0
   notes: []
   noteblocks: []
+  secondsPerBeat: 0
   madeNotes: 0
   didBriefcases: 0
   customLevel: 1
@@ -1316,6 +1327,10 @@ MonoBehaviour:
   simpleCustomMapMaker: {fileID: 471416574}
   scmm: {fileID: 0}
   customMapPath: SimpleMap_20251206_004132.json
+  preserveSimpleMapPositions: 1
+  useMapBpmForCustomLevels: 1
+  resolveCustomMapBySelectedSong: 1
+  customLevelEndBufferSeconds: 8
 --- !u!4 &1080848858
 Transform:
   m_ObjectHideFlags: 0
@@ -1342,13 +1357,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8f81c150ea4945a8950c726bbe40926, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::GenerateWorld
   Level1Reference: {fileID: 0}
   Pillar: {fileID: 0}
   player: {fileID: 916656353}
   Building: {fileID: 0}
   gameManager: {fileID: 1080848856}
-  gm: {fileID: 0}
+  gm: {fileID: 1080848857}
   SquareRingsReference: {fileID: 0}
   SquareRing: {fileID: 0}
   ringOffset: 0
@@ -1364,9 +1379,11 @@ MonoBehaviour:
   FadeLightpole: {fileID: 0}
   fadeBuildingOffset: 0
   numFadeBuildings: 0
+  secondsPerBeat: 0
   doingStuff: 0
   phase: 0
   customLevel: 1
+  generatedSquareRings: 0
 --- !u!1 &1126752312
 GameObject:
   m_ObjectHideFlags: 0
@@ -1547,6 +1564,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1568,9 +1587,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1131709899
 MeshFilter:
@@ -1923,6 +1944,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2059,6 +2081,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2175,6 +2198,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2196,9 +2221,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1588978005
 MeshFilter:
