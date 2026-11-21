@@ -284,6 +284,106 @@ public class Universal_Manager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
+        // Skip to Level Cheat Codes
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Alpha1))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Intro to Level 1");
+        }
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Alpha2))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Intro to Level 2");
+        }
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Alpha3))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Intro to Level 3");
+        }
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Alpha4))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Intro to Level 4");
+        }
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Alpha5))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Intro to Level 5");
+        }
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Alpha6))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Intro to Level 6");
+        }
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Alpha7))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Intro to Level 7");
+        }
+        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Alpha8))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Intro to Level 8");
+        }
+
+        // Skip to Open Exploration Cheat Codes
+        if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.Alpha1))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Open Exploration 2");
+        }
+        if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.Alpha2))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Open Exploration After Level 1");
+        }
+        if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.Alpha3))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("FootballGame");
+        }
+        if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.Alpha4))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Alien Party Intro");
+        }
+        if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.Alpha5))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Open Exploration 4");
+        }
+        if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.Alpha6))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Open Exploration Before Level 6");
+        }
+        if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.Alpha7))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Level6To7");
+        }
+        if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.Alpha8))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("Open Exploration Before Level 8");
+        }
+
         // ------------
         // ACHIEVEMENTS
         // ------------
