@@ -43,6 +43,10 @@ public class Open_Exploration_Collectible : MonoBehaviour
 
     public IEnumerator CollectVisualization() {
         GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/Collected_Visual");
+        if (foundObject == null)
+        {
+            foundObject = GameObject.Find("Collected_Visual");
+        }
         if (foundObject != null) {
             Debug.Log("Found Visual");
             foundObject.SetActive(true);
