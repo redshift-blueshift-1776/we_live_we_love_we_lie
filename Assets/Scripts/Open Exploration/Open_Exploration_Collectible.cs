@@ -45,7 +45,7 @@ public class Open_Exploration_Collectible : MonoBehaviour
         GameObject foundObject = GameObject.Find("Player_Open_Exploration/Canvas/Collected_Visual");
         if (foundObject == null)
         {
-            foundObject = GameObject.Find("Collected_Visual");
+            foundObject = GameObject.Find("Stuff/Canvas/Collected_Visual");
         }
         if (foundObject != null) {
             Debug.Log("Found Visual");
